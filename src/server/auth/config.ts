@@ -3,8 +3,24 @@ import { type DefaultSession, type NextAuthConfig } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
 import GoogleProvider from "next-auth/providers/google";
 import { env } from "~/env";
+import Credentials from "next-auth/providers/credentials";
+import * as argon2 from "argon2";
+import { z } from "zod";
+import { CredentialsSignin } from "next-auth";
 
 import { db } from "~/server/db";
+
+const loginSchema = z.object({
+  email: z.string().trim().email().max(254),
+  password: z
+    .string()
+    .min(1)
+    .refine((password) => [...password].length <= 128),
+});
+
+class EmailNotVerifiedError extends CredentialsSignin {
+  code = "email_not_verified";
+}
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -38,7 +54,43 @@ export const authConfig = {
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
-    })
+    }),
+    Credentials({
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+
+      async authorize(credentials) {
+        const parsed = loginSchema.safeParse(credentials);
+
+        if (!parsed.success) return null;
+
+        const user = await db.user.findUnique({
+          where: { email: parsed.data.email },
+        });
+
+        if (!user?.passwordHash) return null;
+
+        const passwordMatches = await argon2.verify(
+          user.passwordHash,
+          parsed.data.password,
+        );
+
+        if (!passwordMatches) return null;
+
+        if (user.emailVerified === null) {
+          throw new EmailNotVerifiedError();
+        }
+
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          image: user.image,
+        };
+      },
+    }),
     /**
      * ...add more providers here.
      *
@@ -51,12 +103,23 @@ export const authConfig = {
   ],
   adapter: PrismaAdapter(db),
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    jwt({ token, user }) {
+      if (user) {
+        token.sub = user.id;
+      }
+
+      return token;
+    },
+
+    session({ session, token }) {
+      if (token.sub) {
+        session.user.id = token.sub;
+      }
+
+      return session;
+    },
+  },
+  session: {
+    strategy: "jwt",
   },
 } satisfies NextAuthConfig;
