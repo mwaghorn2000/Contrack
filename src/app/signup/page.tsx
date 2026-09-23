@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState } from "react";
+import React, { useRef, useState, type SubmitEvent } from "react";
 
 import AuthLayout from "../_components/auth/auth-layout";
 import GoogleSignInButton from "../_components/auth/google-sign-in-button";
+import { useRouter } from "next/navigation";
+import { api } from "~/trpc/react";
 
 const MIN_PASSWORD_LENGTH = 12;
 const MAX_PASSWORD_LENGTH = 128;
@@ -18,6 +20,46 @@ export default function SignupPage() {
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [fullNameError, setFullNameError] = useState("");
   const [emailError, setEmailError] = useState("");
+
+  const router = useRouter();
+  const signup = api.auth.signup.useMutation();
+  const sendCode = api.auth.verificationEmail.useMutation();
+
+  const [submitError, setSubmitError] = useState("");
+
+  async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (!validatePassword || !validateFullName || !validateEmail) {
+      return;
+    }
+
+    const email = emailRef.current!.value.trim();
+
+    try {
+      await signup.mutateAsync({
+        fullName: fullNameRef.current!.value.trim(),
+        email,
+        password: passwordRef.current!.value,
+      });
+    } catch (error) {
+      setSubmitError(
+        error instanceof Error ? error.message : "Couldnt create your account.",
+      );
+      return;
+    }
+
+    try {
+      await sendCode.mutateAsync({ email });
+    } catch {
+      router.push(
+        `/verify-email?email=${encodeURIComponent(email)}&sendFailed=1`,
+      );
+      return;
+    }
+
+    router.push(`/verify-email?email=${encodeURIComponent(email)}`);
+  }
 
   function validatePassword(showError = true): boolean {
     const input = passwordRef.current;
@@ -116,19 +158,7 @@ export default function SignupPage() {
       title="Create your account"
       description="Get started with Contrack"
     >
-      <form
-        method="post"
-        className="space-y-4"
-        onSubmit={(event) => {
-          // Keep credentials on the page until account creation is connected.
-          event.preventDefault();
-          validateFullName();
-          validateEmail();
-          validatePassword();
-          validatePasswords();
-          event.currentTarget.reportValidity();
-        }}
-      >
+      <form method="post" className="space-y-4" onSubmit={handleSubmit}>
         <div className="space-y-1.5">
           <label
             htmlFor="full-name"
@@ -273,12 +303,15 @@ export default function SignupPage() {
             </p>
           )}
         </div>
-
+        {submitError && <p role="alert">{submitError}</p>}
         <button
           type="submit"
+          disabled={signup.isPending || sendCode.isPending}
           className="w-full rounded-md bg-black px-4 py-2.5 font-medium text-white transition hover:bg-gray-800 focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:outline-none active:scale-[0.99]"
         >
-          Create account
+          {signup.isPending || sendCode.isPending
+            ? "Please wait..."
+            : "Create account"}
         </button>
       </form>
 
