@@ -99,6 +99,7 @@ model User {
     name          String?
     email         String?   @unique
     emailVerified DateTime?
+    emailVerificationCode   EmailVerificationCode?
     passwordHash  String?
     image         String?
     description   String?
@@ -110,7 +111,16 @@ model User {
     channelMemberships  ChannelMember[]
     messages            Message[]
     createdJobs         Job[]
+}
 
+model EmailVerificationCode {
+    userId      String      @id
+    codeHash    String
+    expiresAt   DateTime
+    attempts    Int         @default(0)
+    lastSentAt  DateTime    @default(now())
+
+    user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Message {
