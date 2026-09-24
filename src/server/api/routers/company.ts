@@ -1,6 +1,5 @@
 import z from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-import { ct } from "node_modules/@trpc/server/dist/unstable-core-do-not-import-BK_OKrtM.mjs";
 import { TRPCError } from "@trpc/server";
 
 const getCompanySchema = z.object({
@@ -71,6 +70,10 @@ export const companyRouter = createTRPCRouter({
         name: true,
         image: true,
         description: true,
+        members: {
+          where: { userId: ctx.session.user.id },
+          select: { role: true },
+        },
       },
     });
   }),

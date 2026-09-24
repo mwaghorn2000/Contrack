@@ -120,10 +120,27 @@ export const publicProcedure = t.procedure.use(timingMiddleware);
  */
 export const protectedProcedure = t.procedure
   .use(timingMiddleware)
-  .use(({ ctx, next }) => {
-    if (!ctx.session?.user) {
-      throw new TRPCError({ code: "UNAUTHORIZED" });
+  .use(async ({ ctx, next }) => {
+    if (!ctx.session?.user?.id) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Please sign in again to continue.",
+      });
     }
+
+    // JWTs can outlive the user record after a deletion or database reset.
+    const user = await ctx.db.user.findUnique({
+      where: { id: ctx.session.user.id },
+      select: { id: true },
+    });
+
+    if (!user) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Your session is no longer valid. Please sign in again.",
+      });
+    }
+
     return next({
       ctx: {
         // infers the `session` as non-nullable
