@@ -9,7 +9,7 @@ generator client {
 // prisma/schema.prisma
 datasource db {
   provider  = "postgresql"
-  url  	    = env("DATABASE_URL")
+  url = env("DATABASE_URL")
 }
 
 enum CompanyRole {
@@ -50,6 +50,14 @@ model Session {
 model Company {
     id          String     @id @default(cuid())
     name        String
+    image       String?
+    description String?
+    website     String?
+    email       String?
+    phone       String?
+
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
 
     members     CompanyMember[]
     channels    Channel[]
