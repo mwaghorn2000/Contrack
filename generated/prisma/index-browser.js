@@ -146,7 +146,14 @@ exports.Prisma.SessionScalarFieldEnum = {
 
 exports.Prisma.CompanyScalarFieldEnum = {
   id: 'id',
-  name: 'name'
+  name: 'name',
+  image: 'image',
+  description: 'description',
+  website: 'website',
+  email: 'email',
+  phone: 'phone',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.CompanyMemberScalarFieldEnum = {
