@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Suspense } from "react";
 
 import { auth } from "~/server/auth";
 import CompanySelector from "./company-selector";
@@ -19,7 +20,18 @@ export default async function TopNavBar() {
 
       {session?.user && (
         <div className="order-last w-full min-w-0 sm:order-none sm:w-auto">
-          <CompanySelector />
+          <Suspense
+            fallback={
+              <div
+                role="status"
+                className="flex h-10 w-full items-center rounded-md border border-gray-300 px-3 text-sm text-gray-500 sm:w-48"
+              >
+                Loading companies…
+              </div>
+            }
+          >
+            <CompanySelector />
+          </Suspense>
         </div>
       )}
 
