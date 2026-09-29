@@ -15,7 +15,7 @@ export default async function TopNavBar() {
         href="/dashboard"
         className="shrink-0 rounded text-lg font-semibold tracking-tight text-gray-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gray-900"
       >
-        Contrack
+        Contrack.
       </Link>
 
       {session?.user && (

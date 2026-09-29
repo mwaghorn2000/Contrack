@@ -64,6 +64,11 @@ export type Message = $Result.DefaultSelection<Prisma.$MessagePayload>
  */
 export type Job = $Result.DefaultSelection<Prisma.$JobPayload>
 /**
+ * Model CompanyPost
+ * 
+ */
+export type CompanyPost = $Result.DefaultSelection<Prisma.$CompanyPostPayload>
+/**
  * Model VerificationToken
  * 
  */
@@ -305,6 +310,16 @@ export class PrismaClient<
     * ```
     */
   get job(): Prisma.JobDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.companyPost`: Exposes CRUD operations for the **CompanyPost** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CompanyPosts
+    * const companyPosts = await prisma.companyPost.findMany()
+    * ```
+    */
+  get companyPost(): Prisma.CompanyPostDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.verificationToken`: Exposes CRUD operations for the **VerificationToken** model.
@@ -766,6 +781,7 @@ export namespace Prisma {
     EmailVerificationCode: 'EmailVerificationCode',
     Message: 'Message',
     Job: 'Job',
+    CompanyPost: 'CompanyPost',
     VerificationToken: 'VerificationToken'
   };
 
@@ -785,7 +801,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "account" | "session" | "company" | "companyMember" | "channel" | "channelMember" | "user" | "emailVerificationCode" | "message" | "job" | "verificationToken"
+      modelProps: "account" | "session" | "company" | "companyMember" | "channel" | "channelMember" | "user" | "emailVerificationCode" | "message" | "job" | "companyPost" | "verificationToken"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1529,6 +1545,80 @@ export namespace Prisma {
           }
         }
       }
+      CompanyPost: {
+        payload: Prisma.$CompanyPostPayload<ExtArgs>
+        fields: Prisma.CompanyPostFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CompanyPostFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPostPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CompanyPostFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPostPayload>
+          }
+          findFirst: {
+            args: Prisma.CompanyPostFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPostPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CompanyPostFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPostPayload>
+          }
+          findMany: {
+            args: Prisma.CompanyPostFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPostPayload>[]
+          }
+          create: {
+            args: Prisma.CompanyPostCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPostPayload>
+          }
+          createMany: {
+            args: Prisma.CompanyPostCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CompanyPostCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPostPayload>[]
+          }
+          delete: {
+            args: Prisma.CompanyPostDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPostPayload>
+          }
+          update: {
+            args: Prisma.CompanyPostUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPostPayload>
+          }
+          deleteMany: {
+            args: Prisma.CompanyPostDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CompanyPostUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CompanyPostUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPostPayload>[]
+          }
+          upsert: {
+            args: Prisma.CompanyPostUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPostPayload>
+          }
+          aggregate: {
+            args: Prisma.CompanyPostAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCompanyPost>
+          }
+          groupBy: {
+            args: Prisma.CompanyPostGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CompanyPostGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CompanyPostCountArgs<ExtArgs>
+            result: $Utils.Optional<CompanyPostCountAggregateOutputType> | number
+          }
+        }
+      }
       VerificationToken: {
         payload: Prisma.$VerificationTokenPayload<ExtArgs>
         fields: Prisma.VerificationTokenFieldRefs
@@ -1709,6 +1799,7 @@ export namespace Prisma {
     emailVerificationCode?: EmailVerificationCodeOmit
     message?: MessageOmit
     job?: JobOmit
+    companyPost?: CompanyPostOmit
     verificationToken?: VerificationTokenOmit
   }
 
@@ -1793,12 +1884,14 @@ export namespace Prisma {
     members: number
     channels: number
     jobs: number
+    posts: number
   }
 
   export type CompanyCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     members?: boolean | CompanyCountOutputTypeCountMembersArgs
     channels?: boolean | CompanyCountOutputTypeCountChannelsArgs
     jobs?: boolean | CompanyCountOutputTypeCountJobsArgs
+    posts?: boolean | CompanyCountOutputTypeCountPostsArgs
   }
 
   // Custom InputTypes
@@ -1831,6 +1924,13 @@ export namespace Prisma {
    */
   export type CompanyCountOutputTypeCountJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: JobWhereInput
+  }
+
+  /**
+   * CompanyCountOutputType without action
+   */
+  export type CompanyCountOutputTypeCountPostsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CompanyPostWhereInput
   }
 
 
@@ -1885,6 +1985,7 @@ export namespace Prisma {
     channelMemberships: number
     messages: number
     createdJobs: number
+    companyPosts: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1894,6 +1995,7 @@ export namespace Prisma {
     channelMemberships?: boolean | UserCountOutputTypeCountChannelMembershipsArgs
     messages?: boolean | UserCountOutputTypeCountMessagesArgs
     createdJobs?: boolean | UserCountOutputTypeCountCreatedJobsArgs
+    companyPosts?: boolean | UserCountOutputTypeCountCompanyPostsArgs
   }
 
   // Custom InputTypes
@@ -1947,6 +2049,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountCreatedJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: JobWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountCompanyPostsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CompanyPostWhereInput
   }
 
 
@@ -4398,6 +4507,7 @@ export namespace Prisma {
     members?: boolean | Company$membersArgs<ExtArgs>
     channels?: boolean | Company$channelsArgs<ExtArgs>
     jobs?: boolean | Company$jobsArgs<ExtArgs>
+    posts?: boolean | Company$postsArgs<ExtArgs>
     _count?: boolean | CompanyCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["company"]>
 
@@ -4442,6 +4552,7 @@ export namespace Prisma {
     members?: boolean | Company$membersArgs<ExtArgs>
     channels?: boolean | Company$channelsArgs<ExtArgs>
     jobs?: boolean | Company$jobsArgs<ExtArgs>
+    posts?: boolean | Company$postsArgs<ExtArgs>
     _count?: boolean | CompanyCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CompanyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -4453,6 +4564,7 @@ export namespace Prisma {
       members: Prisma.$CompanyMemberPayload<ExtArgs>[]
       channels: Prisma.$ChannelPayload<ExtArgs>[]
       jobs: Prisma.$JobPayload<ExtArgs>[]
+      posts: Prisma.$CompanyPostPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -4861,6 +4973,7 @@ export namespace Prisma {
     members<T extends Company$membersArgs<ExtArgs> = {}>(args?: Subset<T, Company$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     channels<T extends Company$channelsArgs<ExtArgs> = {}>(args?: Subset<T, Company$channelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     jobs<T extends Company$jobsArgs<ExtArgs> = {}>(args?: Subset<T, Company$jobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    posts<T extends Company$postsArgs<ExtArgs> = {}>(args?: Subset<T, Company$postsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyPostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5356,6 +5469,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: JobScalarFieldEnum | JobScalarFieldEnum[]
+  }
+
+  /**
+   * Company.posts
+   */
+  export type Company$postsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyPost
+     */
+    select?: CompanyPostSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyPost
+     */
+    omit?: CompanyPostOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyPostInclude<ExtArgs> | null
+    where?: CompanyPostWhereInput
+    orderBy?: CompanyPostOrderByWithRelationInput | CompanyPostOrderByWithRelationInput[]
+    cursor?: CompanyPostWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CompanyPostScalarFieldEnum | CompanyPostScalarFieldEnum[]
   }
 
   /**
@@ -8747,6 +8884,7 @@ export namespace Prisma {
     channelMemberships?: boolean | User$channelMembershipsArgs<ExtArgs>
     messages?: boolean | User$messagesArgs<ExtArgs>
     createdJobs?: boolean | User$createdJobsArgs<ExtArgs>
+    companyPosts?: boolean | User$companyPostsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -8789,6 +8927,7 @@ export namespace Prisma {
     channelMemberships?: boolean | User$channelMembershipsArgs<ExtArgs>
     messages?: boolean | User$messagesArgs<ExtArgs>
     createdJobs?: boolean | User$createdJobsArgs<ExtArgs>
+    companyPosts?: boolean | User$companyPostsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -8804,6 +8943,7 @@ export namespace Prisma {
       channelMemberships: Prisma.$ChannelMemberPayload<ExtArgs>[]
       messages: Prisma.$MessagePayload<ExtArgs>[]
       createdJobs: Prisma.$JobPayload<ExtArgs>[]
+      companyPosts: Prisma.$CompanyPostPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -9214,6 +9354,7 @@ export namespace Prisma {
     channelMemberships<T extends User$channelMembershipsArgs<ExtArgs> = {}>(args?: Subset<T, User$channelMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     messages<T extends User$messagesArgs<ExtArgs> = {}>(args?: Subset<T, User$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     createdJobs<T extends User$createdJobsArgs<ExtArgs> = {}>(args?: Subset<T, User$createdJobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    companyPosts<T extends User$companyPostsArgs<ExtArgs> = {}>(args?: Subset<T, User$companyPostsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyPostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9798,6 +9939,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: JobScalarFieldEnum | JobScalarFieldEnum[]
+  }
+
+  /**
+   * User.companyPosts
+   */
+  export type User$companyPostsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyPost
+     */
+    select?: CompanyPostSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyPost
+     */
+    omit?: CompanyPostOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyPostInclude<ExtArgs> | null
+    where?: CompanyPostWhereInput
+    orderBy?: CompanyPostOrderByWithRelationInput | CompanyPostOrderByWithRelationInput[]
+    cursor?: CompanyPostWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CompanyPostScalarFieldEnum | CompanyPostScalarFieldEnum[]
   }
 
   /**
@@ -13083,6 +13248,1104 @@ export namespace Prisma {
 
 
   /**
+   * Model CompanyPost
+   */
+
+  export type AggregateCompanyPost = {
+    _count: CompanyPostCountAggregateOutputType | null
+    _min: CompanyPostMinAggregateOutputType | null
+    _max: CompanyPostMaxAggregateOutputType | null
+  }
+
+  export type CompanyPostMinAggregateOutputType = {
+    id: string | null
+    content: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    companyId: string | null
+    authorId: string | null
+  }
+
+  export type CompanyPostMaxAggregateOutputType = {
+    id: string | null
+    content: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    companyId: string | null
+    authorId: string | null
+  }
+
+  export type CompanyPostCountAggregateOutputType = {
+    id: number
+    content: number
+    createdAt: number
+    updatedAt: number
+    companyId: number
+    authorId: number
+    _all: number
+  }
+
+
+  export type CompanyPostMinAggregateInputType = {
+    id?: true
+    content?: true
+    createdAt?: true
+    updatedAt?: true
+    companyId?: true
+    authorId?: true
+  }
+
+  export type CompanyPostMaxAggregateInputType = {
+    id?: true
+    content?: true
+    createdAt?: true
+    updatedAt?: true
+    companyId?: true
+    authorId?: true
+  }
+
+  export type CompanyPostCountAggregateInputType = {
+    id?: true
+    content?: true
+    createdAt?: true
+    updatedAt?: true
+    companyId?: true
+    authorId?: true
+    _all?: true
+  }
+
+  export type CompanyPostAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CompanyPost to aggregate.
+     */
+    where?: CompanyPostWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompanyPosts to fetch.
+     */
+    orderBy?: CompanyPostOrderByWithRelationInput | CompanyPostOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CompanyPostWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompanyPosts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompanyPosts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CompanyPosts
+    **/
+    _count?: true | CompanyPostCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CompanyPostMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CompanyPostMaxAggregateInputType
+  }
+
+  export type GetCompanyPostAggregateType<T extends CompanyPostAggregateArgs> = {
+        [P in keyof T & keyof AggregateCompanyPost]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCompanyPost[P]>
+      : GetScalarType<T[P], AggregateCompanyPost[P]>
+  }
+
+
+
+
+  export type CompanyPostGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CompanyPostWhereInput
+    orderBy?: CompanyPostOrderByWithAggregationInput | CompanyPostOrderByWithAggregationInput[]
+    by: CompanyPostScalarFieldEnum[] | CompanyPostScalarFieldEnum
+    having?: CompanyPostScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CompanyPostCountAggregateInputType | true
+    _min?: CompanyPostMinAggregateInputType
+    _max?: CompanyPostMaxAggregateInputType
+  }
+
+  export type CompanyPostGroupByOutputType = {
+    id: string
+    content: string
+    createdAt: Date
+    updatedAt: Date
+    companyId: string
+    authorId: string | null
+    _count: CompanyPostCountAggregateOutputType | null
+    _min: CompanyPostMinAggregateOutputType | null
+    _max: CompanyPostMaxAggregateOutputType | null
+  }
+
+  type GetCompanyPostGroupByPayload<T extends CompanyPostGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CompanyPostGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CompanyPostGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CompanyPostGroupByOutputType[P]>
+            : GetScalarType<T[P], CompanyPostGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CompanyPostSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    content?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    companyId?: boolean
+    authorId?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    author?: boolean | CompanyPost$authorArgs<ExtArgs>
+  }, ExtArgs["result"]["companyPost"]>
+
+  export type CompanyPostSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    content?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    companyId?: boolean
+    authorId?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    author?: boolean | CompanyPost$authorArgs<ExtArgs>
+  }, ExtArgs["result"]["companyPost"]>
+
+  export type CompanyPostSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    content?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    companyId?: boolean
+    authorId?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    author?: boolean | CompanyPost$authorArgs<ExtArgs>
+  }, ExtArgs["result"]["companyPost"]>
+
+  export type CompanyPostSelectScalar = {
+    id?: boolean
+    content?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    companyId?: boolean
+    authorId?: boolean
+  }
+
+  export type CompanyPostOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "content" | "createdAt" | "updatedAt" | "companyId" | "authorId", ExtArgs["result"]["companyPost"]>
+  export type CompanyPostInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    author?: boolean | CompanyPost$authorArgs<ExtArgs>
+  }
+  export type CompanyPostIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    author?: boolean | CompanyPost$authorArgs<ExtArgs>
+  }
+  export type CompanyPostIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    author?: boolean | CompanyPost$authorArgs<ExtArgs>
+  }
+
+  export type $CompanyPostPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CompanyPost"
+    objects: {
+      company: Prisma.$CompanyPayload<ExtArgs>
+      author: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      content: string
+      createdAt: Date
+      updatedAt: Date
+      companyId: string
+      authorId: string | null
+    }, ExtArgs["result"]["companyPost"]>
+    composites: {}
+  }
+
+  type CompanyPostGetPayload<S extends boolean | null | undefined | CompanyPostDefaultArgs> = $Result.GetResult<Prisma.$CompanyPostPayload, S>
+
+  type CompanyPostCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CompanyPostFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CompanyPostCountAggregateInputType | true
+    }
+
+  export interface CompanyPostDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CompanyPost'], meta: { name: 'CompanyPost' } }
+    /**
+     * Find zero or one CompanyPost that matches the filter.
+     * @param {CompanyPostFindUniqueArgs} args - Arguments to find a CompanyPost
+     * @example
+     * // Get one CompanyPost
+     * const companyPost = await prisma.companyPost.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CompanyPostFindUniqueArgs>(args: SelectSubset<T, CompanyPostFindUniqueArgs<ExtArgs>>): Prisma__CompanyPostClient<$Result.GetResult<Prisma.$CompanyPostPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CompanyPost that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CompanyPostFindUniqueOrThrowArgs} args - Arguments to find a CompanyPost
+     * @example
+     * // Get one CompanyPost
+     * const companyPost = await prisma.companyPost.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CompanyPostFindUniqueOrThrowArgs>(args: SelectSubset<T, CompanyPostFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CompanyPostClient<$Result.GetResult<Prisma.$CompanyPostPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CompanyPost that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyPostFindFirstArgs} args - Arguments to find a CompanyPost
+     * @example
+     * // Get one CompanyPost
+     * const companyPost = await prisma.companyPost.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CompanyPostFindFirstArgs>(args?: SelectSubset<T, CompanyPostFindFirstArgs<ExtArgs>>): Prisma__CompanyPostClient<$Result.GetResult<Prisma.$CompanyPostPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CompanyPost that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyPostFindFirstOrThrowArgs} args - Arguments to find a CompanyPost
+     * @example
+     * // Get one CompanyPost
+     * const companyPost = await prisma.companyPost.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CompanyPostFindFirstOrThrowArgs>(args?: SelectSubset<T, CompanyPostFindFirstOrThrowArgs<ExtArgs>>): Prisma__CompanyPostClient<$Result.GetResult<Prisma.$CompanyPostPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CompanyPosts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyPostFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CompanyPosts
+     * const companyPosts = await prisma.companyPost.findMany()
+     * 
+     * // Get first 10 CompanyPosts
+     * const companyPosts = await prisma.companyPost.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const companyPostWithIdOnly = await prisma.companyPost.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CompanyPostFindManyArgs>(args?: SelectSubset<T, CompanyPostFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyPostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CompanyPost.
+     * @param {CompanyPostCreateArgs} args - Arguments to create a CompanyPost.
+     * @example
+     * // Create one CompanyPost
+     * const CompanyPost = await prisma.companyPost.create({
+     *   data: {
+     *     // ... data to create a CompanyPost
+     *   }
+     * })
+     * 
+     */
+    create<T extends CompanyPostCreateArgs>(args: SelectSubset<T, CompanyPostCreateArgs<ExtArgs>>): Prisma__CompanyPostClient<$Result.GetResult<Prisma.$CompanyPostPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CompanyPosts.
+     * @param {CompanyPostCreateManyArgs} args - Arguments to create many CompanyPosts.
+     * @example
+     * // Create many CompanyPosts
+     * const companyPost = await prisma.companyPost.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CompanyPostCreateManyArgs>(args?: SelectSubset<T, CompanyPostCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CompanyPosts and returns the data saved in the database.
+     * @param {CompanyPostCreateManyAndReturnArgs} args - Arguments to create many CompanyPosts.
+     * @example
+     * // Create many CompanyPosts
+     * const companyPost = await prisma.companyPost.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CompanyPosts and only return the `id`
+     * const companyPostWithIdOnly = await prisma.companyPost.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CompanyPostCreateManyAndReturnArgs>(args?: SelectSubset<T, CompanyPostCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyPostPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CompanyPost.
+     * @param {CompanyPostDeleteArgs} args - Arguments to delete one CompanyPost.
+     * @example
+     * // Delete one CompanyPost
+     * const CompanyPost = await prisma.companyPost.delete({
+     *   where: {
+     *     // ... filter to delete one CompanyPost
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CompanyPostDeleteArgs>(args: SelectSubset<T, CompanyPostDeleteArgs<ExtArgs>>): Prisma__CompanyPostClient<$Result.GetResult<Prisma.$CompanyPostPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CompanyPost.
+     * @param {CompanyPostUpdateArgs} args - Arguments to update one CompanyPost.
+     * @example
+     * // Update one CompanyPost
+     * const companyPost = await prisma.companyPost.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CompanyPostUpdateArgs>(args: SelectSubset<T, CompanyPostUpdateArgs<ExtArgs>>): Prisma__CompanyPostClient<$Result.GetResult<Prisma.$CompanyPostPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CompanyPosts.
+     * @param {CompanyPostDeleteManyArgs} args - Arguments to filter CompanyPosts to delete.
+     * @example
+     * // Delete a few CompanyPosts
+     * const { count } = await prisma.companyPost.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CompanyPostDeleteManyArgs>(args?: SelectSubset<T, CompanyPostDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CompanyPosts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyPostUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CompanyPosts
+     * const companyPost = await prisma.companyPost.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CompanyPostUpdateManyArgs>(args: SelectSubset<T, CompanyPostUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CompanyPosts and returns the data updated in the database.
+     * @param {CompanyPostUpdateManyAndReturnArgs} args - Arguments to update many CompanyPosts.
+     * @example
+     * // Update many CompanyPosts
+     * const companyPost = await prisma.companyPost.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CompanyPosts and only return the `id`
+     * const companyPostWithIdOnly = await prisma.companyPost.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CompanyPostUpdateManyAndReturnArgs>(args: SelectSubset<T, CompanyPostUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyPostPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CompanyPost.
+     * @param {CompanyPostUpsertArgs} args - Arguments to update or create a CompanyPost.
+     * @example
+     * // Update or create a CompanyPost
+     * const companyPost = await prisma.companyPost.upsert({
+     *   create: {
+     *     // ... data to create a CompanyPost
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CompanyPost we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CompanyPostUpsertArgs>(args: SelectSubset<T, CompanyPostUpsertArgs<ExtArgs>>): Prisma__CompanyPostClient<$Result.GetResult<Prisma.$CompanyPostPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CompanyPosts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyPostCountArgs} args - Arguments to filter CompanyPosts to count.
+     * @example
+     * // Count the number of CompanyPosts
+     * const count = await prisma.companyPost.count({
+     *   where: {
+     *     // ... the filter for the CompanyPosts we want to count
+     *   }
+     * })
+    **/
+    count<T extends CompanyPostCountArgs>(
+      args?: Subset<T, CompanyPostCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CompanyPostCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CompanyPost.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyPostAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CompanyPostAggregateArgs>(args: Subset<T, CompanyPostAggregateArgs>): Prisma.PrismaPromise<GetCompanyPostAggregateType<T>>
+
+    /**
+     * Group by CompanyPost.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyPostGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CompanyPostGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CompanyPostGroupByArgs['orderBy'] }
+        : { orderBy?: CompanyPostGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CompanyPostGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCompanyPostGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CompanyPost model
+   */
+  readonly fields: CompanyPostFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CompanyPost.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CompanyPostClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    author<T extends CompanyPost$authorArgs<ExtArgs> = {}>(args?: Subset<T, CompanyPost$authorArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CompanyPost model
+   */
+  interface CompanyPostFieldRefs {
+    readonly id: FieldRef<"CompanyPost", 'String'>
+    readonly content: FieldRef<"CompanyPost", 'String'>
+    readonly createdAt: FieldRef<"CompanyPost", 'DateTime'>
+    readonly updatedAt: FieldRef<"CompanyPost", 'DateTime'>
+    readonly companyId: FieldRef<"CompanyPost", 'String'>
+    readonly authorId: FieldRef<"CompanyPost", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CompanyPost findUnique
+   */
+  export type CompanyPostFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyPost
+     */
+    select?: CompanyPostSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyPost
+     */
+    omit?: CompanyPostOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyPostInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanyPost to fetch.
+     */
+    where: CompanyPostWhereUniqueInput
+  }
+
+  /**
+   * CompanyPost findUniqueOrThrow
+   */
+  export type CompanyPostFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyPost
+     */
+    select?: CompanyPostSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyPost
+     */
+    omit?: CompanyPostOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyPostInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanyPost to fetch.
+     */
+    where: CompanyPostWhereUniqueInput
+  }
+
+  /**
+   * CompanyPost findFirst
+   */
+  export type CompanyPostFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyPost
+     */
+    select?: CompanyPostSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyPost
+     */
+    omit?: CompanyPostOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyPostInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanyPost to fetch.
+     */
+    where?: CompanyPostWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompanyPosts to fetch.
+     */
+    orderBy?: CompanyPostOrderByWithRelationInput | CompanyPostOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CompanyPosts.
+     */
+    cursor?: CompanyPostWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompanyPosts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompanyPosts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CompanyPosts.
+     */
+    distinct?: CompanyPostScalarFieldEnum | CompanyPostScalarFieldEnum[]
+  }
+
+  /**
+   * CompanyPost findFirstOrThrow
+   */
+  export type CompanyPostFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyPost
+     */
+    select?: CompanyPostSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyPost
+     */
+    omit?: CompanyPostOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyPostInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanyPost to fetch.
+     */
+    where?: CompanyPostWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompanyPosts to fetch.
+     */
+    orderBy?: CompanyPostOrderByWithRelationInput | CompanyPostOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CompanyPosts.
+     */
+    cursor?: CompanyPostWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompanyPosts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompanyPosts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CompanyPosts.
+     */
+    distinct?: CompanyPostScalarFieldEnum | CompanyPostScalarFieldEnum[]
+  }
+
+  /**
+   * CompanyPost findMany
+   */
+  export type CompanyPostFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyPost
+     */
+    select?: CompanyPostSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyPost
+     */
+    omit?: CompanyPostOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyPostInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanyPosts to fetch.
+     */
+    where?: CompanyPostWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompanyPosts to fetch.
+     */
+    orderBy?: CompanyPostOrderByWithRelationInput | CompanyPostOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CompanyPosts.
+     */
+    cursor?: CompanyPostWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompanyPosts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompanyPosts.
+     */
+    skip?: number
+    distinct?: CompanyPostScalarFieldEnum | CompanyPostScalarFieldEnum[]
+  }
+
+  /**
+   * CompanyPost create
+   */
+  export type CompanyPostCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyPost
+     */
+    select?: CompanyPostSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyPost
+     */
+    omit?: CompanyPostOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyPostInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CompanyPost.
+     */
+    data: XOR<CompanyPostCreateInput, CompanyPostUncheckedCreateInput>
+  }
+
+  /**
+   * CompanyPost createMany
+   */
+  export type CompanyPostCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CompanyPosts.
+     */
+    data: CompanyPostCreateManyInput | CompanyPostCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CompanyPost createManyAndReturn
+   */
+  export type CompanyPostCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyPost
+     */
+    select?: CompanyPostSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyPost
+     */
+    omit?: CompanyPostOmit<ExtArgs> | null
+    /**
+     * The data used to create many CompanyPosts.
+     */
+    data: CompanyPostCreateManyInput | CompanyPostCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyPostIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CompanyPost update
+   */
+  export type CompanyPostUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyPost
+     */
+    select?: CompanyPostSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyPost
+     */
+    omit?: CompanyPostOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyPostInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CompanyPost.
+     */
+    data: XOR<CompanyPostUpdateInput, CompanyPostUncheckedUpdateInput>
+    /**
+     * Choose, which CompanyPost to update.
+     */
+    where: CompanyPostWhereUniqueInput
+  }
+
+  /**
+   * CompanyPost updateMany
+   */
+  export type CompanyPostUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CompanyPosts.
+     */
+    data: XOR<CompanyPostUpdateManyMutationInput, CompanyPostUncheckedUpdateManyInput>
+    /**
+     * Filter which CompanyPosts to update
+     */
+    where?: CompanyPostWhereInput
+    /**
+     * Limit how many CompanyPosts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CompanyPost updateManyAndReturn
+   */
+  export type CompanyPostUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyPost
+     */
+    select?: CompanyPostSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyPost
+     */
+    omit?: CompanyPostOmit<ExtArgs> | null
+    /**
+     * The data used to update CompanyPosts.
+     */
+    data: XOR<CompanyPostUpdateManyMutationInput, CompanyPostUncheckedUpdateManyInput>
+    /**
+     * Filter which CompanyPosts to update
+     */
+    where?: CompanyPostWhereInput
+    /**
+     * Limit how many CompanyPosts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyPostIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CompanyPost upsert
+   */
+  export type CompanyPostUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyPost
+     */
+    select?: CompanyPostSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyPost
+     */
+    omit?: CompanyPostOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyPostInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CompanyPost to update in case it exists.
+     */
+    where: CompanyPostWhereUniqueInput
+    /**
+     * In case the CompanyPost found by the `where` argument doesn't exist, create a new CompanyPost with this data.
+     */
+    create: XOR<CompanyPostCreateInput, CompanyPostUncheckedCreateInput>
+    /**
+     * In case the CompanyPost was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CompanyPostUpdateInput, CompanyPostUncheckedUpdateInput>
+  }
+
+  /**
+   * CompanyPost delete
+   */
+  export type CompanyPostDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyPost
+     */
+    select?: CompanyPostSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyPost
+     */
+    omit?: CompanyPostOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyPostInclude<ExtArgs> | null
+    /**
+     * Filter which CompanyPost to delete.
+     */
+    where: CompanyPostWhereUniqueInput
+  }
+
+  /**
+   * CompanyPost deleteMany
+   */
+  export type CompanyPostDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CompanyPosts to delete
+     */
+    where?: CompanyPostWhereInput
+    /**
+     * Limit how many CompanyPosts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CompanyPost.author
+   */
+  export type CompanyPost$authorArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * CompanyPost without action
+   */
+  export type CompanyPostDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyPost
+     */
+    select?: CompanyPostSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyPost
+     */
+    omit?: CompanyPostOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyPostInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model VerificationToken
    */
 
@@ -14186,6 +15449,18 @@ export namespace Prisma {
   export type JobScalarFieldEnum = (typeof JobScalarFieldEnum)[keyof typeof JobScalarFieldEnum]
 
 
+  export const CompanyPostScalarFieldEnum: {
+    id: 'id',
+    content: 'content',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    companyId: 'companyId',
+    authorId: 'authorId'
+  };
+
+  export type CompanyPostScalarFieldEnum = (typeof CompanyPostScalarFieldEnum)[keyof typeof CompanyPostScalarFieldEnum]
+
+
   export const VerificationTokenScalarFieldEnum: {
     identifier: 'identifier',
     token: 'token',
@@ -14461,6 +15736,7 @@ export namespace Prisma {
     members?: CompanyMemberListRelationFilter
     channels?: ChannelListRelationFilter
     jobs?: JobListRelationFilter
+    posts?: CompanyPostListRelationFilter
   }
 
   export type CompanyOrderByWithRelationInput = {
@@ -14476,6 +15752,7 @@ export namespace Prisma {
     members?: CompanyMemberOrderByRelationAggregateInput
     channels?: ChannelOrderByRelationAggregateInput
     jobs?: JobOrderByRelationAggregateInput
+    posts?: CompanyPostOrderByRelationAggregateInput
   }
 
   export type CompanyWhereUniqueInput = Prisma.AtLeast<{
@@ -14494,6 +15771,7 @@ export namespace Prisma {
     members?: CompanyMemberListRelationFilter
     channels?: ChannelListRelationFilter
     jobs?: JobListRelationFilter
+    posts?: CompanyPostListRelationFilter
   }, "id">
 
   export type CompanyOrderByWithAggregationInput = {
@@ -14698,6 +15976,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberListRelationFilter
     messages?: MessageListRelationFilter
     createdJobs?: JobListRelationFilter
+    companyPosts?: CompanyPostListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -14715,6 +15994,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberOrderByRelationAggregateInput
     messages?: MessageOrderByRelationAggregateInput
     createdJobs?: JobOrderByRelationAggregateInput
+    companyPosts?: CompanyPostOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -14735,6 +16015,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberListRelationFilter
     messages?: MessageListRelationFilter
     createdJobs?: JobListRelationFilter
+    companyPosts?: CompanyPostListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -14949,6 +16230,69 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Job"> | Date | string
     companyId?: StringWithAggregatesFilter<"Job"> | string
     createdById?: StringWithAggregatesFilter<"Job"> | string
+  }
+
+  export type CompanyPostWhereInput = {
+    AND?: CompanyPostWhereInput | CompanyPostWhereInput[]
+    OR?: CompanyPostWhereInput[]
+    NOT?: CompanyPostWhereInput | CompanyPostWhereInput[]
+    id?: StringFilter<"CompanyPost"> | string
+    content?: StringFilter<"CompanyPost"> | string
+    createdAt?: DateTimeFilter<"CompanyPost"> | Date | string
+    updatedAt?: DateTimeFilter<"CompanyPost"> | Date | string
+    companyId?: StringFilter<"CompanyPost"> | string
+    authorId?: StringNullableFilter<"CompanyPost"> | string | null
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+    author?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type CompanyPostOrderByWithRelationInput = {
+    id?: SortOrder
+    content?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    companyId?: SortOrder
+    authorId?: SortOrderInput | SortOrder
+    company?: CompanyOrderByWithRelationInput
+    author?: UserOrderByWithRelationInput
+  }
+
+  export type CompanyPostWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: CompanyPostWhereInput | CompanyPostWhereInput[]
+    OR?: CompanyPostWhereInput[]
+    NOT?: CompanyPostWhereInput | CompanyPostWhereInput[]
+    content?: StringFilter<"CompanyPost"> | string
+    createdAt?: DateTimeFilter<"CompanyPost"> | Date | string
+    updatedAt?: DateTimeFilter<"CompanyPost"> | Date | string
+    companyId?: StringFilter<"CompanyPost"> | string
+    authorId?: StringNullableFilter<"CompanyPost"> | string | null
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+    author?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id">
+
+  export type CompanyPostOrderByWithAggregationInput = {
+    id?: SortOrder
+    content?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    companyId?: SortOrder
+    authorId?: SortOrderInput | SortOrder
+    _count?: CompanyPostCountOrderByAggregateInput
+    _max?: CompanyPostMaxOrderByAggregateInput
+    _min?: CompanyPostMinOrderByAggregateInput
+  }
+
+  export type CompanyPostScalarWhereWithAggregatesInput = {
+    AND?: CompanyPostScalarWhereWithAggregatesInput | CompanyPostScalarWhereWithAggregatesInput[]
+    OR?: CompanyPostScalarWhereWithAggregatesInput[]
+    NOT?: CompanyPostScalarWhereWithAggregatesInput | CompanyPostScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CompanyPost"> | string
+    content?: StringWithAggregatesFilter<"CompanyPost"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"CompanyPost"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"CompanyPost"> | Date | string
+    companyId?: StringWithAggregatesFilter<"CompanyPost"> | string
+    authorId?: StringNullableWithAggregatesFilter<"CompanyPost"> | string | null
   }
 
   export type VerificationTokenWhereInput = {
@@ -15166,6 +16510,7 @@ export namespace Prisma {
     members?: CompanyMemberCreateNestedManyWithoutCompanyInput
     channels?: ChannelCreateNestedManyWithoutCompanyInput
     jobs?: JobCreateNestedManyWithoutCompanyInput
+    posts?: CompanyPostCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateInput = {
@@ -15181,6 +16526,7 @@ export namespace Prisma {
     members?: CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput
     channels?: ChannelUncheckedCreateNestedManyWithoutCompanyInput
     jobs?: JobUncheckedCreateNestedManyWithoutCompanyInput
+    posts?: CompanyPostUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUpdateInput = {
@@ -15196,6 +16542,7 @@ export namespace Prisma {
     members?: CompanyMemberUpdateManyWithoutCompanyNestedInput
     channels?: ChannelUpdateManyWithoutCompanyNestedInput
     jobs?: JobUpdateManyWithoutCompanyNestedInput
+    posts?: CompanyPostUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateInput = {
@@ -15211,6 +16558,7 @@ export namespace Prisma {
     members?: CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput
     channels?: ChannelUncheckedUpdateManyWithoutCompanyNestedInput
     jobs?: JobUncheckedUpdateManyWithoutCompanyNestedInput
+    posts?: CompanyPostUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyCreateManyInput = {
@@ -15401,6 +16749,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
     messages?: MessageCreateNestedManyWithoutAuthorInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
+    companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -15418,6 +16767,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
     messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
+    companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUpdateInput = {
@@ -15435,6 +16785,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
     messages?: MessageUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
+    companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -15452,6 +16803,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
     messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
+    companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -15666,6 +17018,67 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     companyId?: StringFieldUpdateOperationsInput | string
     createdById?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type CompanyPostCreateInput = {
+    id?: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutPostsInput
+    author?: UserCreateNestedOneWithoutCompanyPostsInput
+  }
+
+  export type CompanyPostUncheckedCreateInput = {
+    id?: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    companyId: string
+    authorId?: string | null
+  }
+
+  export type CompanyPostUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutPostsNestedInput
+    author?: UserUpdateOneWithoutCompanyPostsNestedInput
+  }
+
+  export type CompanyPostUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    companyId?: StringFieldUpdateOperationsInput | string
+    authorId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CompanyPostCreateManyInput = {
+    id?: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    companyId: string
+    authorId?: string | null
+  }
+
+  export type CompanyPostUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompanyPostUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    companyId?: StringFieldUpdateOperationsInput | string
+    authorId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type VerificationTokenCreateInput = {
@@ -15940,6 +17353,12 @@ export namespace Prisma {
     none?: JobWhereInput
   }
 
+  export type CompanyPostListRelationFilter = {
+    every?: CompanyPostWhereInput
+    some?: CompanyPostWhereInput
+    none?: CompanyPostWhereInput
+  }
+
   export type CompanyMemberOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -15949,6 +17368,10 @@ export namespace Prisma {
   }
 
   export type JobOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CompanyPostOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -16298,6 +17721,38 @@ export namespace Prisma {
     createdById?: SortOrder
   }
 
+  export type UserNullableScalarRelationFilter = {
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
+  }
+
+  export type CompanyPostCountOrderByAggregateInput = {
+    id?: SortOrder
+    content?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    companyId?: SortOrder
+    authorId?: SortOrder
+  }
+
+  export type CompanyPostMaxOrderByAggregateInput = {
+    id?: SortOrder
+    content?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    companyId?: SortOrder
+    authorId?: SortOrder
+  }
+
+  export type CompanyPostMinOrderByAggregateInput = {
+    id?: SortOrder
+    content?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    companyId?: SortOrder
+    authorId?: SortOrder
+  }
+
   export type VerificationTokenIdentifierTokenCompoundUniqueInput = {
     identifier: string
     token: string
@@ -16390,6 +17845,13 @@ export namespace Prisma {
     connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
   }
 
+  export type CompanyPostCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<CompanyPostCreateWithoutCompanyInput, CompanyPostUncheckedCreateWithoutCompanyInput> | CompanyPostCreateWithoutCompanyInput[] | CompanyPostUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: CompanyPostCreateOrConnectWithoutCompanyInput | CompanyPostCreateOrConnectWithoutCompanyInput[]
+    createMany?: CompanyPostCreateManyCompanyInputEnvelope
+    connect?: CompanyPostWhereUniqueInput | CompanyPostWhereUniqueInput[]
+  }
+
   export type CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput = {
     create?: XOR<CompanyMemberCreateWithoutCompanyInput, CompanyMemberUncheckedCreateWithoutCompanyInput> | CompanyMemberCreateWithoutCompanyInput[] | CompanyMemberUncheckedCreateWithoutCompanyInput[]
     connectOrCreate?: CompanyMemberCreateOrConnectWithoutCompanyInput | CompanyMemberCreateOrConnectWithoutCompanyInput[]
@@ -16409,6 +17871,13 @@ export namespace Prisma {
     connectOrCreate?: JobCreateOrConnectWithoutCompanyInput | JobCreateOrConnectWithoutCompanyInput[]
     createMany?: JobCreateManyCompanyInputEnvelope
     connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+  }
+
+  export type CompanyPostUncheckedCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<CompanyPostCreateWithoutCompanyInput, CompanyPostUncheckedCreateWithoutCompanyInput> | CompanyPostCreateWithoutCompanyInput[] | CompanyPostUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: CompanyPostCreateOrConnectWithoutCompanyInput | CompanyPostCreateOrConnectWithoutCompanyInput[]
+    createMany?: CompanyPostCreateManyCompanyInputEnvelope
+    connect?: CompanyPostWhereUniqueInput | CompanyPostWhereUniqueInput[]
   }
 
   export type CompanyMemberUpdateManyWithoutCompanyNestedInput = {
@@ -16453,6 +17922,20 @@ export namespace Prisma {
     deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
   }
 
+  export type CompanyPostUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<CompanyPostCreateWithoutCompanyInput, CompanyPostUncheckedCreateWithoutCompanyInput> | CompanyPostCreateWithoutCompanyInput[] | CompanyPostUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: CompanyPostCreateOrConnectWithoutCompanyInput | CompanyPostCreateOrConnectWithoutCompanyInput[]
+    upsert?: CompanyPostUpsertWithWhereUniqueWithoutCompanyInput | CompanyPostUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: CompanyPostCreateManyCompanyInputEnvelope
+    set?: CompanyPostWhereUniqueInput | CompanyPostWhereUniqueInput[]
+    disconnect?: CompanyPostWhereUniqueInput | CompanyPostWhereUniqueInput[]
+    delete?: CompanyPostWhereUniqueInput | CompanyPostWhereUniqueInput[]
+    connect?: CompanyPostWhereUniqueInput | CompanyPostWhereUniqueInput[]
+    update?: CompanyPostUpdateWithWhereUniqueWithoutCompanyInput | CompanyPostUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: CompanyPostUpdateManyWithWhereWithoutCompanyInput | CompanyPostUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: CompanyPostScalarWhereInput | CompanyPostScalarWhereInput[]
+  }
+
   export type CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput = {
     create?: XOR<CompanyMemberCreateWithoutCompanyInput, CompanyMemberUncheckedCreateWithoutCompanyInput> | CompanyMemberCreateWithoutCompanyInput[] | CompanyMemberUncheckedCreateWithoutCompanyInput[]
     connectOrCreate?: CompanyMemberCreateOrConnectWithoutCompanyInput | CompanyMemberCreateOrConnectWithoutCompanyInput[]
@@ -16493,6 +17976,20 @@ export namespace Prisma {
     update?: JobUpdateWithWhereUniqueWithoutCompanyInput | JobUpdateWithWhereUniqueWithoutCompanyInput[]
     updateMany?: JobUpdateManyWithWhereWithoutCompanyInput | JobUpdateManyWithWhereWithoutCompanyInput[]
     deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
+  }
+
+  export type CompanyPostUncheckedUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<CompanyPostCreateWithoutCompanyInput, CompanyPostUncheckedCreateWithoutCompanyInput> | CompanyPostCreateWithoutCompanyInput[] | CompanyPostUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: CompanyPostCreateOrConnectWithoutCompanyInput | CompanyPostCreateOrConnectWithoutCompanyInput[]
+    upsert?: CompanyPostUpsertWithWhereUniqueWithoutCompanyInput | CompanyPostUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: CompanyPostCreateManyCompanyInputEnvelope
+    set?: CompanyPostWhereUniqueInput | CompanyPostWhereUniqueInput[]
+    disconnect?: CompanyPostWhereUniqueInput | CompanyPostWhereUniqueInput[]
+    delete?: CompanyPostWhereUniqueInput | CompanyPostWhereUniqueInput[]
+    connect?: CompanyPostWhereUniqueInput | CompanyPostWhereUniqueInput[]
+    update?: CompanyPostUpdateWithWhereUniqueWithoutCompanyInput | CompanyPostUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: CompanyPostUpdateManyWithWhereWithoutCompanyInput | CompanyPostUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: CompanyPostScalarWhereInput | CompanyPostScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutCompanyMembershipsInput = {
@@ -16701,6 +18198,13 @@ export namespace Prisma {
     connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
   }
 
+  export type CompanyPostCreateNestedManyWithoutAuthorInput = {
+    create?: XOR<CompanyPostCreateWithoutAuthorInput, CompanyPostUncheckedCreateWithoutAuthorInput> | CompanyPostCreateWithoutAuthorInput[] | CompanyPostUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: CompanyPostCreateOrConnectWithoutAuthorInput | CompanyPostCreateOrConnectWithoutAuthorInput[]
+    createMany?: CompanyPostCreateManyAuthorInputEnvelope
+    connect?: CompanyPostWhereUniqueInput | CompanyPostWhereUniqueInput[]
+  }
+
   export type EmailVerificationCodeUncheckedCreateNestedOneWithoutUserInput = {
     create?: XOR<EmailVerificationCodeCreateWithoutUserInput, EmailVerificationCodeUncheckedCreateWithoutUserInput>
     connectOrCreate?: EmailVerificationCodeCreateOrConnectWithoutUserInput
@@ -16747,6 +18251,13 @@ export namespace Prisma {
     connectOrCreate?: JobCreateOrConnectWithoutCreatedByInput | JobCreateOrConnectWithoutCreatedByInput[]
     createMany?: JobCreateManyCreatedByInputEnvelope
     connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+  }
+
+  export type CompanyPostUncheckedCreateNestedManyWithoutAuthorInput = {
+    create?: XOR<CompanyPostCreateWithoutAuthorInput, CompanyPostUncheckedCreateWithoutAuthorInput> | CompanyPostCreateWithoutAuthorInput[] | CompanyPostUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: CompanyPostCreateOrConnectWithoutAuthorInput | CompanyPostCreateOrConnectWithoutAuthorInput[]
+    createMany?: CompanyPostCreateManyAuthorInputEnvelope
+    connect?: CompanyPostWhereUniqueInput | CompanyPostWhereUniqueInput[]
   }
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -16847,6 +18358,20 @@ export namespace Prisma {
     deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
   }
 
+  export type CompanyPostUpdateManyWithoutAuthorNestedInput = {
+    create?: XOR<CompanyPostCreateWithoutAuthorInput, CompanyPostUncheckedCreateWithoutAuthorInput> | CompanyPostCreateWithoutAuthorInput[] | CompanyPostUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: CompanyPostCreateOrConnectWithoutAuthorInput | CompanyPostCreateOrConnectWithoutAuthorInput[]
+    upsert?: CompanyPostUpsertWithWhereUniqueWithoutAuthorInput | CompanyPostUpsertWithWhereUniqueWithoutAuthorInput[]
+    createMany?: CompanyPostCreateManyAuthorInputEnvelope
+    set?: CompanyPostWhereUniqueInput | CompanyPostWhereUniqueInput[]
+    disconnect?: CompanyPostWhereUniqueInput | CompanyPostWhereUniqueInput[]
+    delete?: CompanyPostWhereUniqueInput | CompanyPostWhereUniqueInput[]
+    connect?: CompanyPostWhereUniqueInput | CompanyPostWhereUniqueInput[]
+    update?: CompanyPostUpdateWithWhereUniqueWithoutAuthorInput | CompanyPostUpdateWithWhereUniqueWithoutAuthorInput[]
+    updateMany?: CompanyPostUpdateManyWithWhereWithoutAuthorInput | CompanyPostUpdateManyWithWhereWithoutAuthorInput[]
+    deleteMany?: CompanyPostScalarWhereInput | CompanyPostScalarWhereInput[]
+  }
+
   export type EmailVerificationCodeUncheckedUpdateOneWithoutUserNestedInput = {
     create?: XOR<EmailVerificationCodeCreateWithoutUserInput, EmailVerificationCodeUncheckedCreateWithoutUserInput>
     connectOrCreate?: EmailVerificationCodeCreateOrConnectWithoutUserInput
@@ -16941,6 +18466,20 @@ export namespace Prisma {
     deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
   }
 
+  export type CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput = {
+    create?: XOR<CompanyPostCreateWithoutAuthorInput, CompanyPostUncheckedCreateWithoutAuthorInput> | CompanyPostCreateWithoutAuthorInput[] | CompanyPostUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: CompanyPostCreateOrConnectWithoutAuthorInput | CompanyPostCreateOrConnectWithoutAuthorInput[]
+    upsert?: CompanyPostUpsertWithWhereUniqueWithoutAuthorInput | CompanyPostUpsertWithWhereUniqueWithoutAuthorInput[]
+    createMany?: CompanyPostCreateManyAuthorInputEnvelope
+    set?: CompanyPostWhereUniqueInput | CompanyPostWhereUniqueInput[]
+    disconnect?: CompanyPostWhereUniqueInput | CompanyPostWhereUniqueInput[]
+    delete?: CompanyPostWhereUniqueInput | CompanyPostWhereUniqueInput[]
+    connect?: CompanyPostWhereUniqueInput | CompanyPostWhereUniqueInput[]
+    update?: CompanyPostUpdateWithWhereUniqueWithoutAuthorInput | CompanyPostUpdateWithWhereUniqueWithoutAuthorInput[]
+    updateMany?: CompanyPostUpdateManyWithWhereWithoutAuthorInput | CompanyPostUpdateManyWithWhereWithoutAuthorInput[]
+    deleteMany?: CompanyPostScalarWhereInput | CompanyPostScalarWhereInput[]
+  }
+
   export type UserCreateNestedOneWithoutEmailVerificationCodeInput = {
     create?: XOR<UserCreateWithoutEmailVerificationCodeInput, UserUncheckedCreateWithoutEmailVerificationCodeInput>
     connectOrCreate?: UserCreateOrConnectWithoutEmailVerificationCodeInput
@@ -17017,6 +18556,36 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutCreatedJobsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCreatedJobsInput, UserUpdateWithoutCreatedJobsInput>, UserUncheckedUpdateWithoutCreatedJobsInput>
+  }
+
+  export type CompanyCreateNestedOneWithoutPostsInput = {
+    create?: XOR<CompanyCreateWithoutPostsInput, CompanyUncheckedCreateWithoutPostsInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutPostsInput
+    connect?: CompanyWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutCompanyPostsInput = {
+    create?: XOR<UserCreateWithoutCompanyPostsInput, UserUncheckedCreateWithoutCompanyPostsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCompanyPostsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type CompanyUpdateOneRequiredWithoutPostsNestedInput = {
+    create?: XOR<CompanyCreateWithoutPostsInput, CompanyUncheckedCreateWithoutPostsInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutPostsInput
+    upsert?: CompanyUpsertWithoutPostsInput
+    connect?: CompanyWhereUniqueInput
+    update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutPostsInput, CompanyUpdateWithoutPostsInput>, CompanyUncheckedUpdateWithoutPostsInput>
+  }
+
+  export type UserUpdateOneWithoutCompanyPostsNestedInput = {
+    create?: XOR<UserCreateWithoutCompanyPostsInput, UserUncheckedCreateWithoutCompanyPostsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCompanyPostsInput
+    upsert?: UserUpsertWithoutCompanyPostsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCompanyPostsInput, UserUpdateWithoutCompanyPostsInput>, UserUncheckedUpdateWithoutCompanyPostsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -17238,6 +18807,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
     messages?: MessageCreateNestedManyWithoutAuthorInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
+    companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -17254,6 +18824,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
     messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
+    companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -17286,6 +18857,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
     messages?: MessageUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
+    companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -17302,6 +18874,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
     messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
+    companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
@@ -17318,6 +18891,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
     messages?: MessageCreateNestedManyWithoutAuthorInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
+    companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -17334,6 +18908,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
     messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
+    companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -17366,6 +18941,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
     messages?: MessageUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
+    companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -17382,6 +18958,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
     messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
+    companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
   }
 
   export type CompanyMemberCreateWithoutCompanyInput = {
@@ -17457,6 +19034,32 @@ export namespace Prisma {
 
   export type JobCreateManyCompanyInputEnvelope = {
     data: JobCreateManyCompanyInput | JobCreateManyCompanyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CompanyPostCreateWithoutCompanyInput = {
+    id?: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    author?: UserCreateNestedOneWithoutCompanyPostsInput
+  }
+
+  export type CompanyPostUncheckedCreateWithoutCompanyInput = {
+    id?: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    authorId?: string | null
+  }
+
+  export type CompanyPostCreateOrConnectWithoutCompanyInput = {
+    where: CompanyPostWhereUniqueInput
+    create: XOR<CompanyPostCreateWithoutCompanyInput, CompanyPostUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type CompanyPostCreateManyCompanyInputEnvelope = {
+    data: CompanyPostCreateManyCompanyInput | CompanyPostCreateManyCompanyInput[]
     skipDuplicates?: boolean
   }
 
@@ -17541,6 +19144,34 @@ export namespace Prisma {
     createdById?: StringFilter<"Job"> | string
   }
 
+  export type CompanyPostUpsertWithWhereUniqueWithoutCompanyInput = {
+    where: CompanyPostWhereUniqueInput
+    update: XOR<CompanyPostUpdateWithoutCompanyInput, CompanyPostUncheckedUpdateWithoutCompanyInput>
+    create: XOR<CompanyPostCreateWithoutCompanyInput, CompanyPostUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type CompanyPostUpdateWithWhereUniqueWithoutCompanyInput = {
+    where: CompanyPostWhereUniqueInput
+    data: XOR<CompanyPostUpdateWithoutCompanyInput, CompanyPostUncheckedUpdateWithoutCompanyInput>
+  }
+
+  export type CompanyPostUpdateManyWithWhereWithoutCompanyInput = {
+    where: CompanyPostScalarWhereInput
+    data: XOR<CompanyPostUpdateManyMutationInput, CompanyPostUncheckedUpdateManyWithoutCompanyInput>
+  }
+
+  export type CompanyPostScalarWhereInput = {
+    AND?: CompanyPostScalarWhereInput | CompanyPostScalarWhereInput[]
+    OR?: CompanyPostScalarWhereInput[]
+    NOT?: CompanyPostScalarWhereInput | CompanyPostScalarWhereInput[]
+    id?: StringFilter<"CompanyPost"> | string
+    content?: StringFilter<"CompanyPost"> | string
+    createdAt?: DateTimeFilter<"CompanyPost"> | Date | string
+    updatedAt?: DateTimeFilter<"CompanyPost"> | Date | string
+    companyId?: StringFilter<"CompanyPost"> | string
+    authorId?: StringNullableFilter<"CompanyPost"> | string | null
+  }
+
   export type UserCreateWithoutCompanyMembershipsInput = {
     id?: string
     name?: string | null
@@ -17555,6 +19186,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
     messages?: MessageCreateNestedManyWithoutAuthorInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
+    companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUncheckedCreateWithoutCompanyMembershipsInput = {
@@ -17571,6 +19203,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
     messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
+    companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
   }
 
   export type UserCreateOrConnectWithoutCompanyMembershipsInput = {
@@ -17590,6 +19223,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     channels?: ChannelCreateNestedManyWithoutCompanyInput
     jobs?: JobCreateNestedManyWithoutCompanyInput
+    posts?: CompanyPostCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutMembersInput = {
@@ -17604,6 +19238,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     channels?: ChannelUncheckedCreateNestedManyWithoutCompanyInput
     jobs?: JobUncheckedCreateNestedManyWithoutCompanyInput
+    posts?: CompanyPostUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutMembersInput = {
@@ -17636,6 +19271,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
     messages?: MessageUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
+    companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCompanyMembershipsInput = {
@@ -17652,6 +19288,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
     messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
+    companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
   }
 
   export type CompanyUpsertWithoutMembersInput = {
@@ -17677,6 +19314,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     channels?: ChannelUpdateManyWithoutCompanyNestedInput
     jobs?: JobUpdateManyWithoutCompanyNestedInput
+    posts?: CompanyPostUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutMembersInput = {
@@ -17691,6 +19329,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     channels?: ChannelUncheckedUpdateManyWithoutCompanyNestedInput
     jobs?: JobUncheckedUpdateManyWithoutCompanyNestedInput
+    posts?: CompanyPostUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type MessageCreateWithoutChannelInput = {
@@ -17749,6 +19388,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     members?: CompanyMemberCreateNestedManyWithoutCompanyInput
     jobs?: JobCreateNestedManyWithoutCompanyInput
+    posts?: CompanyPostCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutChannelsInput = {
@@ -17763,6 +19403,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     members?: CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput
     jobs?: JobUncheckedCreateNestedManyWithoutCompanyInput
+    posts?: CompanyPostUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutChannelsInput = {
@@ -17845,6 +19486,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: CompanyMemberUpdateManyWithoutCompanyNestedInput
     jobs?: JobUpdateManyWithoutCompanyNestedInput
+    posts?: CompanyPostUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutChannelsInput = {
@@ -17859,6 +19501,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput
     jobs?: JobUncheckedUpdateManyWithoutCompanyNestedInput
+    posts?: CompanyPostUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type ChannelCreateWithoutChannelMembersInput = {
@@ -17896,6 +19539,7 @@ export namespace Prisma {
     companyMemberships?: CompanyMemberCreateNestedManyWithoutUserInput
     messages?: MessageCreateNestedManyWithoutAuthorInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
+    companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUncheckedCreateWithoutChannelMembershipsInput = {
@@ -17912,6 +19556,7 @@ export namespace Prisma {
     companyMemberships?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
+    companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
   }
 
   export type UserCreateOrConnectWithoutChannelMembershipsInput = {
@@ -17971,6 +19616,7 @@ export namespace Prisma {
     companyMemberships?: CompanyMemberUpdateManyWithoutUserNestedInput
     messages?: MessageUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
+    companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutChannelMembershipsInput = {
@@ -17987,6 +19633,7 @@ export namespace Prisma {
     companyMemberships?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
+    companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
   }
 
   export type EmailVerificationCodeCreateWithoutUserInput = {
@@ -18164,6 +19811,32 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type CompanyPostCreateWithoutAuthorInput = {
+    id?: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutPostsInput
+  }
+
+  export type CompanyPostUncheckedCreateWithoutAuthorInput = {
+    id?: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    companyId: string
+  }
+
+  export type CompanyPostCreateOrConnectWithoutAuthorInput = {
+    where: CompanyPostWhereUniqueInput
+    create: XOR<CompanyPostCreateWithoutAuthorInput, CompanyPostUncheckedCreateWithoutAuthorInput>
+  }
+
+  export type CompanyPostCreateManyAuthorInputEnvelope = {
+    data: CompanyPostCreateManyAuthorInput | CompanyPostCreateManyAuthorInput[]
+    skipDuplicates?: boolean
+  }
+
   export type EmailVerificationCodeUpsertWithoutUserInput = {
     update: XOR<EmailVerificationCodeUpdateWithoutUserInput, EmailVerificationCodeUncheckedUpdateWithoutUserInput>
     create: XOR<EmailVerificationCodeCreateWithoutUserInput, EmailVerificationCodeUncheckedCreateWithoutUserInput>
@@ -18314,6 +19987,22 @@ export namespace Prisma {
     data: XOR<JobUpdateManyMutationInput, JobUncheckedUpdateManyWithoutCreatedByInput>
   }
 
+  export type CompanyPostUpsertWithWhereUniqueWithoutAuthorInput = {
+    where: CompanyPostWhereUniqueInput
+    update: XOR<CompanyPostUpdateWithoutAuthorInput, CompanyPostUncheckedUpdateWithoutAuthorInput>
+    create: XOR<CompanyPostCreateWithoutAuthorInput, CompanyPostUncheckedCreateWithoutAuthorInput>
+  }
+
+  export type CompanyPostUpdateWithWhereUniqueWithoutAuthorInput = {
+    where: CompanyPostWhereUniqueInput
+    data: XOR<CompanyPostUpdateWithoutAuthorInput, CompanyPostUncheckedUpdateWithoutAuthorInput>
+  }
+
+  export type CompanyPostUpdateManyWithWhereWithoutAuthorInput = {
+    where: CompanyPostScalarWhereInput
+    data: XOR<CompanyPostUpdateManyMutationInput, CompanyPostUncheckedUpdateManyWithoutAuthorInput>
+  }
+
   export type UserCreateWithoutEmailVerificationCodeInput = {
     id?: string
     name?: string | null
@@ -18328,6 +20017,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
     messages?: MessageCreateNestedManyWithoutAuthorInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
+    companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUncheckedCreateWithoutEmailVerificationCodeInput = {
@@ -18344,6 +20034,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
     messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
+    companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
   }
 
   export type UserCreateOrConnectWithoutEmailVerificationCodeInput = {
@@ -18376,6 +20067,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
     messages?: MessageUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
+    companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutEmailVerificationCodeInput = {
@@ -18392,6 +20084,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
     messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
+    companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
   }
 
   export type ChannelCreateWithoutMessagesInput = {
@@ -18429,6 +20122,7 @@ export namespace Prisma {
     companyMemberships?: CompanyMemberCreateNestedManyWithoutUserInput
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
+    companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUncheckedCreateWithoutMessagesInput = {
@@ -18445,6 +20139,7 @@ export namespace Prisma {
     companyMemberships?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
+    companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
   }
 
   export type UserCreateOrConnectWithoutMessagesInput = {
@@ -18504,6 +20199,7 @@ export namespace Prisma {
     companyMemberships?: CompanyMemberUpdateManyWithoutUserNestedInput
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
+    companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMessagesInput = {
@@ -18520,6 +20216,7 @@ export namespace Prisma {
     companyMemberships?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
+    companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
   }
 
   export type CompanyCreateWithoutJobsInput = {
@@ -18534,6 +20231,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     members?: CompanyMemberCreateNestedManyWithoutCompanyInput
     channels?: ChannelCreateNestedManyWithoutCompanyInput
+    posts?: CompanyPostCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutJobsInput = {
@@ -18548,6 +20246,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     members?: CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput
     channels?: ChannelUncheckedCreateNestedManyWithoutCompanyInput
+    posts?: CompanyPostUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutJobsInput = {
@@ -18569,6 +20268,7 @@ export namespace Prisma {
     companyMemberships?: CompanyMemberCreateNestedManyWithoutUserInput
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
     messages?: MessageCreateNestedManyWithoutAuthorInput
+    companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUncheckedCreateWithoutCreatedJobsInput = {
@@ -18585,6 +20285,7 @@ export namespace Prisma {
     companyMemberships?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
     messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
+    companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
   }
 
   export type UserCreateOrConnectWithoutCreatedJobsInput = {
@@ -18615,6 +20316,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: CompanyMemberUpdateManyWithoutCompanyNestedInput
     channels?: ChannelUpdateManyWithoutCompanyNestedInput
+    posts?: CompanyPostUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutJobsInput = {
@@ -18629,6 +20331,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput
     channels?: ChannelUncheckedUpdateManyWithoutCompanyNestedInput
+    posts?: CompanyPostUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type UserUpsertWithoutCreatedJobsInput = {
@@ -18656,6 +20359,7 @@ export namespace Prisma {
     companyMemberships?: CompanyMemberUpdateManyWithoutUserNestedInput
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
     messages?: MessageUpdateManyWithoutAuthorNestedInput
+    companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedJobsInput = {
@@ -18672,6 +20376,167 @@ export namespace Prisma {
     companyMemberships?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
     messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
+    companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
+  }
+
+  export type CompanyCreateWithoutPostsInput = {
+    id?: string
+    name: string
+    image?: string | null
+    description?: string | null
+    website?: string | null
+    email?: string | null
+    phone?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberCreateNestedManyWithoutCompanyInput
+    channels?: ChannelCreateNestedManyWithoutCompanyInput
+    jobs?: JobCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyUncheckedCreateWithoutPostsInput = {
+    id?: string
+    name: string
+    image?: string | null
+    description?: string | null
+    website?: string | null
+    email?: string | null
+    phone?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput
+    channels?: ChannelUncheckedCreateNestedManyWithoutCompanyInput
+    jobs?: JobUncheckedCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyCreateOrConnectWithoutPostsInput = {
+    where: CompanyWhereUniqueInput
+    create: XOR<CompanyCreateWithoutPostsInput, CompanyUncheckedCreateWithoutPostsInput>
+  }
+
+  export type UserCreateWithoutCompanyPostsInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    image?: string | null
+    description?: string | null
+    emailVerificationCode?: EmailVerificationCodeCreateNestedOneWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    companyMemberships?: CompanyMemberCreateNestedManyWithoutUserInput
+    channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
+    messages?: MessageCreateNestedManyWithoutAuthorInput
+    createdJobs?: JobCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserUncheckedCreateWithoutCompanyPostsInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    image?: string | null
+    description?: string | null
+    emailVerificationCode?: EmailVerificationCodeUncheckedCreateNestedOneWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    companyMemberships?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
+    channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
+    messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
+    createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserCreateOrConnectWithoutCompanyPostsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCompanyPostsInput, UserUncheckedCreateWithoutCompanyPostsInput>
+  }
+
+  export type CompanyUpsertWithoutPostsInput = {
+    update: XOR<CompanyUpdateWithoutPostsInput, CompanyUncheckedUpdateWithoutPostsInput>
+    create: XOR<CompanyCreateWithoutPostsInput, CompanyUncheckedCreateWithoutPostsInput>
+    where?: CompanyWhereInput
+  }
+
+  export type CompanyUpdateToOneWithWhereWithoutPostsInput = {
+    where?: CompanyWhereInput
+    data: XOR<CompanyUpdateWithoutPostsInput, CompanyUncheckedUpdateWithoutPostsInput>
+  }
+
+  export type CompanyUpdateWithoutPostsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUpdateManyWithoutCompanyNestedInput
+    channels?: ChannelUpdateManyWithoutCompanyNestedInput
+    jobs?: JobUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type CompanyUncheckedUpdateWithoutPostsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput
+    channels?: ChannelUncheckedUpdateManyWithoutCompanyNestedInput
+    jobs?: JobUncheckedUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type UserUpsertWithoutCompanyPostsInput = {
+    update: XOR<UserUpdateWithoutCompanyPostsInput, UserUncheckedUpdateWithoutCompanyPostsInput>
+    create: XOR<UserCreateWithoutCompanyPostsInput, UserUncheckedCreateWithoutCompanyPostsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCompanyPostsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCompanyPostsInput, UserUncheckedUpdateWithoutCompanyPostsInput>
+  }
+
+  export type UserUpdateWithoutCompanyPostsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerificationCode?: EmailVerificationCodeUpdateOneWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    companyMemberships?: CompanyMemberUpdateManyWithoutUserNestedInput
+    channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
+    messages?: MessageUpdateManyWithoutAuthorNestedInput
+    createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCompanyPostsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerificationCode?: EmailVerificationCodeUncheckedUpdateOneWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    companyMemberships?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
+    channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
+    createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type CompanyMemberCreateManyCompanyInput = {
@@ -18693,6 +20558,14 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     createdById: string
+  }
+
+  export type CompanyPostCreateManyCompanyInput = {
+    id?: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    authorId?: string | null
   }
 
   export type CompanyMemberUpdateWithoutCompanyInput = {
@@ -18760,6 +20633,30 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type CompanyPostUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    author?: UserUpdateOneWithoutCompanyPostsNestedInput
+  }
+
+  export type CompanyPostUncheckedUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    authorId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CompanyPostUncheckedUpdateManyWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    authorId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MessageCreateManyChannelInput = {
@@ -18853,6 +20750,14 @@ export namespace Prisma {
     id?: string
     title: string
     description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    companyId: string
+  }
+
+  export type CompanyPostCreateManyAuthorInput = {
+    id?: string
+    content: string
     createdAt?: Date | string
     updatedAt?: Date | string
     companyId: string
@@ -18997,6 +20902,30 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    companyId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type CompanyPostUpdateWithoutAuthorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutPostsNestedInput
+  }
+
+  export type CompanyPostUncheckedUpdateWithoutAuthorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    companyId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type CompanyPostUncheckedUpdateManyWithoutAuthorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     companyId?: StringFieldUpdateOperationsInput | string

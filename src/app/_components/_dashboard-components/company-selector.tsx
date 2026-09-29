@@ -20,10 +20,22 @@ export default function CompanySelector() {
   const [isCreating, setIsCreating] = useState(false);
   const dropdownRef = useRef<HTMLDetailsElement>(null);
   const triggerRef = useRef<HTMLElement>(null);
-  const companyId = searchParams.get("companyId");
+  const companyId = searchParams.get("companyId") ?? companies?.[0]?.id;
   const selectedCompany = companies?.find(
     (company) => company.id === companyId,
   );
+
+  useEffect(() => {
+    if (searchParams.get("companyId") || !companyId) return;
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("companyId", companyId);
+
+    router.replace(`${pathname}?${params.toString()}`, {
+      scroll: false,
+    });
+
+  }, [companyId, pathname, router, searchParams]);
 
   useEffect(() => {
     function onPointerDown(event: PointerEvent) {
