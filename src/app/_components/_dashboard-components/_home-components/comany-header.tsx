@@ -22,28 +22,23 @@ export default function CompanyHeader({
   return (
     <div className="flex min-w-0 flex-col overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 shadow-sm">
       <div
-        className="relative flex aspect-[4/1] items-end bg-cover bg-center p-3 sm:p-6"
+        className="relative flex aspect-[4/1] items-end bg-cover bg-center p-4 sm:p-6"
         style={{ backgroundImage: `url("${bannerImage}")` }}
       >
         <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent" />
-        <div className="relative flex min-w-0 items-center gap-3 sm:gap-4">
-          <Image
-            src={image}
-            alt={`${name} logo`}
-            width={80}
-            height={80}
-            className="h-12 w-12 shrink-0 rounded-xl bg-white object-contain p-1.5 shadow-sm ring-1 ring-black/5 sm:h-20 sm:w-20 sm:p-2"
-          />
-          <h1 className="min-w-0 text-xl font-semibold tracking-tight break-words text-white sm:text-3xl">
+        <Image
+          src={image}
+          alt={`${name} logo`}
+          width={128}
+          height={128}
+          className="absolute -bottom-10 left-4 z-10 h-20 w-20 rounded-2xl bg-white object-contain p-2 shadow-sm ring-4 ring-gray-50 sm:-bottom-16 sm:left-6 sm:h-32 sm:w-32 sm:p-3"
+        />
+      </div>
+      <div className="flex w-full items-start justify-between gap-8 px-4 pt-14 pb-4 sm:px-6 sm:pt-20 sm:pb-6">
+        <div className="min-w-0 flex-1">
+          <h1 className="text-xl font-semibold tracking-tight break-words text-gray-900 sm:text-3xl">
             {name}
           </h1>
-        </div>
-      </div>
-      <div className="flex w-full items-start justify-between gap-8 p-4 sm:p-6">
-        <div className="min-w-0 flex-1">
-          <h2 className="text-sm font-semibold break-words text-gray-900">
-            About {name}
-          </h2>
           {description && (
             <p className="mt-2 max-w-prose text-sm leading-6 break-words whitespace-pre-line text-gray-600">
               {description}
