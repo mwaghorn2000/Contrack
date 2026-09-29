@@ -1,4 +1,6 @@
 import { Suspense, type ReactNode } from "react";
+import { redirect } from "next/navigation";
+import { auth } from "~/server/auth";
 import Sidebar from "../_components/_dashboard-components/sidebar";
 import TopNavBar from "../_components/_dashboard-components/top-navbar";
 
@@ -7,6 +9,9 @@ export default async function DashboardLayout({
 }: {
   children: ReactNode;
 }) {
+  const session = await auth();
+  if (!session?.user) redirect("/login");
+
   return (
     <div className="flex min-h-screen flex-col">
       <TopNavBar />

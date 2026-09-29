@@ -51,6 +51,7 @@ model Company {
     id          String     @id @default(cuid())
     name        String
     image       String?
+    bannerImage String?    
     description String?
     website     String?
     email       String?
@@ -62,6 +63,7 @@ model Company {
     members     CompanyMember[]
     channels    Channel[]
     jobs        Job[]
+    posts       CompanyPost[]
 }
 
 model CompanyMember {
@@ -116,6 +118,7 @@ model User {
     channelMemberships  ChannelMember[]
     messages            Message[]
     createdJobs         Job[]
+    companyPosts        CompanyPost[]
 }
 
 model EmailVerificationCode {
@@ -155,6 +158,20 @@ model Job {
     createdBy   User        @relation(fields: [createdById], references: [id])
 }
 
+model CompanyPost {
+    id          String   @id @default(cuid())
+    content     String
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    companyId   String
+    authorId    String?
+
+    company     Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+    author      User?   @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+    @@index([companyId, createdAt, id])
+}
+
 model VerificationToken {
     identifier String
     token      String   @unique
@@ -162,4 +179,3 @@ model VerificationToken {
 
     @@unique([identifier, token])
 }
-

@@ -6,7 +6,13 @@ import { usePathname, useSearchParams } from "next/navigation";
 
 import { api } from "~/trpc/react";
 
-const upcomingPages = ["Jobs", "Company Chat", "DMs", "People"];
+const navigationItems = [
+  { label: "Home", href: "/dashboard" },
+  { label: "Jobs", href: "/dashboard/jobs" },
+  { label: "Company Chat", href: "/dashboard/chat" },
+  { label: "DMs", href: "/dashboard/dms" },
+  { label: "People", href: "/dashboard/people" },
+];
 const placeholderClass =
   "flex w-full cursor-not-allowed items-center justify-between gap-3 rounded-md px-3 py-2 text-left text-sm text-gray-500";
 
@@ -23,34 +29,33 @@ export default function Sidebar() {
   );
   const role = selectedCompany?.members[0]?.role;
   const canAddJob = role === "OWNER" || role === "ADMIN";
-  const homeHref = selectedCompany
-    ? `/dashboard?${new URLSearchParams({ companyId: selectedCompany.id }).toString()}`
-    : "/dashboard";
 
   return (
     <aside className="w-full shrink-0 border-b border-gray-200 bg-gray-50 p-4 md:w-60 md:border-r md:border-b-0">
       <nav aria-label="Sidebar navigation" className="space-y-1">
-        <Link
-          href={homeHref}
-          aria-current={pathname === "/dashboard" ? "page" : undefined}
-          className={`block rounded-md px-3 py-2 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900 ${
-            pathname === "/dashboard"
-              ? "bg-gray-200 text-gray-900"
-              : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-          }`}
-        >
-          Home
-        </Link>
-        {upcomingPages.map((label) => (
-          <button
-            key={label}
-            type="button"
-            disabled
-            className={placeholderClass}
-          >
-            {label}
-          </button>
-        ))}
+        {navigationItems.map(({ label, href }) => {
+          const isActive =
+            pathname === href ||
+            (href !== "/dashboard" && pathname.startsWith(`${href}/`));
+          const destination = companyId
+            ? `${href}?${new URLSearchParams({ companyId }).toString()}`
+            : href;
+
+          return (
+            <Link
+              key={href}
+              href={destination}
+              aria-current={isActive ? "page" : undefined}
+              className={`block rounded-md px-3 py-2 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900 ${
+                isActive
+                  ? "bg-gray-200 text-gray-900"
+                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+              }`}
+            >
+              {label}
+            </Link>
+          );
+        })}
       </nav>
 
       <section
