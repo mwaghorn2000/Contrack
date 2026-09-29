@@ -249,18 +249,16 @@ export const companyRouter = createTRPCRouter({
         companyId: z.string().cuid()
       }))
       .mutation( async ({ ctx, input }) => {
-        const posts = await ctx.db.company.deleteMany({
+        const posts = await ctx.db.companyPost.deleteMany({
           where: {
-            id: input.companyId,
-            members: {
-              some: {
-                userId: ctx.session.user.id,
-                role: { in: ["ADMIN", "OWNER"] }
-              }
-            },
-            posts: {
-              some: {
-                id: input.postId
+            id: input.postId,
+            companyId: input.companyId,
+            company: {
+              members: {
+                some: {
+                  userId: ctx.session.user.id,
+                  role: { in: ["ADMIN", "OWNER"] }
+                }
               }
             }
           }

@@ -51,6 +51,7 @@ model Company {
   id          String  @id @default(cuid())
   name        String
   image       String?
+  bannerImage String?
   description String?
   website     String?
   email       String?
@@ -158,6 +159,7 @@ model Job {
 
 model CompanyPost {
   id        String   @id @default(cuid())
+  title     String   @default("Company Update")
   content   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

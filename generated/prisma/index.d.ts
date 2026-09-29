@@ -4322,6 +4322,7 @@ export namespace Prisma {
     id: string | null
     name: string | null
     image: string | null
+    bannerImage: string | null
     description: string | null
     website: string | null
     email: string | null
@@ -4334,6 +4335,7 @@ export namespace Prisma {
     id: string | null
     name: string | null
     image: string | null
+    bannerImage: string | null
     description: string | null
     website: string | null
     email: string | null
@@ -4346,6 +4348,7 @@ export namespace Prisma {
     id: number
     name: number
     image: number
+    bannerImage: number
     description: number
     website: number
     email: number
@@ -4360,6 +4363,7 @@ export namespace Prisma {
     id?: true
     name?: true
     image?: true
+    bannerImage?: true
     description?: true
     website?: true
     email?: true
@@ -4372,6 +4376,7 @@ export namespace Prisma {
     id?: true
     name?: true
     image?: true
+    bannerImage?: true
     description?: true
     website?: true
     email?: true
@@ -4384,6 +4389,7 @@ export namespace Prisma {
     id?: true
     name?: true
     image?: true
+    bannerImage?: true
     description?: true
     website?: true
     email?: true
@@ -4469,6 +4475,7 @@ export namespace Prisma {
     id: string
     name: string
     image: string | null
+    bannerImage: string | null
     description: string | null
     website: string | null
     email: string | null
@@ -4498,6 +4505,7 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     image?: boolean
+    bannerImage?: boolean
     description?: boolean
     website?: boolean
     email?: boolean
@@ -4515,6 +4523,7 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     image?: boolean
+    bannerImage?: boolean
     description?: boolean
     website?: boolean
     email?: boolean
@@ -4527,6 +4536,7 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     image?: boolean
+    bannerImage?: boolean
     description?: boolean
     website?: boolean
     email?: boolean
@@ -4539,6 +4549,7 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     image?: boolean
+    bannerImage?: boolean
     description?: boolean
     website?: boolean
     email?: boolean
@@ -4547,7 +4558,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type CompanyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "image" | "description" | "website" | "email" | "phone" | "createdAt" | "updatedAt", ExtArgs["result"]["company"]>
+  export type CompanyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "image" | "bannerImage" | "description" | "website" | "email" | "phone" | "createdAt" | "updatedAt", ExtArgs["result"]["company"]>
   export type CompanyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     members?: boolean | Company$membersArgs<ExtArgs>
     channels?: boolean | Company$channelsArgs<ExtArgs>
@@ -4570,6 +4581,7 @@ export namespace Prisma {
       id: string
       name: string
       image: string | null
+      bannerImage: string | null
       description: string | null
       website: string | null
       email: string | null
@@ -5006,6 +5018,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Company", 'String'>
     readonly name: FieldRef<"Company", 'String'>
     readonly image: FieldRef<"Company", 'String'>
+    readonly bannerImage: FieldRef<"Company", 'String'>
     readonly description: FieldRef<"Company", 'String'>
     readonly website: FieldRef<"Company", 'String'>
     readonly email: FieldRef<"Company", 'String'>
@@ -13259,6 +13272,7 @@ export namespace Prisma {
 
   export type CompanyPostMinAggregateOutputType = {
     id: string | null
+    title: string | null
     content: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -13268,6 +13282,7 @@ export namespace Prisma {
 
   export type CompanyPostMaxAggregateOutputType = {
     id: string | null
+    title: string | null
     content: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -13277,6 +13292,7 @@ export namespace Prisma {
 
   export type CompanyPostCountAggregateOutputType = {
     id: number
+    title: number
     content: number
     createdAt: number
     updatedAt: number
@@ -13288,6 +13304,7 @@ export namespace Prisma {
 
   export type CompanyPostMinAggregateInputType = {
     id?: true
+    title?: true
     content?: true
     createdAt?: true
     updatedAt?: true
@@ -13297,6 +13314,7 @@ export namespace Prisma {
 
   export type CompanyPostMaxAggregateInputType = {
     id?: true
+    title?: true
     content?: true
     createdAt?: true
     updatedAt?: true
@@ -13306,6 +13324,7 @@ export namespace Prisma {
 
   export type CompanyPostCountAggregateInputType = {
     id?: true
+    title?: true
     content?: true
     createdAt?: true
     updatedAt?: true
@@ -13388,6 +13407,7 @@ export namespace Prisma {
 
   export type CompanyPostGroupByOutputType = {
     id: string
+    title: string
     content: string
     createdAt: Date
     updatedAt: Date
@@ -13414,6 +13434,7 @@ export namespace Prisma {
 
   export type CompanyPostSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    title?: boolean
     content?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -13425,6 +13446,7 @@ export namespace Prisma {
 
   export type CompanyPostSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    title?: boolean
     content?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -13436,6 +13458,7 @@ export namespace Prisma {
 
   export type CompanyPostSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    title?: boolean
     content?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -13447,6 +13470,7 @@ export namespace Prisma {
 
   export type CompanyPostSelectScalar = {
     id?: boolean
+    title?: boolean
     content?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -13454,7 +13478,7 @@ export namespace Prisma {
     authorId?: boolean
   }
 
-  export type CompanyPostOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "content" | "createdAt" | "updatedAt" | "companyId" | "authorId", ExtArgs["result"]["companyPost"]>
+  export type CompanyPostOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "content" | "createdAt" | "updatedAt" | "companyId" | "authorId", ExtArgs["result"]["companyPost"]>
   export type CompanyPostInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     company?: boolean | CompanyDefaultArgs<ExtArgs>
     author?: boolean | CompanyPost$authorArgs<ExtArgs>
@@ -13476,6 +13500,7 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      title: string
       content: string
       createdAt: Date
       updatedAt: Date
@@ -13907,6 +13932,7 @@ export namespace Prisma {
    */
   interface CompanyPostFieldRefs {
     readonly id: FieldRef<"CompanyPost", 'String'>
+    readonly title: FieldRef<"CompanyPost", 'String'>
     readonly content: FieldRef<"CompanyPost", 'String'>
     readonly createdAt: FieldRef<"CompanyPost", 'DateTime'>
     readonly updatedAt: FieldRef<"CompanyPost", 'DateTime'>
@@ -15361,6 +15387,7 @@ export namespace Prisma {
     id: 'id',
     name: 'name',
     image: 'image',
+    bannerImage: 'bannerImage',
     description: 'description',
     website: 'website',
     email: 'email',
@@ -15451,6 +15478,7 @@ export namespace Prisma {
 
   export const CompanyPostScalarFieldEnum: {
     id: 'id',
+    title: 'title',
     content: 'content',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
@@ -15727,6 +15755,7 @@ export namespace Prisma {
     id?: StringFilter<"Company"> | string
     name?: StringFilter<"Company"> | string
     image?: StringNullableFilter<"Company"> | string | null
+    bannerImage?: StringNullableFilter<"Company"> | string | null
     description?: StringNullableFilter<"Company"> | string | null
     website?: StringNullableFilter<"Company"> | string | null
     email?: StringNullableFilter<"Company"> | string | null
@@ -15743,6 +15772,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     image?: SortOrderInput | SortOrder
+    bannerImage?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
     website?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
@@ -15762,6 +15792,7 @@ export namespace Prisma {
     NOT?: CompanyWhereInput | CompanyWhereInput[]
     name?: StringFilter<"Company"> | string
     image?: StringNullableFilter<"Company"> | string | null
+    bannerImage?: StringNullableFilter<"Company"> | string | null
     description?: StringNullableFilter<"Company"> | string | null
     website?: StringNullableFilter<"Company"> | string | null
     email?: StringNullableFilter<"Company"> | string | null
@@ -15778,6 +15809,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     image?: SortOrderInput | SortOrder
+    bannerImage?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
     website?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
@@ -15796,6 +15828,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Company"> | string
     name?: StringWithAggregatesFilter<"Company"> | string
     image?: StringNullableWithAggregatesFilter<"Company"> | string | null
+    bannerImage?: StringNullableWithAggregatesFilter<"Company"> | string | null
     description?: StringNullableWithAggregatesFilter<"Company"> | string | null
     website?: StringNullableWithAggregatesFilter<"Company"> | string | null
     email?: StringNullableWithAggregatesFilter<"Company"> | string | null
@@ -16237,6 +16270,7 @@ export namespace Prisma {
     OR?: CompanyPostWhereInput[]
     NOT?: CompanyPostWhereInput | CompanyPostWhereInput[]
     id?: StringFilter<"CompanyPost"> | string
+    title?: StringFilter<"CompanyPost"> | string
     content?: StringFilter<"CompanyPost"> | string
     createdAt?: DateTimeFilter<"CompanyPost"> | Date | string
     updatedAt?: DateTimeFilter<"CompanyPost"> | Date | string
@@ -16248,6 +16282,7 @@ export namespace Prisma {
 
   export type CompanyPostOrderByWithRelationInput = {
     id?: SortOrder
+    title?: SortOrder
     content?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -16262,6 +16297,7 @@ export namespace Prisma {
     AND?: CompanyPostWhereInput | CompanyPostWhereInput[]
     OR?: CompanyPostWhereInput[]
     NOT?: CompanyPostWhereInput | CompanyPostWhereInput[]
+    title?: StringFilter<"CompanyPost"> | string
     content?: StringFilter<"CompanyPost"> | string
     createdAt?: DateTimeFilter<"CompanyPost"> | Date | string
     updatedAt?: DateTimeFilter<"CompanyPost"> | Date | string
@@ -16273,6 +16309,7 @@ export namespace Prisma {
 
   export type CompanyPostOrderByWithAggregationInput = {
     id?: SortOrder
+    title?: SortOrder
     content?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -16288,6 +16325,7 @@ export namespace Prisma {
     OR?: CompanyPostScalarWhereWithAggregatesInput[]
     NOT?: CompanyPostScalarWhereWithAggregatesInput | CompanyPostScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"CompanyPost"> | string
+    title?: StringWithAggregatesFilter<"CompanyPost"> | string
     content?: StringWithAggregatesFilter<"CompanyPost"> | string
     createdAt?: DateTimeWithAggregatesFilter<"CompanyPost"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"CompanyPost"> | Date | string
@@ -16501,6 +16539,7 @@ export namespace Prisma {
     id?: string
     name: string
     image?: string | null
+    bannerImage?: string | null
     description?: string | null
     website?: string | null
     email?: string | null
@@ -16517,6 +16556,7 @@ export namespace Prisma {
     id?: string
     name: string
     image?: string | null
+    bannerImage?: string | null
     description?: string | null
     website?: string | null
     email?: string | null
@@ -16533,6 +16573,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    bannerImage?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16549,6 +16590,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    bannerImage?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16565,6 +16607,7 @@ export namespace Prisma {
     id?: string
     name: string
     image?: string | null
+    bannerImage?: string | null
     description?: string | null
     website?: string | null
     email?: string | null
@@ -16577,6 +16620,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    bannerImage?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16589,6 +16633,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    bannerImage?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17022,6 +17067,7 @@ export namespace Prisma {
 
   export type CompanyPostCreateInput = {
     id?: string
+    title?: string
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -17031,6 +17077,7 @@ export namespace Prisma {
 
   export type CompanyPostUncheckedCreateInput = {
     id?: string
+    title?: string
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -17040,6 +17087,7 @@ export namespace Prisma {
 
   export type CompanyPostUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17049,6 +17097,7 @@ export namespace Prisma {
 
   export type CompanyPostUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17058,6 +17107,7 @@ export namespace Prisma {
 
   export type CompanyPostCreateManyInput = {
     id?: string
+    title?: string
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -17067,6 +17117,7 @@ export namespace Prisma {
 
   export type CompanyPostUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17074,6 +17125,7 @@ export namespace Prisma {
 
   export type CompanyPostUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17379,6 +17431,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     image?: SortOrder
+    bannerImage?: SortOrder
     description?: SortOrder
     website?: SortOrder
     email?: SortOrder
@@ -17391,6 +17444,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     image?: SortOrder
+    bannerImage?: SortOrder
     description?: SortOrder
     website?: SortOrder
     email?: SortOrder
@@ -17403,6 +17457,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     image?: SortOrder
+    bannerImage?: SortOrder
     description?: SortOrder
     website?: SortOrder
     email?: SortOrder
@@ -17728,6 +17783,7 @@ export namespace Prisma {
 
   export type CompanyPostCountOrderByAggregateInput = {
     id?: SortOrder
+    title?: SortOrder
     content?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -17737,6 +17793,7 @@ export namespace Prisma {
 
   export type CompanyPostMaxOrderByAggregateInput = {
     id?: SortOrder
+    title?: SortOrder
     content?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -17746,6 +17803,7 @@ export namespace Prisma {
 
   export type CompanyPostMinOrderByAggregateInput = {
     id?: SortOrder
+    title?: SortOrder
     content?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -19039,6 +19097,7 @@ export namespace Prisma {
 
   export type CompanyPostCreateWithoutCompanyInput = {
     id?: string
+    title?: string
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -19047,6 +19106,7 @@ export namespace Prisma {
 
   export type CompanyPostUncheckedCreateWithoutCompanyInput = {
     id?: string
+    title?: string
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -19165,6 +19225,7 @@ export namespace Prisma {
     OR?: CompanyPostScalarWhereInput[]
     NOT?: CompanyPostScalarWhereInput | CompanyPostScalarWhereInput[]
     id?: StringFilter<"CompanyPost"> | string
+    title?: StringFilter<"CompanyPost"> | string
     content?: StringFilter<"CompanyPost"> | string
     createdAt?: DateTimeFilter<"CompanyPost"> | Date | string
     updatedAt?: DateTimeFilter<"CompanyPost"> | Date | string
@@ -19215,6 +19276,7 @@ export namespace Prisma {
     id?: string
     name: string
     image?: string | null
+    bannerImage?: string | null
     description?: string | null
     website?: string | null
     email?: string | null
@@ -19230,6 +19292,7 @@ export namespace Prisma {
     id?: string
     name: string
     image?: string | null
+    bannerImage?: string | null
     description?: string | null
     website?: string | null
     email?: string | null
@@ -19306,6 +19369,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    bannerImage?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19321,6 +19385,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    bannerImage?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19380,6 +19445,7 @@ export namespace Prisma {
     id?: string
     name: string
     image?: string | null
+    bannerImage?: string | null
     description?: string | null
     website?: string | null
     email?: string | null
@@ -19395,6 +19461,7 @@ export namespace Prisma {
     id?: string
     name: string
     image?: string | null
+    bannerImage?: string | null
     description?: string | null
     website?: string | null
     email?: string | null
@@ -19478,6 +19545,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    bannerImage?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19493,6 +19561,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    bannerImage?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19813,6 +19882,7 @@ export namespace Prisma {
 
   export type CompanyPostCreateWithoutAuthorInput = {
     id?: string
+    title?: string
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -19821,6 +19891,7 @@ export namespace Prisma {
 
   export type CompanyPostUncheckedCreateWithoutAuthorInput = {
     id?: string
+    title?: string
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -20223,6 +20294,7 @@ export namespace Prisma {
     id?: string
     name: string
     image?: string | null
+    bannerImage?: string | null
     description?: string | null
     website?: string | null
     email?: string | null
@@ -20238,6 +20310,7 @@ export namespace Prisma {
     id?: string
     name: string
     image?: string | null
+    bannerImage?: string | null
     description?: string | null
     website?: string | null
     email?: string | null
@@ -20308,6 +20381,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    bannerImage?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20323,6 +20397,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    bannerImage?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20383,6 +20458,7 @@ export namespace Prisma {
     id?: string
     name: string
     image?: string | null
+    bannerImage?: string | null
     description?: string | null
     website?: string | null
     email?: string | null
@@ -20398,6 +20474,7 @@ export namespace Prisma {
     id?: string
     name: string
     image?: string | null
+    bannerImage?: string | null
     description?: string | null
     website?: string | null
     email?: string | null
@@ -20468,6 +20545,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    bannerImage?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20483,6 +20561,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    bannerImage?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20562,6 +20641,7 @@ export namespace Prisma {
 
   export type CompanyPostCreateManyCompanyInput = {
     id?: string
+    title?: string
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -20637,6 +20717,7 @@ export namespace Prisma {
 
   export type CompanyPostUpdateWithoutCompanyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20645,6 +20726,7 @@ export namespace Prisma {
 
   export type CompanyPostUncheckedUpdateWithoutCompanyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20653,6 +20735,7 @@ export namespace Prisma {
 
   export type CompanyPostUncheckedUpdateManyWithoutCompanyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20757,6 +20840,7 @@ export namespace Prisma {
 
   export type CompanyPostCreateManyAuthorInput = {
     id?: string
+    title?: string
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -20909,6 +20993,7 @@ export namespace Prisma {
 
   export type CompanyPostUpdateWithoutAuthorInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20917,6 +21002,7 @@ export namespace Prisma {
 
   export type CompanyPostUncheckedUpdateWithoutAuthorInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20925,6 +21011,7 @@ export namespace Prisma {
 
   export type CompanyPostUncheckedUpdateManyWithoutAuthorInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
