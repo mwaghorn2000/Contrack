@@ -69,6 +69,11 @@ export type Job = $Result.DefaultSelection<Prisma.$JobPayload>
  */
 export type CompanyPost = $Result.DefaultSelection<Prisma.$CompanyPostPayload>
 /**
+ * Model CompanyPostAcknowledgment
+ * 
+ */
+export type CompanyPostAcknowledgment = $Result.DefaultSelection<Prisma.$CompanyPostAcknowledgmentPayload>
+/**
  * Model VerificationToken
  * 
  */
@@ -320,6 +325,16 @@ export class PrismaClient<
     * ```
     */
   get companyPost(): Prisma.CompanyPostDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.companyPostAcknowledgment`: Exposes CRUD operations for the **CompanyPostAcknowledgment** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CompanyPostAcknowledgments
+    * const companyPostAcknowledgments = await prisma.companyPostAcknowledgment.findMany()
+    * ```
+    */
+  get companyPostAcknowledgment(): Prisma.CompanyPostAcknowledgmentDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.verificationToken`: Exposes CRUD operations for the **VerificationToken** model.
@@ -782,6 +797,7 @@ export namespace Prisma {
     Message: 'Message',
     Job: 'Job',
     CompanyPost: 'CompanyPost',
+    CompanyPostAcknowledgment: 'CompanyPostAcknowledgment',
     VerificationToken: 'VerificationToken'
   };
 
@@ -801,7 +817,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "account" | "session" | "company" | "companyMember" | "channel" | "channelMember" | "user" | "emailVerificationCode" | "message" | "job" | "companyPost" | "verificationToken"
+      modelProps: "account" | "session" | "company" | "companyMember" | "channel" | "channelMember" | "user" | "emailVerificationCode" | "message" | "job" | "companyPost" | "companyPostAcknowledgment" | "verificationToken"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1619,6 +1635,80 @@ export namespace Prisma {
           }
         }
       }
+      CompanyPostAcknowledgment: {
+        payload: Prisma.$CompanyPostAcknowledgmentPayload<ExtArgs>
+        fields: Prisma.CompanyPostAcknowledgmentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CompanyPostAcknowledgmentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPostAcknowledgmentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CompanyPostAcknowledgmentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPostAcknowledgmentPayload>
+          }
+          findFirst: {
+            args: Prisma.CompanyPostAcknowledgmentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPostAcknowledgmentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CompanyPostAcknowledgmentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPostAcknowledgmentPayload>
+          }
+          findMany: {
+            args: Prisma.CompanyPostAcknowledgmentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPostAcknowledgmentPayload>[]
+          }
+          create: {
+            args: Prisma.CompanyPostAcknowledgmentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPostAcknowledgmentPayload>
+          }
+          createMany: {
+            args: Prisma.CompanyPostAcknowledgmentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CompanyPostAcknowledgmentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPostAcknowledgmentPayload>[]
+          }
+          delete: {
+            args: Prisma.CompanyPostAcknowledgmentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPostAcknowledgmentPayload>
+          }
+          update: {
+            args: Prisma.CompanyPostAcknowledgmentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPostAcknowledgmentPayload>
+          }
+          deleteMany: {
+            args: Prisma.CompanyPostAcknowledgmentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CompanyPostAcknowledgmentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CompanyPostAcknowledgmentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPostAcknowledgmentPayload>[]
+          }
+          upsert: {
+            args: Prisma.CompanyPostAcknowledgmentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPostAcknowledgmentPayload>
+          }
+          aggregate: {
+            args: Prisma.CompanyPostAcknowledgmentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCompanyPostAcknowledgment>
+          }
+          groupBy: {
+            args: Prisma.CompanyPostAcknowledgmentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CompanyPostAcknowledgmentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CompanyPostAcknowledgmentCountArgs<ExtArgs>
+            result: $Utils.Optional<CompanyPostAcknowledgmentCountAggregateOutputType> | number
+          }
+        }
+      }
       VerificationToken: {
         payload: Prisma.$VerificationTokenPayload<ExtArgs>
         fields: Prisma.VerificationTokenFieldRefs
@@ -1800,6 +1890,7 @@ export namespace Prisma {
     message?: MessageOmit
     job?: JobOmit
     companyPost?: CompanyPostOmit
+    companyPostAcknowledgment?: CompanyPostAcknowledgmentOmit
     verificationToken?: VerificationTokenOmit
   }
 
@@ -1986,6 +2077,7 @@ export namespace Prisma {
     messages: number
     createdJobs: number
     companyPosts: number
+    postAcknowledgments: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1996,6 +2088,7 @@ export namespace Prisma {
     messages?: boolean | UserCountOutputTypeCountMessagesArgs
     createdJobs?: boolean | UserCountOutputTypeCountCreatedJobsArgs
     companyPosts?: boolean | UserCountOutputTypeCountCompanyPostsArgs
+    postAcknowledgments?: boolean | UserCountOutputTypeCountPostAcknowledgmentsArgs
   }
 
   // Custom InputTypes
@@ -2056,6 +2149,44 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountCompanyPostsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: CompanyPostWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountPostAcknowledgmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CompanyPostAcknowledgmentWhereInput
+  }
+
+
+  /**
+   * Count Type CompanyPostCountOutputType
+   */
+
+  export type CompanyPostCountOutputType = {
+    acknowledgments: number
+  }
+
+  export type CompanyPostCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    acknowledgments?: boolean | CompanyPostCountOutputTypeCountAcknowledgmentsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * CompanyPostCountOutputType without action
+   */
+  export type CompanyPostCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyPostCountOutputType
+     */
+    select?: CompanyPostCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * CompanyPostCountOutputType without action
+   */
+  export type CompanyPostCountOutputTypeCountAcknowledgmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CompanyPostAcknowledgmentWhereInput
   }
 
 
@@ -8898,6 +9029,7 @@ export namespace Prisma {
     messages?: boolean | User$messagesArgs<ExtArgs>
     createdJobs?: boolean | User$createdJobsArgs<ExtArgs>
     companyPosts?: boolean | User$companyPostsArgs<ExtArgs>
+    postAcknowledgments?: boolean | User$postAcknowledgmentsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -8941,6 +9073,7 @@ export namespace Prisma {
     messages?: boolean | User$messagesArgs<ExtArgs>
     createdJobs?: boolean | User$createdJobsArgs<ExtArgs>
     companyPosts?: boolean | User$companyPostsArgs<ExtArgs>
+    postAcknowledgments?: boolean | User$postAcknowledgmentsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -8957,6 +9090,7 @@ export namespace Prisma {
       messages: Prisma.$MessagePayload<ExtArgs>[]
       createdJobs: Prisma.$JobPayload<ExtArgs>[]
       companyPosts: Prisma.$CompanyPostPayload<ExtArgs>[]
+      postAcknowledgments: Prisma.$CompanyPostAcknowledgmentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -9368,6 +9502,7 @@ export namespace Prisma {
     messages<T extends User$messagesArgs<ExtArgs> = {}>(args?: Subset<T, User$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     createdJobs<T extends User$createdJobsArgs<ExtArgs> = {}>(args?: Subset<T, User$createdJobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     companyPosts<T extends User$companyPostsArgs<ExtArgs> = {}>(args?: Subset<T, User$companyPostsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyPostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    postAcknowledgments<T extends User$postAcknowledgmentsArgs<ExtArgs> = {}>(args?: Subset<T, User$postAcknowledgmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyPostAcknowledgmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9976,6 +10111,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: CompanyPostScalarFieldEnum | CompanyPostScalarFieldEnum[]
+  }
+
+  /**
+   * User.postAcknowledgments
+   */
+  export type User$postAcknowledgmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyPostAcknowledgment
+     */
+    select?: CompanyPostAcknowledgmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyPostAcknowledgment
+     */
+    omit?: CompanyPostAcknowledgmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyPostAcknowledgmentInclude<ExtArgs> | null
+    where?: CompanyPostAcknowledgmentWhereInput
+    orderBy?: CompanyPostAcknowledgmentOrderByWithRelationInput | CompanyPostAcknowledgmentOrderByWithRelationInput[]
+    cursor?: CompanyPostAcknowledgmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CompanyPostAcknowledgmentScalarFieldEnum | CompanyPostAcknowledgmentScalarFieldEnum[]
   }
 
   /**
@@ -13442,6 +13601,8 @@ export namespace Prisma {
     authorId?: boolean
     company?: boolean | CompanyDefaultArgs<ExtArgs>
     author?: boolean | CompanyPost$authorArgs<ExtArgs>
+    acknowledgments?: boolean | CompanyPost$acknowledgmentsArgs<ExtArgs>
+    _count?: boolean | CompanyPostCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["companyPost"]>
 
   export type CompanyPostSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -13482,6 +13643,8 @@ export namespace Prisma {
   export type CompanyPostInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     company?: boolean | CompanyDefaultArgs<ExtArgs>
     author?: boolean | CompanyPost$authorArgs<ExtArgs>
+    acknowledgments?: boolean | CompanyPost$acknowledgmentsArgs<ExtArgs>
+    _count?: boolean | CompanyPostCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CompanyPostIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     company?: boolean | CompanyDefaultArgs<ExtArgs>
@@ -13497,6 +13660,7 @@ export namespace Prisma {
     objects: {
       company: Prisma.$CompanyPayload<ExtArgs>
       author: Prisma.$UserPayload<ExtArgs> | null
+      acknowledgments: Prisma.$CompanyPostAcknowledgmentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -13902,6 +14066,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     author<T extends CompanyPost$authorArgs<ExtArgs> = {}>(args?: Subset<T, CompanyPost$authorArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    acknowledgments<T extends CompanyPost$acknowledgmentsArgs<ExtArgs> = {}>(args?: Subset<T, CompanyPost$acknowledgmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyPostAcknowledgmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -14353,6 +14518,30 @@ export namespace Prisma {
   }
 
   /**
+   * CompanyPost.acknowledgments
+   */
+  export type CompanyPost$acknowledgmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyPostAcknowledgment
+     */
+    select?: CompanyPostAcknowledgmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyPostAcknowledgment
+     */
+    omit?: CompanyPostAcknowledgmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyPostAcknowledgmentInclude<ExtArgs> | null
+    where?: CompanyPostAcknowledgmentWhereInput
+    orderBy?: CompanyPostAcknowledgmentOrderByWithRelationInput | CompanyPostAcknowledgmentOrderByWithRelationInput[]
+    cursor?: CompanyPostAcknowledgmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CompanyPostAcknowledgmentScalarFieldEnum | CompanyPostAcknowledgmentScalarFieldEnum[]
+  }
+
+  /**
    * CompanyPost without action
    */
   export type CompanyPostDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -14368,6 +14557,1046 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: CompanyPostInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CompanyPostAcknowledgment
+   */
+
+  export type AggregateCompanyPostAcknowledgment = {
+    _count: CompanyPostAcknowledgmentCountAggregateOutputType | null
+    _min: CompanyPostAcknowledgmentMinAggregateOutputType | null
+    _max: CompanyPostAcknowledgmentMaxAggregateOutputType | null
+  }
+
+  export type CompanyPostAcknowledgmentMinAggregateOutputType = {
+    postId: string | null
+    userId: string | null
+    createdAt: Date | null
+  }
+
+  export type CompanyPostAcknowledgmentMaxAggregateOutputType = {
+    postId: string | null
+    userId: string | null
+    createdAt: Date | null
+  }
+
+  export type CompanyPostAcknowledgmentCountAggregateOutputType = {
+    postId: number
+    userId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type CompanyPostAcknowledgmentMinAggregateInputType = {
+    postId?: true
+    userId?: true
+    createdAt?: true
+  }
+
+  export type CompanyPostAcknowledgmentMaxAggregateInputType = {
+    postId?: true
+    userId?: true
+    createdAt?: true
+  }
+
+  export type CompanyPostAcknowledgmentCountAggregateInputType = {
+    postId?: true
+    userId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type CompanyPostAcknowledgmentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CompanyPostAcknowledgment to aggregate.
+     */
+    where?: CompanyPostAcknowledgmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompanyPostAcknowledgments to fetch.
+     */
+    orderBy?: CompanyPostAcknowledgmentOrderByWithRelationInput | CompanyPostAcknowledgmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CompanyPostAcknowledgmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompanyPostAcknowledgments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompanyPostAcknowledgments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CompanyPostAcknowledgments
+    **/
+    _count?: true | CompanyPostAcknowledgmentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CompanyPostAcknowledgmentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CompanyPostAcknowledgmentMaxAggregateInputType
+  }
+
+  export type GetCompanyPostAcknowledgmentAggregateType<T extends CompanyPostAcknowledgmentAggregateArgs> = {
+        [P in keyof T & keyof AggregateCompanyPostAcknowledgment]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCompanyPostAcknowledgment[P]>
+      : GetScalarType<T[P], AggregateCompanyPostAcknowledgment[P]>
+  }
+
+
+
+
+  export type CompanyPostAcknowledgmentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CompanyPostAcknowledgmentWhereInput
+    orderBy?: CompanyPostAcknowledgmentOrderByWithAggregationInput | CompanyPostAcknowledgmentOrderByWithAggregationInput[]
+    by: CompanyPostAcknowledgmentScalarFieldEnum[] | CompanyPostAcknowledgmentScalarFieldEnum
+    having?: CompanyPostAcknowledgmentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CompanyPostAcknowledgmentCountAggregateInputType | true
+    _min?: CompanyPostAcknowledgmentMinAggregateInputType
+    _max?: CompanyPostAcknowledgmentMaxAggregateInputType
+  }
+
+  export type CompanyPostAcknowledgmentGroupByOutputType = {
+    postId: string
+    userId: string
+    createdAt: Date
+    _count: CompanyPostAcknowledgmentCountAggregateOutputType | null
+    _min: CompanyPostAcknowledgmentMinAggregateOutputType | null
+    _max: CompanyPostAcknowledgmentMaxAggregateOutputType | null
+  }
+
+  type GetCompanyPostAcknowledgmentGroupByPayload<T extends CompanyPostAcknowledgmentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CompanyPostAcknowledgmentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CompanyPostAcknowledgmentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CompanyPostAcknowledgmentGroupByOutputType[P]>
+            : GetScalarType<T[P], CompanyPostAcknowledgmentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CompanyPostAcknowledgmentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    postId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    post?: boolean | CompanyPostDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["companyPostAcknowledgment"]>
+
+  export type CompanyPostAcknowledgmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    postId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    post?: boolean | CompanyPostDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["companyPostAcknowledgment"]>
+
+  export type CompanyPostAcknowledgmentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    postId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    post?: boolean | CompanyPostDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["companyPostAcknowledgment"]>
+
+  export type CompanyPostAcknowledgmentSelectScalar = {
+    postId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+  }
+
+  export type CompanyPostAcknowledgmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"postId" | "userId" | "createdAt", ExtArgs["result"]["companyPostAcknowledgment"]>
+  export type CompanyPostAcknowledgmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    post?: boolean | CompanyPostDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type CompanyPostAcknowledgmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    post?: boolean | CompanyPostDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type CompanyPostAcknowledgmentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    post?: boolean | CompanyPostDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $CompanyPostAcknowledgmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CompanyPostAcknowledgment"
+    objects: {
+      post: Prisma.$CompanyPostPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      postId: string
+      userId: string
+      createdAt: Date
+    }, ExtArgs["result"]["companyPostAcknowledgment"]>
+    composites: {}
+  }
+
+  type CompanyPostAcknowledgmentGetPayload<S extends boolean | null | undefined | CompanyPostAcknowledgmentDefaultArgs> = $Result.GetResult<Prisma.$CompanyPostAcknowledgmentPayload, S>
+
+  type CompanyPostAcknowledgmentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CompanyPostAcknowledgmentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CompanyPostAcknowledgmentCountAggregateInputType | true
+    }
+
+  export interface CompanyPostAcknowledgmentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CompanyPostAcknowledgment'], meta: { name: 'CompanyPostAcknowledgment' } }
+    /**
+     * Find zero or one CompanyPostAcknowledgment that matches the filter.
+     * @param {CompanyPostAcknowledgmentFindUniqueArgs} args - Arguments to find a CompanyPostAcknowledgment
+     * @example
+     * // Get one CompanyPostAcknowledgment
+     * const companyPostAcknowledgment = await prisma.companyPostAcknowledgment.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CompanyPostAcknowledgmentFindUniqueArgs>(args: SelectSubset<T, CompanyPostAcknowledgmentFindUniqueArgs<ExtArgs>>): Prisma__CompanyPostAcknowledgmentClient<$Result.GetResult<Prisma.$CompanyPostAcknowledgmentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CompanyPostAcknowledgment that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CompanyPostAcknowledgmentFindUniqueOrThrowArgs} args - Arguments to find a CompanyPostAcknowledgment
+     * @example
+     * // Get one CompanyPostAcknowledgment
+     * const companyPostAcknowledgment = await prisma.companyPostAcknowledgment.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CompanyPostAcknowledgmentFindUniqueOrThrowArgs>(args: SelectSubset<T, CompanyPostAcknowledgmentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CompanyPostAcknowledgmentClient<$Result.GetResult<Prisma.$CompanyPostAcknowledgmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CompanyPostAcknowledgment that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyPostAcknowledgmentFindFirstArgs} args - Arguments to find a CompanyPostAcknowledgment
+     * @example
+     * // Get one CompanyPostAcknowledgment
+     * const companyPostAcknowledgment = await prisma.companyPostAcknowledgment.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CompanyPostAcknowledgmentFindFirstArgs>(args?: SelectSubset<T, CompanyPostAcknowledgmentFindFirstArgs<ExtArgs>>): Prisma__CompanyPostAcknowledgmentClient<$Result.GetResult<Prisma.$CompanyPostAcknowledgmentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CompanyPostAcknowledgment that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyPostAcknowledgmentFindFirstOrThrowArgs} args - Arguments to find a CompanyPostAcknowledgment
+     * @example
+     * // Get one CompanyPostAcknowledgment
+     * const companyPostAcknowledgment = await prisma.companyPostAcknowledgment.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CompanyPostAcknowledgmentFindFirstOrThrowArgs>(args?: SelectSubset<T, CompanyPostAcknowledgmentFindFirstOrThrowArgs<ExtArgs>>): Prisma__CompanyPostAcknowledgmentClient<$Result.GetResult<Prisma.$CompanyPostAcknowledgmentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CompanyPostAcknowledgments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyPostAcknowledgmentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CompanyPostAcknowledgments
+     * const companyPostAcknowledgments = await prisma.companyPostAcknowledgment.findMany()
+     * 
+     * // Get first 10 CompanyPostAcknowledgments
+     * const companyPostAcknowledgments = await prisma.companyPostAcknowledgment.findMany({ take: 10 })
+     * 
+     * // Only select the `postId`
+     * const companyPostAcknowledgmentWithPostIdOnly = await prisma.companyPostAcknowledgment.findMany({ select: { postId: true } })
+     * 
+     */
+    findMany<T extends CompanyPostAcknowledgmentFindManyArgs>(args?: SelectSubset<T, CompanyPostAcknowledgmentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyPostAcknowledgmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CompanyPostAcknowledgment.
+     * @param {CompanyPostAcknowledgmentCreateArgs} args - Arguments to create a CompanyPostAcknowledgment.
+     * @example
+     * // Create one CompanyPostAcknowledgment
+     * const CompanyPostAcknowledgment = await prisma.companyPostAcknowledgment.create({
+     *   data: {
+     *     // ... data to create a CompanyPostAcknowledgment
+     *   }
+     * })
+     * 
+     */
+    create<T extends CompanyPostAcknowledgmentCreateArgs>(args: SelectSubset<T, CompanyPostAcknowledgmentCreateArgs<ExtArgs>>): Prisma__CompanyPostAcknowledgmentClient<$Result.GetResult<Prisma.$CompanyPostAcknowledgmentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CompanyPostAcknowledgments.
+     * @param {CompanyPostAcknowledgmentCreateManyArgs} args - Arguments to create many CompanyPostAcknowledgments.
+     * @example
+     * // Create many CompanyPostAcknowledgments
+     * const companyPostAcknowledgment = await prisma.companyPostAcknowledgment.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CompanyPostAcknowledgmentCreateManyArgs>(args?: SelectSubset<T, CompanyPostAcknowledgmentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CompanyPostAcknowledgments and returns the data saved in the database.
+     * @param {CompanyPostAcknowledgmentCreateManyAndReturnArgs} args - Arguments to create many CompanyPostAcknowledgments.
+     * @example
+     * // Create many CompanyPostAcknowledgments
+     * const companyPostAcknowledgment = await prisma.companyPostAcknowledgment.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CompanyPostAcknowledgments and only return the `postId`
+     * const companyPostAcknowledgmentWithPostIdOnly = await prisma.companyPostAcknowledgment.createManyAndReturn({
+     *   select: { postId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CompanyPostAcknowledgmentCreateManyAndReturnArgs>(args?: SelectSubset<T, CompanyPostAcknowledgmentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyPostAcknowledgmentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CompanyPostAcknowledgment.
+     * @param {CompanyPostAcknowledgmentDeleteArgs} args - Arguments to delete one CompanyPostAcknowledgment.
+     * @example
+     * // Delete one CompanyPostAcknowledgment
+     * const CompanyPostAcknowledgment = await prisma.companyPostAcknowledgment.delete({
+     *   where: {
+     *     // ... filter to delete one CompanyPostAcknowledgment
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CompanyPostAcknowledgmentDeleteArgs>(args: SelectSubset<T, CompanyPostAcknowledgmentDeleteArgs<ExtArgs>>): Prisma__CompanyPostAcknowledgmentClient<$Result.GetResult<Prisma.$CompanyPostAcknowledgmentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CompanyPostAcknowledgment.
+     * @param {CompanyPostAcknowledgmentUpdateArgs} args - Arguments to update one CompanyPostAcknowledgment.
+     * @example
+     * // Update one CompanyPostAcknowledgment
+     * const companyPostAcknowledgment = await prisma.companyPostAcknowledgment.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CompanyPostAcknowledgmentUpdateArgs>(args: SelectSubset<T, CompanyPostAcknowledgmentUpdateArgs<ExtArgs>>): Prisma__CompanyPostAcknowledgmentClient<$Result.GetResult<Prisma.$CompanyPostAcknowledgmentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CompanyPostAcknowledgments.
+     * @param {CompanyPostAcknowledgmentDeleteManyArgs} args - Arguments to filter CompanyPostAcknowledgments to delete.
+     * @example
+     * // Delete a few CompanyPostAcknowledgments
+     * const { count } = await prisma.companyPostAcknowledgment.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CompanyPostAcknowledgmentDeleteManyArgs>(args?: SelectSubset<T, CompanyPostAcknowledgmentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CompanyPostAcknowledgments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyPostAcknowledgmentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CompanyPostAcknowledgments
+     * const companyPostAcknowledgment = await prisma.companyPostAcknowledgment.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CompanyPostAcknowledgmentUpdateManyArgs>(args: SelectSubset<T, CompanyPostAcknowledgmentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CompanyPostAcknowledgments and returns the data updated in the database.
+     * @param {CompanyPostAcknowledgmentUpdateManyAndReturnArgs} args - Arguments to update many CompanyPostAcknowledgments.
+     * @example
+     * // Update many CompanyPostAcknowledgments
+     * const companyPostAcknowledgment = await prisma.companyPostAcknowledgment.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CompanyPostAcknowledgments and only return the `postId`
+     * const companyPostAcknowledgmentWithPostIdOnly = await prisma.companyPostAcknowledgment.updateManyAndReturn({
+     *   select: { postId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CompanyPostAcknowledgmentUpdateManyAndReturnArgs>(args: SelectSubset<T, CompanyPostAcknowledgmentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyPostAcknowledgmentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CompanyPostAcknowledgment.
+     * @param {CompanyPostAcknowledgmentUpsertArgs} args - Arguments to update or create a CompanyPostAcknowledgment.
+     * @example
+     * // Update or create a CompanyPostAcknowledgment
+     * const companyPostAcknowledgment = await prisma.companyPostAcknowledgment.upsert({
+     *   create: {
+     *     // ... data to create a CompanyPostAcknowledgment
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CompanyPostAcknowledgment we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CompanyPostAcknowledgmentUpsertArgs>(args: SelectSubset<T, CompanyPostAcknowledgmentUpsertArgs<ExtArgs>>): Prisma__CompanyPostAcknowledgmentClient<$Result.GetResult<Prisma.$CompanyPostAcknowledgmentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CompanyPostAcknowledgments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyPostAcknowledgmentCountArgs} args - Arguments to filter CompanyPostAcknowledgments to count.
+     * @example
+     * // Count the number of CompanyPostAcknowledgments
+     * const count = await prisma.companyPostAcknowledgment.count({
+     *   where: {
+     *     // ... the filter for the CompanyPostAcknowledgments we want to count
+     *   }
+     * })
+    **/
+    count<T extends CompanyPostAcknowledgmentCountArgs>(
+      args?: Subset<T, CompanyPostAcknowledgmentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CompanyPostAcknowledgmentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CompanyPostAcknowledgment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyPostAcknowledgmentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CompanyPostAcknowledgmentAggregateArgs>(args: Subset<T, CompanyPostAcknowledgmentAggregateArgs>): Prisma.PrismaPromise<GetCompanyPostAcknowledgmentAggregateType<T>>
+
+    /**
+     * Group by CompanyPostAcknowledgment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyPostAcknowledgmentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CompanyPostAcknowledgmentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CompanyPostAcknowledgmentGroupByArgs['orderBy'] }
+        : { orderBy?: CompanyPostAcknowledgmentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CompanyPostAcknowledgmentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCompanyPostAcknowledgmentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CompanyPostAcknowledgment model
+   */
+  readonly fields: CompanyPostAcknowledgmentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CompanyPostAcknowledgment.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CompanyPostAcknowledgmentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    post<T extends CompanyPostDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyPostDefaultArgs<ExtArgs>>): Prisma__CompanyPostClient<$Result.GetResult<Prisma.$CompanyPostPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CompanyPostAcknowledgment model
+   */
+  interface CompanyPostAcknowledgmentFieldRefs {
+    readonly postId: FieldRef<"CompanyPostAcknowledgment", 'String'>
+    readonly userId: FieldRef<"CompanyPostAcknowledgment", 'String'>
+    readonly createdAt: FieldRef<"CompanyPostAcknowledgment", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CompanyPostAcknowledgment findUnique
+   */
+  export type CompanyPostAcknowledgmentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyPostAcknowledgment
+     */
+    select?: CompanyPostAcknowledgmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyPostAcknowledgment
+     */
+    omit?: CompanyPostAcknowledgmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyPostAcknowledgmentInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanyPostAcknowledgment to fetch.
+     */
+    where: CompanyPostAcknowledgmentWhereUniqueInput
+  }
+
+  /**
+   * CompanyPostAcknowledgment findUniqueOrThrow
+   */
+  export type CompanyPostAcknowledgmentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyPostAcknowledgment
+     */
+    select?: CompanyPostAcknowledgmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyPostAcknowledgment
+     */
+    omit?: CompanyPostAcknowledgmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyPostAcknowledgmentInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanyPostAcknowledgment to fetch.
+     */
+    where: CompanyPostAcknowledgmentWhereUniqueInput
+  }
+
+  /**
+   * CompanyPostAcknowledgment findFirst
+   */
+  export type CompanyPostAcknowledgmentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyPostAcknowledgment
+     */
+    select?: CompanyPostAcknowledgmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyPostAcknowledgment
+     */
+    omit?: CompanyPostAcknowledgmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyPostAcknowledgmentInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanyPostAcknowledgment to fetch.
+     */
+    where?: CompanyPostAcknowledgmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompanyPostAcknowledgments to fetch.
+     */
+    orderBy?: CompanyPostAcknowledgmentOrderByWithRelationInput | CompanyPostAcknowledgmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CompanyPostAcknowledgments.
+     */
+    cursor?: CompanyPostAcknowledgmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompanyPostAcknowledgments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompanyPostAcknowledgments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CompanyPostAcknowledgments.
+     */
+    distinct?: CompanyPostAcknowledgmentScalarFieldEnum | CompanyPostAcknowledgmentScalarFieldEnum[]
+  }
+
+  /**
+   * CompanyPostAcknowledgment findFirstOrThrow
+   */
+  export type CompanyPostAcknowledgmentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyPostAcknowledgment
+     */
+    select?: CompanyPostAcknowledgmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyPostAcknowledgment
+     */
+    omit?: CompanyPostAcknowledgmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyPostAcknowledgmentInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanyPostAcknowledgment to fetch.
+     */
+    where?: CompanyPostAcknowledgmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompanyPostAcknowledgments to fetch.
+     */
+    orderBy?: CompanyPostAcknowledgmentOrderByWithRelationInput | CompanyPostAcknowledgmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CompanyPostAcknowledgments.
+     */
+    cursor?: CompanyPostAcknowledgmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompanyPostAcknowledgments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompanyPostAcknowledgments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CompanyPostAcknowledgments.
+     */
+    distinct?: CompanyPostAcknowledgmentScalarFieldEnum | CompanyPostAcknowledgmentScalarFieldEnum[]
+  }
+
+  /**
+   * CompanyPostAcknowledgment findMany
+   */
+  export type CompanyPostAcknowledgmentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyPostAcknowledgment
+     */
+    select?: CompanyPostAcknowledgmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyPostAcknowledgment
+     */
+    omit?: CompanyPostAcknowledgmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyPostAcknowledgmentInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanyPostAcknowledgments to fetch.
+     */
+    where?: CompanyPostAcknowledgmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompanyPostAcknowledgments to fetch.
+     */
+    orderBy?: CompanyPostAcknowledgmentOrderByWithRelationInput | CompanyPostAcknowledgmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CompanyPostAcknowledgments.
+     */
+    cursor?: CompanyPostAcknowledgmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompanyPostAcknowledgments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompanyPostAcknowledgments.
+     */
+    skip?: number
+    distinct?: CompanyPostAcknowledgmentScalarFieldEnum | CompanyPostAcknowledgmentScalarFieldEnum[]
+  }
+
+  /**
+   * CompanyPostAcknowledgment create
+   */
+  export type CompanyPostAcknowledgmentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyPostAcknowledgment
+     */
+    select?: CompanyPostAcknowledgmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyPostAcknowledgment
+     */
+    omit?: CompanyPostAcknowledgmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyPostAcknowledgmentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CompanyPostAcknowledgment.
+     */
+    data: XOR<CompanyPostAcknowledgmentCreateInput, CompanyPostAcknowledgmentUncheckedCreateInput>
+  }
+
+  /**
+   * CompanyPostAcknowledgment createMany
+   */
+  export type CompanyPostAcknowledgmentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CompanyPostAcknowledgments.
+     */
+    data: CompanyPostAcknowledgmentCreateManyInput | CompanyPostAcknowledgmentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CompanyPostAcknowledgment createManyAndReturn
+   */
+  export type CompanyPostAcknowledgmentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyPostAcknowledgment
+     */
+    select?: CompanyPostAcknowledgmentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyPostAcknowledgment
+     */
+    omit?: CompanyPostAcknowledgmentOmit<ExtArgs> | null
+    /**
+     * The data used to create many CompanyPostAcknowledgments.
+     */
+    data: CompanyPostAcknowledgmentCreateManyInput | CompanyPostAcknowledgmentCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyPostAcknowledgmentIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CompanyPostAcknowledgment update
+   */
+  export type CompanyPostAcknowledgmentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyPostAcknowledgment
+     */
+    select?: CompanyPostAcknowledgmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyPostAcknowledgment
+     */
+    omit?: CompanyPostAcknowledgmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyPostAcknowledgmentInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CompanyPostAcknowledgment.
+     */
+    data: XOR<CompanyPostAcknowledgmentUpdateInput, CompanyPostAcknowledgmentUncheckedUpdateInput>
+    /**
+     * Choose, which CompanyPostAcknowledgment to update.
+     */
+    where: CompanyPostAcknowledgmentWhereUniqueInput
+  }
+
+  /**
+   * CompanyPostAcknowledgment updateMany
+   */
+  export type CompanyPostAcknowledgmentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CompanyPostAcknowledgments.
+     */
+    data: XOR<CompanyPostAcknowledgmentUpdateManyMutationInput, CompanyPostAcknowledgmentUncheckedUpdateManyInput>
+    /**
+     * Filter which CompanyPostAcknowledgments to update
+     */
+    where?: CompanyPostAcknowledgmentWhereInput
+    /**
+     * Limit how many CompanyPostAcknowledgments to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CompanyPostAcknowledgment updateManyAndReturn
+   */
+  export type CompanyPostAcknowledgmentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyPostAcknowledgment
+     */
+    select?: CompanyPostAcknowledgmentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyPostAcknowledgment
+     */
+    omit?: CompanyPostAcknowledgmentOmit<ExtArgs> | null
+    /**
+     * The data used to update CompanyPostAcknowledgments.
+     */
+    data: XOR<CompanyPostAcknowledgmentUpdateManyMutationInput, CompanyPostAcknowledgmentUncheckedUpdateManyInput>
+    /**
+     * Filter which CompanyPostAcknowledgments to update
+     */
+    where?: CompanyPostAcknowledgmentWhereInput
+    /**
+     * Limit how many CompanyPostAcknowledgments to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyPostAcknowledgmentIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CompanyPostAcknowledgment upsert
+   */
+  export type CompanyPostAcknowledgmentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyPostAcknowledgment
+     */
+    select?: CompanyPostAcknowledgmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyPostAcknowledgment
+     */
+    omit?: CompanyPostAcknowledgmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyPostAcknowledgmentInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CompanyPostAcknowledgment to update in case it exists.
+     */
+    where: CompanyPostAcknowledgmentWhereUniqueInput
+    /**
+     * In case the CompanyPostAcknowledgment found by the `where` argument doesn't exist, create a new CompanyPostAcknowledgment with this data.
+     */
+    create: XOR<CompanyPostAcknowledgmentCreateInput, CompanyPostAcknowledgmentUncheckedCreateInput>
+    /**
+     * In case the CompanyPostAcknowledgment was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CompanyPostAcknowledgmentUpdateInput, CompanyPostAcknowledgmentUncheckedUpdateInput>
+  }
+
+  /**
+   * CompanyPostAcknowledgment delete
+   */
+  export type CompanyPostAcknowledgmentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyPostAcknowledgment
+     */
+    select?: CompanyPostAcknowledgmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyPostAcknowledgment
+     */
+    omit?: CompanyPostAcknowledgmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyPostAcknowledgmentInclude<ExtArgs> | null
+    /**
+     * Filter which CompanyPostAcknowledgment to delete.
+     */
+    where: CompanyPostAcknowledgmentWhereUniqueInput
+  }
+
+  /**
+   * CompanyPostAcknowledgment deleteMany
+   */
+  export type CompanyPostAcknowledgmentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CompanyPostAcknowledgments to delete
+     */
+    where?: CompanyPostAcknowledgmentWhereInput
+    /**
+     * Limit how many CompanyPostAcknowledgments to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CompanyPostAcknowledgment without action
+   */
+  export type CompanyPostAcknowledgmentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyPostAcknowledgment
+     */
+    select?: CompanyPostAcknowledgmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyPostAcknowledgment
+     */
+    omit?: CompanyPostAcknowledgmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyPostAcknowledgmentInclude<ExtArgs> | null
   }
 
 
@@ -15489,6 +16718,15 @@ export namespace Prisma {
   export type CompanyPostScalarFieldEnum = (typeof CompanyPostScalarFieldEnum)[keyof typeof CompanyPostScalarFieldEnum]
 
 
+  export const CompanyPostAcknowledgmentScalarFieldEnum: {
+    postId: 'postId',
+    userId: 'userId',
+    createdAt: 'createdAt'
+  };
+
+  export type CompanyPostAcknowledgmentScalarFieldEnum = (typeof CompanyPostAcknowledgmentScalarFieldEnum)[keyof typeof CompanyPostAcknowledgmentScalarFieldEnum]
+
+
   export const VerificationTokenScalarFieldEnum: {
     identifier: 'identifier',
     token: 'token',
@@ -16010,6 +17248,7 @@ export namespace Prisma {
     messages?: MessageListRelationFilter
     createdJobs?: JobListRelationFilter
     companyPosts?: CompanyPostListRelationFilter
+    postAcknowledgments?: CompanyPostAcknowledgmentListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -16028,6 +17267,7 @@ export namespace Prisma {
     messages?: MessageOrderByRelationAggregateInput
     createdJobs?: JobOrderByRelationAggregateInput
     companyPosts?: CompanyPostOrderByRelationAggregateInput
+    postAcknowledgments?: CompanyPostAcknowledgmentOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -16049,6 +17289,7 @@ export namespace Prisma {
     messages?: MessageListRelationFilter
     createdJobs?: JobListRelationFilter
     companyPosts?: CompanyPostListRelationFilter
+    postAcknowledgments?: CompanyPostAcknowledgmentListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -16278,6 +17519,7 @@ export namespace Prisma {
     authorId?: StringNullableFilter<"CompanyPost"> | string | null
     company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
     author?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    acknowledgments?: CompanyPostAcknowledgmentListRelationFilter
   }
 
   export type CompanyPostOrderByWithRelationInput = {
@@ -16290,6 +17532,7 @@ export namespace Prisma {
     authorId?: SortOrderInput | SortOrder
     company?: CompanyOrderByWithRelationInput
     author?: UserOrderByWithRelationInput
+    acknowledgments?: CompanyPostAcknowledgmentOrderByRelationAggregateInput
   }
 
   export type CompanyPostWhereUniqueInput = Prisma.AtLeast<{
@@ -16305,6 +17548,7 @@ export namespace Prisma {
     authorId?: StringNullableFilter<"CompanyPost"> | string | null
     company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
     author?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    acknowledgments?: CompanyPostAcknowledgmentListRelationFilter
   }, "id">
 
   export type CompanyPostOrderByWithAggregationInput = {
@@ -16331,6 +17575,55 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"CompanyPost"> | Date | string
     companyId?: StringWithAggregatesFilter<"CompanyPost"> | string
     authorId?: StringNullableWithAggregatesFilter<"CompanyPost"> | string | null
+  }
+
+  export type CompanyPostAcknowledgmentWhereInput = {
+    AND?: CompanyPostAcknowledgmentWhereInput | CompanyPostAcknowledgmentWhereInput[]
+    OR?: CompanyPostAcknowledgmentWhereInput[]
+    NOT?: CompanyPostAcknowledgmentWhereInput | CompanyPostAcknowledgmentWhereInput[]
+    postId?: StringFilter<"CompanyPostAcknowledgment"> | string
+    userId?: StringFilter<"CompanyPostAcknowledgment"> | string
+    createdAt?: DateTimeFilter<"CompanyPostAcknowledgment"> | Date | string
+    post?: XOR<CompanyPostScalarRelationFilter, CompanyPostWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type CompanyPostAcknowledgmentOrderByWithRelationInput = {
+    postId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    post?: CompanyPostOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type CompanyPostAcknowledgmentWhereUniqueInput = Prisma.AtLeast<{
+    postId_userId?: CompanyPostAcknowledgmentPostIdUserIdCompoundUniqueInput
+    AND?: CompanyPostAcknowledgmentWhereInput | CompanyPostAcknowledgmentWhereInput[]
+    OR?: CompanyPostAcknowledgmentWhereInput[]
+    NOT?: CompanyPostAcknowledgmentWhereInput | CompanyPostAcknowledgmentWhereInput[]
+    postId?: StringFilter<"CompanyPostAcknowledgment"> | string
+    userId?: StringFilter<"CompanyPostAcknowledgment"> | string
+    createdAt?: DateTimeFilter<"CompanyPostAcknowledgment"> | Date | string
+    post?: XOR<CompanyPostScalarRelationFilter, CompanyPostWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "postId_userId">
+
+  export type CompanyPostAcknowledgmentOrderByWithAggregationInput = {
+    postId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    _count?: CompanyPostAcknowledgmentCountOrderByAggregateInput
+    _max?: CompanyPostAcknowledgmentMaxOrderByAggregateInput
+    _min?: CompanyPostAcknowledgmentMinOrderByAggregateInput
+  }
+
+  export type CompanyPostAcknowledgmentScalarWhereWithAggregatesInput = {
+    AND?: CompanyPostAcknowledgmentScalarWhereWithAggregatesInput | CompanyPostAcknowledgmentScalarWhereWithAggregatesInput[]
+    OR?: CompanyPostAcknowledgmentScalarWhereWithAggregatesInput[]
+    NOT?: CompanyPostAcknowledgmentScalarWhereWithAggregatesInput | CompanyPostAcknowledgmentScalarWhereWithAggregatesInput[]
+    postId?: StringWithAggregatesFilter<"CompanyPostAcknowledgment"> | string
+    userId?: StringWithAggregatesFilter<"CompanyPostAcknowledgment"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"CompanyPostAcknowledgment"> | Date | string
   }
 
   export type VerificationTokenWhereInput = {
@@ -16795,6 +18088,7 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutAuthorInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
+    postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -16813,6 +18107,7 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -16831,6 +18126,7 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -16849,6 +18145,7 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -17073,6 +18370,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     company: CompanyCreateNestedOneWithoutPostsInput
     author?: UserCreateNestedOneWithoutCompanyPostsInput
+    acknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutPostInput
   }
 
   export type CompanyPostUncheckedCreateInput = {
@@ -17083,6 +18381,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     companyId: string
     authorId?: string | null
+    acknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutPostInput
   }
 
   export type CompanyPostUpdateInput = {
@@ -17093,6 +18392,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     company?: CompanyUpdateOneRequiredWithoutPostsNestedInput
     author?: UserUpdateOneWithoutCompanyPostsNestedInput
+    acknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutPostNestedInput
   }
 
   export type CompanyPostUncheckedUpdateInput = {
@@ -17103,6 +18403,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     companyId?: StringFieldUpdateOperationsInput | string
     authorId?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutPostNestedInput
   }
 
   export type CompanyPostCreateManyInput = {
@@ -17131,6 +18432,46 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     companyId?: StringFieldUpdateOperationsInput | string
     authorId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CompanyPostAcknowledgmentCreateInput = {
+    createdAt?: Date | string
+    post: CompanyPostCreateNestedOneWithoutAcknowledgmentsInput
+    user: UserCreateNestedOneWithoutPostAcknowledgmentsInput
+  }
+
+  export type CompanyPostAcknowledgmentUncheckedCreateInput = {
+    postId: string
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type CompanyPostAcknowledgmentUpdateInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    post?: CompanyPostUpdateOneRequiredWithoutAcknowledgmentsNestedInput
+    user?: UserUpdateOneRequiredWithoutPostAcknowledgmentsNestedInput
+  }
+
+  export type CompanyPostAcknowledgmentUncheckedUpdateInput = {
+    postId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompanyPostAcknowledgmentCreateManyInput = {
+    postId: string
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type CompanyPostAcknowledgmentUpdateManyMutationInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompanyPostAcknowledgmentUncheckedUpdateManyInput = {
+    postId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type VerificationTokenCreateInput = {
@@ -17608,11 +18949,21 @@ export namespace Prisma {
     none?: SessionWhereInput
   }
 
+  export type CompanyPostAcknowledgmentListRelationFilter = {
+    every?: CompanyPostAcknowledgmentWhereInput
+    some?: CompanyPostAcknowledgmentWhereInput
+    none?: CompanyPostAcknowledgmentWhereInput
+  }
+
   export type AccountOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type SessionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CompanyPostAcknowledgmentOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -17809,6 +19160,34 @@ export namespace Prisma {
     updatedAt?: SortOrder
     companyId?: SortOrder
     authorId?: SortOrder
+  }
+
+  export type CompanyPostScalarRelationFilter = {
+    is?: CompanyPostWhereInput
+    isNot?: CompanyPostWhereInput
+  }
+
+  export type CompanyPostAcknowledgmentPostIdUserIdCompoundUniqueInput = {
+    postId: string
+    userId: string
+  }
+
+  export type CompanyPostAcknowledgmentCountOrderByAggregateInput = {
+    postId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CompanyPostAcknowledgmentMaxOrderByAggregateInput = {
+    postId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CompanyPostAcknowledgmentMinOrderByAggregateInput = {
+    postId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type VerificationTokenIdentifierTokenCompoundUniqueInput = {
@@ -18263,6 +19642,13 @@ export namespace Prisma {
     connect?: CompanyPostWhereUniqueInput | CompanyPostWhereUniqueInput[]
   }
 
+  export type CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput = {
+    create?: XOR<CompanyPostAcknowledgmentCreateWithoutUserInput, CompanyPostAcknowledgmentUncheckedCreateWithoutUserInput> | CompanyPostAcknowledgmentCreateWithoutUserInput[] | CompanyPostAcknowledgmentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CompanyPostAcknowledgmentCreateOrConnectWithoutUserInput | CompanyPostAcknowledgmentCreateOrConnectWithoutUserInput[]
+    createMany?: CompanyPostAcknowledgmentCreateManyUserInputEnvelope
+    connect?: CompanyPostAcknowledgmentWhereUniqueInput | CompanyPostAcknowledgmentWhereUniqueInput[]
+  }
+
   export type EmailVerificationCodeUncheckedCreateNestedOneWithoutUserInput = {
     create?: XOR<EmailVerificationCodeCreateWithoutUserInput, EmailVerificationCodeUncheckedCreateWithoutUserInput>
     connectOrCreate?: EmailVerificationCodeCreateOrConnectWithoutUserInput
@@ -18316,6 +19702,13 @@ export namespace Prisma {
     connectOrCreate?: CompanyPostCreateOrConnectWithoutAuthorInput | CompanyPostCreateOrConnectWithoutAuthorInput[]
     createMany?: CompanyPostCreateManyAuthorInputEnvelope
     connect?: CompanyPostWhereUniqueInput | CompanyPostWhereUniqueInput[]
+  }
+
+  export type CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<CompanyPostAcknowledgmentCreateWithoutUserInput, CompanyPostAcknowledgmentUncheckedCreateWithoutUserInput> | CompanyPostAcknowledgmentCreateWithoutUserInput[] | CompanyPostAcknowledgmentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CompanyPostAcknowledgmentCreateOrConnectWithoutUserInput | CompanyPostAcknowledgmentCreateOrConnectWithoutUserInput[]
+    createMany?: CompanyPostAcknowledgmentCreateManyUserInputEnvelope
+    connect?: CompanyPostAcknowledgmentWhereUniqueInput | CompanyPostAcknowledgmentWhereUniqueInput[]
   }
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -18430,6 +19823,20 @@ export namespace Prisma {
     deleteMany?: CompanyPostScalarWhereInput | CompanyPostScalarWhereInput[]
   }
 
+  export type CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput = {
+    create?: XOR<CompanyPostAcknowledgmentCreateWithoutUserInput, CompanyPostAcknowledgmentUncheckedCreateWithoutUserInput> | CompanyPostAcknowledgmentCreateWithoutUserInput[] | CompanyPostAcknowledgmentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CompanyPostAcknowledgmentCreateOrConnectWithoutUserInput | CompanyPostAcknowledgmentCreateOrConnectWithoutUserInput[]
+    upsert?: CompanyPostAcknowledgmentUpsertWithWhereUniqueWithoutUserInput | CompanyPostAcknowledgmentUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: CompanyPostAcknowledgmentCreateManyUserInputEnvelope
+    set?: CompanyPostAcknowledgmentWhereUniqueInput | CompanyPostAcknowledgmentWhereUniqueInput[]
+    disconnect?: CompanyPostAcknowledgmentWhereUniqueInput | CompanyPostAcknowledgmentWhereUniqueInput[]
+    delete?: CompanyPostAcknowledgmentWhereUniqueInput | CompanyPostAcknowledgmentWhereUniqueInput[]
+    connect?: CompanyPostAcknowledgmentWhereUniqueInput | CompanyPostAcknowledgmentWhereUniqueInput[]
+    update?: CompanyPostAcknowledgmentUpdateWithWhereUniqueWithoutUserInput | CompanyPostAcknowledgmentUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: CompanyPostAcknowledgmentUpdateManyWithWhereWithoutUserInput | CompanyPostAcknowledgmentUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: CompanyPostAcknowledgmentScalarWhereInput | CompanyPostAcknowledgmentScalarWhereInput[]
+  }
+
   export type EmailVerificationCodeUncheckedUpdateOneWithoutUserNestedInput = {
     create?: XOR<EmailVerificationCodeCreateWithoutUserInput, EmailVerificationCodeUncheckedCreateWithoutUserInput>
     connectOrCreate?: EmailVerificationCodeCreateOrConnectWithoutUserInput
@@ -18538,6 +19945,20 @@ export namespace Prisma {
     deleteMany?: CompanyPostScalarWhereInput | CompanyPostScalarWhereInput[]
   }
 
+  export type CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<CompanyPostAcknowledgmentCreateWithoutUserInput, CompanyPostAcknowledgmentUncheckedCreateWithoutUserInput> | CompanyPostAcknowledgmentCreateWithoutUserInput[] | CompanyPostAcknowledgmentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CompanyPostAcknowledgmentCreateOrConnectWithoutUserInput | CompanyPostAcknowledgmentCreateOrConnectWithoutUserInput[]
+    upsert?: CompanyPostAcknowledgmentUpsertWithWhereUniqueWithoutUserInput | CompanyPostAcknowledgmentUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: CompanyPostAcknowledgmentCreateManyUserInputEnvelope
+    set?: CompanyPostAcknowledgmentWhereUniqueInput | CompanyPostAcknowledgmentWhereUniqueInput[]
+    disconnect?: CompanyPostAcknowledgmentWhereUniqueInput | CompanyPostAcknowledgmentWhereUniqueInput[]
+    delete?: CompanyPostAcknowledgmentWhereUniqueInput | CompanyPostAcknowledgmentWhereUniqueInput[]
+    connect?: CompanyPostAcknowledgmentWhereUniqueInput | CompanyPostAcknowledgmentWhereUniqueInput[]
+    update?: CompanyPostAcknowledgmentUpdateWithWhereUniqueWithoutUserInput | CompanyPostAcknowledgmentUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: CompanyPostAcknowledgmentUpdateManyWithWhereWithoutUserInput | CompanyPostAcknowledgmentUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: CompanyPostAcknowledgmentScalarWhereInput | CompanyPostAcknowledgmentScalarWhereInput[]
+  }
+
   export type UserCreateNestedOneWithoutEmailVerificationCodeInput = {
     create?: XOR<UserCreateWithoutEmailVerificationCodeInput, UserUncheckedCreateWithoutEmailVerificationCodeInput>
     connectOrCreate?: UserCreateOrConnectWithoutEmailVerificationCodeInput
@@ -18628,6 +20049,20 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type CompanyPostAcknowledgmentCreateNestedManyWithoutPostInput = {
+    create?: XOR<CompanyPostAcknowledgmentCreateWithoutPostInput, CompanyPostAcknowledgmentUncheckedCreateWithoutPostInput> | CompanyPostAcknowledgmentCreateWithoutPostInput[] | CompanyPostAcknowledgmentUncheckedCreateWithoutPostInput[]
+    connectOrCreate?: CompanyPostAcknowledgmentCreateOrConnectWithoutPostInput | CompanyPostAcknowledgmentCreateOrConnectWithoutPostInput[]
+    createMany?: CompanyPostAcknowledgmentCreateManyPostInputEnvelope
+    connect?: CompanyPostAcknowledgmentWhereUniqueInput | CompanyPostAcknowledgmentWhereUniqueInput[]
+  }
+
+  export type CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutPostInput = {
+    create?: XOR<CompanyPostAcknowledgmentCreateWithoutPostInput, CompanyPostAcknowledgmentUncheckedCreateWithoutPostInput> | CompanyPostAcknowledgmentCreateWithoutPostInput[] | CompanyPostAcknowledgmentUncheckedCreateWithoutPostInput[]
+    connectOrCreate?: CompanyPostAcknowledgmentCreateOrConnectWithoutPostInput | CompanyPostAcknowledgmentCreateOrConnectWithoutPostInput[]
+    createMany?: CompanyPostAcknowledgmentCreateManyPostInputEnvelope
+    connect?: CompanyPostAcknowledgmentWhereUniqueInput | CompanyPostAcknowledgmentWhereUniqueInput[]
+  }
+
   export type CompanyUpdateOneRequiredWithoutPostsNestedInput = {
     create?: XOR<CompanyCreateWithoutPostsInput, CompanyUncheckedCreateWithoutPostsInput>
     connectOrCreate?: CompanyCreateOrConnectWithoutPostsInput
@@ -18644,6 +20079,62 @@ export namespace Prisma {
     delete?: UserWhereInput | boolean
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCompanyPostsInput, UserUpdateWithoutCompanyPostsInput>, UserUncheckedUpdateWithoutCompanyPostsInput>
+  }
+
+  export type CompanyPostAcknowledgmentUpdateManyWithoutPostNestedInput = {
+    create?: XOR<CompanyPostAcknowledgmentCreateWithoutPostInput, CompanyPostAcknowledgmentUncheckedCreateWithoutPostInput> | CompanyPostAcknowledgmentCreateWithoutPostInput[] | CompanyPostAcknowledgmentUncheckedCreateWithoutPostInput[]
+    connectOrCreate?: CompanyPostAcknowledgmentCreateOrConnectWithoutPostInput | CompanyPostAcknowledgmentCreateOrConnectWithoutPostInput[]
+    upsert?: CompanyPostAcknowledgmentUpsertWithWhereUniqueWithoutPostInput | CompanyPostAcknowledgmentUpsertWithWhereUniqueWithoutPostInput[]
+    createMany?: CompanyPostAcknowledgmentCreateManyPostInputEnvelope
+    set?: CompanyPostAcknowledgmentWhereUniqueInput | CompanyPostAcknowledgmentWhereUniqueInput[]
+    disconnect?: CompanyPostAcknowledgmentWhereUniqueInput | CompanyPostAcknowledgmentWhereUniqueInput[]
+    delete?: CompanyPostAcknowledgmentWhereUniqueInput | CompanyPostAcknowledgmentWhereUniqueInput[]
+    connect?: CompanyPostAcknowledgmentWhereUniqueInput | CompanyPostAcknowledgmentWhereUniqueInput[]
+    update?: CompanyPostAcknowledgmentUpdateWithWhereUniqueWithoutPostInput | CompanyPostAcknowledgmentUpdateWithWhereUniqueWithoutPostInput[]
+    updateMany?: CompanyPostAcknowledgmentUpdateManyWithWhereWithoutPostInput | CompanyPostAcknowledgmentUpdateManyWithWhereWithoutPostInput[]
+    deleteMany?: CompanyPostAcknowledgmentScalarWhereInput | CompanyPostAcknowledgmentScalarWhereInput[]
+  }
+
+  export type CompanyPostAcknowledgmentUncheckedUpdateManyWithoutPostNestedInput = {
+    create?: XOR<CompanyPostAcknowledgmentCreateWithoutPostInput, CompanyPostAcknowledgmentUncheckedCreateWithoutPostInput> | CompanyPostAcknowledgmentCreateWithoutPostInput[] | CompanyPostAcknowledgmentUncheckedCreateWithoutPostInput[]
+    connectOrCreate?: CompanyPostAcknowledgmentCreateOrConnectWithoutPostInput | CompanyPostAcknowledgmentCreateOrConnectWithoutPostInput[]
+    upsert?: CompanyPostAcknowledgmentUpsertWithWhereUniqueWithoutPostInput | CompanyPostAcknowledgmentUpsertWithWhereUniqueWithoutPostInput[]
+    createMany?: CompanyPostAcknowledgmentCreateManyPostInputEnvelope
+    set?: CompanyPostAcknowledgmentWhereUniqueInput | CompanyPostAcknowledgmentWhereUniqueInput[]
+    disconnect?: CompanyPostAcknowledgmentWhereUniqueInput | CompanyPostAcknowledgmentWhereUniqueInput[]
+    delete?: CompanyPostAcknowledgmentWhereUniqueInput | CompanyPostAcknowledgmentWhereUniqueInput[]
+    connect?: CompanyPostAcknowledgmentWhereUniqueInput | CompanyPostAcknowledgmentWhereUniqueInput[]
+    update?: CompanyPostAcknowledgmentUpdateWithWhereUniqueWithoutPostInput | CompanyPostAcknowledgmentUpdateWithWhereUniqueWithoutPostInput[]
+    updateMany?: CompanyPostAcknowledgmentUpdateManyWithWhereWithoutPostInput | CompanyPostAcknowledgmentUpdateManyWithWhereWithoutPostInput[]
+    deleteMany?: CompanyPostAcknowledgmentScalarWhereInput | CompanyPostAcknowledgmentScalarWhereInput[]
+  }
+
+  export type CompanyPostCreateNestedOneWithoutAcknowledgmentsInput = {
+    create?: XOR<CompanyPostCreateWithoutAcknowledgmentsInput, CompanyPostUncheckedCreateWithoutAcknowledgmentsInput>
+    connectOrCreate?: CompanyPostCreateOrConnectWithoutAcknowledgmentsInput
+    connect?: CompanyPostWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutPostAcknowledgmentsInput = {
+    create?: XOR<UserCreateWithoutPostAcknowledgmentsInput, UserUncheckedCreateWithoutPostAcknowledgmentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPostAcknowledgmentsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type CompanyPostUpdateOneRequiredWithoutAcknowledgmentsNestedInput = {
+    create?: XOR<CompanyPostCreateWithoutAcknowledgmentsInput, CompanyPostUncheckedCreateWithoutAcknowledgmentsInput>
+    connectOrCreate?: CompanyPostCreateOrConnectWithoutAcknowledgmentsInput
+    upsert?: CompanyPostUpsertWithoutAcknowledgmentsInput
+    connect?: CompanyPostWhereUniqueInput
+    update?: XOR<XOR<CompanyPostUpdateToOneWithWhereWithoutAcknowledgmentsInput, CompanyPostUpdateWithoutAcknowledgmentsInput>, CompanyPostUncheckedUpdateWithoutAcknowledgmentsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutPostAcknowledgmentsNestedInput = {
+    create?: XOR<UserCreateWithoutPostAcknowledgmentsInput, UserUncheckedCreateWithoutPostAcknowledgmentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPostAcknowledgmentsInput
+    upsert?: UserUpsertWithoutPostAcknowledgmentsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPostAcknowledgmentsInput, UserUpdateWithoutPostAcknowledgmentsInput>, UserUncheckedUpdateWithoutPostAcknowledgmentsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -18866,6 +20357,7 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutAuthorInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
+    postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -18883,6 +20375,7 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -18916,6 +20409,7 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -18933,6 +20427,7 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
@@ -18950,6 +20445,7 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutAuthorInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
+    postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -18967,6 +20463,7 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -19000,6 +20497,7 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -19017,6 +20515,7 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CompanyMemberCreateWithoutCompanyInput = {
@@ -19102,6 +20601,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     author?: UserCreateNestedOneWithoutCompanyPostsInput
+    acknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutPostInput
   }
 
   export type CompanyPostUncheckedCreateWithoutCompanyInput = {
@@ -19111,6 +20611,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     authorId?: string | null
+    acknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutPostInput
   }
 
   export type CompanyPostCreateOrConnectWithoutCompanyInput = {
@@ -19248,6 +20749,7 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutAuthorInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
+    postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCompanyMembershipsInput = {
@@ -19265,6 +20767,7 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCompanyMembershipsInput = {
@@ -19335,6 +20838,7 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCompanyMembershipsInput = {
@@ -19352,6 +20856,7 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CompanyUpsertWithoutMembersInput = {
@@ -19609,6 +21114,7 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutAuthorInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
+    postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutChannelMembershipsInput = {
@@ -19626,6 +21132,7 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutChannelMembershipsInput = {
@@ -19686,6 +21193,7 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutChannelMembershipsInput = {
@@ -19703,6 +21211,7 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type EmailVerificationCodeCreateWithoutUserInput = {
@@ -19887,6 +21396,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     company: CompanyCreateNestedOneWithoutPostsInput
+    acknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutPostInput
   }
 
   export type CompanyPostUncheckedCreateWithoutAuthorInput = {
@@ -19896,6 +21406,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     companyId: string
+    acknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutPostInput
   }
 
   export type CompanyPostCreateOrConnectWithoutAuthorInput = {
@@ -19905,6 +21416,26 @@ export namespace Prisma {
 
   export type CompanyPostCreateManyAuthorInputEnvelope = {
     data: CompanyPostCreateManyAuthorInput | CompanyPostCreateManyAuthorInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CompanyPostAcknowledgmentCreateWithoutUserInput = {
+    createdAt?: Date | string
+    post: CompanyPostCreateNestedOneWithoutAcknowledgmentsInput
+  }
+
+  export type CompanyPostAcknowledgmentUncheckedCreateWithoutUserInput = {
+    postId: string
+    createdAt?: Date | string
+  }
+
+  export type CompanyPostAcknowledgmentCreateOrConnectWithoutUserInput = {
+    where: CompanyPostAcknowledgmentWhereUniqueInput
+    create: XOR<CompanyPostAcknowledgmentCreateWithoutUserInput, CompanyPostAcknowledgmentUncheckedCreateWithoutUserInput>
+  }
+
+  export type CompanyPostAcknowledgmentCreateManyUserInputEnvelope = {
+    data: CompanyPostAcknowledgmentCreateManyUserInput | CompanyPostAcknowledgmentCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -20074,6 +21605,31 @@ export namespace Prisma {
     data: XOR<CompanyPostUpdateManyMutationInput, CompanyPostUncheckedUpdateManyWithoutAuthorInput>
   }
 
+  export type CompanyPostAcknowledgmentUpsertWithWhereUniqueWithoutUserInput = {
+    where: CompanyPostAcknowledgmentWhereUniqueInput
+    update: XOR<CompanyPostAcknowledgmentUpdateWithoutUserInput, CompanyPostAcknowledgmentUncheckedUpdateWithoutUserInput>
+    create: XOR<CompanyPostAcknowledgmentCreateWithoutUserInput, CompanyPostAcknowledgmentUncheckedCreateWithoutUserInput>
+  }
+
+  export type CompanyPostAcknowledgmentUpdateWithWhereUniqueWithoutUserInput = {
+    where: CompanyPostAcknowledgmentWhereUniqueInput
+    data: XOR<CompanyPostAcknowledgmentUpdateWithoutUserInput, CompanyPostAcknowledgmentUncheckedUpdateWithoutUserInput>
+  }
+
+  export type CompanyPostAcknowledgmentUpdateManyWithWhereWithoutUserInput = {
+    where: CompanyPostAcknowledgmentScalarWhereInput
+    data: XOR<CompanyPostAcknowledgmentUpdateManyMutationInput, CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type CompanyPostAcknowledgmentScalarWhereInput = {
+    AND?: CompanyPostAcknowledgmentScalarWhereInput | CompanyPostAcknowledgmentScalarWhereInput[]
+    OR?: CompanyPostAcknowledgmentScalarWhereInput[]
+    NOT?: CompanyPostAcknowledgmentScalarWhereInput | CompanyPostAcknowledgmentScalarWhereInput[]
+    postId?: StringFilter<"CompanyPostAcknowledgment"> | string
+    userId?: StringFilter<"CompanyPostAcknowledgment"> | string
+    createdAt?: DateTimeFilter<"CompanyPostAcknowledgment"> | Date | string
+  }
+
   export type UserCreateWithoutEmailVerificationCodeInput = {
     id?: string
     name?: string | null
@@ -20089,6 +21645,7 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutAuthorInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
+    postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutEmailVerificationCodeInput = {
@@ -20106,6 +21663,7 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutEmailVerificationCodeInput = {
@@ -20139,6 +21697,7 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutEmailVerificationCodeInput = {
@@ -20156,6 +21715,7 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ChannelCreateWithoutMessagesInput = {
@@ -20194,6 +21754,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
+    postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMessagesInput = {
@@ -20211,6 +21772,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMessagesInput = {
@@ -20271,6 +21833,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMessagesInput = {
@@ -20288,6 +21851,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CompanyCreateWithoutJobsInput = {
@@ -20342,6 +21906,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
     messages?: MessageCreateNestedManyWithoutAuthorInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
+    postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCreatedJobsInput = {
@@ -20359,6 +21924,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
     messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreatedJobsInput = {
@@ -20435,6 +22001,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
     messages?: MessageUpdateManyWithoutAuthorNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedJobsInput = {
@@ -20452,6 +22019,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
     messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CompanyCreateWithoutPostsInput = {
@@ -20506,6 +22074,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
     messages?: MessageCreateNestedManyWithoutAuthorInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
+    postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCompanyPostsInput = {
@@ -20523,11 +22092,32 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
     messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCompanyPostsInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutCompanyPostsInput, UserUncheckedCreateWithoutCompanyPostsInput>
+  }
+
+  export type CompanyPostAcknowledgmentCreateWithoutPostInput = {
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutPostAcknowledgmentsInput
+  }
+
+  export type CompanyPostAcknowledgmentUncheckedCreateWithoutPostInput = {
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type CompanyPostAcknowledgmentCreateOrConnectWithoutPostInput = {
+    where: CompanyPostAcknowledgmentWhereUniqueInput
+    create: XOR<CompanyPostAcknowledgmentCreateWithoutPostInput, CompanyPostAcknowledgmentUncheckedCreateWithoutPostInput>
+  }
+
+  export type CompanyPostAcknowledgmentCreateManyPostInputEnvelope = {
+    data: CompanyPostAcknowledgmentCreateManyPostInput | CompanyPostAcknowledgmentCreateManyPostInput[]
+    skipDuplicates?: boolean
   }
 
   export type CompanyUpsertWithoutPostsInput = {
@@ -20599,6 +22189,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
     messages?: MessageUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCompanyPostsInput = {
@@ -20616,6 +22207,167 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
     messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type CompanyPostAcknowledgmentUpsertWithWhereUniqueWithoutPostInput = {
+    where: CompanyPostAcknowledgmentWhereUniqueInput
+    update: XOR<CompanyPostAcknowledgmentUpdateWithoutPostInput, CompanyPostAcknowledgmentUncheckedUpdateWithoutPostInput>
+    create: XOR<CompanyPostAcknowledgmentCreateWithoutPostInput, CompanyPostAcknowledgmentUncheckedCreateWithoutPostInput>
+  }
+
+  export type CompanyPostAcknowledgmentUpdateWithWhereUniqueWithoutPostInput = {
+    where: CompanyPostAcknowledgmentWhereUniqueInput
+    data: XOR<CompanyPostAcknowledgmentUpdateWithoutPostInput, CompanyPostAcknowledgmentUncheckedUpdateWithoutPostInput>
+  }
+
+  export type CompanyPostAcknowledgmentUpdateManyWithWhereWithoutPostInput = {
+    where: CompanyPostAcknowledgmentScalarWhereInput
+    data: XOR<CompanyPostAcknowledgmentUpdateManyMutationInput, CompanyPostAcknowledgmentUncheckedUpdateManyWithoutPostInput>
+  }
+
+  export type CompanyPostCreateWithoutAcknowledgmentsInput = {
+    id?: string
+    title?: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutPostsInput
+    author?: UserCreateNestedOneWithoutCompanyPostsInput
+  }
+
+  export type CompanyPostUncheckedCreateWithoutAcknowledgmentsInput = {
+    id?: string
+    title?: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    companyId: string
+    authorId?: string | null
+  }
+
+  export type CompanyPostCreateOrConnectWithoutAcknowledgmentsInput = {
+    where: CompanyPostWhereUniqueInput
+    create: XOR<CompanyPostCreateWithoutAcknowledgmentsInput, CompanyPostUncheckedCreateWithoutAcknowledgmentsInput>
+  }
+
+  export type UserCreateWithoutPostAcknowledgmentsInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    image?: string | null
+    description?: string | null
+    emailVerificationCode?: EmailVerificationCodeCreateNestedOneWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    companyMemberships?: CompanyMemberCreateNestedManyWithoutUserInput
+    channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
+    messages?: MessageCreateNestedManyWithoutAuthorInput
+    createdJobs?: JobCreateNestedManyWithoutCreatedByInput
+    companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
+  }
+
+  export type UserUncheckedCreateWithoutPostAcknowledgmentsInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    image?: string | null
+    description?: string | null
+    emailVerificationCode?: EmailVerificationCodeUncheckedCreateNestedOneWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    companyMemberships?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
+    channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
+    messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
+    createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
+    companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
+  }
+
+  export type UserCreateOrConnectWithoutPostAcknowledgmentsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutPostAcknowledgmentsInput, UserUncheckedCreateWithoutPostAcknowledgmentsInput>
+  }
+
+  export type CompanyPostUpsertWithoutAcknowledgmentsInput = {
+    update: XOR<CompanyPostUpdateWithoutAcknowledgmentsInput, CompanyPostUncheckedUpdateWithoutAcknowledgmentsInput>
+    create: XOR<CompanyPostCreateWithoutAcknowledgmentsInput, CompanyPostUncheckedCreateWithoutAcknowledgmentsInput>
+    where?: CompanyPostWhereInput
+  }
+
+  export type CompanyPostUpdateToOneWithWhereWithoutAcknowledgmentsInput = {
+    where?: CompanyPostWhereInput
+    data: XOR<CompanyPostUpdateWithoutAcknowledgmentsInput, CompanyPostUncheckedUpdateWithoutAcknowledgmentsInput>
+  }
+
+  export type CompanyPostUpdateWithoutAcknowledgmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutPostsNestedInput
+    author?: UserUpdateOneWithoutCompanyPostsNestedInput
+  }
+
+  export type CompanyPostUncheckedUpdateWithoutAcknowledgmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    companyId?: StringFieldUpdateOperationsInput | string
+    authorId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type UserUpsertWithoutPostAcknowledgmentsInput = {
+    update: XOR<UserUpdateWithoutPostAcknowledgmentsInput, UserUncheckedUpdateWithoutPostAcknowledgmentsInput>
+    create: XOR<UserCreateWithoutPostAcknowledgmentsInput, UserUncheckedCreateWithoutPostAcknowledgmentsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutPostAcknowledgmentsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutPostAcknowledgmentsInput, UserUncheckedUpdateWithoutPostAcknowledgmentsInput>
+  }
+
+  export type UserUpdateWithoutPostAcknowledgmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerificationCode?: EmailVerificationCodeUpdateOneWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    companyMemberships?: CompanyMemberUpdateManyWithoutUserNestedInput
+    channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
+    messages?: MessageUpdateManyWithoutAuthorNestedInput
+    createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
+    companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutPostAcknowledgmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerificationCode?: EmailVerificationCodeUncheckedUpdateOneWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    companyMemberships?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
+    channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
+    createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
+    companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
   }
 
   export type CompanyMemberCreateManyCompanyInput = {
@@ -20722,6 +22474,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     author?: UserUpdateOneWithoutCompanyPostsNestedInput
+    acknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutPostNestedInput
   }
 
   export type CompanyPostUncheckedUpdateWithoutCompanyInput = {
@@ -20731,6 +22484,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutPostNestedInput
   }
 
   export type CompanyPostUncheckedUpdateManyWithoutCompanyInput = {
@@ -20845,6 +22599,11 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     companyId: string
+  }
+
+  export type CompanyPostAcknowledgmentCreateManyUserInput = {
+    postId: string
+    createdAt?: Date | string
   }
 
   export type AccountUpdateWithoutUserInput = {
@@ -20998,6 +22757,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     company?: CompanyUpdateOneRequiredWithoutPostsNestedInput
+    acknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutPostNestedInput
   }
 
   export type CompanyPostUncheckedUpdateWithoutAuthorInput = {
@@ -21007,6 +22767,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     companyId?: StringFieldUpdateOperationsInput | string
+    acknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutPostNestedInput
   }
 
   export type CompanyPostUncheckedUpdateManyWithoutAuthorInput = {
@@ -21016,6 +22777,41 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     companyId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type CompanyPostAcknowledgmentUpdateWithoutUserInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    post?: CompanyPostUpdateOneRequiredWithoutAcknowledgmentsNestedInput
+  }
+
+  export type CompanyPostAcknowledgmentUncheckedUpdateWithoutUserInput = {
+    postId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserInput = {
+    postId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompanyPostAcknowledgmentCreateManyPostInput = {
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type CompanyPostAcknowledgmentUpdateWithoutPostInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutPostAcknowledgmentsNestedInput
+  }
+
+  export type CompanyPostAcknowledgmentUncheckedUpdateWithoutPostInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompanyPostAcknowledgmentUncheckedUpdateManyWithoutPostInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

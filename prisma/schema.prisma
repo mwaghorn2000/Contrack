@@ -119,6 +119,7 @@ model User {
     messages            Message[]
     createdJobs         Job[]
     companyPosts        CompanyPost[]
+    postAcknowledgments CompanyPostAcknowledgment[]
 }
 
 model EmailVerificationCode {
@@ -169,8 +170,21 @@ model CompanyPost {
 
     company     Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
     author      User?   @relation(fields: [authorId], references: [id], onDelete: SetNull)
+    acknowledgments CompanyPostAcknowledgment[]
 
     @@index([companyId, createdAt, id])
+}
+
+model CompanyPostAcknowledgment {
+    postId    String
+    userId    String
+    createdAt DateTime @default(now())
+
+    post CompanyPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+    user User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@id([postId, userId])
+    @@index([userId])
 }
 
 model VerificationToken {

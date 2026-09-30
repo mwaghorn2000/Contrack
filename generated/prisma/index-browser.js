@@ -223,6 +223,12 @@ exports.Prisma.CompanyPostScalarFieldEnum = {
   authorId: 'authorId'
 };
 
+exports.Prisma.CompanyPostAcknowledgmentScalarFieldEnum = {
+  postId: 'postId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.VerificationTokenScalarFieldEnum = {
   identifier: 'identifier',
   token: 'token',
@@ -262,6 +268,7 @@ exports.Prisma.ModelName = {
   Message: 'Message',
   Job: 'Job',
   CompanyPost: 'CompanyPost',
+  CompanyPostAcknowledgment: 'CompanyPostAcknowledgment',
   VerificationToken: 'VerificationToken'
 };
 
