@@ -131,13 +131,11 @@ describe("jobRouter", () => {
       db.company.findUnique.mockResolvedValue({ id: companyId });
       db.job.create.mockResolvedValue(job);
       await expect(
-        jobRouter
-          .createCaller(ctx)
-          .createJob({
-            companyId,
-            title: "  Inspection  ",
-            description: "  Roof inspection  ",
-          }),
+        jobRouter.createCaller(ctx).createJob({
+          companyId,
+          title: "  Inspection  ",
+          description: "  Roof inspection  ",
+        }),
       ).resolves.toEqual(job);
       expect(db.company.findUnique).toHaveBeenCalledWith({
         where: {
@@ -176,13 +174,11 @@ describe("jobRouter", () => {
       const { ctx, db } = createTestContext();
       db.company.findUnique.mockResolvedValue({ id: companyId });
       db.job.create.mockResolvedValue({ id: jobId });
-      await jobRouter
-        .createCaller(ctx)
-        .createJob({
-          companyId,
-          title: "Inspection",
-          description: "a".repeat(500),
-        });
+      await jobRouter.createCaller(ctx).createJob({
+        companyId,
+        title: "Inspection",
+        description: "a".repeat(500),
+      });
       expect(db.job.create).toHaveBeenCalledWith({
         data: {
           title: "Inspection",

@@ -361,12 +361,9 @@ describe("auth.verifyEmail", () => {
   ])("rejects unverifiable accounts (%s)", async (record, code, message) => {
     const { caller, tx } = setup();
     tx.user.findUnique.mockResolvedValue(record);
-    await expect(
-      caller.verifyEmail({ email, code: "012345" }),
-    ).rejects.toMatchObject({
-      code,
-      message: expect.stringContaining(message as string),
-    });
+    const result = caller.verifyEmail({ email, code: "012345" });
+    await expect(result).rejects.toMatchObject({ code });
+    await expect(result).rejects.toThrow(message);
     expect(argon2.verify).not.toHaveBeenCalled();
     expect(tx.user.update).not.toHaveBeenCalled();
     expect(tx.emailVerificationCode.update).not.toHaveBeenCalled();
