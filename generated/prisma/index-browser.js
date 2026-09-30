@@ -148,6 +148,7 @@ exports.Prisma.CompanyScalarFieldEnum = {
   id: 'id',
   name: 'name',
   image: 'image',
+  bannerImage: 'bannerImage',
   description: 'description',
   website: 'website',
   email: 'email',
@@ -214,6 +215,7 @@ exports.Prisma.JobScalarFieldEnum = {
 
 exports.Prisma.CompanyPostScalarFieldEnum = {
   id: 'id',
+  title: 'title',
   content: 'content',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',

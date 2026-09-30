@@ -103,7 +103,7 @@ model ChannelMember {
 
 model User {
     id            String    @id @default(cuid())
-    name          String?
+    name          String?   
     email         String?   @unique
     emailVerified DateTime?
     emailVerificationCode   EmailVerificationCode?
@@ -160,6 +160,7 @@ model Job {
 
 model CompanyPost {
     id          String   @id @default(cuid())
+    title       String   @default("Company Update")
     content     String
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt

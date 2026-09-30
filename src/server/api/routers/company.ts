@@ -31,6 +31,12 @@ const updateCompanySchema = createCompanySchema.partial().extend({
     companyId: z.string().cuid()
 })
 
+const createCompanyPostSchema = z.object({
+  title: z.string().trim().min(1, "title must not be empty").max(100, "title must be less than 100 characters."),
+  content: z.string().trim().min(1, "content must not be empty").max(1000, "content must be less than 1000 characters."),
+  companyId: z.string().cuid()
+})
+
 
 export const companyRouter = createTRPCRouter({
   getCompany: protectedProcedure
@@ -165,4 +171,109 @@ export const companyRouter = createTRPCRouter({
 
              return { success: true };
         }),
+
+    getCompanyPosts: protectedProcedure
+        .input(z.object({
+          companyId: z.string().cuid(),
+        }))
+        .query( async ({ ctx, input }) => {
+          const company = await ctx.db.company.findFirst({
+            where: {
+              id: input.companyId,
+              members: {
+                some: {
+                  userId: ctx.session.user.id,
+                }
+              }
+            },
+            select: {
+              posts: {
+                orderBy: {
+                  createdAt: "desc",
+                }
+              }
+            }
+          });
+
+          if (!company) {
+            throw new TRPCError({
+              code: "NOT_FOUND",
+              message: "Company not found",
+            });
+          }
+
+          return company.posts;
+        }),
+    createCompanyPost: protectedProcedure
+        .input(createCompanyPostSchema)
+        .mutation( async ({ ctx, input }) => {
+          const company = await ctx.db.company.findFirst({
+            where: {
+              id: input.companyId,
+              members: {
+                some: {
+                  userId: ctx.session.user.id,
+                  role: { in: ["ADMIN", "OWNER"]}
+                }
+              }
+            },
+            select: {
+              id: true,
+            }
+          });
+
+          if (!company) {
+            throw new TRPCError({
+              code: "NOT_FOUND",
+              message: "No valid company you can post to."
+            });
+          }
+
+          const post = await ctx.db.companyPost.create({
+            data: {
+              title: input.title,
+              content: input.content,
+              companyId: input.companyId,
+              authorId: ctx.session.user.id,
+            }
+          });
+
+          return {
+            post,
+            success: true
+          }
+        }),
+    deleteCompanyPost: protectedProcedure
+      .input(z.object({
+        postId: z.string().cuid(),
+        companyId: z.string().cuid()
+      }))
+      .mutation( async ({ ctx, input }) => {
+        const posts = await ctx.db.companyPost.deleteMany({
+          where: {
+            id: input.postId,
+            companyId: input.companyId,
+            company: {
+              members: {
+                some: {
+                  userId: ctx.session.user.id,
+                  role: { in: ["ADMIN", "OWNER"] }
+                }
+              }
+            }
+          }
+        });
+
+        if (posts.count === 0) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Message to delete does not exist, or you do not have access."
+          });
+        }
+
+        return {
+          success: true
+        }
+      })
+  
 });
