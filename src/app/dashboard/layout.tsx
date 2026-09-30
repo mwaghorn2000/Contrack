@@ -13,9 +13,9 @@ export default async function DashboardLayout({
   if (!session?.user) redirect("/login");
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col md:h-dvh md:min-h-0 md:overflow-hidden">
       <TopNavBar />
-      <div className="flex flex-1 flex-col md:flex-row">
+      <div className="flex flex-1 flex-col md:min-h-0 md:flex-row md:overflow-hidden">
         <Suspense
           fallback={
             <aside className="w-full shrink-0 border-b border-gray-200 bg-gray-50 p-4 md:w-60 md:border-r md:border-b-0">
@@ -27,7 +27,7 @@ export default async function DashboardLayout({
         >
           <Sidebar />
         </Suspense>
-        <main className="min-w-0 flex-1 p-6">{children}</main>
+        <main className="min-w-0 flex-1 p-6 md:min-h-0 md:overflow-y-auto">{children}</main>
       </div>
     </div>
   );

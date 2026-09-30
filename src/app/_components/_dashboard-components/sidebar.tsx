@@ -31,7 +31,7 @@ export default function Sidebar() {
   const canAddJob = role === "OWNER" || role === "ADMIN";
 
   return (
-    <aside className="w-full shrink-0 border-b border-gray-200 bg-gray-50 p-4 md:w-60 md:border-r md:border-b-0">
+    <aside className="w-full shrink-0 border-b border-gray-200 bg-gray-50 p-4 md:w-60 md:border-r md:border-b-0 md:min-h-0 md:overflow-y-auto">
       <nav aria-label="Sidebar navigation" className="space-y-1">
         {navigationItems.map(({ label, href }) => {
           const isActive =

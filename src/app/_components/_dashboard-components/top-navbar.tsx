@@ -3,14 +3,14 @@ import { Suspense } from "react";
 
 import { auth } from "~/server/auth";
 import CompanySelector from "./company-selector";
-import ProfilePicture from "./profile-picture";
+import AccountMenu from "./account-menu";
 
 export default async function TopNavBar() {
   const session = await auth();
   const displayName = session?.user?.name ?? session?.user?.email ?? "Account";
 
   return (
-    <header className="flex min-h-16 shrink-0 flex-wrap items-center gap-4 border-b border-gray-200 bg-white px-4 py-3 sm:gap-6 sm:px-6 lg:px-8">
+    <header className="relative z-30 flex min-h-16 shrink-0 flex-wrap items-center gap-4 border-b border-gray-200 bg-white px-4 py-3 sm:gap-6 sm:px-6 lg:px-8">
       <Link
         href="/dashboard"
         className="shrink-0 rounded text-lg font-semibold tracking-tight text-gray-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gray-900"
@@ -48,12 +48,17 @@ export default async function TopNavBar() {
       </nav>
 
       {session?.user && (
-        <div className="ml-auto flex min-w-0 items-center gap-3">
-          <span className="hidden truncate text-sm text-gray-600 md:block">
-            {displayName}
-          </span>
-          <ProfilePicture />
-        </div>
+        <Suspense
+          fallback={
+            <span className="ml-auto text-sm text-gray-600">{displayName}</span>
+          }
+        >
+          <AccountMenu
+            name={session.user.name ?? null}
+            email={session.user.email ?? null}
+            image={session.user.image ?? null}
+          />
+        </Suspense>
       )}
     </header>
   );
