@@ -43,6 +43,8 @@ export const jobRouter = createTRPCRouter({
           message: "Job not found",
         });
       }
+
+      return job;
     }),
 
   listCompanyJobs: protectedProcedure
