@@ -36,6 +36,7 @@ export async function startTestDatabase() {
 
 // Only pass the Prisma client returned by startTestDatabase here.
 export async function clearTestDatabase(db: PrismaClient) {
+  await db.companyInvitation.deleteMany();
   await db.message.deleteMany();
   await db.channelMember.deleteMany();
   await db.channel.deleteMany();

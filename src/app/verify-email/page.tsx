@@ -2,6 +2,13 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState, type SubmitEvent } from "react";
+import Link from "next/link";
+import { getSession } from "next-auth/react";
+import {
+  authPath,
+  invitationDestination,
+  invitationToken,
+} from "~/lib/invitation-links";
 import AuthLayout from "../_components/auth/auth-layout";
 import { api } from "~/trpc/react";
 
@@ -18,6 +25,9 @@ export default function VerifyEmailPage() {
 function VerifyEmailForm() {
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
+  const invite = invitationToken(searchParams.get("invite"));
+  const resend = api.auth.verificationEmail.useMutation();
+  const [resendMessage, setResendMessage] = useState("");
   const sendFailed = searchParams.get("sendFailed") === "1";
 
   const [code, setCode] = useState("");
@@ -44,7 +54,12 @@ function VerifyEmailForm() {
     try {
       await verifyEmail.mutateAsync({ email, code });
       setVerified(true);
-      router.push("/dashboard");
+      const session = await getSession();
+      router.replace(
+        session?.user
+          ? invitationDestination(invite)
+          : authPath("/login", invite, email, { verified: "1" }),
+      );
     } catch (error) {
       setError(
         error instanceof Error
@@ -65,6 +80,34 @@ function VerifyEmailForm() {
           : `Check your inbox at ${email ?? "your email address"}.`}
       </p>
 
+      <div className="mb-4 text-center text-sm">
+        <button
+          type="button"
+          disabled={!email || resend.isPending}
+          className="rounded underline disabled:opacity-50"
+          onClick={async () => {
+            if (!email) return;
+            setResendMessage("");
+            try {
+              await resend.mutateAsync({ email });
+              setResendMessage("A new code has been sent. Check your inbox.");
+            } catch (error) {
+              setResendMessage(
+                error instanceof Error
+                  ? error.message
+                  : "Could not send a new code.",
+              );
+            }
+          }}
+        >
+          {resend.isPending ? "Sending…" : "Send a new code"}
+        </button>
+        {resendMessage && (
+          <p role="status" className="mt-2 text-gray-600">
+            {resendMessage}
+          </p>
+        )}
+      </div>
       {verified ? (
         <p role="status" className="text-center text-sm text-green-700">
           Your email has been verified.
@@ -120,6 +163,12 @@ function VerifyEmailForm() {
           </button>
         </form>
       )}
+      <Link
+        href={authPath("/login", invite, email)}
+        className="mt-6 block text-center text-sm underline"
+      >
+        Back to sign in
+      </Link>
     </AuthLayout>
   );
 }

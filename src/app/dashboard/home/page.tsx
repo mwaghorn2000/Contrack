@@ -1,6 +1,7 @@
 import CompanyHeader from "~/app/_components/_dashboard-components/_home-components/comany-header";
 import CompanyPosts from "~/app/_components/_dashboard-components/_home-components/company-posts";
 import { api } from "~/trpc/server";
+import { withCompanyAccess } from "~/server/company-access";
 
 export default async function HomePage({
   searchParams,
@@ -13,10 +14,12 @@ export default async function HomePage({
     return <p>Select a company.</p>;
   }
 
-  const [company, posts] = await Promise.all([
-    api.company.getCompany({ companyId }),
-    api.company.getCompanyPosts({ companyId }),
-  ]);
+  const [company, posts] = await withCompanyAccess(companyId, () =>
+    Promise.all([
+      api.company.getCompany({ companyId }),
+      api.company.getCompanyPosts({ companyId }),
+    ]),
+  );
   const role = company.members[0]?.role;
   return (
     <div className="mx-auto flex w-full max-w-[1000px] flex-col gap-6">

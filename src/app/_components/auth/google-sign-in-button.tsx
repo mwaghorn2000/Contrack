@@ -3,10 +3,14 @@
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 
-export default function GoogleSignInButton() {
+export default function GoogleSignInButton({
+  redirectTo = "/dashboard",
+}: {
+  redirectTo?: string;
+}) {
   async function handleGoogleLogin() {
     await signIn("google", {
-      redirectTo: "/dashboard",
+      redirectTo,
     });
   }
 

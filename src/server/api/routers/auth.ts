@@ -94,7 +94,7 @@ export const authRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const user = await ctx.db.user.findFirst({
         where: {
-          email: input.email,
+          email: { equals: input.email, mode: "insensitive" },
         },
       });
 
@@ -145,8 +145,8 @@ export const authRouter = createTRPCRouter({
       });
 
       const result = await withSerializableTransaction(ctx.db, async (tx) => {
-        const user = await tx.user.findUnique({
-          where: { email: input.email },
+        const user = await tx.user.findFirst({
+          where: { email: { equals: input.email, mode: "insensitive" } },
           select: {
             id: true,
             email: true,
@@ -222,8 +222,8 @@ export const authRouter = createTRPCRouter({
     .input(verifyEmailSchema)
     .mutation(async ({ ctx, input }) => {
       const result = await withSerializableTransaction(ctx.db, async (tx) => {
-        const user = await tx.user.findUnique({
-          where: { email: input.email },
+        const user = await tx.user.findFirst({
+          where: { email: { equals: input.email, mode: "insensitive" } },
           select: {
             id: true,
             emailVerificationCode: true,

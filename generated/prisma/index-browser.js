@@ -186,6 +186,19 @@ exports.Prisma.UserScalarFieldEnum = {
   description: 'description'
 };
 
+exports.Prisma.CompanyInvitationScalarFieldEnum = {
+  id: 'id',
+  companyId: 'companyId',
+  email: 'email',
+  role: 'role',
+  tokenHash: 'tokenHash',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  expiresAt: 'expiresAt',
+  acceptedAt: 'acceptedAt',
+  revokedAt: 'revokedAt'
+};
+
 exports.Prisma.EmailVerificationCodeScalarFieldEnum = {
   userId: 'userId',
   codeHash: 'codeHash',
@@ -264,6 +277,7 @@ exports.Prisma.ModelName = {
   Channel: 'Channel',
   ChannelMember: 'ChannelMember',
   User: 'User',
+  CompanyInvitation: 'CompanyInvitation',
   EmailVerificationCode: 'EmailVerificationCode',
   Message: 'Message',
   Job: 'Job',

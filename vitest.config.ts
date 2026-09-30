@@ -13,7 +13,7 @@ export default defineConfig({
     env: { NODE_ENV: "production" },
     coverage: {
       provider: "v8",
-      include: ["src/server/api/routers/{company,auth,job}.ts"],
+      include: ["src/server/api/routers/{company,auth,job,invitation}.ts"],
       reporter: ["text", "html"],
     },
   },

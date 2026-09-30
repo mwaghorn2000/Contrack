@@ -49,6 +49,11 @@ export type ChannelMember = $Result.DefaultSelection<Prisma.$ChannelMemberPayloa
  */
 export type User = $Result.DefaultSelection<Prisma.$UserPayload>
 /**
+ * Model CompanyInvitation
+ * 
+ */
+export type CompanyInvitation = $Result.DefaultSelection<Prisma.$CompanyInvitationPayload>
+/**
  * Model EmailVerificationCode
  * 
  */
@@ -285,6 +290,16 @@ export class PrismaClient<
     * ```
     */
   get user(): Prisma.UserDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.companyInvitation`: Exposes CRUD operations for the **CompanyInvitation** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CompanyInvitations
+    * const companyInvitations = await prisma.companyInvitation.findMany()
+    * ```
+    */
+  get companyInvitation(): Prisma.CompanyInvitationDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.emailVerificationCode`: Exposes CRUD operations for the **EmailVerificationCode** model.
@@ -793,6 +808,7 @@ export namespace Prisma {
     Channel: 'Channel',
     ChannelMember: 'ChannelMember',
     User: 'User',
+    CompanyInvitation: 'CompanyInvitation',
     EmailVerificationCode: 'EmailVerificationCode',
     Message: 'Message',
     Job: 'Job',
@@ -817,7 +833,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "account" | "session" | "company" | "companyMember" | "channel" | "channelMember" | "user" | "emailVerificationCode" | "message" | "job" | "companyPost" | "companyPostAcknowledgment" | "verificationToken"
+      modelProps: "account" | "session" | "company" | "companyMember" | "channel" | "channelMember" | "user" | "companyInvitation" | "emailVerificationCode" | "message" | "job" | "companyPost" | "companyPostAcknowledgment" | "verificationToken"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1336,6 +1352,80 @@ export namespace Prisma {
           count: {
             args: Prisma.UserCountArgs<ExtArgs>
             result: $Utils.Optional<UserCountAggregateOutputType> | number
+          }
+        }
+      }
+      CompanyInvitation: {
+        payload: Prisma.$CompanyInvitationPayload<ExtArgs>
+        fields: Prisma.CompanyInvitationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CompanyInvitationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyInvitationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CompanyInvitationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyInvitationPayload>
+          }
+          findFirst: {
+            args: Prisma.CompanyInvitationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyInvitationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CompanyInvitationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyInvitationPayload>
+          }
+          findMany: {
+            args: Prisma.CompanyInvitationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyInvitationPayload>[]
+          }
+          create: {
+            args: Prisma.CompanyInvitationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyInvitationPayload>
+          }
+          createMany: {
+            args: Prisma.CompanyInvitationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CompanyInvitationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyInvitationPayload>[]
+          }
+          delete: {
+            args: Prisma.CompanyInvitationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyInvitationPayload>
+          }
+          update: {
+            args: Prisma.CompanyInvitationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyInvitationPayload>
+          }
+          deleteMany: {
+            args: Prisma.CompanyInvitationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CompanyInvitationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CompanyInvitationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyInvitationPayload>[]
+          }
+          upsert: {
+            args: Prisma.CompanyInvitationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyInvitationPayload>
+          }
+          aggregate: {
+            args: Prisma.CompanyInvitationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCompanyInvitation>
+          }
+          groupBy: {
+            args: Prisma.CompanyInvitationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CompanyInvitationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CompanyInvitationCountArgs<ExtArgs>
+            result: $Utils.Optional<CompanyInvitationCountAggregateOutputType> | number
           }
         }
       }
@@ -1886,6 +1976,7 @@ export namespace Prisma {
     channel?: ChannelOmit
     channelMember?: ChannelMemberOmit
     user?: UserOmit
+    companyInvitation?: CompanyInvitationOmit
     emailVerificationCode?: EmailVerificationCodeOmit
     message?: MessageOmit
     job?: JobOmit
@@ -1976,6 +2067,7 @@ export namespace Prisma {
     channels: number
     jobs: number
     posts: number
+    invitations: number
   }
 
   export type CompanyCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1983,6 +2075,7 @@ export namespace Prisma {
     channels?: boolean | CompanyCountOutputTypeCountChannelsArgs
     jobs?: boolean | CompanyCountOutputTypeCountJobsArgs
     posts?: boolean | CompanyCountOutputTypeCountPostsArgs
+    invitations?: boolean | CompanyCountOutputTypeCountInvitationsArgs
   }
 
   // Custom InputTypes
@@ -2022,6 +2115,13 @@ export namespace Prisma {
    */
   export type CompanyCountOutputTypeCountPostsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: CompanyPostWhereInput
+  }
+
+  /**
+   * CompanyCountOutputType without action
+   */
+  export type CompanyCountOutputTypeCountInvitationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CompanyInvitationWhereInput
   }
 
 
@@ -2078,6 +2178,7 @@ export namespace Prisma {
     createdJobs: number
     companyPosts: number
     postAcknowledgments: number
+    sentInvitations: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2089,6 +2190,7 @@ export namespace Prisma {
     createdJobs?: boolean | UserCountOutputTypeCountCreatedJobsArgs
     companyPosts?: boolean | UserCountOutputTypeCountCompanyPostsArgs
     postAcknowledgments?: boolean | UserCountOutputTypeCountPostAcknowledgmentsArgs
+    sentInvitations?: boolean | UserCountOutputTypeCountSentInvitationsArgs
   }
 
   // Custom InputTypes
@@ -2156,6 +2258,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountPostAcknowledgmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: CompanyPostAcknowledgmentWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountSentInvitationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CompanyInvitationWhereInput
   }
 
 
@@ -4647,6 +4756,7 @@ export namespace Prisma {
     channels?: boolean | Company$channelsArgs<ExtArgs>
     jobs?: boolean | Company$jobsArgs<ExtArgs>
     posts?: boolean | Company$postsArgs<ExtArgs>
+    invitations?: boolean | Company$invitationsArgs<ExtArgs>
     _count?: boolean | CompanyCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["company"]>
 
@@ -4695,6 +4805,7 @@ export namespace Prisma {
     channels?: boolean | Company$channelsArgs<ExtArgs>
     jobs?: boolean | Company$jobsArgs<ExtArgs>
     posts?: boolean | Company$postsArgs<ExtArgs>
+    invitations?: boolean | Company$invitationsArgs<ExtArgs>
     _count?: boolean | CompanyCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CompanyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -4707,6 +4818,7 @@ export namespace Prisma {
       channels: Prisma.$ChannelPayload<ExtArgs>[]
       jobs: Prisma.$JobPayload<ExtArgs>[]
       posts: Prisma.$CompanyPostPayload<ExtArgs>[]
+      invitations: Prisma.$CompanyInvitationPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5117,6 +5229,7 @@ export namespace Prisma {
     channels<T extends Company$channelsArgs<ExtArgs> = {}>(args?: Subset<T, Company$channelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     jobs<T extends Company$jobsArgs<ExtArgs> = {}>(args?: Subset<T, Company$jobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     posts<T extends Company$postsArgs<ExtArgs> = {}>(args?: Subset<T, Company$postsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyPostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    invitations<T extends Company$invitationsArgs<ExtArgs> = {}>(args?: Subset<T, Company$invitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyInvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5637,6 +5750,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: CompanyPostScalarFieldEnum | CompanyPostScalarFieldEnum[]
+  }
+
+  /**
+   * Company.invitations
+   */
+  export type Company$invitationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyInvitation
+     */
+    select?: CompanyInvitationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyInvitation
+     */
+    omit?: CompanyInvitationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyInvitationInclude<ExtArgs> | null
+    where?: CompanyInvitationWhereInput
+    orderBy?: CompanyInvitationOrderByWithRelationInput | CompanyInvitationOrderByWithRelationInput[]
+    cursor?: CompanyInvitationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CompanyInvitationScalarFieldEnum | CompanyInvitationScalarFieldEnum[]
   }
 
   /**
@@ -9030,6 +9167,7 @@ export namespace Prisma {
     createdJobs?: boolean | User$createdJobsArgs<ExtArgs>
     companyPosts?: boolean | User$companyPostsArgs<ExtArgs>
     postAcknowledgments?: boolean | User$postAcknowledgmentsArgs<ExtArgs>
+    sentInvitations?: boolean | User$sentInvitationsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -9074,6 +9212,7 @@ export namespace Prisma {
     createdJobs?: boolean | User$createdJobsArgs<ExtArgs>
     companyPosts?: boolean | User$companyPostsArgs<ExtArgs>
     postAcknowledgments?: boolean | User$postAcknowledgmentsArgs<ExtArgs>
+    sentInvitations?: boolean | User$sentInvitationsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -9091,6 +9230,7 @@ export namespace Prisma {
       createdJobs: Prisma.$JobPayload<ExtArgs>[]
       companyPosts: Prisma.$CompanyPostPayload<ExtArgs>[]
       postAcknowledgments: Prisma.$CompanyPostAcknowledgmentPayload<ExtArgs>[]
+      sentInvitations: Prisma.$CompanyInvitationPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -9503,6 +9643,7 @@ export namespace Prisma {
     createdJobs<T extends User$createdJobsArgs<ExtArgs> = {}>(args?: Subset<T, User$createdJobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     companyPosts<T extends User$companyPostsArgs<ExtArgs> = {}>(args?: Subset<T, User$companyPostsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyPostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     postAcknowledgments<T extends User$postAcknowledgmentsArgs<ExtArgs> = {}>(args?: Subset<T, User$postAcknowledgmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyPostAcknowledgmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    sentInvitations<T extends User$sentInvitationsArgs<ExtArgs> = {}>(args?: Subset<T, User$sentInvitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyInvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10138,6 +10279,30 @@ export namespace Prisma {
   }
 
   /**
+   * User.sentInvitations
+   */
+  export type User$sentInvitationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyInvitation
+     */
+    select?: CompanyInvitationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyInvitation
+     */
+    omit?: CompanyInvitationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyInvitationInclude<ExtArgs> | null
+    where?: CompanyInvitationWhereInput
+    orderBy?: CompanyInvitationOrderByWithRelationInput | CompanyInvitationOrderByWithRelationInput[]
+    cursor?: CompanyInvitationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CompanyInvitationScalarFieldEnum | CompanyInvitationScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10153,6 +10318,1137 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: UserInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CompanyInvitation
+   */
+
+  export type AggregateCompanyInvitation = {
+    _count: CompanyInvitationCountAggregateOutputType | null
+    _min: CompanyInvitationMinAggregateOutputType | null
+    _max: CompanyInvitationMaxAggregateOutputType | null
+  }
+
+  export type CompanyInvitationMinAggregateOutputType = {
+    id: string | null
+    companyId: string | null
+    email: string | null
+    role: $Enums.CompanyRole | null
+    tokenHash: string | null
+    createdById: string | null
+    createdAt: Date | null
+    expiresAt: Date | null
+    acceptedAt: Date | null
+    revokedAt: Date | null
+  }
+
+  export type CompanyInvitationMaxAggregateOutputType = {
+    id: string | null
+    companyId: string | null
+    email: string | null
+    role: $Enums.CompanyRole | null
+    tokenHash: string | null
+    createdById: string | null
+    createdAt: Date | null
+    expiresAt: Date | null
+    acceptedAt: Date | null
+    revokedAt: Date | null
+  }
+
+  export type CompanyInvitationCountAggregateOutputType = {
+    id: number
+    companyId: number
+    email: number
+    role: number
+    tokenHash: number
+    createdById: number
+    createdAt: number
+    expiresAt: number
+    acceptedAt: number
+    revokedAt: number
+    _all: number
+  }
+
+
+  export type CompanyInvitationMinAggregateInputType = {
+    id?: true
+    companyId?: true
+    email?: true
+    role?: true
+    tokenHash?: true
+    createdById?: true
+    createdAt?: true
+    expiresAt?: true
+    acceptedAt?: true
+    revokedAt?: true
+  }
+
+  export type CompanyInvitationMaxAggregateInputType = {
+    id?: true
+    companyId?: true
+    email?: true
+    role?: true
+    tokenHash?: true
+    createdById?: true
+    createdAt?: true
+    expiresAt?: true
+    acceptedAt?: true
+    revokedAt?: true
+  }
+
+  export type CompanyInvitationCountAggregateInputType = {
+    id?: true
+    companyId?: true
+    email?: true
+    role?: true
+    tokenHash?: true
+    createdById?: true
+    createdAt?: true
+    expiresAt?: true
+    acceptedAt?: true
+    revokedAt?: true
+    _all?: true
+  }
+
+  export type CompanyInvitationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CompanyInvitation to aggregate.
+     */
+    where?: CompanyInvitationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompanyInvitations to fetch.
+     */
+    orderBy?: CompanyInvitationOrderByWithRelationInput | CompanyInvitationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CompanyInvitationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompanyInvitations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompanyInvitations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CompanyInvitations
+    **/
+    _count?: true | CompanyInvitationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CompanyInvitationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CompanyInvitationMaxAggregateInputType
+  }
+
+  export type GetCompanyInvitationAggregateType<T extends CompanyInvitationAggregateArgs> = {
+        [P in keyof T & keyof AggregateCompanyInvitation]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCompanyInvitation[P]>
+      : GetScalarType<T[P], AggregateCompanyInvitation[P]>
+  }
+
+
+
+
+  export type CompanyInvitationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CompanyInvitationWhereInput
+    orderBy?: CompanyInvitationOrderByWithAggregationInput | CompanyInvitationOrderByWithAggregationInput[]
+    by: CompanyInvitationScalarFieldEnum[] | CompanyInvitationScalarFieldEnum
+    having?: CompanyInvitationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CompanyInvitationCountAggregateInputType | true
+    _min?: CompanyInvitationMinAggregateInputType
+    _max?: CompanyInvitationMaxAggregateInputType
+  }
+
+  export type CompanyInvitationGroupByOutputType = {
+    id: string
+    companyId: string
+    email: string
+    role: $Enums.CompanyRole
+    tokenHash: string
+    createdById: string
+    createdAt: Date
+    expiresAt: Date
+    acceptedAt: Date | null
+    revokedAt: Date | null
+    _count: CompanyInvitationCountAggregateOutputType | null
+    _min: CompanyInvitationMinAggregateOutputType | null
+    _max: CompanyInvitationMaxAggregateOutputType | null
+  }
+
+  type GetCompanyInvitationGroupByPayload<T extends CompanyInvitationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CompanyInvitationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CompanyInvitationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CompanyInvitationGroupByOutputType[P]>
+            : GetScalarType<T[P], CompanyInvitationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CompanyInvitationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    email?: boolean
+    role?: boolean
+    tokenHash?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    expiresAt?: boolean
+    acceptedAt?: boolean
+    revokedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["companyInvitation"]>
+
+  export type CompanyInvitationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    email?: boolean
+    role?: boolean
+    tokenHash?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    expiresAt?: boolean
+    acceptedAt?: boolean
+    revokedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["companyInvitation"]>
+
+  export type CompanyInvitationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    email?: boolean
+    role?: boolean
+    tokenHash?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    expiresAt?: boolean
+    acceptedAt?: boolean
+    revokedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["companyInvitation"]>
+
+  export type CompanyInvitationSelectScalar = {
+    id?: boolean
+    companyId?: boolean
+    email?: boolean
+    role?: boolean
+    tokenHash?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    expiresAt?: boolean
+    acceptedAt?: boolean
+    revokedAt?: boolean
+  }
+
+  export type CompanyInvitationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "email" | "role" | "tokenHash" | "createdById" | "createdAt" | "expiresAt" | "acceptedAt" | "revokedAt", ExtArgs["result"]["companyInvitation"]>
+  export type CompanyInvitationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type CompanyInvitationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type CompanyInvitationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $CompanyInvitationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CompanyInvitation"
+    objects: {
+      company: Prisma.$CompanyPayload<ExtArgs>
+      createdBy: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      companyId: string
+      email: string
+      role: $Enums.CompanyRole
+      tokenHash: string
+      createdById: string
+      createdAt: Date
+      expiresAt: Date
+      acceptedAt: Date | null
+      revokedAt: Date | null
+    }, ExtArgs["result"]["companyInvitation"]>
+    composites: {}
+  }
+
+  type CompanyInvitationGetPayload<S extends boolean | null | undefined | CompanyInvitationDefaultArgs> = $Result.GetResult<Prisma.$CompanyInvitationPayload, S>
+
+  type CompanyInvitationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CompanyInvitationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CompanyInvitationCountAggregateInputType | true
+    }
+
+  export interface CompanyInvitationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CompanyInvitation'], meta: { name: 'CompanyInvitation' } }
+    /**
+     * Find zero or one CompanyInvitation that matches the filter.
+     * @param {CompanyInvitationFindUniqueArgs} args - Arguments to find a CompanyInvitation
+     * @example
+     * // Get one CompanyInvitation
+     * const companyInvitation = await prisma.companyInvitation.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CompanyInvitationFindUniqueArgs>(args: SelectSubset<T, CompanyInvitationFindUniqueArgs<ExtArgs>>): Prisma__CompanyInvitationClient<$Result.GetResult<Prisma.$CompanyInvitationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CompanyInvitation that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CompanyInvitationFindUniqueOrThrowArgs} args - Arguments to find a CompanyInvitation
+     * @example
+     * // Get one CompanyInvitation
+     * const companyInvitation = await prisma.companyInvitation.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CompanyInvitationFindUniqueOrThrowArgs>(args: SelectSubset<T, CompanyInvitationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CompanyInvitationClient<$Result.GetResult<Prisma.$CompanyInvitationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CompanyInvitation that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyInvitationFindFirstArgs} args - Arguments to find a CompanyInvitation
+     * @example
+     * // Get one CompanyInvitation
+     * const companyInvitation = await prisma.companyInvitation.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CompanyInvitationFindFirstArgs>(args?: SelectSubset<T, CompanyInvitationFindFirstArgs<ExtArgs>>): Prisma__CompanyInvitationClient<$Result.GetResult<Prisma.$CompanyInvitationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CompanyInvitation that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyInvitationFindFirstOrThrowArgs} args - Arguments to find a CompanyInvitation
+     * @example
+     * // Get one CompanyInvitation
+     * const companyInvitation = await prisma.companyInvitation.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CompanyInvitationFindFirstOrThrowArgs>(args?: SelectSubset<T, CompanyInvitationFindFirstOrThrowArgs<ExtArgs>>): Prisma__CompanyInvitationClient<$Result.GetResult<Prisma.$CompanyInvitationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CompanyInvitations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyInvitationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CompanyInvitations
+     * const companyInvitations = await prisma.companyInvitation.findMany()
+     * 
+     * // Get first 10 CompanyInvitations
+     * const companyInvitations = await prisma.companyInvitation.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const companyInvitationWithIdOnly = await prisma.companyInvitation.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CompanyInvitationFindManyArgs>(args?: SelectSubset<T, CompanyInvitationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyInvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CompanyInvitation.
+     * @param {CompanyInvitationCreateArgs} args - Arguments to create a CompanyInvitation.
+     * @example
+     * // Create one CompanyInvitation
+     * const CompanyInvitation = await prisma.companyInvitation.create({
+     *   data: {
+     *     // ... data to create a CompanyInvitation
+     *   }
+     * })
+     * 
+     */
+    create<T extends CompanyInvitationCreateArgs>(args: SelectSubset<T, CompanyInvitationCreateArgs<ExtArgs>>): Prisma__CompanyInvitationClient<$Result.GetResult<Prisma.$CompanyInvitationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CompanyInvitations.
+     * @param {CompanyInvitationCreateManyArgs} args - Arguments to create many CompanyInvitations.
+     * @example
+     * // Create many CompanyInvitations
+     * const companyInvitation = await prisma.companyInvitation.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CompanyInvitationCreateManyArgs>(args?: SelectSubset<T, CompanyInvitationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CompanyInvitations and returns the data saved in the database.
+     * @param {CompanyInvitationCreateManyAndReturnArgs} args - Arguments to create many CompanyInvitations.
+     * @example
+     * // Create many CompanyInvitations
+     * const companyInvitation = await prisma.companyInvitation.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CompanyInvitations and only return the `id`
+     * const companyInvitationWithIdOnly = await prisma.companyInvitation.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CompanyInvitationCreateManyAndReturnArgs>(args?: SelectSubset<T, CompanyInvitationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyInvitationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CompanyInvitation.
+     * @param {CompanyInvitationDeleteArgs} args - Arguments to delete one CompanyInvitation.
+     * @example
+     * // Delete one CompanyInvitation
+     * const CompanyInvitation = await prisma.companyInvitation.delete({
+     *   where: {
+     *     // ... filter to delete one CompanyInvitation
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CompanyInvitationDeleteArgs>(args: SelectSubset<T, CompanyInvitationDeleteArgs<ExtArgs>>): Prisma__CompanyInvitationClient<$Result.GetResult<Prisma.$CompanyInvitationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CompanyInvitation.
+     * @param {CompanyInvitationUpdateArgs} args - Arguments to update one CompanyInvitation.
+     * @example
+     * // Update one CompanyInvitation
+     * const companyInvitation = await prisma.companyInvitation.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CompanyInvitationUpdateArgs>(args: SelectSubset<T, CompanyInvitationUpdateArgs<ExtArgs>>): Prisma__CompanyInvitationClient<$Result.GetResult<Prisma.$CompanyInvitationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CompanyInvitations.
+     * @param {CompanyInvitationDeleteManyArgs} args - Arguments to filter CompanyInvitations to delete.
+     * @example
+     * // Delete a few CompanyInvitations
+     * const { count } = await prisma.companyInvitation.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CompanyInvitationDeleteManyArgs>(args?: SelectSubset<T, CompanyInvitationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CompanyInvitations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyInvitationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CompanyInvitations
+     * const companyInvitation = await prisma.companyInvitation.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CompanyInvitationUpdateManyArgs>(args: SelectSubset<T, CompanyInvitationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CompanyInvitations and returns the data updated in the database.
+     * @param {CompanyInvitationUpdateManyAndReturnArgs} args - Arguments to update many CompanyInvitations.
+     * @example
+     * // Update many CompanyInvitations
+     * const companyInvitation = await prisma.companyInvitation.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CompanyInvitations and only return the `id`
+     * const companyInvitationWithIdOnly = await prisma.companyInvitation.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CompanyInvitationUpdateManyAndReturnArgs>(args: SelectSubset<T, CompanyInvitationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyInvitationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CompanyInvitation.
+     * @param {CompanyInvitationUpsertArgs} args - Arguments to update or create a CompanyInvitation.
+     * @example
+     * // Update or create a CompanyInvitation
+     * const companyInvitation = await prisma.companyInvitation.upsert({
+     *   create: {
+     *     // ... data to create a CompanyInvitation
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CompanyInvitation we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CompanyInvitationUpsertArgs>(args: SelectSubset<T, CompanyInvitationUpsertArgs<ExtArgs>>): Prisma__CompanyInvitationClient<$Result.GetResult<Prisma.$CompanyInvitationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CompanyInvitations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyInvitationCountArgs} args - Arguments to filter CompanyInvitations to count.
+     * @example
+     * // Count the number of CompanyInvitations
+     * const count = await prisma.companyInvitation.count({
+     *   where: {
+     *     // ... the filter for the CompanyInvitations we want to count
+     *   }
+     * })
+    **/
+    count<T extends CompanyInvitationCountArgs>(
+      args?: Subset<T, CompanyInvitationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CompanyInvitationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CompanyInvitation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyInvitationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CompanyInvitationAggregateArgs>(args: Subset<T, CompanyInvitationAggregateArgs>): Prisma.PrismaPromise<GetCompanyInvitationAggregateType<T>>
+
+    /**
+     * Group by CompanyInvitation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyInvitationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CompanyInvitationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CompanyInvitationGroupByArgs['orderBy'] }
+        : { orderBy?: CompanyInvitationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CompanyInvitationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCompanyInvitationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CompanyInvitation model
+   */
+  readonly fields: CompanyInvitationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CompanyInvitation.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CompanyInvitationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    createdBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CompanyInvitation model
+   */
+  interface CompanyInvitationFieldRefs {
+    readonly id: FieldRef<"CompanyInvitation", 'String'>
+    readonly companyId: FieldRef<"CompanyInvitation", 'String'>
+    readonly email: FieldRef<"CompanyInvitation", 'String'>
+    readonly role: FieldRef<"CompanyInvitation", 'CompanyRole'>
+    readonly tokenHash: FieldRef<"CompanyInvitation", 'String'>
+    readonly createdById: FieldRef<"CompanyInvitation", 'String'>
+    readonly createdAt: FieldRef<"CompanyInvitation", 'DateTime'>
+    readonly expiresAt: FieldRef<"CompanyInvitation", 'DateTime'>
+    readonly acceptedAt: FieldRef<"CompanyInvitation", 'DateTime'>
+    readonly revokedAt: FieldRef<"CompanyInvitation", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CompanyInvitation findUnique
+   */
+  export type CompanyInvitationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyInvitation
+     */
+    select?: CompanyInvitationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyInvitation
+     */
+    omit?: CompanyInvitationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyInvitationInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanyInvitation to fetch.
+     */
+    where: CompanyInvitationWhereUniqueInput
+  }
+
+  /**
+   * CompanyInvitation findUniqueOrThrow
+   */
+  export type CompanyInvitationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyInvitation
+     */
+    select?: CompanyInvitationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyInvitation
+     */
+    omit?: CompanyInvitationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyInvitationInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanyInvitation to fetch.
+     */
+    where: CompanyInvitationWhereUniqueInput
+  }
+
+  /**
+   * CompanyInvitation findFirst
+   */
+  export type CompanyInvitationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyInvitation
+     */
+    select?: CompanyInvitationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyInvitation
+     */
+    omit?: CompanyInvitationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyInvitationInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanyInvitation to fetch.
+     */
+    where?: CompanyInvitationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompanyInvitations to fetch.
+     */
+    orderBy?: CompanyInvitationOrderByWithRelationInput | CompanyInvitationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CompanyInvitations.
+     */
+    cursor?: CompanyInvitationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompanyInvitations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompanyInvitations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CompanyInvitations.
+     */
+    distinct?: CompanyInvitationScalarFieldEnum | CompanyInvitationScalarFieldEnum[]
+  }
+
+  /**
+   * CompanyInvitation findFirstOrThrow
+   */
+  export type CompanyInvitationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyInvitation
+     */
+    select?: CompanyInvitationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyInvitation
+     */
+    omit?: CompanyInvitationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyInvitationInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanyInvitation to fetch.
+     */
+    where?: CompanyInvitationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompanyInvitations to fetch.
+     */
+    orderBy?: CompanyInvitationOrderByWithRelationInput | CompanyInvitationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CompanyInvitations.
+     */
+    cursor?: CompanyInvitationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompanyInvitations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompanyInvitations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CompanyInvitations.
+     */
+    distinct?: CompanyInvitationScalarFieldEnum | CompanyInvitationScalarFieldEnum[]
+  }
+
+  /**
+   * CompanyInvitation findMany
+   */
+  export type CompanyInvitationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyInvitation
+     */
+    select?: CompanyInvitationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyInvitation
+     */
+    omit?: CompanyInvitationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyInvitationInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanyInvitations to fetch.
+     */
+    where?: CompanyInvitationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompanyInvitations to fetch.
+     */
+    orderBy?: CompanyInvitationOrderByWithRelationInput | CompanyInvitationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CompanyInvitations.
+     */
+    cursor?: CompanyInvitationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompanyInvitations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompanyInvitations.
+     */
+    skip?: number
+    distinct?: CompanyInvitationScalarFieldEnum | CompanyInvitationScalarFieldEnum[]
+  }
+
+  /**
+   * CompanyInvitation create
+   */
+  export type CompanyInvitationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyInvitation
+     */
+    select?: CompanyInvitationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyInvitation
+     */
+    omit?: CompanyInvitationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyInvitationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CompanyInvitation.
+     */
+    data: XOR<CompanyInvitationCreateInput, CompanyInvitationUncheckedCreateInput>
+  }
+
+  /**
+   * CompanyInvitation createMany
+   */
+  export type CompanyInvitationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CompanyInvitations.
+     */
+    data: CompanyInvitationCreateManyInput | CompanyInvitationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CompanyInvitation createManyAndReturn
+   */
+  export type CompanyInvitationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyInvitation
+     */
+    select?: CompanyInvitationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyInvitation
+     */
+    omit?: CompanyInvitationOmit<ExtArgs> | null
+    /**
+     * The data used to create many CompanyInvitations.
+     */
+    data: CompanyInvitationCreateManyInput | CompanyInvitationCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyInvitationIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CompanyInvitation update
+   */
+  export type CompanyInvitationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyInvitation
+     */
+    select?: CompanyInvitationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyInvitation
+     */
+    omit?: CompanyInvitationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyInvitationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CompanyInvitation.
+     */
+    data: XOR<CompanyInvitationUpdateInput, CompanyInvitationUncheckedUpdateInput>
+    /**
+     * Choose, which CompanyInvitation to update.
+     */
+    where: CompanyInvitationWhereUniqueInput
+  }
+
+  /**
+   * CompanyInvitation updateMany
+   */
+  export type CompanyInvitationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CompanyInvitations.
+     */
+    data: XOR<CompanyInvitationUpdateManyMutationInput, CompanyInvitationUncheckedUpdateManyInput>
+    /**
+     * Filter which CompanyInvitations to update
+     */
+    where?: CompanyInvitationWhereInput
+    /**
+     * Limit how many CompanyInvitations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CompanyInvitation updateManyAndReturn
+   */
+  export type CompanyInvitationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyInvitation
+     */
+    select?: CompanyInvitationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyInvitation
+     */
+    omit?: CompanyInvitationOmit<ExtArgs> | null
+    /**
+     * The data used to update CompanyInvitations.
+     */
+    data: XOR<CompanyInvitationUpdateManyMutationInput, CompanyInvitationUncheckedUpdateManyInput>
+    /**
+     * Filter which CompanyInvitations to update
+     */
+    where?: CompanyInvitationWhereInput
+    /**
+     * Limit how many CompanyInvitations to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyInvitationIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CompanyInvitation upsert
+   */
+  export type CompanyInvitationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyInvitation
+     */
+    select?: CompanyInvitationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyInvitation
+     */
+    omit?: CompanyInvitationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyInvitationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CompanyInvitation to update in case it exists.
+     */
+    where: CompanyInvitationWhereUniqueInput
+    /**
+     * In case the CompanyInvitation found by the `where` argument doesn't exist, create a new CompanyInvitation with this data.
+     */
+    create: XOR<CompanyInvitationCreateInput, CompanyInvitationUncheckedCreateInput>
+    /**
+     * In case the CompanyInvitation was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CompanyInvitationUpdateInput, CompanyInvitationUncheckedUpdateInput>
+  }
+
+  /**
+   * CompanyInvitation delete
+   */
+  export type CompanyInvitationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyInvitation
+     */
+    select?: CompanyInvitationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyInvitation
+     */
+    omit?: CompanyInvitationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyInvitationInclude<ExtArgs> | null
+    /**
+     * Filter which CompanyInvitation to delete.
+     */
+    where: CompanyInvitationWhereUniqueInput
+  }
+
+  /**
+   * CompanyInvitation deleteMany
+   */
+  export type CompanyInvitationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CompanyInvitations to delete
+     */
+    where?: CompanyInvitationWhereInput
+    /**
+     * Limit how many CompanyInvitations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CompanyInvitation without action
+   */
+  export type CompanyInvitationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyInvitation
+     */
+    select?: CompanyInvitationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyInvitation
+     */
+    omit?: CompanyInvitationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyInvitationInclude<ExtArgs> | null
   }
 
 
@@ -16669,6 +17965,22 @@ export namespace Prisma {
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+  export const CompanyInvitationScalarFieldEnum: {
+    id: 'id',
+    companyId: 'companyId',
+    email: 'email',
+    role: 'role',
+    tokenHash: 'tokenHash',
+    createdById: 'createdById',
+    createdAt: 'createdAt',
+    expiresAt: 'expiresAt',
+    acceptedAt: 'acceptedAt',
+    revokedAt: 'revokedAt'
+  };
+
+  export type CompanyInvitationScalarFieldEnum = (typeof CompanyInvitationScalarFieldEnum)[keyof typeof CompanyInvitationScalarFieldEnum]
+
+
   export const EmailVerificationCodeScalarFieldEnum: {
     userId: 'userId',
     codeHash: 'codeHash',
@@ -17004,6 +18316,7 @@ export namespace Prisma {
     channels?: ChannelListRelationFilter
     jobs?: JobListRelationFilter
     posts?: CompanyPostListRelationFilter
+    invitations?: CompanyInvitationListRelationFilter
   }
 
   export type CompanyOrderByWithRelationInput = {
@@ -17021,6 +18334,7 @@ export namespace Prisma {
     channels?: ChannelOrderByRelationAggregateInput
     jobs?: JobOrderByRelationAggregateInput
     posts?: CompanyPostOrderByRelationAggregateInput
+    invitations?: CompanyInvitationOrderByRelationAggregateInput
   }
 
   export type CompanyWhereUniqueInput = Prisma.AtLeast<{
@@ -17041,6 +18355,7 @@ export namespace Prisma {
     channels?: ChannelListRelationFilter
     jobs?: JobListRelationFilter
     posts?: CompanyPostListRelationFilter
+    invitations?: CompanyInvitationListRelationFilter
   }, "id">
 
   export type CompanyOrderByWithAggregationInput = {
@@ -17249,6 +18564,7 @@ export namespace Prisma {
     createdJobs?: JobListRelationFilter
     companyPosts?: CompanyPostListRelationFilter
     postAcknowledgments?: CompanyPostAcknowledgmentListRelationFilter
+    sentInvitations?: CompanyInvitationListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -17268,6 +18584,7 @@ export namespace Prisma {
     createdJobs?: JobOrderByRelationAggregateInput
     companyPosts?: CompanyPostOrderByRelationAggregateInput
     postAcknowledgments?: CompanyPostAcknowledgmentOrderByRelationAggregateInput
+    sentInvitations?: CompanyInvitationOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -17290,6 +18607,7 @@ export namespace Prisma {
     createdJobs?: JobListRelationFilter
     companyPosts?: CompanyPostListRelationFilter
     postAcknowledgments?: CompanyPostAcknowledgmentListRelationFilter
+    sentInvitations?: CompanyInvitationListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -17316,6 +18634,89 @@ export namespace Prisma {
     passwordHash?: StringNullableWithAggregatesFilter<"User"> | string | null
     image?: StringNullableWithAggregatesFilter<"User"> | string | null
     description?: StringNullableWithAggregatesFilter<"User"> | string | null
+  }
+
+  export type CompanyInvitationWhereInput = {
+    AND?: CompanyInvitationWhereInput | CompanyInvitationWhereInput[]
+    OR?: CompanyInvitationWhereInput[]
+    NOT?: CompanyInvitationWhereInput | CompanyInvitationWhereInput[]
+    id?: StringFilter<"CompanyInvitation"> | string
+    companyId?: StringFilter<"CompanyInvitation"> | string
+    email?: StringFilter<"CompanyInvitation"> | string
+    role?: EnumCompanyRoleFilter<"CompanyInvitation"> | $Enums.CompanyRole
+    tokenHash?: StringFilter<"CompanyInvitation"> | string
+    createdById?: StringFilter<"CompanyInvitation"> | string
+    createdAt?: DateTimeFilter<"CompanyInvitation"> | Date | string
+    expiresAt?: DateTimeFilter<"CompanyInvitation"> | Date | string
+    acceptedAt?: DateTimeNullableFilter<"CompanyInvitation"> | Date | string | null
+    revokedAt?: DateTimeNullableFilter<"CompanyInvitation"> | Date | string | null
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+    createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type CompanyInvitationOrderByWithRelationInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    email?: SortOrder
+    role?: SortOrder
+    tokenHash?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    expiresAt?: SortOrder
+    acceptedAt?: SortOrderInput | SortOrder
+    revokedAt?: SortOrderInput | SortOrder
+    company?: CompanyOrderByWithRelationInput
+    createdBy?: UserOrderByWithRelationInput
+  }
+
+  export type CompanyInvitationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    tokenHash?: string
+    AND?: CompanyInvitationWhereInput | CompanyInvitationWhereInput[]
+    OR?: CompanyInvitationWhereInput[]
+    NOT?: CompanyInvitationWhereInput | CompanyInvitationWhereInput[]
+    companyId?: StringFilter<"CompanyInvitation"> | string
+    email?: StringFilter<"CompanyInvitation"> | string
+    role?: EnumCompanyRoleFilter<"CompanyInvitation"> | $Enums.CompanyRole
+    createdById?: StringFilter<"CompanyInvitation"> | string
+    createdAt?: DateTimeFilter<"CompanyInvitation"> | Date | string
+    expiresAt?: DateTimeFilter<"CompanyInvitation"> | Date | string
+    acceptedAt?: DateTimeNullableFilter<"CompanyInvitation"> | Date | string | null
+    revokedAt?: DateTimeNullableFilter<"CompanyInvitation"> | Date | string | null
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+    createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "tokenHash">
+
+  export type CompanyInvitationOrderByWithAggregationInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    email?: SortOrder
+    role?: SortOrder
+    tokenHash?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    expiresAt?: SortOrder
+    acceptedAt?: SortOrderInput | SortOrder
+    revokedAt?: SortOrderInput | SortOrder
+    _count?: CompanyInvitationCountOrderByAggregateInput
+    _max?: CompanyInvitationMaxOrderByAggregateInput
+    _min?: CompanyInvitationMinOrderByAggregateInput
+  }
+
+  export type CompanyInvitationScalarWhereWithAggregatesInput = {
+    AND?: CompanyInvitationScalarWhereWithAggregatesInput | CompanyInvitationScalarWhereWithAggregatesInput[]
+    OR?: CompanyInvitationScalarWhereWithAggregatesInput[]
+    NOT?: CompanyInvitationScalarWhereWithAggregatesInput | CompanyInvitationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CompanyInvitation"> | string
+    companyId?: StringWithAggregatesFilter<"CompanyInvitation"> | string
+    email?: StringWithAggregatesFilter<"CompanyInvitation"> | string
+    role?: EnumCompanyRoleWithAggregatesFilter<"CompanyInvitation"> | $Enums.CompanyRole
+    tokenHash?: StringWithAggregatesFilter<"CompanyInvitation"> | string
+    createdById?: StringWithAggregatesFilter<"CompanyInvitation"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"CompanyInvitation"> | Date | string
+    expiresAt?: DateTimeWithAggregatesFilter<"CompanyInvitation"> | Date | string
+    acceptedAt?: DateTimeNullableWithAggregatesFilter<"CompanyInvitation"> | Date | string | null
+    revokedAt?: DateTimeNullableWithAggregatesFilter<"CompanyInvitation"> | Date | string | null
   }
 
   export type EmailVerificationCodeWhereInput = {
@@ -17843,6 +19244,7 @@ export namespace Prisma {
     channels?: ChannelCreateNestedManyWithoutCompanyInput
     jobs?: JobCreateNestedManyWithoutCompanyInput
     posts?: CompanyPostCreateNestedManyWithoutCompanyInput
+    invitations?: CompanyInvitationCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateInput = {
@@ -17860,6 +19262,7 @@ export namespace Prisma {
     channels?: ChannelUncheckedCreateNestedManyWithoutCompanyInput
     jobs?: JobUncheckedCreateNestedManyWithoutCompanyInput
     posts?: CompanyPostUncheckedCreateNestedManyWithoutCompanyInput
+    invitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUpdateInput = {
@@ -17877,6 +19280,7 @@ export namespace Prisma {
     channels?: ChannelUpdateManyWithoutCompanyNestedInput
     jobs?: JobUpdateManyWithoutCompanyNestedInput
     posts?: CompanyPostUpdateManyWithoutCompanyNestedInput
+    invitations?: CompanyInvitationUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateInput = {
@@ -17894,6 +19298,7 @@ export namespace Prisma {
     channels?: ChannelUncheckedUpdateManyWithoutCompanyNestedInput
     jobs?: JobUncheckedUpdateManyWithoutCompanyNestedInput
     posts?: CompanyPostUncheckedUpdateManyWithoutCompanyNestedInput
+    invitations?: CompanyInvitationUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyCreateManyInput = {
@@ -18089,6 +19494,7 @@ export namespace Prisma {
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
+    sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -18108,6 +19514,7 @@ export namespace Prisma {
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
+    sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUpdateInput = {
@@ -18127,6 +19534,7 @@ export namespace Prisma {
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
+    sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -18146,6 +19554,7 @@ export namespace Prisma {
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
+    sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -18176,6 +19585,95 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CompanyInvitationCreateInput = {
+    id?: string
+    email: string
+    role?: $Enums.CompanyRole
+    tokenHash: string
+    createdAt?: Date | string
+    expiresAt: Date | string
+    acceptedAt?: Date | string | null
+    revokedAt?: Date | string | null
+    company: CompanyCreateNestedOneWithoutInvitationsInput
+    createdBy: UserCreateNestedOneWithoutSentInvitationsInput
+  }
+
+  export type CompanyInvitationUncheckedCreateInput = {
+    id?: string
+    companyId: string
+    email: string
+    role?: $Enums.CompanyRole
+    tokenHash: string
+    createdById: string
+    createdAt?: Date | string
+    expiresAt: Date | string
+    acceptedAt?: Date | string | null
+    revokedAt?: Date | string | null
+  }
+
+  export type CompanyInvitationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: EnumCompanyRoleFieldUpdateOperationsInput | $Enums.CompanyRole
+    tokenHash?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    company?: CompanyUpdateOneRequiredWithoutInvitationsNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutSentInvitationsNestedInput
+  }
+
+  export type CompanyInvitationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: EnumCompanyRoleFieldUpdateOperationsInput | $Enums.CompanyRole
+    tokenHash?: StringFieldUpdateOperationsInput | string
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type CompanyInvitationCreateManyInput = {
+    id?: string
+    companyId: string
+    email: string
+    role?: $Enums.CompanyRole
+    tokenHash: string
+    createdById: string
+    createdAt?: Date | string
+    expiresAt: Date | string
+    acceptedAt?: Date | string | null
+    revokedAt?: Date | string | null
+  }
+
+  export type CompanyInvitationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: EnumCompanyRoleFieldUpdateOperationsInput | $Enums.CompanyRole
+    tokenHash?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type CompanyInvitationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: EnumCompanyRoleFieldUpdateOperationsInput | $Enums.CompanyRole
+    tokenHash?: StringFieldUpdateOperationsInput | string
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type EmailVerificationCodeCreateInput = {
@@ -18752,6 +20250,12 @@ export namespace Prisma {
     none?: CompanyPostWhereInput
   }
 
+  export type CompanyInvitationListRelationFilter = {
+    every?: CompanyInvitationWhereInput
+    some?: CompanyInvitationWhereInput
+    none?: CompanyInvitationWhereInput
+  }
+
   export type CompanyMemberOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -18765,6 +20269,10 @@ export namespace Prisma {
   }
 
   export type CompanyPostOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CompanyInvitationOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -19009,6 +20517,45 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type CompanyInvitationCountOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    email?: SortOrder
+    role?: SortOrder
+    tokenHash?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    expiresAt?: SortOrder
+    acceptedAt?: SortOrder
+    revokedAt?: SortOrder
+  }
+
+  export type CompanyInvitationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    email?: SortOrder
+    role?: SortOrder
+    tokenHash?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    expiresAt?: SortOrder
+    acceptedAt?: SortOrder
+    revokedAt?: SortOrder
+  }
+
+  export type CompanyInvitationMinOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    email?: SortOrder
+    role?: SortOrder
+    tokenHash?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    expiresAt?: SortOrder
+    acceptedAt?: SortOrder
+    revokedAt?: SortOrder
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -19289,6 +20836,13 @@ export namespace Prisma {
     connect?: CompanyPostWhereUniqueInput | CompanyPostWhereUniqueInput[]
   }
 
+  export type CompanyInvitationCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<CompanyInvitationCreateWithoutCompanyInput, CompanyInvitationUncheckedCreateWithoutCompanyInput> | CompanyInvitationCreateWithoutCompanyInput[] | CompanyInvitationUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: CompanyInvitationCreateOrConnectWithoutCompanyInput | CompanyInvitationCreateOrConnectWithoutCompanyInput[]
+    createMany?: CompanyInvitationCreateManyCompanyInputEnvelope
+    connect?: CompanyInvitationWhereUniqueInput | CompanyInvitationWhereUniqueInput[]
+  }
+
   export type CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput = {
     create?: XOR<CompanyMemberCreateWithoutCompanyInput, CompanyMemberUncheckedCreateWithoutCompanyInput> | CompanyMemberCreateWithoutCompanyInput[] | CompanyMemberUncheckedCreateWithoutCompanyInput[]
     connectOrCreate?: CompanyMemberCreateOrConnectWithoutCompanyInput | CompanyMemberCreateOrConnectWithoutCompanyInput[]
@@ -19315,6 +20869,13 @@ export namespace Prisma {
     connectOrCreate?: CompanyPostCreateOrConnectWithoutCompanyInput | CompanyPostCreateOrConnectWithoutCompanyInput[]
     createMany?: CompanyPostCreateManyCompanyInputEnvelope
     connect?: CompanyPostWhereUniqueInput | CompanyPostWhereUniqueInput[]
+  }
+
+  export type CompanyInvitationUncheckedCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<CompanyInvitationCreateWithoutCompanyInput, CompanyInvitationUncheckedCreateWithoutCompanyInput> | CompanyInvitationCreateWithoutCompanyInput[] | CompanyInvitationUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: CompanyInvitationCreateOrConnectWithoutCompanyInput | CompanyInvitationCreateOrConnectWithoutCompanyInput[]
+    createMany?: CompanyInvitationCreateManyCompanyInputEnvelope
+    connect?: CompanyInvitationWhereUniqueInput | CompanyInvitationWhereUniqueInput[]
   }
 
   export type CompanyMemberUpdateManyWithoutCompanyNestedInput = {
@@ -19373,6 +20934,20 @@ export namespace Prisma {
     deleteMany?: CompanyPostScalarWhereInput | CompanyPostScalarWhereInput[]
   }
 
+  export type CompanyInvitationUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<CompanyInvitationCreateWithoutCompanyInput, CompanyInvitationUncheckedCreateWithoutCompanyInput> | CompanyInvitationCreateWithoutCompanyInput[] | CompanyInvitationUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: CompanyInvitationCreateOrConnectWithoutCompanyInput | CompanyInvitationCreateOrConnectWithoutCompanyInput[]
+    upsert?: CompanyInvitationUpsertWithWhereUniqueWithoutCompanyInput | CompanyInvitationUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: CompanyInvitationCreateManyCompanyInputEnvelope
+    set?: CompanyInvitationWhereUniqueInput | CompanyInvitationWhereUniqueInput[]
+    disconnect?: CompanyInvitationWhereUniqueInput | CompanyInvitationWhereUniqueInput[]
+    delete?: CompanyInvitationWhereUniqueInput | CompanyInvitationWhereUniqueInput[]
+    connect?: CompanyInvitationWhereUniqueInput | CompanyInvitationWhereUniqueInput[]
+    update?: CompanyInvitationUpdateWithWhereUniqueWithoutCompanyInput | CompanyInvitationUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: CompanyInvitationUpdateManyWithWhereWithoutCompanyInput | CompanyInvitationUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: CompanyInvitationScalarWhereInput | CompanyInvitationScalarWhereInput[]
+  }
+
   export type CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput = {
     create?: XOR<CompanyMemberCreateWithoutCompanyInput, CompanyMemberUncheckedCreateWithoutCompanyInput> | CompanyMemberCreateWithoutCompanyInput[] | CompanyMemberUncheckedCreateWithoutCompanyInput[]
     connectOrCreate?: CompanyMemberCreateOrConnectWithoutCompanyInput | CompanyMemberCreateOrConnectWithoutCompanyInput[]
@@ -19427,6 +21002,20 @@ export namespace Prisma {
     update?: CompanyPostUpdateWithWhereUniqueWithoutCompanyInput | CompanyPostUpdateWithWhereUniqueWithoutCompanyInput[]
     updateMany?: CompanyPostUpdateManyWithWhereWithoutCompanyInput | CompanyPostUpdateManyWithWhereWithoutCompanyInput[]
     deleteMany?: CompanyPostScalarWhereInput | CompanyPostScalarWhereInput[]
+  }
+
+  export type CompanyInvitationUncheckedUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<CompanyInvitationCreateWithoutCompanyInput, CompanyInvitationUncheckedCreateWithoutCompanyInput> | CompanyInvitationCreateWithoutCompanyInput[] | CompanyInvitationUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: CompanyInvitationCreateOrConnectWithoutCompanyInput | CompanyInvitationCreateOrConnectWithoutCompanyInput[]
+    upsert?: CompanyInvitationUpsertWithWhereUniqueWithoutCompanyInput | CompanyInvitationUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: CompanyInvitationCreateManyCompanyInputEnvelope
+    set?: CompanyInvitationWhereUniqueInput | CompanyInvitationWhereUniqueInput[]
+    disconnect?: CompanyInvitationWhereUniqueInput | CompanyInvitationWhereUniqueInput[]
+    delete?: CompanyInvitationWhereUniqueInput | CompanyInvitationWhereUniqueInput[]
+    connect?: CompanyInvitationWhereUniqueInput | CompanyInvitationWhereUniqueInput[]
+    update?: CompanyInvitationUpdateWithWhereUniqueWithoutCompanyInput | CompanyInvitationUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: CompanyInvitationUpdateManyWithWhereWithoutCompanyInput | CompanyInvitationUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: CompanyInvitationScalarWhereInput | CompanyInvitationScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutCompanyMembershipsInput = {
@@ -19649,6 +21238,13 @@ export namespace Prisma {
     connect?: CompanyPostAcknowledgmentWhereUniqueInput | CompanyPostAcknowledgmentWhereUniqueInput[]
   }
 
+  export type CompanyInvitationCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<CompanyInvitationCreateWithoutCreatedByInput, CompanyInvitationUncheckedCreateWithoutCreatedByInput> | CompanyInvitationCreateWithoutCreatedByInput[] | CompanyInvitationUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: CompanyInvitationCreateOrConnectWithoutCreatedByInput | CompanyInvitationCreateOrConnectWithoutCreatedByInput[]
+    createMany?: CompanyInvitationCreateManyCreatedByInputEnvelope
+    connect?: CompanyInvitationWhereUniqueInput | CompanyInvitationWhereUniqueInput[]
+  }
+
   export type EmailVerificationCodeUncheckedCreateNestedOneWithoutUserInput = {
     create?: XOR<EmailVerificationCodeCreateWithoutUserInput, EmailVerificationCodeUncheckedCreateWithoutUserInput>
     connectOrCreate?: EmailVerificationCodeCreateOrConnectWithoutUserInput
@@ -19709,6 +21305,13 @@ export namespace Prisma {
     connectOrCreate?: CompanyPostAcknowledgmentCreateOrConnectWithoutUserInput | CompanyPostAcknowledgmentCreateOrConnectWithoutUserInput[]
     createMany?: CompanyPostAcknowledgmentCreateManyUserInputEnvelope
     connect?: CompanyPostAcknowledgmentWhereUniqueInput | CompanyPostAcknowledgmentWhereUniqueInput[]
+  }
+
+  export type CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<CompanyInvitationCreateWithoutCreatedByInput, CompanyInvitationUncheckedCreateWithoutCreatedByInput> | CompanyInvitationCreateWithoutCreatedByInput[] | CompanyInvitationUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: CompanyInvitationCreateOrConnectWithoutCreatedByInput | CompanyInvitationCreateOrConnectWithoutCreatedByInput[]
+    createMany?: CompanyInvitationCreateManyCreatedByInputEnvelope
+    connect?: CompanyInvitationWhereUniqueInput | CompanyInvitationWhereUniqueInput[]
   }
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -19837,6 +21440,20 @@ export namespace Prisma {
     deleteMany?: CompanyPostAcknowledgmentScalarWhereInput | CompanyPostAcknowledgmentScalarWhereInput[]
   }
 
+  export type CompanyInvitationUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<CompanyInvitationCreateWithoutCreatedByInput, CompanyInvitationUncheckedCreateWithoutCreatedByInput> | CompanyInvitationCreateWithoutCreatedByInput[] | CompanyInvitationUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: CompanyInvitationCreateOrConnectWithoutCreatedByInput | CompanyInvitationCreateOrConnectWithoutCreatedByInput[]
+    upsert?: CompanyInvitationUpsertWithWhereUniqueWithoutCreatedByInput | CompanyInvitationUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: CompanyInvitationCreateManyCreatedByInputEnvelope
+    set?: CompanyInvitationWhereUniqueInput | CompanyInvitationWhereUniqueInput[]
+    disconnect?: CompanyInvitationWhereUniqueInput | CompanyInvitationWhereUniqueInput[]
+    delete?: CompanyInvitationWhereUniqueInput | CompanyInvitationWhereUniqueInput[]
+    connect?: CompanyInvitationWhereUniqueInput | CompanyInvitationWhereUniqueInput[]
+    update?: CompanyInvitationUpdateWithWhereUniqueWithoutCreatedByInput | CompanyInvitationUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: CompanyInvitationUpdateManyWithWhereWithoutCreatedByInput | CompanyInvitationUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: CompanyInvitationScalarWhereInput | CompanyInvitationScalarWhereInput[]
+  }
+
   export type EmailVerificationCodeUncheckedUpdateOneWithoutUserNestedInput = {
     create?: XOR<EmailVerificationCodeCreateWithoutUserInput, EmailVerificationCodeUncheckedCreateWithoutUserInput>
     connectOrCreate?: EmailVerificationCodeCreateOrConnectWithoutUserInput
@@ -19957,6 +21574,48 @@ export namespace Prisma {
     update?: CompanyPostAcknowledgmentUpdateWithWhereUniqueWithoutUserInput | CompanyPostAcknowledgmentUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: CompanyPostAcknowledgmentUpdateManyWithWhereWithoutUserInput | CompanyPostAcknowledgmentUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: CompanyPostAcknowledgmentScalarWhereInput | CompanyPostAcknowledgmentScalarWhereInput[]
+  }
+
+  export type CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<CompanyInvitationCreateWithoutCreatedByInput, CompanyInvitationUncheckedCreateWithoutCreatedByInput> | CompanyInvitationCreateWithoutCreatedByInput[] | CompanyInvitationUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: CompanyInvitationCreateOrConnectWithoutCreatedByInput | CompanyInvitationCreateOrConnectWithoutCreatedByInput[]
+    upsert?: CompanyInvitationUpsertWithWhereUniqueWithoutCreatedByInput | CompanyInvitationUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: CompanyInvitationCreateManyCreatedByInputEnvelope
+    set?: CompanyInvitationWhereUniqueInput | CompanyInvitationWhereUniqueInput[]
+    disconnect?: CompanyInvitationWhereUniqueInput | CompanyInvitationWhereUniqueInput[]
+    delete?: CompanyInvitationWhereUniqueInput | CompanyInvitationWhereUniqueInput[]
+    connect?: CompanyInvitationWhereUniqueInput | CompanyInvitationWhereUniqueInput[]
+    update?: CompanyInvitationUpdateWithWhereUniqueWithoutCreatedByInput | CompanyInvitationUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: CompanyInvitationUpdateManyWithWhereWithoutCreatedByInput | CompanyInvitationUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: CompanyInvitationScalarWhereInput | CompanyInvitationScalarWhereInput[]
+  }
+
+  export type CompanyCreateNestedOneWithoutInvitationsInput = {
+    create?: XOR<CompanyCreateWithoutInvitationsInput, CompanyUncheckedCreateWithoutInvitationsInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutInvitationsInput
+    connect?: CompanyWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutSentInvitationsInput = {
+    create?: XOR<UserCreateWithoutSentInvitationsInput, UserUncheckedCreateWithoutSentInvitationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSentInvitationsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type CompanyUpdateOneRequiredWithoutInvitationsNestedInput = {
+    create?: XOR<CompanyCreateWithoutInvitationsInput, CompanyUncheckedCreateWithoutInvitationsInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutInvitationsInput
+    upsert?: CompanyUpsertWithoutInvitationsInput
+    connect?: CompanyWhereUniqueInput
+    update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutInvitationsInput, CompanyUpdateWithoutInvitationsInput>, CompanyUncheckedUpdateWithoutInvitationsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutSentInvitationsNestedInput = {
+    create?: XOR<UserCreateWithoutSentInvitationsInput, UserUncheckedCreateWithoutSentInvitationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSentInvitationsInput
+    upsert?: UserUpsertWithoutSentInvitationsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSentInvitationsInput, UserUpdateWithoutSentInvitationsInput>, UserUncheckedUpdateWithoutSentInvitationsInput>
   }
 
   export type UserCreateNestedOneWithoutEmailVerificationCodeInput = {
@@ -20358,6 +22017,7 @@ export namespace Prisma {
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
+    sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -20376,6 +22036,7 @@ export namespace Prisma {
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
+    sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -20410,6 +22071,7 @@ export namespace Prisma {
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
+    sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -20428,6 +22090,7 @@ export namespace Prisma {
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
+    sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
@@ -20446,6 +22109,7 @@ export namespace Prisma {
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
+    sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -20464,6 +22128,7 @@ export namespace Prisma {
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
+    sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -20498,6 +22163,7 @@ export namespace Prisma {
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
+    sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -20516,6 +22182,7 @@ export namespace Prisma {
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
+    sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type CompanyMemberCreateWithoutCompanyInput = {
@@ -20621,6 +22288,40 @@ export namespace Prisma {
 
   export type CompanyPostCreateManyCompanyInputEnvelope = {
     data: CompanyPostCreateManyCompanyInput | CompanyPostCreateManyCompanyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CompanyInvitationCreateWithoutCompanyInput = {
+    id?: string
+    email: string
+    role?: $Enums.CompanyRole
+    tokenHash: string
+    createdAt?: Date | string
+    expiresAt: Date | string
+    acceptedAt?: Date | string | null
+    revokedAt?: Date | string | null
+    createdBy: UserCreateNestedOneWithoutSentInvitationsInput
+  }
+
+  export type CompanyInvitationUncheckedCreateWithoutCompanyInput = {
+    id?: string
+    email: string
+    role?: $Enums.CompanyRole
+    tokenHash: string
+    createdById: string
+    createdAt?: Date | string
+    expiresAt: Date | string
+    acceptedAt?: Date | string | null
+    revokedAt?: Date | string | null
+  }
+
+  export type CompanyInvitationCreateOrConnectWithoutCompanyInput = {
+    where: CompanyInvitationWhereUniqueInput
+    create: XOR<CompanyInvitationCreateWithoutCompanyInput, CompanyInvitationUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type CompanyInvitationCreateManyCompanyInputEnvelope = {
+    data: CompanyInvitationCreateManyCompanyInput | CompanyInvitationCreateManyCompanyInput[]
     skipDuplicates?: boolean
   }
 
@@ -20734,6 +22435,38 @@ export namespace Prisma {
     authorId?: StringNullableFilter<"CompanyPost"> | string | null
   }
 
+  export type CompanyInvitationUpsertWithWhereUniqueWithoutCompanyInput = {
+    where: CompanyInvitationWhereUniqueInput
+    update: XOR<CompanyInvitationUpdateWithoutCompanyInput, CompanyInvitationUncheckedUpdateWithoutCompanyInput>
+    create: XOR<CompanyInvitationCreateWithoutCompanyInput, CompanyInvitationUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type CompanyInvitationUpdateWithWhereUniqueWithoutCompanyInput = {
+    where: CompanyInvitationWhereUniqueInput
+    data: XOR<CompanyInvitationUpdateWithoutCompanyInput, CompanyInvitationUncheckedUpdateWithoutCompanyInput>
+  }
+
+  export type CompanyInvitationUpdateManyWithWhereWithoutCompanyInput = {
+    where: CompanyInvitationScalarWhereInput
+    data: XOR<CompanyInvitationUpdateManyMutationInput, CompanyInvitationUncheckedUpdateManyWithoutCompanyInput>
+  }
+
+  export type CompanyInvitationScalarWhereInput = {
+    AND?: CompanyInvitationScalarWhereInput | CompanyInvitationScalarWhereInput[]
+    OR?: CompanyInvitationScalarWhereInput[]
+    NOT?: CompanyInvitationScalarWhereInput | CompanyInvitationScalarWhereInput[]
+    id?: StringFilter<"CompanyInvitation"> | string
+    companyId?: StringFilter<"CompanyInvitation"> | string
+    email?: StringFilter<"CompanyInvitation"> | string
+    role?: EnumCompanyRoleFilter<"CompanyInvitation"> | $Enums.CompanyRole
+    tokenHash?: StringFilter<"CompanyInvitation"> | string
+    createdById?: StringFilter<"CompanyInvitation"> | string
+    createdAt?: DateTimeFilter<"CompanyInvitation"> | Date | string
+    expiresAt?: DateTimeFilter<"CompanyInvitation"> | Date | string
+    acceptedAt?: DateTimeNullableFilter<"CompanyInvitation"> | Date | string | null
+    revokedAt?: DateTimeNullableFilter<"CompanyInvitation"> | Date | string | null
+  }
+
   export type UserCreateWithoutCompanyMembershipsInput = {
     id?: string
     name?: string | null
@@ -20750,6 +22483,7 @@ export namespace Prisma {
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
+    sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCompanyMembershipsInput = {
@@ -20768,6 +22502,7 @@ export namespace Prisma {
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
+    sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCompanyMembershipsInput = {
@@ -20789,6 +22524,7 @@ export namespace Prisma {
     channels?: ChannelCreateNestedManyWithoutCompanyInput
     jobs?: JobCreateNestedManyWithoutCompanyInput
     posts?: CompanyPostCreateNestedManyWithoutCompanyInput
+    invitations?: CompanyInvitationCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutMembersInput = {
@@ -20805,6 +22541,7 @@ export namespace Prisma {
     channels?: ChannelUncheckedCreateNestedManyWithoutCompanyInput
     jobs?: JobUncheckedCreateNestedManyWithoutCompanyInput
     posts?: CompanyPostUncheckedCreateNestedManyWithoutCompanyInput
+    invitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutMembersInput = {
@@ -20839,6 +22576,7 @@ export namespace Prisma {
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
+    sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCompanyMembershipsInput = {
@@ -20857,6 +22595,7 @@ export namespace Prisma {
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
+    sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type CompanyUpsertWithoutMembersInput = {
@@ -20884,6 +22623,7 @@ export namespace Prisma {
     channels?: ChannelUpdateManyWithoutCompanyNestedInput
     jobs?: JobUpdateManyWithoutCompanyNestedInput
     posts?: CompanyPostUpdateManyWithoutCompanyNestedInput
+    invitations?: CompanyInvitationUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutMembersInput = {
@@ -20900,6 +22640,7 @@ export namespace Prisma {
     channels?: ChannelUncheckedUpdateManyWithoutCompanyNestedInput
     jobs?: JobUncheckedUpdateManyWithoutCompanyNestedInput
     posts?: CompanyPostUncheckedUpdateManyWithoutCompanyNestedInput
+    invitations?: CompanyInvitationUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type MessageCreateWithoutChannelInput = {
@@ -20960,6 +22701,7 @@ export namespace Prisma {
     members?: CompanyMemberCreateNestedManyWithoutCompanyInput
     jobs?: JobCreateNestedManyWithoutCompanyInput
     posts?: CompanyPostCreateNestedManyWithoutCompanyInput
+    invitations?: CompanyInvitationCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutChannelsInput = {
@@ -20976,6 +22718,7 @@ export namespace Prisma {
     members?: CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput
     jobs?: JobUncheckedCreateNestedManyWithoutCompanyInput
     posts?: CompanyPostUncheckedCreateNestedManyWithoutCompanyInput
+    invitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutChannelsInput = {
@@ -21060,6 +22803,7 @@ export namespace Prisma {
     members?: CompanyMemberUpdateManyWithoutCompanyNestedInput
     jobs?: JobUpdateManyWithoutCompanyNestedInput
     posts?: CompanyPostUpdateManyWithoutCompanyNestedInput
+    invitations?: CompanyInvitationUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutChannelsInput = {
@@ -21076,6 +22820,7 @@ export namespace Prisma {
     members?: CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput
     jobs?: JobUncheckedUpdateManyWithoutCompanyNestedInput
     posts?: CompanyPostUncheckedUpdateManyWithoutCompanyNestedInput
+    invitations?: CompanyInvitationUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type ChannelCreateWithoutChannelMembersInput = {
@@ -21115,6 +22860,7 @@ export namespace Prisma {
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
+    sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutChannelMembershipsInput = {
@@ -21133,6 +22879,7 @@ export namespace Prisma {
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
+    sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutChannelMembershipsInput = {
@@ -21194,6 +22941,7 @@ export namespace Prisma {
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
+    sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutChannelMembershipsInput = {
@@ -21212,6 +22960,7 @@ export namespace Prisma {
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
+    sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type EmailVerificationCodeCreateWithoutUserInput = {
@@ -21439,6 +23188,40 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type CompanyInvitationCreateWithoutCreatedByInput = {
+    id?: string
+    email: string
+    role?: $Enums.CompanyRole
+    tokenHash: string
+    createdAt?: Date | string
+    expiresAt: Date | string
+    acceptedAt?: Date | string | null
+    revokedAt?: Date | string | null
+    company: CompanyCreateNestedOneWithoutInvitationsInput
+  }
+
+  export type CompanyInvitationUncheckedCreateWithoutCreatedByInput = {
+    id?: string
+    companyId: string
+    email: string
+    role?: $Enums.CompanyRole
+    tokenHash: string
+    createdAt?: Date | string
+    expiresAt: Date | string
+    acceptedAt?: Date | string | null
+    revokedAt?: Date | string | null
+  }
+
+  export type CompanyInvitationCreateOrConnectWithoutCreatedByInput = {
+    where: CompanyInvitationWhereUniqueInput
+    create: XOR<CompanyInvitationCreateWithoutCreatedByInput, CompanyInvitationUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type CompanyInvitationCreateManyCreatedByInputEnvelope = {
+    data: CompanyInvitationCreateManyCreatedByInput | CompanyInvitationCreateManyCreatedByInput[]
+    skipDuplicates?: boolean
+  }
+
   export type EmailVerificationCodeUpsertWithoutUserInput = {
     update: XOR<EmailVerificationCodeUpdateWithoutUserInput, EmailVerificationCodeUncheckedUpdateWithoutUserInput>
     create: XOR<EmailVerificationCodeCreateWithoutUserInput, EmailVerificationCodeUncheckedCreateWithoutUserInput>
@@ -21630,6 +23413,198 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"CompanyPostAcknowledgment"> | Date | string
   }
 
+  export type CompanyInvitationUpsertWithWhereUniqueWithoutCreatedByInput = {
+    where: CompanyInvitationWhereUniqueInput
+    update: XOR<CompanyInvitationUpdateWithoutCreatedByInput, CompanyInvitationUncheckedUpdateWithoutCreatedByInput>
+    create: XOR<CompanyInvitationCreateWithoutCreatedByInput, CompanyInvitationUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type CompanyInvitationUpdateWithWhereUniqueWithoutCreatedByInput = {
+    where: CompanyInvitationWhereUniqueInput
+    data: XOR<CompanyInvitationUpdateWithoutCreatedByInput, CompanyInvitationUncheckedUpdateWithoutCreatedByInput>
+  }
+
+  export type CompanyInvitationUpdateManyWithWhereWithoutCreatedByInput = {
+    where: CompanyInvitationScalarWhereInput
+    data: XOR<CompanyInvitationUpdateManyMutationInput, CompanyInvitationUncheckedUpdateManyWithoutCreatedByInput>
+  }
+
+  export type CompanyCreateWithoutInvitationsInput = {
+    id?: string
+    name: string
+    image?: string | null
+    bannerImage?: string | null
+    description?: string | null
+    website?: string | null
+    email?: string | null
+    phone?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberCreateNestedManyWithoutCompanyInput
+    channels?: ChannelCreateNestedManyWithoutCompanyInput
+    jobs?: JobCreateNestedManyWithoutCompanyInput
+    posts?: CompanyPostCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyUncheckedCreateWithoutInvitationsInput = {
+    id?: string
+    name: string
+    image?: string | null
+    bannerImage?: string | null
+    description?: string | null
+    website?: string | null
+    email?: string | null
+    phone?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput
+    channels?: ChannelUncheckedCreateNestedManyWithoutCompanyInput
+    jobs?: JobUncheckedCreateNestedManyWithoutCompanyInput
+    posts?: CompanyPostUncheckedCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyCreateOrConnectWithoutInvitationsInput = {
+    where: CompanyWhereUniqueInput
+    create: XOR<CompanyCreateWithoutInvitationsInput, CompanyUncheckedCreateWithoutInvitationsInput>
+  }
+
+  export type UserCreateWithoutSentInvitationsInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    image?: string | null
+    description?: string | null
+    emailVerificationCode?: EmailVerificationCodeCreateNestedOneWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    companyMemberships?: CompanyMemberCreateNestedManyWithoutUserInput
+    channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
+    messages?: MessageCreateNestedManyWithoutAuthorInput
+    createdJobs?: JobCreateNestedManyWithoutCreatedByInput
+    companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
+    postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutSentInvitationsInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    image?: string | null
+    description?: string | null
+    emailVerificationCode?: EmailVerificationCodeUncheckedCreateNestedOneWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    companyMemberships?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
+    channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
+    messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
+    createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
+    companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutSentInvitationsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutSentInvitationsInput, UserUncheckedCreateWithoutSentInvitationsInput>
+  }
+
+  export type CompanyUpsertWithoutInvitationsInput = {
+    update: XOR<CompanyUpdateWithoutInvitationsInput, CompanyUncheckedUpdateWithoutInvitationsInput>
+    create: XOR<CompanyCreateWithoutInvitationsInput, CompanyUncheckedCreateWithoutInvitationsInput>
+    where?: CompanyWhereInput
+  }
+
+  export type CompanyUpdateToOneWithWhereWithoutInvitationsInput = {
+    where?: CompanyWhereInput
+    data: XOR<CompanyUpdateWithoutInvitationsInput, CompanyUncheckedUpdateWithoutInvitationsInput>
+  }
+
+  export type CompanyUpdateWithoutInvitationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    bannerImage?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUpdateManyWithoutCompanyNestedInput
+    channels?: ChannelUpdateManyWithoutCompanyNestedInput
+    jobs?: JobUpdateManyWithoutCompanyNestedInput
+    posts?: CompanyPostUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type CompanyUncheckedUpdateWithoutInvitationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    bannerImage?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput
+    channels?: ChannelUncheckedUpdateManyWithoutCompanyNestedInput
+    jobs?: JobUncheckedUpdateManyWithoutCompanyNestedInput
+    posts?: CompanyPostUncheckedUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type UserUpsertWithoutSentInvitationsInput = {
+    update: XOR<UserUpdateWithoutSentInvitationsInput, UserUncheckedUpdateWithoutSentInvitationsInput>
+    create: XOR<UserCreateWithoutSentInvitationsInput, UserUncheckedCreateWithoutSentInvitationsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutSentInvitationsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutSentInvitationsInput, UserUncheckedUpdateWithoutSentInvitationsInput>
+  }
+
+  export type UserUpdateWithoutSentInvitationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerificationCode?: EmailVerificationCodeUpdateOneWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    companyMemberships?: CompanyMemberUpdateManyWithoutUserNestedInput
+    channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
+    messages?: MessageUpdateManyWithoutAuthorNestedInput
+    createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
+    companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutSentInvitationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerificationCode?: EmailVerificationCodeUncheckedUpdateOneWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    companyMemberships?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
+    channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
+    createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
+    companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
+  }
+
   export type UserCreateWithoutEmailVerificationCodeInput = {
     id?: string
     name?: string | null
@@ -21646,6 +23621,7 @@ export namespace Prisma {
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
+    sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutEmailVerificationCodeInput = {
@@ -21664,6 +23640,7 @@ export namespace Prisma {
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
+    sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutEmailVerificationCodeInput = {
@@ -21698,6 +23675,7 @@ export namespace Prisma {
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
+    sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutEmailVerificationCodeInput = {
@@ -21716,6 +23694,7 @@ export namespace Prisma {
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
+    sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type ChannelCreateWithoutMessagesInput = {
@@ -21755,6 +23734,7 @@ export namespace Prisma {
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
+    sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutMessagesInput = {
@@ -21773,6 +23753,7 @@ export namespace Prisma {
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
+    sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutMessagesInput = {
@@ -21834,6 +23815,7 @@ export namespace Prisma {
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
+    sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMessagesInput = {
@@ -21852,6 +23834,7 @@ export namespace Prisma {
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
+    sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type CompanyCreateWithoutJobsInput = {
@@ -21868,6 +23851,7 @@ export namespace Prisma {
     members?: CompanyMemberCreateNestedManyWithoutCompanyInput
     channels?: ChannelCreateNestedManyWithoutCompanyInput
     posts?: CompanyPostCreateNestedManyWithoutCompanyInput
+    invitations?: CompanyInvitationCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutJobsInput = {
@@ -21884,6 +23868,7 @@ export namespace Prisma {
     members?: CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput
     channels?: ChannelUncheckedCreateNestedManyWithoutCompanyInput
     posts?: CompanyPostUncheckedCreateNestedManyWithoutCompanyInput
+    invitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutJobsInput = {
@@ -21907,6 +23892,7 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutAuthorInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
+    sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedJobsInput = {
@@ -21925,6 +23911,7 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
+    sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedJobsInput = {
@@ -21957,6 +23944,7 @@ export namespace Prisma {
     members?: CompanyMemberUpdateManyWithoutCompanyNestedInput
     channels?: ChannelUpdateManyWithoutCompanyNestedInput
     posts?: CompanyPostUpdateManyWithoutCompanyNestedInput
+    invitations?: CompanyInvitationUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutJobsInput = {
@@ -21973,6 +23961,7 @@ export namespace Prisma {
     members?: CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput
     channels?: ChannelUncheckedUpdateManyWithoutCompanyNestedInput
     posts?: CompanyPostUncheckedUpdateManyWithoutCompanyNestedInput
+    invitations?: CompanyInvitationUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type UserUpsertWithoutCreatedJobsInput = {
@@ -22002,6 +23991,7 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutAuthorNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
+    sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedJobsInput = {
@@ -22020,6 +24010,7 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
+    sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type CompanyCreateWithoutPostsInput = {
@@ -22036,6 +24027,7 @@ export namespace Prisma {
     members?: CompanyMemberCreateNestedManyWithoutCompanyInput
     channels?: ChannelCreateNestedManyWithoutCompanyInput
     jobs?: JobCreateNestedManyWithoutCompanyInput
+    invitations?: CompanyInvitationCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutPostsInput = {
@@ -22052,6 +24044,7 @@ export namespace Prisma {
     members?: CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput
     channels?: ChannelUncheckedCreateNestedManyWithoutCompanyInput
     jobs?: JobUncheckedCreateNestedManyWithoutCompanyInput
+    invitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutPostsInput = {
@@ -22075,6 +24068,7 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutAuthorInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
+    sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCompanyPostsInput = {
@@ -22093,6 +24087,7 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
+    sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCompanyPostsInput = {
@@ -22145,6 +24140,7 @@ export namespace Prisma {
     members?: CompanyMemberUpdateManyWithoutCompanyNestedInput
     channels?: ChannelUpdateManyWithoutCompanyNestedInput
     jobs?: JobUpdateManyWithoutCompanyNestedInput
+    invitations?: CompanyInvitationUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutPostsInput = {
@@ -22161,6 +24157,7 @@ export namespace Prisma {
     members?: CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput
     channels?: ChannelUncheckedUpdateManyWithoutCompanyNestedInput
     jobs?: JobUncheckedUpdateManyWithoutCompanyNestedInput
+    invitations?: CompanyInvitationUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type UserUpsertWithoutCompanyPostsInput = {
@@ -22190,6 +24187,7 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
+    sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCompanyPostsInput = {
@@ -22208,6 +24206,7 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
+    sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type CompanyPostAcknowledgmentUpsertWithWhereUniqueWithoutPostInput = {
@@ -22267,6 +24266,7 @@ export namespace Prisma {
     messages?: MessageCreateNestedManyWithoutAuthorInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
+    sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutPostAcknowledgmentsInput = {
@@ -22285,6 +24285,7 @@ export namespace Prisma {
     messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
+    sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutPostAcknowledgmentsInput = {
@@ -22350,6 +24351,7 @@ export namespace Prisma {
     messages?: MessageUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
+    sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPostAcknowledgmentsInput = {
@@ -22368,6 +24370,7 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
+    sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type CompanyMemberCreateManyCompanyInput = {
@@ -22398,6 +24401,18 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     authorId?: string | null
+  }
+
+  export type CompanyInvitationCreateManyCompanyInput = {
+    id?: string
+    email: string
+    role?: $Enums.CompanyRole
+    tokenHash: string
+    createdById: string
+    createdAt?: Date | string
+    expiresAt: Date | string
+    acceptedAt?: Date | string | null
+    revokedAt?: Date | string | null
   }
 
   export type CompanyMemberUpdateWithoutCompanyInput = {
@@ -22494,6 +24509,42 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CompanyInvitationUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: EnumCompanyRoleFieldUpdateOperationsInput | $Enums.CompanyRole
+    tokenHash?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdBy?: UserUpdateOneRequiredWithoutSentInvitationsNestedInput
+  }
+
+  export type CompanyInvitationUncheckedUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: EnumCompanyRoleFieldUpdateOperationsInput | $Enums.CompanyRole
+    tokenHash?: StringFieldUpdateOperationsInput | string
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type CompanyInvitationUncheckedUpdateManyWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: EnumCompanyRoleFieldUpdateOperationsInput | $Enums.CompanyRole
+    tokenHash?: StringFieldUpdateOperationsInput | string
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type MessageCreateManyChannelInput = {
@@ -22604,6 +24655,18 @@ export namespace Prisma {
   export type CompanyPostAcknowledgmentCreateManyUserInput = {
     postId: string
     createdAt?: Date | string
+  }
+
+  export type CompanyInvitationCreateManyCreatedByInput = {
+    id?: string
+    companyId: string
+    email: string
+    role?: $Enums.CompanyRole
+    tokenHash: string
+    createdAt?: Date | string
+    expiresAt: Date | string
+    acceptedAt?: Date | string | null
+    revokedAt?: Date | string | null
   }
 
   export type AccountUpdateWithoutUserInput = {
@@ -22792,6 +24855,42 @@ export namespace Prisma {
   export type CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserInput = {
     postId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompanyInvitationUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: EnumCompanyRoleFieldUpdateOperationsInput | $Enums.CompanyRole
+    tokenHash?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    company?: CompanyUpdateOneRequiredWithoutInvitationsNestedInput
+  }
+
+  export type CompanyInvitationUncheckedUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: EnumCompanyRoleFieldUpdateOperationsInput | $Enums.CompanyRole
+    tokenHash?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type CompanyInvitationUncheckedUpdateManyWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: EnumCompanyRoleFieldUpdateOperationsInput | $Enums.CompanyRole
+    tokenHash?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type CompanyPostAcknowledgmentCreateManyPostInput = {

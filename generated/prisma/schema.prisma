@@ -60,10 +60,11 @@ model Company {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  members  CompanyMember[]
-  channels Channel[]
-  jobs     Job[]
-  posts    CompanyPost[]
+  members     CompanyMember[]
+  channels    Channel[]
+  jobs        Job[]
+  posts       CompanyPost[]
+  invitations CompanyInvitation[]
 }
 
 model CompanyMember {
@@ -119,6 +120,27 @@ model User {
   createdJobs         Job[]
   companyPosts        CompanyPost[]
   postAcknowledgments CompanyPostAcknowledgment[]
+  sentInvitations     CompanyInvitation[]
+}
+
+model CompanyInvitation {
+  id          String      @id @default(cuid())
+  companyId   String
+  email       String
+  role        CompanyRole @default(MEMBER)
+  tokenHash   String      @unique
+  createdById String
+  createdAt   DateTime    @default(now())
+  expiresAt   DateTime
+  acceptedAt  DateTime?
+  revokedAt   DateTime?
+
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdBy User    @relation(fields: [createdById], references: [id], onDelete: Cascade)
+
+  @@index([companyId, createdAt])
+  @@index([email, expiresAt])
+  @@index([createdById, createdAt])
 }
 
 model EmailVerificationCode {

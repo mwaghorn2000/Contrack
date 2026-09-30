@@ -5,14 +5,21 @@ import { useEffect, useRef, useState, useTransition } from "react";
 
 import { api } from "~/trpc/react";
 import CreateCompanyModal from "./create-company-modal";
+import Link from "next/link";
+import { unavailableCompanyDestination } from "~/lib/company-navigation";
 
 export default function CompanySelector() {
   const {
     data: companies,
     isPending,
     isError,
+    isFetching,
     refetch,
-  } = api.company.listCompanies.useQuery();
+  } = api.company.listCompanies.useQuery(undefined, {
+    refetchInterval: 10_000,
+    refetchOnWindowFocus: "always",
+    refetchOnMount: "always",
+  });
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -26,7 +33,19 @@ export default function CompanySelector() {
   );
 
   useEffect(() => {
-    if (searchParams.get("companyId") || !companyId) return;
+    // Wait for a successful response before treating a company as inaccessible.
+    if (!companies || isError || isFetching) return;
+    const requestedCompanyId = searchParams.get("companyId");
+    if (requestedCompanyId && !selectedCompany) {
+      router.replace(
+        unavailableCompanyDestination(companies, requestedCompanyId),
+        { scroll: false },
+      );
+      return;
+    }
+    // The join screen does not need a selection, particularly after removal.
+    if (pathname === "/dashboard/join" || requestedCompanyId || !companyId)
+      return;
 
     const params = new URLSearchParams(searchParams.toString());
     params.set("companyId", companyId);
@@ -34,8 +53,16 @@ export default function CompanySelector() {
     router.replace(`${pathname}?${params.toString()}`, {
       scroll: false,
     });
-
-  }, [companyId, pathname, router, searchParams]);
+  }, [
+    companies,
+    companyId,
+    isError,
+    isFetching,
+    pathname,
+    router,
+    searchParams,
+    selectedCompany,
+  ]);
 
   useEffect(() => {
     function onPointerDown(event: PointerEvent) {
@@ -168,6 +195,13 @@ export default function CompanySelector() {
             )}
           </div>
           <div className="mt-1 border-t border-gray-200 pt-1">
+            <Link
+              href="/dashboard/join"
+              onClick={() => dropdownRef.current?.removeAttribute("open")}
+              className="block w-full rounded-md px-3 py-2 text-left text-sm text-gray-600 hover:bg-gray-100 focus-visible:bg-gray-100"
+            >
+              Join a company
+            </Link>
             <button
               type="button"
               onClick={() => {

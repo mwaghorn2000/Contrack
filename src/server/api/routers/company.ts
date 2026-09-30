@@ -1,6 +1,47 @@
 import z from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
+import type { Prisma } from "../../../../generated/prisma";
+import { serializableTransaction } from "~/server/transactions";
+
+const memberIdentitySchema = z.object({
+  companyId: z.string().cuid(),
+  userId: z.string().cuid(),
+});
+
+async function requireManageableMember(
+  tx: Prisma.TransactionClient,
+  companyId: string,
+  actorId: string,
+  userId: string,
+) {
+  const actor = await tx.companyMember.findUnique({
+    where: { userId_companyId: { companyId, userId: actorId } },
+  });
+  if (actor?.role !== "OWNER" && actor?.role !== "ADMIN")
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "Only owners and admins can manage company members.",
+    });
+  const member = await tx.companyMember.findUnique({
+    where: { userId_companyId: { companyId, userId } },
+    include: { user: { select: { email: true } } },
+  });
+  if (!member)
+    throw new TRPCError({ code: "NOT_FOUND", message: "Member not found." });
+  if (member.role === "OWNER")
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message:
+        "The company owner cannot be removed or have their role changed.",
+    });
+  if (actor.role === "ADMIN" && member.role === "ADMIN")
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "Only the owner can manage admins.",
+    });
+  return { actor, member };
+}
 
 const postIdentitySchema = z.object({
   companyId: z.string().cuid(),
@@ -81,6 +122,81 @@ const createCompanyPostSchema = z.object({
 });
 
 export const companyRouter = createTRPCRouter({
+  updateMemberRole: protectedProcedure
+    .input(
+      memberIdentitySchema.extend({
+        role: z.enum(["ADMIN", "MEMBER", "CONTRACTOR"]),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return serializableTransaction(ctx.db, async (tx) => {
+        const { actor, member } = await requireManageableMember(
+          tx,
+          input.companyId,
+          ctx.session.user.id,
+          input.userId,
+        );
+        if (input.role === "ADMIN" && actor.role !== "OWNER")
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "Only the owner can promote someone to admin.",
+          });
+        await tx.companyMember.update({
+          where: { id: member.id },
+          data: { role: input.role },
+        });
+        if (member.role === "ADMIN" && input.role !== "ADMIN") {
+          await tx.companyInvitation.updateMany({
+            where: {
+              companyId: input.companyId,
+              createdById: input.userId,
+              acceptedAt: null,
+              revokedAt: null,
+            },
+            data: { revokedAt: new Date() },
+          });
+        }
+        return { success: true };
+      });
+    }),
+
+  removeMember: protectedProcedure
+    .input(memberIdentitySchema)
+    .mutation(async ({ ctx, input }) => {
+      return serializableTransaction(ctx.db, async (tx) => {
+        const { member } = await requireManageableMember(
+          tx,
+          input.companyId,
+          ctx.session.user.id,
+          input.userId,
+        );
+        // Remove access to this company's channels, while preserving history.
+        await tx.channelMember.deleteMany({
+          where: {
+            userId: input.userId,
+            channel: { companyId: input.companyId },
+          },
+        });
+        // Old invitations must not allow the removed person to rejoin.
+        await tx.companyInvitation.updateMany({
+          where: {
+            companyId: input.companyId,
+            acceptedAt: null,
+            revokedAt: null,
+            OR: [
+              { createdById: input.userId },
+              ...(member.user.email
+                ? [{ email: member.user.email.toLowerCase() }]
+                : []),
+            ],
+          },
+          data: { revokedAt: new Date() },
+        });
+        await tx.companyMember.delete({ where: { id: member.id } });
+        return { success: true };
+      });
+    }),
+
   getCompany: protectedProcedure
     .input(getCompanySchema)
     .query(async ({ ctx, input }) => {

@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { auth } from "~/server/auth";
 import Sidebar from "../_components/_dashboard-components/sidebar";
 import TopNavBar from "../_components/_dashboard-components/top-navbar";
+import CompanyAccessNotice from "../_components/_dashboard-components/company-access-notice";
 
 export default async function DashboardLayout({
   children,
@@ -27,7 +28,12 @@ export default async function DashboardLayout({
         >
           <Sidebar />
         </Suspense>
-        <main className="min-w-0 flex-1 p-6 md:min-h-0 md:overflow-y-auto">{children}</main>
+        <main className="min-w-0 flex-1 p-6 md:min-h-0 md:overflow-y-auto">
+          <Suspense fallback={null}>
+            <CompanyAccessNotice />
+          </Suspense>
+          {children}
+        </main>
       </div>
     </div>
   );

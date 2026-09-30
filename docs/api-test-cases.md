@@ -1,6 +1,6 @@
 # API test case checklist
 
-These integration tests cover the company, auth, and job procedures currently on this branch. They call the real tRPC routers with a real Prisma client connected to disposable PostgreSQL containers. Use this document to understand each test and to add cases when route behavior changes.
+These integration tests cover company, auth, job, and invitation behavior. They call the real tRPC routers with a real Prisma client connected to disposable PostgreSQL containers. Use this document to understand each test and to add cases when route behavior changes.
 
 ## Running the tests
 
@@ -31,7 +31,7 @@ Tests below are implemented. The wording matches their `it(...)` names so you ca
 
 ## Company tests
 
-[company.test.ts](../src/server/api/routers/company.test.ts) contains 79 cases.
+[company.test.ts](../src/server/api/routers/company.test.ts) contains 105 cases.
 
 Company names allow 1–100 characters after trimming; descriptions allow up to 300, emails 254, and phones 20. Post titles allow 1–100 and content 1–1000 after trimming. Company deletion is OWNER-only; updates and post mutations allow OWNER or ADMIN. Ordinary members can read their companies and posts.
 
@@ -138,9 +138,40 @@ Company names allow 1–100 characters after trimming; descriptions allow up to 
 - deleteCompanyPost rejects an invalid company ID.
 - deleteCompanyPost rejects an invalid post ID.
 
+### Member management
+
+The `company member management` group covers `updateMemberRole` and `removeMember`:
+
+- lets the owner promote a member to admin.
+- lets the owner demote an admin and revokes their unused invitations.
+- lets an admin change a member to contractor.
+- lets an admin change a contractor to member.
+- prevents an admin from granting admin privileges.
+- prevents an admin from changing or removing another admin.
+- prevents an admin from changing or removing themselves.
+- prevents the owner from changing or removing themselves.
+- prevents an owner from changing or removing another owner.
+- prevents an admin from changing or removing the owner.
+- rejects granting the OWNER role.
+- rejects member management by a MEMBER.
+- rejects member management by a CONTRACTOR.
+- rejects member management by an outsider.
+- requires authentication to manage members.
+- rejects invalid company and user IDs before changing membership.
+- rejects a missing member.
+- cannot manage someone who belongs only to another company.
+- removes a member while preserving their account, history, and other memberships.
+- lets the owner remove an admin.
+- lets an admin remove a member.
+- lets an admin remove a contractor.
+- revokes unused invitations to and from a removed person only in this company.
+- blocks company access immediately after removal even with an existing session.
+- uses current database permissions after an admin is demoted.
+- serializes promotion and removal so an admin cannot remove a newly promoted admin.
+
 ## Auth tests
 
-[auth.test.ts](../src/server/api/routers/auth.test.ts) contains 51 cases.
+[auth.test.ts](../src/server/api/routers/auth.test.ts) contains 54 cases.
 
 Signup names allow 1–100 Unicode code points without control characters. Passwords allow 12–128 code points and require a digit and symbol. Verification codes have six ASCII digits, a ten-minute lifetime, a sixty-second resend cooldown, and a five-failure limit. These procedures are public and are tested without a signed-in session.
 
@@ -149,6 +180,7 @@ Signup names allow 1–100 Unicode code points without control characters. Passw
 - signup stores a trimmed unverified user with a real password hash.
 - signup rejects an already verified email without creating another user.
 - signup preserves an existing unverified account and asks for verification.
+- signup treats different email capitalisation as the same account.
 - signup accepts a one-character name.
 - signup accepts a 100-character Unicode name.
 - signup accepts a 12-character password.
@@ -172,6 +204,7 @@ Signup names allow 1–100 Unicode code points without control characters. Passw
 
 - verificationEmail saves a hashed six-digit code before sending it.
 - verificationEmail rejects a missing account.
+- verificationEmail finds an account regardless of email capitalisation.
 - verificationEmail skips already verified accounts.
 - verificationEmail rejects a resend before 60 seconds without replacing the code.
 - verificationEmail replaces the code and resets attempts at the 60-second boundary.
@@ -188,6 +221,7 @@ Signup names allow 1–100 Unicode code points without control characters. Passw
 - verifyEmail verifies the account and deletes the used code.
 - verifyEmail accepts a code delivered by verificationEmail.
 - verifyEmail is idempotent for an already verified account.
+- verifyEmail finds an account regardless of email capitalisation.
 - verifyEmail rejects a missing account.
 - verifyEmail rejects an account without a verification code.
 - verifyEmail rejects an expired code.
@@ -264,6 +298,58 @@ Job titles allow 1–99 characters after trimming; optional descriptions allow u
 - deleteJob rejects an unauthenticated request.
 - deleteJob rejects an invalid ID.
 
+## Invitation tests
+
+[invitation.test.ts](../src/server/api/routers/invitation.test.ts) adds 45 cases against real PostgreSQL, with only email delivery mocked. Acceptance checks the current database user email and verification status, not the email in a JWT.
+
+- invites someone who has no account and stores only the token hash.
+- invitation remains usable after the recipient signs up later.
+- normalizes invited emails and allows an ADMIN to invite contractors.
+- rejects invitation management by MEMBER.
+- rejects invitation management by CONTRACTOR.
+- rejects invitation creation by an outsider.
+- rejects OWNER grants.
+- rejects ADMIN grants.
+- rejects zero-hour expiry.
+- rejects expiry beyond seven days.
+- rejects fractional-hour expiry.
+- rejects malformed email.
+- rejects invalid company ID.
+- accepts a seven-day expiry.
+- rejects inviting someone who is already a member.
+- rejects immediate duplicate sends and preserves the first invitation.
+- replaces an older invitation and invalidates its old token.
+- rate limits invitation sends per company.
+- rate limits invitation sends per sender.
+- rate limits invitation sends per recipient.
+- revokes the invitation if email delivery fails.
+- lists company invitation metadata without exposing token hashes.
+- revokes a pending invitation and prevents its acceptance.
+- rejects revocation by a nonmanager.
+- rejects revocation using the wrong company ID.
+- only lists active invitations for the verified email.
+- hides pending invitations from an unverified user.
+- matches a verified email regardless of case.
+- does not trust an email supplied by a stale or forged session.
+- rejects an expired invitation.
+- rejects an invitation at its exact expiry.
+- accepts an invitation only once.
+- preserves an existing member role when accepting an invitation.
+- rejects invitations after the inviter loses management permissions.
+- handles two simultaneous accept requests without duplicate membership.
+- serializes concurrent revocation and acceptance.
+- serializes concurrent sends to the same recipient without duplicate active invitations.
+- rejects malformed and unknown invitation tokens.
+- only shows company members to other company members.
+- create requires authentication.
+- list requires authentication.
+- revoke requires authentication.
+- pending requires authentication.
+- accept requires authentication.
+- members requires authentication.
+
+[invitation-links.test.ts](../src/lib/invitation-links.test.ts) also checks preserving the token and email across auth URLs, retaining it after a failed verification send, rejecting arbitrary redirect URLs, and preserving ordinary login/signup behavior.
+
 ## Transaction tests
 
 Most tests use ordinary database operations only. A few auth tests deliberately inject failures to exercise behavior that is hard to reproduce reliably:
@@ -276,10 +362,17 @@ These cases are more advanced than the other tests. Their comments explain the a
 
 ## Scope and follow up
 
-The tested scope is the eight company procedures, three auth procedures, and four job procedures present on this branch. Post acknowledgment routes are not present here. If they are brought back, add cases for acknowledging and unacknowledging posts, member-only access, administrator-only member lists, and counts that exclude former members.
+[company-access.test.ts](../src/server/company-access.test.ts) checks eight page
+navigation cases: allowed access, redirecting a removed member to another company,
+redirecting to join with no companies, avoiding redirects back to the unavailable
+company, expired sessions, unexpected tRPC errors, unexpected page errors, and a
+failed company-list request. These mock Next's redirect and the company list; the
+router tests separately prove that removal actually revokes access in PostgreSQL.
+
+The suites cover ten company procedures, three auth procedures, and four job procedures. Invitation tests cover create, list, revoke, pending, accept, and members. Post acknowledgment routes now exist as well; dedicated cases for acknowledgment toggles, administrator-only lists, and former-member counts remain separate follow-up work.
 
 The auth branch for a user with no email cannot normally be reached by looking up that user with a validated non-null email. It remains uncovered rather than returning an impossible record from a database mock to raise the percentage.
 
-NextAuth login, OAuth, cookies, HTTP request handling, actual email delivery, and browser interactions are outside this suite. Concurrency races also need separate tests with simultaneous requests. Add those when working on those features rather than treating router coverage as proof of them.
+NextAuth login, OAuth, cookies, HTTP request handling, actual email delivery, and browser interactions are outside this suite. The invitation suite does exercise simultaneous sends, acceptance, and revocation using separate database transactions. Other concurrency behavior requires its own scenarios rather than relying on code coverage.
 
 The getJob success test caught a missing `return job` in the current implementation. That return is restored with this suite.

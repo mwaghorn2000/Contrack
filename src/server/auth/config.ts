@@ -66,8 +66,8 @@ export const authConfig = {
 
         if (!parsed.success) return null;
 
-        const user = await db.user.findUnique({
-          where: { email: parsed.data.email },
+        const user = await db.user.findFirst({
+          where: { email: { equals: parsed.data.email, mode: "insensitive" } },
         });
 
         if (!user?.passwordHash) return null;

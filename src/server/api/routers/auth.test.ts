@@ -99,6 +99,16 @@ it("signup preserves an existing unverified account and asks for verification", 
   });
 });
 
+it("signup treats different email capitalisation as the same account", async () => {
+  await db.user.create({
+    data: { email: email.toUpperCase(), emailVerified: new Date() },
+  });
+  await expect(caller.signup(signup)).rejects.toMatchObject({
+    code: "CONFLICT",
+  });
+  expect(await db.user.count()).toBe(1);
+});
+
 it("signup accepts a one-character name", async () => {
   const input = { ...signup, fullName: "A" };
   expect((await caller.signup(input)).success).toBe(true);
@@ -287,6 +297,20 @@ it("verificationEmail rejects a missing account", async () => {
   });
   expect(await db.emailVerificationCode.count()).toBe(0);
   expect(sendVerificationEmail).not.toHaveBeenCalled();
+});
+
+it("verificationEmail finds an account regardless of email capitalisation", async () => {
+  const user = await db.user.create({
+    data: { email: email.toUpperCase() },
+  });
+  await caller.verificationEmail({ email });
+  expect(sendVerificationEmail).toHaveBeenCalledWith(
+    user.email,
+    expect.stringMatching(/^\d{6}$/),
+  );
+  expect(
+    await db.emailVerificationCode.findUnique({ where: { userId: user.id } }),
+  ).not.toBeNull();
 });
 
 it("verificationEmail skips already verified accounts", async () => {
@@ -496,6 +520,20 @@ it("verifyEmail is idempotent for an already verified account", async () => {
   expect(
     (await db.user.findUniqueOrThrow({ where: { id: user.id } })).emailVerified,
   ).toEqual(verifiedAt);
+});
+
+it("verifyEmail finds an account regardless of email capitalisation", async () => {
+  const user = await db.user.create({
+    data: { email: email.toUpperCase() },
+  });
+  await caller.verificationEmail({ email: user.email! });
+  const sentCode = vi.mocked(sendVerificationEmail).mock.calls[0]![1];
+  expect((await caller.verifyEmail({ email, code: sentCode })).success).toBe(
+    true,
+  );
+  expect(
+    (await db.user.findUniqueOrThrow({ where: { id: user.id } })).emailVerified,
+  ).toBeInstanceOf(Date);
 });
 
 it("verifyEmail rejects a missing account", async () => {

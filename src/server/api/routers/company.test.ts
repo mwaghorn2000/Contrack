@@ -1,4 +1,12 @@
-import { beforeAll, afterAll, beforeEach, it, expect, vi } from "vitest";
+import {
+  beforeAll,
+  afterAll,
+  beforeEach,
+  describe,
+  it,
+  expect,
+  vi,
+} from "vitest";
 import { startTestDatabase, clearTestDatabase } from "~/test/database";
 import { companyRouter } from "./company";
 import type { PrismaClient } from "../../../../generated/prisma";
@@ -912,4 +920,538 @@ it("createCompany rejects a stale session after its user is deleted", async () =
     code: "UNAUTHORIZED",
   });
   expect(await db.company.count()).toBe(1);
+});
+
+describe("company member management", () => {
+  let memberId: string;
+
+  beforeEach(async () => {
+    const member = await db.user.create({
+      data: {
+        name: "Team Member",
+        email: "member@example.com",
+        companyMemberships: { create: { companyId, role: "MEMBER" } },
+      },
+    });
+    memberId = member.id;
+  });
+
+  it("lets the owner promote a member to admin", async () => {
+    await caller.updateMemberRole({
+      companyId,
+      userId: memberId,
+      role: "ADMIN",
+    });
+    expect(
+      await db.companyMember.findUnique({
+        where: { userId_companyId: { companyId, userId: memberId } },
+      }),
+    ).toMatchObject({ role: "ADMIN" });
+  });
+
+  it("lets the owner demote an admin and revokes their unused invitations", async () => {
+    await db.companyMember.update({
+      where: { userId_companyId: { companyId, userId: memberId } },
+      data: { role: "ADMIN" },
+    });
+    const invitation = await db.companyInvitation.create({
+      data: {
+        companyId,
+        createdById: memberId,
+        email: "invitee@example.com",
+        tokenHash: "a".repeat(64),
+        expiresAt: new Date(Date.now() + 60_000),
+      },
+    });
+    await caller.updateMemberRole({
+      companyId,
+      userId: memberId,
+      role: "CONTRACTOR",
+    });
+    expect(
+      await db.companyMember.findUnique({
+        where: { userId_companyId: { companyId, userId: memberId } },
+      }),
+    ).toMatchObject({ role: "CONTRACTOR" });
+    expect(
+      (
+        await db.companyInvitation.findUniqueOrThrow({
+          where: { id: invitation.id },
+        })
+      ).revokedAt,
+    ).toBeInstanceOf(Date);
+  });
+
+  it("lets an admin change a member to contractor", async () => {
+    await db.companyMember.update({
+      where: { userId_companyId: { companyId, userId } },
+      data: { role: "ADMIN" },
+    });
+    await caller.updateMemberRole({
+      companyId,
+      userId: memberId,
+      role: "CONTRACTOR",
+    });
+    expect(
+      await db.companyMember.findUnique({
+        where: { userId_companyId: { companyId, userId: memberId } },
+      }),
+    ).toMatchObject({ role: "CONTRACTOR" });
+  });
+
+  it("lets an admin change a contractor to member", async () => {
+    await db.companyMember.update({
+      where: { userId_companyId: { companyId, userId } },
+      data: { role: "ADMIN" },
+    });
+    await db.companyMember.update({
+      where: { userId_companyId: { companyId, userId: memberId } },
+      data: { role: "CONTRACTOR" },
+    });
+    await caller.updateMemberRole({
+      companyId,
+      userId: memberId,
+      role: "MEMBER",
+    });
+    expect(
+      await db.companyMember.findUnique({
+        where: { userId_companyId: { companyId, userId: memberId } },
+      }),
+    ).toMatchObject({ role: "MEMBER" });
+  });
+
+  it("prevents an admin from granting admin privileges", async () => {
+    await db.companyMember.update({
+      where: { userId_companyId: { companyId, userId } },
+      data: { role: "ADMIN" },
+    });
+    await expect(
+      caller.updateMemberRole({ companyId, userId: memberId, role: "ADMIN" }),
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
+    expect(
+      await db.companyMember.findUnique({
+        where: { userId_companyId: { companyId, userId: memberId } },
+      }),
+    ).toMatchObject({ role: "MEMBER" });
+  });
+
+  it("prevents an admin from changing or removing another admin", async () => {
+    await db.companyMember.updateMany({
+      where: { companyId },
+      data: { role: "ADMIN" },
+    });
+    await expect(
+      caller.updateMemberRole({ companyId, userId: memberId, role: "MEMBER" }),
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(
+      caller.removeMember({ companyId, userId: memberId }),
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
+    expect(
+      await db.companyMember.findUnique({
+        where: { userId_companyId: { companyId, userId: memberId } },
+      }),
+    ).toMatchObject({ role: "ADMIN" });
+  });
+
+  it("prevents an admin from changing or removing themselves", async () => {
+    await db.companyMember.update({
+      where: { userId_companyId: { companyId, userId } },
+      data: { role: "ADMIN" },
+    });
+    await expect(
+      caller.updateMemberRole({ companyId, userId, role: "MEMBER" }),
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(
+      caller.removeMember({ companyId, userId }),
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
+  });
+
+  it("prevents the owner from changing or removing themselves", async () => {
+    await expect(
+      caller.updateMemberRole({ companyId, userId, role: "MEMBER" }),
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(
+      caller.removeMember({ companyId, userId }),
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
+    expect(
+      await db.companyMember.findUnique({
+        where: { userId_companyId: { companyId, userId } },
+      }),
+    ).toMatchObject({ role: "OWNER" });
+  });
+
+  it("prevents an owner from changing or removing another owner", async () => {
+    await db.companyMember.update({
+      where: { userId_companyId: { companyId, userId: memberId } },
+      data: { role: "OWNER" },
+    });
+    await expect(
+      caller.updateMemberRole({ companyId, userId: memberId, role: "ADMIN" }),
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(
+      caller.removeMember({ companyId, userId: memberId }),
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
+  });
+
+  it("prevents an admin from changing or removing the owner", async () => {
+    await db.companyMember.update({
+      where: { userId_companyId: { companyId, userId } },
+      data: { role: "ADMIN" },
+    });
+    await db.companyMember.update({
+      where: { userId_companyId: { companyId, userId: memberId } },
+      data: { role: "OWNER" },
+    });
+    await expect(
+      caller.updateMemberRole({ companyId, userId: memberId, role: "ADMIN" }),
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(
+      caller.removeMember({ companyId, userId: memberId }),
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
+  });
+
+  it("rejects granting the OWNER role", async () => {
+    await expect(
+      caller.updateMemberRole({
+        companyId,
+        userId: memberId,
+        role: "OWNER" as "ADMIN",
+      }),
+    ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+    expect(
+      await db.companyMember.findUnique({
+        where: { userId_companyId: { companyId, userId: memberId } },
+      }),
+    ).toMatchObject({ role: "MEMBER" });
+  });
+
+  it("rejects member management by a MEMBER", async () => {
+    await db.companyMember.update({
+      where: { userId_companyId: { companyId, userId } },
+      data: { role: "MEMBER" },
+    });
+    await expect(
+      caller.updateMemberRole({ companyId, userId: memberId, role: "ADMIN" }),
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(
+      caller.removeMember({ companyId, userId: memberId }),
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
+    expect(await db.companyMember.count({ where: { companyId } })).toBe(2);
+  });
+
+  it("rejects member management by a CONTRACTOR", async () => {
+    await db.companyMember.update({
+      where: { userId_companyId: { companyId, userId } },
+      data: { role: "CONTRACTOR" },
+    });
+    await expect(
+      caller.updateMemberRole({ companyId, userId: memberId, role: "MEMBER" }),
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(
+      caller.removeMember({ companyId, userId: memberId }),
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
+    expect(await db.companyMember.count({ where: { companyId } })).toBe(2);
+  });
+
+  it("rejects member management by an outsider", async () => {
+    await db.companyMember.delete({
+      where: { userId_companyId: { companyId, userId } },
+    });
+    await expect(
+      caller.updateMemberRole({ companyId, userId: memberId, role: "MEMBER" }),
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(
+      caller.removeMember({ companyId, userId: memberId }),
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
+  });
+
+  it("requires authentication to manage members", async () => {
+    const anonymous = companyRouter.createCaller({
+      db,
+      session: null,
+      headers: new Headers(),
+    });
+    await expect(
+      anonymous.updateMemberRole({
+        companyId,
+        userId: memberId,
+        role: "ADMIN",
+      }),
+    ).rejects.toMatchObject({ code: "UNAUTHORIZED" });
+    await expect(
+      anonymous.removeMember({ companyId, userId: memberId }),
+    ).rejects.toMatchObject({ code: "UNAUTHORIZED" });
+  });
+
+  it("rejects invalid company and user IDs before changing membership", async () => {
+    await expect(
+      caller.updateMemberRole({
+        companyId: "invalid",
+        userId: memberId,
+        role: "ADMIN",
+      }),
+    ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+    await expect(
+      caller.updateMemberRole({ companyId, userId: "invalid", role: "ADMIN" }),
+    ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+    await expect(
+      caller.removeMember({ companyId: "invalid", userId: memberId }),
+    ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+    await expect(
+      caller.removeMember({ companyId, userId: "invalid" }),
+    ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+    expect(await db.companyMember.count({ where: { companyId } })).toBe(2);
+  });
+
+  it("rejects a missing member", async () => {
+    await expect(
+      caller.updateMemberRole({ companyId, userId: missingId, role: "MEMBER" }),
+    ).rejects.toMatchObject({ code: "NOT_FOUND" });
+    await expect(
+      caller.removeMember({ companyId, userId: missingId }),
+    ).rejects.toMatchObject({ code: "NOT_FOUND" });
+  });
+
+  it("cannot manage someone who belongs only to another company", async () => {
+    await db.companyMember.delete({
+      where: { userId_companyId: { companyId, userId: memberId } },
+    });
+    const other = await db.company.create({
+      data: {
+        name: "Other",
+        members: { create: { userId: memberId, role: "MEMBER" } },
+      },
+    });
+    await expect(
+      caller.updateMemberRole({ companyId, userId: memberId, role: "ADMIN" }),
+    ).rejects.toMatchObject({ code: "NOT_FOUND" });
+    await expect(
+      caller.removeMember({ companyId, userId: memberId }),
+    ).rejects.toMatchObject({ code: "NOT_FOUND" });
+    expect(
+      await db.companyMember.findUnique({
+        where: { userId_companyId: { companyId: other.id, userId: memberId } },
+      }),
+    ).toMatchObject({ role: "MEMBER" });
+  });
+
+  it("removes a member while preserving their account, history, and other memberships", async () => {
+    const other = await db.company.create({
+      data: {
+        name: "Other",
+        members: { create: { userId: memberId, role: "MEMBER" } },
+      },
+    });
+    const channel = await db.channel.create({
+      data: {
+        name: "General",
+        companyId,
+        channelMembers: { create: { userId: memberId } },
+        messages: {
+          create: { content: "Existing message", authorId: memberId },
+        },
+      },
+    });
+    const otherChannel = await db.channel.create({
+      data: {
+        name: "Other",
+        companyId: other.id,
+        channelMembers: { create: { userId: memberId } },
+      },
+    });
+    const post = await db.companyPost.create({
+      data: { companyId, authorId: memberId, content: "Existing post" },
+    });
+    const job = await db.job.create({
+      data: { companyId, createdById: memberId, title: "Existing job" },
+    });
+    await caller.removeMember({ companyId, userId: memberId });
+    expect(
+      await db.companyMember.findUnique({
+        where: { userId_companyId: { companyId, userId: memberId } },
+      }),
+    ).toBeNull();
+    expect(
+      await db.channelMember.findUnique({
+        where: {
+          channelId_userId: { channelId: channel.id, userId: memberId },
+        },
+      }),
+    ).toBeNull();
+    expect(
+      await db.channelMember.findUnique({
+        where: {
+          channelId_userId: { channelId: otherChannel.id, userId: memberId },
+        },
+      }),
+    ).not.toBeNull();
+    expect(
+      await db.companyMember.findUnique({
+        where: { userId_companyId: { companyId: other.id, userId: memberId } },
+      }),
+    ).not.toBeNull();
+    expect(
+      await db.user.findUnique({ where: { id: memberId } }),
+    ).not.toBeNull();
+    expect(await db.message.count({ where: { authorId: memberId } })).toBe(1);
+    expect(
+      await db.companyPost.findUnique({ where: { id: post.id } }),
+    ).not.toBeNull();
+    expect(await db.job.findUnique({ where: { id: job.id } })).not.toBeNull();
+  });
+
+  it("lets the owner remove an admin", async () => {
+    await db.companyMember.update({
+      where: { userId_companyId: { companyId, userId: memberId } },
+      data: { role: "ADMIN" },
+    });
+    await caller.removeMember({ companyId, userId: memberId });
+    expect(
+      await db.companyMember.findUnique({
+        where: { userId_companyId: { companyId, userId: memberId } },
+      }),
+    ).toBeNull();
+  });
+
+  it("lets an admin remove a member", async () => {
+    await db.companyMember.update({
+      where: { userId_companyId: { companyId, userId } },
+      data: { role: "ADMIN" },
+    });
+    await caller.removeMember({ companyId, userId: memberId });
+    expect(
+      await db.companyMember.findUnique({
+        where: { userId_companyId: { companyId, userId: memberId } },
+      }),
+    ).toBeNull();
+  });
+
+  it("lets an admin remove a contractor", async () => {
+    await db.companyMember.update({
+      where: { userId_companyId: { companyId, userId } },
+      data: { role: "ADMIN" },
+    });
+    await db.companyMember.update({
+      where: { userId_companyId: { companyId, userId: memberId } },
+      data: { role: "CONTRACTOR" },
+    });
+    await caller.removeMember({ companyId, userId: memberId });
+    expect(
+      await db.companyMember.findUnique({
+        where: { userId_companyId: { companyId, userId: memberId } },
+      }),
+    ).toBeNull();
+  });
+
+  it("revokes unused invitations to and from a removed person only in this company", async () => {
+    const other = await db.company.create({ data: { name: "Other" } });
+    await db.companyInvitation.createMany({
+      data: [
+        {
+          companyId,
+          createdById: userId,
+          email: "member@example.com",
+          tokenHash: "a".repeat(64),
+          expiresAt: new Date(Date.now() + 60_000),
+        },
+        {
+          companyId,
+          createdById: memberId,
+          email: "invitee@example.com",
+          tokenHash: "b".repeat(64),
+          expiresAt: new Date(Date.now() + 60_000),
+        },
+        {
+          companyId: other.id,
+          createdById: userId,
+          email: "member@example.com",
+          tokenHash: "c".repeat(64),
+          expiresAt: new Date(Date.now() + 60_000),
+        },
+        {
+          companyId,
+          createdById: userId,
+          email: "someoneelse@example.com",
+          tokenHash: "d".repeat(64),
+          expiresAt: new Date(Date.now() + 60_000),
+        },
+      ],
+    });
+    await caller.removeMember({ companyId, userId: memberId });
+    expect(
+      await db.companyInvitation.count({ where: { revokedAt: { not: null } } }),
+    ).toBe(2);
+    expect(
+      await db.companyInvitation.findUnique({
+        where: { tokenHash: "c".repeat(64) },
+      }),
+    ).toMatchObject({ revokedAt: null });
+    expect(
+      await db.companyInvitation.findUnique({
+        where: { tokenHash: "d".repeat(64) },
+      }),
+    ).toMatchObject({ revokedAt: null });
+  });
+
+  it("blocks company access immediately after removal even with an existing session", async () => {
+    const removedCaller = companyRouter.createCaller({
+      db,
+      session: { user: { id: memberId }, expires: "2099-01-01" },
+      headers: new Headers(),
+    });
+    await caller.removeMember({ companyId, userId: memberId });
+    await expect(removedCaller.getCompany({ companyId })).rejects.toMatchObject(
+      { code: "NOT_FOUND" },
+    );
+    expect(await removedCaller.listCompanies()).toEqual([]);
+  });
+
+  it("uses current database permissions after an admin is demoted", async () => {
+    await db.companyMember.update({
+      where: { userId_companyId: { companyId, userId: memberId } },
+      data: { role: "ADMIN" },
+    });
+    const admin = companyRouter.createCaller({
+      db,
+      session: { user: { id: memberId }, expires: "2099-01-01" },
+      headers: new Headers(),
+    });
+    await caller.updateMemberRole({
+      companyId,
+      userId: memberId,
+      role: "MEMBER",
+    });
+    await expect(
+      admin.updateMemberRole({ companyId, userId: memberId, role: "ADMIN" }),
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(
+      admin.removeMember({ companyId, userId }),
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
+  });
+
+  it("serializes promotion and removal so an admin cannot remove a newly promoted admin", async () => {
+    const adminUser = await db.user.create({
+      data: {
+        name: "Admin",
+        companyMemberships: { create: { companyId, role: "ADMIN" } },
+      },
+    });
+    const admin = companyRouter.createCaller({
+      db,
+      session: { user: { id: adminUser.id }, expires: "2099-01-01" },
+      headers: new Headers(),
+    });
+    const results = await Promise.allSettled([
+      caller.updateMemberRole({ companyId, userId: memberId, role: "ADMIN" }),
+      admin.removeMember({ companyId, userId: memberId }),
+    ]);
+    expect(
+      results.filter((result) => result.status === "fulfilled"),
+    ).toHaveLength(1);
+    const saved = await db.companyMember.findUnique({
+      where: { userId_companyId: { companyId, userId: memberId } },
+    });
+    if (results[0].status === "fulfilled") expect(saved?.role).toBe("ADMIN");
+    else expect(saved).toBeNull();
+  });
 });

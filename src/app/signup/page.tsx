@@ -1,17 +1,33 @@
 "use client";
 
 import Link from "next/link";
-import React, { useRef, useState, type SubmitEvent } from "react";
+import React, { Suspense, useRef, useState, type SubmitEvent } from "react";
 
 import AuthLayout from "../_components/auth/auth-layout";
 import GoogleSignInButton from "../_components/auth/google-sign-in-button";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import {
+  authPath,
+  invitationDestination,
+  invitationToken,
+} from "~/lib/invitation-links";
 import { api } from "~/trpc/react";
 
 const MIN_PASSWORD_LENGTH = 12;
 const MAX_PASSWORD_LENGTH = 128;
 
 export default function SignupPage() {
+  return (
+    <Suspense fallback={<p className="p-6">Loading signup…</p>}>
+      <SignupForm />
+    </Suspense>
+  );
+}
+
+function SignupForm() {
+  const searchParams = useSearchParams();
+  const invite = invitationToken(searchParams.get("invite"));
+  const invitedEmail = invite ? (searchParams.get("email") ?? "") : "";
   const passwordRef = useRef<HTMLInputElement>(null);
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
   const fullNameRef = useRef<HTMLInputElement>(null);
@@ -30,10 +46,13 @@ export default function SignupPage() {
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!validatePassword || !validateFullName || !validateEmail) {
+    setSubmitError("");
+    if (!validatePassword() || !validateFullName() || !validateEmail()) {
       return;
     }
 
+    validatePasswords();
+    if (!confirmPasswordRef.current?.checkValidity()) return;
     const email = emailRef.current!.value.trim();
 
     try {
@@ -53,12 +72,12 @@ export default function SignupPage() {
       await sendCode.mutateAsync({ email });
     } catch {
       router.push(
-        `/verify-email?email=${encodeURIComponent(email)}&sendFailed=1`,
+        authPath("/verify-email", invite, email, { sendFailed: "1" }),
       );
       return;
     }
 
-    router.push(`/verify-email?email=${encodeURIComponent(email)}`);
+    router.push(authPath("/verify-email", invite, email));
   }
 
   function validatePassword(showError = true): boolean {
@@ -156,7 +175,11 @@ export default function SignupPage() {
   return (
     <AuthLayout
       title="Create your account"
-      description="Get started with Contrack"
+      description={
+        invite
+          ? "Create an account to accept your company invitation"
+          : "Get started with Contrack"
+      }
     >
       <form method="post" className="space-y-4" onSubmit={handleSubmit}>
         <div className="space-y-1.5">
@@ -205,6 +228,7 @@ export default function SignupPage() {
           <input
             type="email"
             ref={emailRef}
+            defaultValue={invitedEmail}
             onChange={() => validateEmail(Boolean(emailError))}
             onBlur={() => validateEmail()}
             onInvalid={() => validateEmail()}
@@ -321,12 +345,12 @@ export default function SignupPage() {
         <div className="h-px flex-1 bg-gray-200" />
       </div>
 
-      <GoogleSignInButton />
+      <GoogleSignInButton redirectTo={invitationDestination(invite)} />
 
       <div className="mt-6 flex items-center justify-center gap-1 text-sm">
         <span className="text-gray-500">Already have an account?</span>
         <Link
-          href="/login"
+          href={authPath("/login", invite, invitedEmail)}
           className="rounded-sm font-medium text-gray-900 underline-offset-4 hover:underline focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 focus:outline-none"
         >
           Sign in
