@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { api } from "~/trpc/react";
+import { api, type RouterOutputs } from "~/trpc/react";
 import AcknowledgmentDashboard from "./acknowledgment-dashboard";
+import MemberAvatar from "./member-avatar";
 
 export default function PostAcknowledgment({
   companyId,
@@ -10,6 +11,7 @@ export default function PostAcknowledgment({
   title,
   acknowledged,
   count,
+  recentAcknowledgers = [],
   canManage,
 }: {
   companyId: string;
@@ -17,6 +19,7 @@ export default function PostAcknowledgment({
   title: string;
   acknowledged: boolean;
   count: number;
+  recentAcknowledgers: RouterOutputs["company"]["getCompanyPosts"][number]["recentAcknowledgers"];
   canManage: boolean;
 }) {
   const [dashboardOpen, setDashboardOpen] = useState(false);
@@ -75,6 +78,49 @@ export default function PostAcknowledgment({
           {isAcknowledged ? "Acknowledged" : "Acknowledge"}
           <span className="tabular-nums">{displayedCount}</span>
         </button>
+        {recentAcknowledgers.length > 0 && (
+          <div
+            role="img"
+            aria-label={`Most recent acknowledgments, newest first: ${recentAcknowledgers
+              .map((person) => person.name ?? "Company member")
+              .join(
+                ", ",
+              )}${count > 5 ? `. ${count - 5} more people acknowledged.` : "."}`}
+            className="isolate flex shrink-0 -space-x-2"
+          >
+            {recentAcknowledgers.map((person) => (
+              <span
+                key={person.id}
+                aria-hidden="true"
+                title={person.name ?? "Company member"}
+                className="relative rounded-full ring-2 ring-gray-50"
+              >
+                <MemberAvatar
+                  name={person.name ?? "Company member"}
+                  image={person.image}
+                />
+              </span>
+            ))}
+            {count > 5 && (
+              <span
+                aria-hidden="true"
+                title={`${count - 5} more people acknowledged`}
+                className="relative flex size-9 items-center justify-center rounded-full bg-gray-200 text-gray-600 ring-2 ring-gray-50"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={1.75}
+                  strokeLinecap="round"
+                  className="size-4"
+                >
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+              </span>
+            )}
+          </div>
+        )}
         {canManage && (
           <button
             type="button"

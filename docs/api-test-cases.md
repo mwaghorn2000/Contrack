@@ -31,7 +31,7 @@ Tests below are implemented. The wording matches their `it(...)` names so you ca
 
 ## Company tests
 
-[company.test.ts](../src/server/api/routers/company.test.ts) contains 105 cases.
+[company.test.ts](../src/server/api/routers/company.test.ts) contains 115 cases.
 
 Company names allow 1–100 characters after trimming; descriptions allow up to 300, emails 254, and phones 20. Post titles allow 1–100 and content 1–1000 after trimming. Company deletion is OWNER-only; updates and post mutations allow OWNER or ADMIN. Ordinary members can read their companies and posts.
 
@@ -168,6 +168,19 @@ The `company member management` group covers `updateMemberRole` and `removeMembe
 - blocks company access immediately after removal even with an existing session.
 - uses current database permissions after an admin is demoted.
 - serializes promotion and removal so an admin cannot remove a newly promoted admin.
+
+### Recent post acknowledgments
+
+- returns only the five newest acknowledging members with their profile pictures.
+- returns an empty avatar summary for a new post.
+- returns all acknowledging people when there are fewer than five.
+- keeps the viewer acknowledged when they are older than the five shown people.
+- returns the updated avatar summary immediately after acknowledging.
+- does not move an existing acknowledgment to the front when it is repeated.
+- fills the fifth avatar from the next acknowledgment after someone undoes theirs.
+- excludes former members from both the recent avatars and the total.
+- does not let a removed member acknowledge a post.
+- does not accept a post ID belonging to a different company.
 
 ## Auth tests
 
@@ -369,7 +382,7 @@ company, expired sessions, unexpected tRPC errors, unexpected page errors, and a
 failed company-list request. These mock Next's redirect and the company list; the
 router tests separately prove that removal actually revokes access in PostgreSQL.
 
-The suites cover ten company procedures, three auth procedures, and four job procedures. Invitation tests cover create, list, revoke, pending, accept, and members. Post acknowledgment routes now exist as well; dedicated cases for acknowledgment toggles, administrator-only lists, and former-member counts remain separate follow-up work.
+The suites cover eleven company procedures, three auth procedures, and four job procedures. Invitation tests cover create, list, revoke, pending, accept, and members. Post acknowledgment tests cover recent avatar summaries, toggles, and former-member counts. Dedicated tests for the administrator-only acknowledgment dashboard remain follow-up work.
 
 The auth branch for a user with no email cannot normally be reached by looking up that user with a validated non-null email. It remains uncovered rather than returning an impossible record from a database mock to raise the percentage.
 

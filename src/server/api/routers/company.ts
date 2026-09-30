@@ -50,10 +50,14 @@ const postIdentitySchema = z.object({
 
 const authorSelect = { name: true, image: true } as const;
 
-function postRelations(userId: string, companyId: string) {
+function acknowledgmentRelations(companyId: string) {
   return {
-    author: { select: authorSelect },
-    acknowledgments: { where: { userId }, select: { userId: true } },
+    acknowledgments: {
+      where: { user: { companyMemberships: { some: { companyId } } } },
+      orderBy: [{ createdAt: "desc" }, { userId: "asc" }],
+      take: 5,
+      select: { user: { select: { id: true, ...authorSelect } } },
+    },
     _count: {
       select: {
         acknowledgments: {
@@ -61,20 +65,23 @@ function postRelations(userId: string, companyId: string) {
         },
       },
     },
-  } as const;
+  } satisfies Prisma.CompanyPostSelect;
 }
 
 function withAcknowledgmentSummary<
   T extends {
-    acknowledgments: { userId: string }[];
+    acknowledgments: {
+      user: { id: string; name: string | null; image: string | null };
+    }[];
     _count: { acknowledgments: number };
   },
->(post: T) {
+>(post: T, acknowledged: boolean) {
   const { acknowledgments, _count, ...details } = post;
   return {
     ...details,
-    acknowledged: acknowledgments.length > 0,
+    acknowledged,
     acknowledgmentCount: _count.acknowledgments,
+    recentAcknowledgers: acknowledgments.map(({ user }) => user),
   };
 }
 
@@ -355,7 +362,10 @@ export const companyRouter = createTRPCRouter({
         },
         select: {
           posts: {
-            include: postRelations(ctx.session.user.id, input.companyId),
+            include: {
+              author: { select: authorSelect },
+              ...acknowledgmentRelations(input.companyId),
+            },
             orderBy: {
               createdAt: "desc",
             },
@@ -370,7 +380,21 @@ export const companyRouter = createTRPCRouter({
         });
       }
 
-      return company.posts.map(withAcknowledgmentSummary);
+      // The viewer may have acknowledged earlier than the five shown avatars.
+      const viewerAcknowledgments =
+        await ctx.db.companyPostAcknowledgment.findMany({
+          where: {
+            userId: ctx.session.user.id,
+            post: { companyId: input.companyId },
+          },
+          select: { postId: true },
+        });
+      const acknowledgedPostIds = new Set(
+        viewerAcknowledgments.map(({ postId }) => postId),
+      );
+      return company.posts.map((post) =>
+        withAcknowledgmentSummary(post, acknowledgedPostIds.has(post.id)),
+      );
     }),
   createCompanyPost: protectedProcedure
     .input(createCompanyPostSchema)
@@ -398,7 +422,10 @@ export const companyRouter = createTRPCRouter({
       }
 
       const post = await ctx.db.companyPost.create({
-        include: postRelations(ctx.session.user.id, input.companyId),
+        include: {
+          author: { select: authorSelect },
+          ...acknowledgmentRelations(input.companyId),
+        },
         data: {
           title: input.title,
           content: input.content,
@@ -408,7 +435,7 @@ export const companyRouter = createTRPCRouter({
       });
 
       return {
-        post: withAcknowledgmentSummary(post),
+        post: withAcknowledgmentSummary(post, false),
         success: true,
       };
     }),
@@ -441,15 +468,11 @@ export const companyRouter = createTRPCRouter({
         } else {
           await tx.companyPostAcknowledgment.deleteMany({ where: identity });
         }
-        const acknowledgmentCount = await tx.companyPostAcknowledgment.count({
-          where: {
-            postId: post.id,
-            user: {
-              companyMemberships: { some: { companyId: input.companyId } },
-            },
-          },
+        const summary = await tx.companyPost.findUniqueOrThrow({
+          where: { id: post.id },
+          select: acknowledgmentRelations(input.companyId),
         });
-        return { acknowledged: input.acknowledged, acknowledgmentCount };
+        return withAcknowledgmentSummary(summary, input.acknowledged);
       });
     }),
 

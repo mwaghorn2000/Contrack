@@ -22,6 +22,7 @@ export default function CompanyPosts({
   const input = { companyId };
   const posts = api.company.getCompanyPosts.useQuery(input, {
     initialData: initialPosts,
+    refetchInterval: 15_000,
   });
   const createPost = api.company.createCompanyPost.useMutation({
     onMutate: async () => {
@@ -123,6 +124,7 @@ export default function CompanyPosts({
             title={post.title}
             acknowledged={post.acknowledged}
             count={post.acknowledgmentCount}
+            recentAcknowledgers={post.recentAcknowledgers}
             canManage={canManage}
           />
         </CompanyPost>

@@ -1455,3 +1455,180 @@ describe("company member management", () => {
     else expect(saved).toBeNull();
   });
 });
+
+describe("recent post acknowledgments", () => {
+  let postId: string;
+  let acknowledgerIds: string[];
+
+  beforeEach(async () => {
+    const post = await db.companyPost.create({
+      data: { companyId, authorId: userId, content: "Company update" },
+    });
+    postId = post.id;
+    acknowledgerIds = [];
+    for (let index = 0; index < 6; index++) {
+      const person = await db.user.create({
+        data: {
+          name: `Member ${index}`,
+          email: `member${index}@example.com`,
+          image: `https://example.com/avatar${index}.png`,
+          companyMemberships: { create: { companyId, role: "MEMBER" } },
+          postAcknowledgments: {
+            create: {
+              postId,
+              createdAt: new Date(Date.UTC(2026, 0, index + 1)),
+            },
+          },
+        },
+      });
+      acknowledgerIds.push(person.id);
+    }
+  });
+
+  it("returns only the five newest acknowledging members with their profile pictures", async () => {
+    const [post] = await caller.getCompanyPosts({ companyId });
+    expect(post?.acknowledged).toBe(false);
+    expect(post?.acknowledgmentCount).toBe(6);
+    expect(post?.recentAcknowledgers).toEqual(
+      [5, 4, 3, 2, 1].map((index) => ({
+        id: acknowledgerIds[index],
+        name: `Member ${index}`,
+        image: `https://example.com/avatar${index}.png`,
+      })),
+    );
+  });
+
+  it("returns an empty avatar summary for a new post", async () => {
+    const { post } = await caller.createCompanyPost({
+      companyId,
+      title: "New update",
+      content: "No acknowledgments yet",
+    });
+    expect(post).toMatchObject({
+      acknowledged: false,
+      acknowledgmentCount: 0,
+      recentAcknowledgers: [],
+    });
+  });
+
+  it("returns all acknowledging people when there are fewer than five", async () => {
+    await db.companyPostAcknowledgment.deleteMany({
+      where: { postId, userId: { in: acknowledgerIds.slice(4) } },
+    });
+    const [post] = await caller.getCompanyPosts({ companyId });
+    expect(post?.acknowledgmentCount).toBe(4);
+    expect(post?.recentAcknowledgers.map((person) => person.id)).toEqual(
+      acknowledgerIds.slice(0, 4).reverse(),
+    );
+  });
+
+  it("keeps the viewer acknowledged when they are older than the five shown people", async () => {
+    await db.companyPostAcknowledgment.create({
+      data: { postId, userId, createdAt: new Date("2025-12-31") },
+    });
+    const [post] = await caller.getCompanyPosts({ companyId });
+    expect(post?.acknowledged).toBe(true);
+    expect(post?.acknowledgmentCount).toBe(7);
+    expect(post?.recentAcknowledgers.map((person) => person.id)).not.toContain(
+      userId,
+    );
+  });
+
+  it("returns the updated avatar summary immediately after acknowledging", async () => {
+    const result = await caller.setPostAcknowledgment({
+      companyId,
+      postId,
+      acknowledged: true,
+    });
+    expect(result.acknowledged).toBe(true);
+    expect(result.acknowledgmentCount).toBe(7);
+    expect(result.recentAcknowledgers.map((person) => person.id)).toEqual([
+      userId,
+      ...acknowledgerIds.slice(2).reverse(),
+    ]);
+    const [post] = await caller.getCompanyPosts({ companyId });
+    expect(post).toMatchObject(result);
+  });
+
+  it("does not move an existing acknowledgment to the front when it is repeated", async () => {
+    await db.companyPostAcknowledgment.create({
+      data: { postId, userId, createdAt: new Date("2025-12-31") },
+    });
+    const result = await caller.setPostAcknowledgment({
+      companyId,
+      postId,
+      acknowledged: true,
+    });
+    expect(result.acknowledgmentCount).toBe(7);
+    expect(result.recentAcknowledgers.map((person) => person.id)).toEqual(
+      acknowledgerIds.slice(1).reverse(),
+    );
+  });
+
+  it("fills the fifth avatar from the next acknowledgment after someone undoes theirs", async () => {
+    const newestId = acknowledgerIds[5]!;
+    const member = companyRouter.createCaller({
+      db,
+      session: { user: { id: newestId }, expires: "2099-01-01" },
+      headers: new Headers(),
+    });
+    const result = await member.setPostAcknowledgment({
+      companyId,
+      postId,
+      acknowledged: false,
+    });
+    expect(result.acknowledged).toBe(false);
+    expect(result.acknowledgmentCount).toBe(5);
+    expect(result.recentAcknowledgers.map((person) => person.id)).toEqual(
+      acknowledgerIds.slice(0, 5).reverse(),
+    );
+    expect(
+      await db.companyPostAcknowledgment.findUnique({
+        where: { postId_userId: { postId, userId: newestId } },
+      }),
+    ).toBeNull();
+  });
+
+  it("excludes former members from both the recent avatars and the total", async () => {
+    await caller.removeMember({ companyId, userId: acknowledgerIds[5]! });
+    const [post] = await caller.getCompanyPosts({ companyId });
+    expect(post?.acknowledgmentCount).toBe(5);
+    expect(post?.recentAcknowledgers.map((person) => person.id)).toEqual(
+      acknowledgerIds.slice(0, 5).reverse(),
+    );
+    expect(
+      await db.companyPostAcknowledgment.count({ where: { postId } }),
+    ).toBe(6);
+  });
+
+  it("does not let a removed member acknowledge a post", async () => {
+    const removedId = acknowledgerIds[5]!;
+    await caller.removeMember({ companyId, userId: removedId });
+    const removedCaller = companyRouter.createCaller({
+      db,
+      session: { user: { id: removedId }, expires: "2099-01-01" },
+      headers: new Headers(),
+    });
+    await expect(
+      removedCaller.setPostAcknowledgment({
+        companyId,
+        postId,
+        acknowledged: true,
+      }),
+    ).rejects.toMatchObject({ code: "NOT_FOUND" });
+  });
+
+  it("does not accept a post ID belonging to a different company", async () => {
+    const other = await caller.createCompany({ name: "Other company" });
+    await expect(
+      caller.setPostAcknowledgment({
+        companyId: other.id,
+        postId,
+        acknowledged: true,
+      }),
+    ).rejects.toMatchObject({ code: "NOT_FOUND" });
+    expect(
+      await db.companyPostAcknowledgment.count({ where: { postId } }),
+    ).toBe(6);
+  });
+});
