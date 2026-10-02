@@ -74,4 +74,38 @@ export const channelRouter = createTRPCRouter({
 
       return newChannel;
     }),
+
+  getChannel: protectedProcedure
+    .input(z.object({ channelId: z.string().cuid() }))
+    .query(async ({ ctx, input }) => {
+      const channel = await ctx.db.channel.findUnique({
+        where: {
+          id: input.channelId,
+          company: {
+            members: {
+              some: {
+                userId: ctx.session.user.id,
+              },
+            },
+          },
+          channelMembers: {
+            some: {
+              userId: ctx.session.user.id,
+            },
+          },
+        },
+        include: {
+          channelMembers: true,
+        },
+      });
+
+      if (!channel) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Channel not found.",
+        });
+      }
+
+      return channel;
+    }),
 });

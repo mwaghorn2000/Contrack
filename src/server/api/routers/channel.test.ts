@@ -49,6 +49,8 @@ afterAll(async () => {
   }
 }, 60_000);
 
+/// Tests for the createChannel procedure
+
 it("createChannel returns the stored channel to the caller", async () => {
   const channelName = "New Channel";
   const result = await caller.createChannel({
@@ -81,15 +83,21 @@ it("createChannel throws an error if the user is not a member of the company", a
   const nonMemberCaller = channelRouter.createCaller({
     db,
     session: {
-      user: { id: nonMemberUser.id, name: nonMemberUser.name, email: nonMemberUser.email },
+      user: {
+        id: nonMemberUser.id,
+        name: nonMemberUser.name,
+        email: nonMemberUser.email,
+      },
       expires: new Date(Date.now() + 3_600_000).toISOString(),
     },
     headers: new Headers(),
   });
-  await expect(nonMemberCaller.createChannel({
-    name: "Non Member Channel",
-    companyId,
-  })).rejects.toThrow();
+  await expect(
+    nonMemberCaller.createChannel({
+      name: "Non Member Channel",
+      companyId,
+    }),
+  ).rejects.toThrow();
 });
 
 it("createChannel throws an error if the user is not an admin or owner", async () => {
@@ -99,15 +107,21 @@ it("createChannel throws an error if the user is not an admin or owner", async (
   const memberCaller = channelRouter.createCaller({
     db,
     session: {
-      user: { id: memberUser.id, name: memberUser.name, email: memberUser.email },
+      user: {
+        id: memberUser.id,
+        name: memberUser.name,
+        email: memberUser.email,
+      },
       expires: new Date(Date.now() + 3_600_000).toISOString(),
     },
     headers: new Headers(),
   });
-  await expect(memberCaller.createChannel({
-    name: "Member Channel",
-    companyId,
-  })).rejects.toThrow();
+  await expect(
+    memberCaller.createChannel({
+      name: "Member Channel",
+      companyId,
+    }),
+  ).rejects.toThrow();
 });
 
 it("createChannel throws an error if a channel with the same name already exists", async () => {
@@ -116,10 +130,12 @@ it("createChannel throws an error if a channel with the same name already exists
     name: channelName,
     companyId,
   });
-  await expect(caller.createChannel({
-    name: channelName,
-    companyId,
-  })).rejects.toThrow();
+  await expect(
+    caller.createChannel({
+      name: channelName,
+      companyId,
+    }),
+  ).rejects.toThrow();
 });
 
 it("createChannel creates a channel member with the correct permissions for the creator", async () => {
@@ -139,23 +155,86 @@ it("createChannel creates a channel member with the correct permissions for the 
 });
 
 it("createChannel throws an error if the input is missing", async () => {
-  await expect(caller.createChannel({
-    name: "", // Invalid name
-    companyId,
-  })).rejects.toThrow();
-  await expect(caller.createChannel({
-    name: "Valid Name",
-    companyId: "", // Invalid companyId
-  })).rejects.toThrow();
+  await expect(
+    caller.createChannel({
+      name: "", // Invalid name
+      companyId,
+    }),
+  ).rejects.toThrow();
+  await expect(
+    caller.createChannel({
+      name: "Valid Name",
+      companyId: "", // Invalid companyId
+    }),
+  ).rejects.toThrow();
 });
 
 it("createChannel throws an error if the input is too long", async () => {
-  await expect(caller.createChannel({
-    name: "A".repeat(256), // Name too long
+  await expect(
+    caller.createChannel({
+      name: "A".repeat(256), // Name too long
+      companyId,
+    }),
+  ).rejects.toThrow();
+  await expect(
+    caller.createChannel({
+      name: "Valid Name",
+      companyId: "invalid-uuid", // Invalid UUID format
+    }),
+  ).rejects.toThrow();
+});
+
+/// Tests for the getChannel procedure
+
+it("getChannel returns the channel if the user is a member", async () => {
+  const channelName = "Get Channel Test";
+  const newChannel = await caller.createChannel({
+    name: channelName,
     companyId,
-  })).rejects.toThrow();
-  await expect(caller.createChannel({
-    name: "Valid Name",
-    companyId: "invalid-uuid", // Invalid UUID format
-  })).rejects.toThrow();
+  });
+  const result = await caller.getChannel({ channelId: newChannel.id });
+  expect(result).toHaveProperty("id", newChannel.id);
+  expect(result.name).toBe(channelName);
+});
+
+it("getChannel throws an error if the user is not a member of the channel", async () => {
+  const otherUser = await db.user.create({
+    data: { name: "Other User", email: "other@example.com" },
+  });
+  const otherCaller = channelRouter.createCaller({
+    db,
+    session: {
+      user: { id: otherUser.id, name: otherUser.name, email: otherUser.email },
+      expires: new Date(Date.now() + 3_600_000).toISOString(),
+    },
+    headers: new Headers(),
+  });
+  const channelName = "Get Channel Test";
+  const newChannel = await caller.createChannel({
+    name: channelName,
+    companyId,
+  });
+  await expect(
+    otherCaller.getChannel({ channelId: newChannel.id }),
+  ).rejects.toThrow();
+});
+
+it("getChannel throws an error if the channel does not exist", async () => {
+  await expect(
+    caller.getChannel({ channelId: "non-existent-id" }),
+  ).rejects.toThrow();
+});
+
+it("getChannel throws an error if the input is invalid", async () => {
+  await expect(
+    caller.getChannel({ channelId: "" }), // Invalid channelId
+  ).rejects.toThrow();
+  await expect(
+    caller.getChannel({ channelId: "invalid-uuid" }), // Invalid UUID format
+  ).rejects.toThrow();
+});
+
+it("getChannel throws an error if the input is missing", async () => {
+  // @ts-expect-error Testing missing input
+  await expect(caller.getChannel()).rejects.toThrow();
 });
