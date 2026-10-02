@@ -50,6 +50,29 @@ Saving refreshes your name in the account menu and invalidates cached names in
 company posts, acknowledgment lists, and member lists. Profile updates only affect
 the signed-in user. No new migration is needed for these existing user fields.
 
+## Company chat data model
+
+Migration `20261002010000_channel_membership_permissions` adds channel titles and
+timestamps, individual channel-member permissions, and message authors linked to
+`ChannelMember`. Channels retain their `name` and optional `image`; existing names
+also become their initial titles. Each member has a stable ID and a unique
+`channelId_userId` pair. Permissions default to false: `canSendMessages`,
+`canManageMembers`, `canManageChannel`, and `canModerateMessages`.
+
+The chat API should require current company membership and `removedAt: null` for
+reading, then check the relevant individual permission for each action. Assign
+the creator's permissions explicitly. Message creation uses
+`authorChannelMemberId`; a composite foreign key enforces that the author belongs
+to the message's channel. Resolve the author via `authorChannelMember.user`.
+Use `removedAt` for membership removal and `deletedAt` for message soft deletion.
+Historical memberships are retained so old messages keep their authors. Rejoining
+a company must not automatically reactivate its channel memberships or permissions.
+
+The migration preserves existing message authors, including those whose channel
+membership was previously deleted, by creating inactive historical memberships.
+Apply it with `pnpm run db:migrate` before running the updated Prisma client.
+New chat API endpoints are not included yet.
+
 ## Account security
 
 **Account settings → Account security** supports password changes and optional

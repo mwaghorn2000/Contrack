@@ -82,6 +82,7 @@ model CompanyMember {
 
 model Channel {
     id                  String      @id @default(cuid())
+    title               String
     name                String
     image               String?
     messages            Message[]
@@ -89,16 +90,31 @@ model Channel {
 
     companyId           String
     company             Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+    createdAt           DateTime    @default(now())
+    updatedAt           DateTime    @default(now()) @updatedAt
+
+    @@index([companyId])
 }
 
 model ChannelMember {
+    id          String @id @default(cuid())
     channelId   String
     userId      String
+    canSendMessages     Boolean @default(false)
+    canManageMembers    Boolean @default(false)
+    canManageChannel    Boolean @default(false)
+    canModerateMessages Boolean @default(false)
+    joinedAt    DateTime @default(now())
+    removedAt   DateTime?
 
     channel     Channel     @relation(fields: [channelId], references: [id], onDelete: Cascade)
     user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+    messages    Message[]
 
-    @@id([channelId, userId])
+    @@unique([channelId, userId])
+    // Allows the message foreign key to enforce that its author is in this channel.
+    @@unique([id, channelId])
+    @@index([userId, removedAt])
 }
 
 
@@ -120,7 +136,6 @@ model User {
 
     companyMemberships  CompanyMember[]
     channelMemberships  ChannelMember[]
-    messages            Message[]
     createdJobs         Job[]
     companyPosts        CompanyPost[]
     postAcknowledgments CompanyPostAcknowledgment[]
@@ -162,12 +177,16 @@ model Message {
     content     String      
     postedAt    DateTime    @default(now())
     updatedAt   DateTime    @updatedAt
+    deletedAt   DateTime?
 
     channelId   String
     channel     Channel     @relation(fields: [channelId], references: [id], onDelete: Cascade)
 
-    authorId    String
-    author      User        @relation(fields: [authorId], references: [id])
+    authorChannelMemberId String
+    authorChannelMember ChannelMember @relation(fields: [authorChannelMemberId, channelId], references: [id, channelId], onDelete: NoAction)
+
+    @@index([channelId, postedAt, id])
+    @@index([authorChannelMemberId, channelId])
 }
 
 model Job {

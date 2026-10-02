@@ -1244,16 +1244,22 @@ describe("company member management", () => {
     });
     const channel = await db.channel.create({
       data: {
+        title: "General",
         name: "General",
         companyId,
-        channelMembers: { create: { userId: memberId } },
-        messages: {
-          create: { content: "Existing message", authorId: memberId },
-        },
+        channelMembers: { create: { id: "history-author", userId: memberId } },
+      },
+    });
+    await db.message.create({
+      data: {
+        channelId: channel.id,
+        authorChannelMemberId: "history-author",
+        content: "Existing message",
       },
     });
     const otherChannel = await db.channel.create({
       data: {
+        title: "Other",
         name: "Other",
         companyId: other.id,
         channelMembers: { create: { userId: memberId } },
@@ -1277,14 +1283,14 @@ describe("company member management", () => {
           channelId_userId: { channelId: channel.id, userId: memberId },
         },
       }),
-    ).toBeNull();
+    ).toMatchObject({ removedAt: expect.any(Date) as Date });
     expect(
       await db.channelMember.findUnique({
         where: {
           channelId_userId: { channelId: otherChannel.id, userId: memberId },
         },
       }),
-    ).not.toBeNull();
+    ).toMatchObject({ removedAt: null });
     expect(
       await db.companyMember.findUnique({
         where: { userId_companyId: { companyId: other.id, userId: memberId } },
@@ -1293,7 +1299,11 @@ describe("company member management", () => {
     expect(
       await db.user.findUnique({ where: { id: memberId } }),
     ).not.toBeNull();
-    expect(await db.message.count({ where: { authorId: memberId } })).toBe(1);
+    expect(
+      await db.message.count({
+        where: { authorChannelMember: { userId: memberId } },
+      }),
+    ).toBe(1);
     expect(
       await db.companyPost.findUnique({ where: { id: post.id } }),
     ).not.toBeNull();

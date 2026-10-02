@@ -166,14 +166,24 @@ exports.Prisma.CompanyMemberScalarFieldEnum = {
 
 exports.Prisma.ChannelScalarFieldEnum = {
   id: 'id',
+  title: 'title',
   name: 'name',
   image: 'image',
-  companyId: 'companyId'
+  companyId: 'companyId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.ChannelMemberScalarFieldEnum = {
+  id: 'id',
   channelId: 'channelId',
-  userId: 'userId'
+  userId: 'userId',
+  canSendMessages: 'canSendMessages',
+  canManageMembers: 'canManageMembers',
+  canManageChannel: 'canManageChannel',
+  canModerateMessages: 'canModerateMessages',
+  joinedAt: 'joinedAt',
+  removedAt: 'removedAt'
 };
 
 exports.Prisma.UserScalarFieldEnum = {
@@ -213,8 +223,9 @@ exports.Prisma.MessageScalarFieldEnum = {
   content: 'content',
   postedAt: 'postedAt',
   updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
   channelId: 'channelId',
-  authorId: 'authorId'
+  authorChannelMemberId: 'authorChannelMemberId'
 };
 
 exports.Prisma.JobScalarFieldEnum = {

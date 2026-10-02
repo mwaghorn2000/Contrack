@@ -2348,6 +2348,37 @@ export namespace Prisma {
 
 
   /**
+   * Count Type ChannelMemberCountOutputType
+   */
+
+  export type ChannelMemberCountOutputType = {
+    messages: number
+  }
+
+  export type ChannelMemberCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    messages?: boolean | ChannelMemberCountOutputTypeCountMessagesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ChannelMemberCountOutputType without action
+   */
+  export type ChannelMemberCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelMemberCountOutputType
+     */
+    select?: ChannelMemberCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ChannelMemberCountOutputType without action
+   */
+  export type ChannelMemberCountOutputTypeCountMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MessageWhereInput
+  }
+
+
+  /**
    * Count Type UserCountOutputType
    */
 
@@ -2357,7 +2388,6 @@ export namespace Prisma {
     sessions: number
     companyMemberships: number
     channelMemberships: number
-    messages: number
     createdJobs: number
     companyPosts: number
     postAcknowledgments: number
@@ -2370,7 +2400,6 @@ export namespace Prisma {
     sessions?: boolean | UserCountOutputTypeCountSessionsArgs
     companyMemberships?: boolean | UserCountOutputTypeCountCompanyMembershipsArgs
     channelMemberships?: boolean | UserCountOutputTypeCountChannelMembershipsArgs
-    messages?: boolean | UserCountOutputTypeCountMessagesArgs
     createdJobs?: boolean | UserCountOutputTypeCountCreatedJobsArgs
     companyPosts?: boolean | UserCountOutputTypeCountCompanyPostsArgs
     postAcknowledgments?: boolean | UserCountOutputTypeCountPostAcknowledgmentsArgs
@@ -2421,13 +2450,6 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountChannelMembershipsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ChannelMemberWhereInput
-  }
-
-  /**
-   * UserCountOutputType without action
-   */
-  export type UserCountOutputTypeCountMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: MessageWhereInput
   }
 
   /**
@@ -7051,46 +7073,64 @@ export namespace Prisma {
 
   export type ChannelMinAggregateOutputType = {
     id: string | null
+    title: string | null
     name: string | null
     image: string | null
     companyId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type ChannelMaxAggregateOutputType = {
     id: string | null
+    title: string | null
     name: string | null
     image: string | null
     companyId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type ChannelCountAggregateOutputType = {
     id: number
+    title: number
     name: number
     image: number
     companyId: number
+    createdAt: number
+    updatedAt: number
     _all: number
   }
 
 
   export type ChannelMinAggregateInputType = {
     id?: true
+    title?: true
     name?: true
     image?: true
     companyId?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type ChannelMaxAggregateInputType = {
     id?: true
+    title?: true
     name?: true
     image?: true
     companyId?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type ChannelCountAggregateInputType = {
     id?: true
+    title?: true
     name?: true
     image?: true
     companyId?: true
+    createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -7168,9 +7208,12 @@ export namespace Prisma {
 
   export type ChannelGroupByOutputType = {
     id: string
+    title: string
     name: string
     image: string | null
     companyId: string
+    createdAt: Date
+    updatedAt: Date
     _count: ChannelCountAggregateOutputType | null
     _min: ChannelMinAggregateOutputType | null
     _max: ChannelMaxAggregateOutputType | null
@@ -7192,9 +7235,12 @@ export namespace Prisma {
 
   export type ChannelSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    title?: boolean
     name?: boolean
     image?: boolean
     companyId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     messages?: boolean | Channel$messagesArgs<ExtArgs>
     channelMembers?: boolean | Channel$channelMembersArgs<ExtArgs>
     company?: boolean | CompanyDefaultArgs<ExtArgs>
@@ -7203,28 +7249,37 @@ export namespace Prisma {
 
   export type ChannelSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    title?: boolean
     name?: boolean
     image?: boolean
     companyId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     company?: boolean | CompanyDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["channel"]>
 
   export type ChannelSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    title?: boolean
     name?: boolean
     image?: boolean
     companyId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     company?: boolean | CompanyDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["channel"]>
 
   export type ChannelSelectScalar = {
     id?: boolean
+    title?: boolean
     name?: boolean
     image?: boolean
     companyId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type ChannelOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "image" | "companyId", ExtArgs["result"]["channel"]>
+  export type ChannelOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "name" | "image" | "companyId" | "createdAt" | "updatedAt", ExtArgs["result"]["channel"]>
   export type ChannelInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     messages?: boolean | Channel$messagesArgs<ExtArgs>
     channelMembers?: boolean | Channel$channelMembersArgs<ExtArgs>
@@ -7247,9 +7302,12 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      title: string
       name: string
       image: string | null
       companyId: string
+      createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["channel"]>
     composites: {}
   }
@@ -7677,9 +7735,12 @@ export namespace Prisma {
    */
   interface ChannelFieldRefs {
     readonly id: FieldRef<"Channel", 'String'>
+    readonly title: FieldRef<"Channel", 'String'>
     readonly name: FieldRef<"Channel", 'String'>
     readonly image: FieldRef<"Channel", 'String'>
     readonly companyId: FieldRef<"Channel", 'String'>
+    readonly createdAt: FieldRef<"Channel", 'DateTime'>
+    readonly updatedAt: FieldRef<"Channel", 'DateTime'>
   }
     
 
@@ -8153,35 +8214,77 @@ export namespace Prisma {
   }
 
   export type ChannelMemberMinAggregateOutputType = {
+    id: string | null
     channelId: string | null
     userId: string | null
+    canSendMessages: boolean | null
+    canManageMembers: boolean | null
+    canManageChannel: boolean | null
+    canModerateMessages: boolean | null
+    joinedAt: Date | null
+    removedAt: Date | null
   }
 
   export type ChannelMemberMaxAggregateOutputType = {
+    id: string | null
     channelId: string | null
     userId: string | null
+    canSendMessages: boolean | null
+    canManageMembers: boolean | null
+    canManageChannel: boolean | null
+    canModerateMessages: boolean | null
+    joinedAt: Date | null
+    removedAt: Date | null
   }
 
   export type ChannelMemberCountAggregateOutputType = {
+    id: number
     channelId: number
     userId: number
+    canSendMessages: number
+    canManageMembers: number
+    canManageChannel: number
+    canModerateMessages: number
+    joinedAt: number
+    removedAt: number
     _all: number
   }
 
 
   export type ChannelMemberMinAggregateInputType = {
+    id?: true
     channelId?: true
     userId?: true
+    canSendMessages?: true
+    canManageMembers?: true
+    canManageChannel?: true
+    canModerateMessages?: true
+    joinedAt?: true
+    removedAt?: true
   }
 
   export type ChannelMemberMaxAggregateInputType = {
+    id?: true
     channelId?: true
     userId?: true
+    canSendMessages?: true
+    canManageMembers?: true
+    canManageChannel?: true
+    canModerateMessages?: true
+    joinedAt?: true
+    removedAt?: true
   }
 
   export type ChannelMemberCountAggregateInputType = {
+    id?: true
     channelId?: true
     userId?: true
+    canSendMessages?: true
+    canManageMembers?: true
+    canManageChannel?: true
+    canModerateMessages?: true
+    joinedAt?: true
+    removedAt?: true
     _all?: true
   }
 
@@ -8258,8 +8361,15 @@ export namespace Prisma {
   }
 
   export type ChannelMemberGroupByOutputType = {
+    id: string
     channelId: string
     userId: string
+    canSendMessages: boolean
+    canManageMembers: boolean
+    canManageChannel: boolean
+    canModerateMessages: boolean
+    joinedAt: Date
+    removedAt: Date | null
     _count: ChannelMemberCountAggregateOutputType | null
     _min: ChannelMemberMinAggregateOutputType | null
     _max: ChannelMemberMaxAggregateOutputType | null
@@ -8280,35 +8390,67 @@ export namespace Prisma {
 
 
   export type ChannelMemberSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
     channelId?: boolean
     userId?: boolean
+    canSendMessages?: boolean
+    canManageMembers?: boolean
+    canManageChannel?: boolean
+    canModerateMessages?: boolean
+    joinedAt?: boolean
+    removedAt?: boolean
     channel?: boolean | ChannelDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    messages?: boolean | ChannelMember$messagesArgs<ExtArgs>
+    _count?: boolean | ChannelMemberCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["channelMember"]>
 
   export type ChannelMemberSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
     channelId?: boolean
     userId?: boolean
+    canSendMessages?: boolean
+    canManageMembers?: boolean
+    canManageChannel?: boolean
+    canModerateMessages?: boolean
+    joinedAt?: boolean
+    removedAt?: boolean
     channel?: boolean | ChannelDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["channelMember"]>
 
   export type ChannelMemberSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
     channelId?: boolean
     userId?: boolean
+    canSendMessages?: boolean
+    canManageMembers?: boolean
+    canManageChannel?: boolean
+    canModerateMessages?: boolean
+    joinedAt?: boolean
+    removedAt?: boolean
     channel?: boolean | ChannelDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["channelMember"]>
 
   export type ChannelMemberSelectScalar = {
+    id?: boolean
     channelId?: boolean
     userId?: boolean
+    canSendMessages?: boolean
+    canManageMembers?: boolean
+    canManageChannel?: boolean
+    canModerateMessages?: boolean
+    joinedAt?: boolean
+    removedAt?: boolean
   }
 
-  export type ChannelMemberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"channelId" | "userId", ExtArgs["result"]["channelMember"]>
+  export type ChannelMemberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "channelId" | "userId" | "canSendMessages" | "canManageMembers" | "canManageChannel" | "canModerateMessages" | "joinedAt" | "removedAt", ExtArgs["result"]["channelMember"]>
   export type ChannelMemberInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     channel?: boolean | ChannelDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    messages?: boolean | ChannelMember$messagesArgs<ExtArgs>
+    _count?: boolean | ChannelMemberCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ChannelMemberIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     channel?: boolean | ChannelDefaultArgs<ExtArgs>
@@ -8324,10 +8466,18 @@ export namespace Prisma {
     objects: {
       channel: Prisma.$ChannelPayload<ExtArgs>
       user: Prisma.$UserPayload<ExtArgs>
+      messages: Prisma.$MessagePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
+      id: string
       channelId: string
       userId: string
+      canSendMessages: boolean
+      canManageMembers: boolean
+      canManageChannel: boolean
+      canModerateMessages: boolean
+      joinedAt: Date
+      removedAt: Date | null
     }, ExtArgs["result"]["channelMember"]>
     composites: {}
   }
@@ -8411,8 +8561,8 @@ export namespace Prisma {
      * // Get first 10 ChannelMembers
      * const channelMembers = await prisma.channelMember.findMany({ take: 10 })
      * 
-     * // Only select the `channelId`
-     * const channelMemberWithChannelIdOnly = await prisma.channelMember.findMany({ select: { channelId: true } })
+     * // Only select the `id`
+     * const channelMemberWithIdOnly = await prisma.channelMember.findMany({ select: { id: true } })
      * 
      */
     findMany<T extends ChannelMemberFindManyArgs>(args?: SelectSubset<T, ChannelMemberFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
@@ -8456,9 +8606,9 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Create many ChannelMembers and only return the `channelId`
-     * const channelMemberWithChannelIdOnly = await prisma.channelMember.createManyAndReturn({
-     *   select: { channelId: true },
+     * // Create many ChannelMembers and only return the `id`
+     * const channelMemberWithIdOnly = await prisma.channelMember.createManyAndReturn({
+     *   select: { id: true },
      *   data: [
      *     // ... provide data here
      *   ]
@@ -8547,9 +8697,9 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Update zero or more ChannelMembers and only return the `channelId`
-     * const channelMemberWithChannelIdOnly = await prisma.channelMember.updateManyAndReturn({
-     *   select: { channelId: true },
+     * // Update zero or more ChannelMembers and only return the `id`
+     * const channelMemberWithIdOnly = await prisma.channelMember.updateManyAndReturn({
+     *   select: { id: true },
      *   where: {
      *     // ... provide filter here
      *   },
@@ -8724,6 +8874,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     channel<T extends ChannelDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ChannelDefaultArgs<ExtArgs>>): Prisma__ChannelClient<$Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    messages<T extends ChannelMember$messagesArgs<ExtArgs> = {}>(args?: Subset<T, ChannelMember$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8753,8 +8904,15 @@ export namespace Prisma {
    * Fields of the ChannelMember model
    */
   interface ChannelMemberFieldRefs {
+    readonly id: FieldRef<"ChannelMember", 'String'>
     readonly channelId: FieldRef<"ChannelMember", 'String'>
     readonly userId: FieldRef<"ChannelMember", 'String'>
+    readonly canSendMessages: FieldRef<"ChannelMember", 'Boolean'>
+    readonly canManageMembers: FieldRef<"ChannelMember", 'Boolean'>
+    readonly canManageChannel: FieldRef<"ChannelMember", 'Boolean'>
+    readonly canModerateMessages: FieldRef<"ChannelMember", 'Boolean'>
+    readonly joinedAt: FieldRef<"ChannelMember", 'DateTime'>
+    readonly removedAt: FieldRef<"ChannelMember", 'DateTime'>
   }
     
 
@@ -9151,6 +9309,30 @@ export namespace Prisma {
   }
 
   /**
+   * ChannelMember.messages
+   */
+  export type ChannelMember$messagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    where?: MessageWhereInput
+    orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
+    cursor?: MessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
+  }
+
+  /**
    * ChannelMember without action
    */
   export type ChannelMemberDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9398,7 +9580,6 @@ export namespace Prisma {
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     companyMemberships?: boolean | User$companyMembershipsArgs<ExtArgs>
     channelMemberships?: boolean | User$channelMembershipsArgs<ExtArgs>
-    messages?: boolean | User$messagesArgs<ExtArgs>
     createdJobs?: boolean | User$createdJobsArgs<ExtArgs>
     companyPosts?: boolean | User$companyPostsArgs<ExtArgs>
     postAcknowledgments?: boolean | User$postAcknowledgmentsArgs<ExtArgs>
@@ -9448,7 +9629,6 @@ export namespace Prisma {
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     companyMemberships?: boolean | User$companyMembershipsArgs<ExtArgs>
     channelMemberships?: boolean | User$channelMembershipsArgs<ExtArgs>
-    messages?: boolean | User$messagesArgs<ExtArgs>
     createdJobs?: boolean | User$createdJobsArgs<ExtArgs>
     companyPosts?: boolean | User$companyPostsArgs<ExtArgs>
     postAcknowledgments?: boolean | User$postAcknowledgmentsArgs<ExtArgs>
@@ -9468,7 +9648,6 @@ export namespace Prisma {
       sessions: Prisma.$SessionPayload<ExtArgs>[]
       companyMemberships: Prisma.$CompanyMemberPayload<ExtArgs>[]
       channelMemberships: Prisma.$ChannelMemberPayload<ExtArgs>[]
-      messages: Prisma.$MessagePayload<ExtArgs>[]
       createdJobs: Prisma.$JobPayload<ExtArgs>[]
       companyPosts: Prisma.$CompanyPostPayload<ExtArgs>[]
       postAcknowledgments: Prisma.$CompanyPostAcknowledgmentPayload<ExtArgs>[]
@@ -9884,7 +10063,6 @@ export namespace Prisma {
     sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     companyMemberships<T extends User$companyMembershipsArgs<ExtArgs> = {}>(args?: Subset<T, User$companyMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     channelMemberships<T extends User$channelMembershipsArgs<ExtArgs> = {}>(args?: Subset<T, User$channelMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    messages<T extends User$messagesArgs<ExtArgs> = {}>(args?: Subset<T, User$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     createdJobs<T extends User$createdJobsArgs<ExtArgs> = {}>(args?: Subset<T, User$createdJobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     companyPosts<T extends User$companyPostsArgs<ExtArgs> = {}>(args?: Subset<T, User$companyPostsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyPostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     postAcknowledgments<T extends User$postAcknowledgmentsArgs<ExtArgs> = {}>(args?: Subset<T, User$postAcknowledgmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyPostAcknowledgmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -10469,30 +10647,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ChannelMemberScalarFieldEnum | ChannelMemberScalarFieldEnum[]
-  }
-
-  /**
-   * User.messages
-   */
-  export type User$messagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Message
-     */
-    select?: MessageSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Message
-     */
-    omit?: MessageOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MessageInclude<ExtArgs> | null
-    where?: MessageWhereInput
-    orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
-    cursor?: MessageWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
   }
 
   /**
@@ -12848,8 +13002,9 @@ export namespace Prisma {
     content: string | null
     postedAt: Date | null
     updatedAt: Date | null
+    deletedAt: Date | null
     channelId: string | null
-    authorId: string | null
+    authorChannelMemberId: string | null
   }
 
   export type MessageMaxAggregateOutputType = {
@@ -12857,8 +13012,9 @@ export namespace Prisma {
     content: string | null
     postedAt: Date | null
     updatedAt: Date | null
+    deletedAt: Date | null
     channelId: string | null
-    authorId: string | null
+    authorChannelMemberId: string | null
   }
 
   export type MessageCountAggregateOutputType = {
@@ -12866,8 +13022,9 @@ export namespace Prisma {
     content: number
     postedAt: number
     updatedAt: number
+    deletedAt: number
     channelId: number
-    authorId: number
+    authorChannelMemberId: number
     _all: number
   }
 
@@ -12877,8 +13034,9 @@ export namespace Prisma {
     content?: true
     postedAt?: true
     updatedAt?: true
+    deletedAt?: true
     channelId?: true
-    authorId?: true
+    authorChannelMemberId?: true
   }
 
   export type MessageMaxAggregateInputType = {
@@ -12886,8 +13044,9 @@ export namespace Prisma {
     content?: true
     postedAt?: true
     updatedAt?: true
+    deletedAt?: true
     channelId?: true
-    authorId?: true
+    authorChannelMemberId?: true
   }
 
   export type MessageCountAggregateInputType = {
@@ -12895,8 +13054,9 @@ export namespace Prisma {
     content?: true
     postedAt?: true
     updatedAt?: true
+    deletedAt?: true
     channelId?: true
-    authorId?: true
+    authorChannelMemberId?: true
     _all?: true
   }
 
@@ -12977,8 +13137,9 @@ export namespace Prisma {
     content: string
     postedAt: Date
     updatedAt: Date
+    deletedAt: Date | null
     channelId: string
-    authorId: string
+    authorChannelMemberId: string
     _count: MessageCountAggregateOutputType | null
     _min: MessageMinAggregateOutputType | null
     _max: MessageMaxAggregateOutputType | null
@@ -13003,10 +13164,11 @@ export namespace Prisma {
     content?: boolean
     postedAt?: boolean
     updatedAt?: boolean
+    deletedAt?: boolean
     channelId?: boolean
-    authorId?: boolean
+    authorChannelMemberId?: boolean
     channel?: boolean | ChannelDefaultArgs<ExtArgs>
-    author?: boolean | UserDefaultArgs<ExtArgs>
+    authorChannelMember?: boolean | ChannelMemberDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["message"]>
 
   export type MessageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -13014,10 +13176,11 @@ export namespace Prisma {
     content?: boolean
     postedAt?: boolean
     updatedAt?: boolean
+    deletedAt?: boolean
     channelId?: boolean
-    authorId?: boolean
+    authorChannelMemberId?: boolean
     channel?: boolean | ChannelDefaultArgs<ExtArgs>
-    author?: boolean | UserDefaultArgs<ExtArgs>
+    authorChannelMember?: boolean | ChannelMemberDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["message"]>
 
   export type MessageSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -13025,10 +13188,11 @@ export namespace Prisma {
     content?: boolean
     postedAt?: boolean
     updatedAt?: boolean
+    deletedAt?: boolean
     channelId?: boolean
-    authorId?: boolean
+    authorChannelMemberId?: boolean
     channel?: boolean | ChannelDefaultArgs<ExtArgs>
-    author?: boolean | UserDefaultArgs<ExtArgs>
+    authorChannelMember?: boolean | ChannelMemberDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["message"]>
 
   export type MessageSelectScalar = {
@@ -13036,37 +13200,39 @@ export namespace Prisma {
     content?: boolean
     postedAt?: boolean
     updatedAt?: boolean
+    deletedAt?: boolean
     channelId?: boolean
-    authorId?: boolean
+    authorChannelMemberId?: boolean
   }
 
-  export type MessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "content" | "postedAt" | "updatedAt" | "channelId" | "authorId", ExtArgs["result"]["message"]>
+  export type MessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "content" | "postedAt" | "updatedAt" | "deletedAt" | "channelId" | "authorChannelMemberId", ExtArgs["result"]["message"]>
   export type MessageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     channel?: boolean | ChannelDefaultArgs<ExtArgs>
-    author?: boolean | UserDefaultArgs<ExtArgs>
+    authorChannelMember?: boolean | ChannelMemberDefaultArgs<ExtArgs>
   }
   export type MessageIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     channel?: boolean | ChannelDefaultArgs<ExtArgs>
-    author?: boolean | UserDefaultArgs<ExtArgs>
+    authorChannelMember?: boolean | ChannelMemberDefaultArgs<ExtArgs>
   }
   export type MessageIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     channel?: boolean | ChannelDefaultArgs<ExtArgs>
-    author?: boolean | UserDefaultArgs<ExtArgs>
+    authorChannelMember?: boolean | ChannelMemberDefaultArgs<ExtArgs>
   }
 
   export type $MessagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Message"
     objects: {
       channel: Prisma.$ChannelPayload<ExtArgs>
-      author: Prisma.$UserPayload<ExtArgs>
+      authorChannelMember: Prisma.$ChannelMemberPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       content: string
       postedAt: Date
       updatedAt: Date
+      deletedAt: Date | null
       channelId: string
-      authorId: string
+      authorChannelMemberId: string
     }, ExtArgs["result"]["message"]>
     composites: {}
   }
@@ -13462,7 +13628,7 @@ export namespace Prisma {
   export interface Prisma__MessageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     channel<T extends ChannelDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ChannelDefaultArgs<ExtArgs>>): Prisma__ChannelClient<$Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    author<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    authorChannelMember<T extends ChannelMemberDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ChannelMemberDefaultArgs<ExtArgs>>): Prisma__ChannelMemberClient<$Result.GetResult<Prisma.$ChannelMemberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -13496,8 +13662,9 @@ export namespace Prisma {
     readonly content: FieldRef<"Message", 'String'>
     readonly postedAt: FieldRef<"Message", 'DateTime'>
     readonly updatedAt: FieldRef<"Message", 'DateTime'>
+    readonly deletedAt: FieldRef<"Message", 'DateTime'>
     readonly channelId: FieldRef<"Message", 'String'>
-    readonly authorId: FieldRef<"Message", 'String'>
+    readonly authorChannelMemberId: FieldRef<"Message", 'String'>
   }
     
 
@@ -20388,17 +20555,27 @@ export namespace Prisma {
 
   export const ChannelScalarFieldEnum: {
     id: 'id',
+    title: 'title',
     name: 'name',
     image: 'image',
-    companyId: 'companyId'
+    companyId: 'companyId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type ChannelScalarFieldEnum = (typeof ChannelScalarFieldEnum)[keyof typeof ChannelScalarFieldEnum]
 
 
   export const ChannelMemberScalarFieldEnum: {
+    id: 'id',
     channelId: 'channelId',
-    userId: 'userId'
+    userId: 'userId',
+    canSendMessages: 'canSendMessages',
+    canManageMembers: 'canManageMembers',
+    canManageChannel: 'canManageChannel',
+    canModerateMessages: 'canModerateMessages',
+    joinedAt: 'joinedAt',
+    removedAt: 'removedAt'
   };
 
   export type ChannelMemberScalarFieldEnum = (typeof ChannelMemberScalarFieldEnum)[keyof typeof ChannelMemberScalarFieldEnum]
@@ -20450,8 +20627,9 @@ export namespace Prisma {
     content: 'content',
     postedAt: 'postedAt',
     updatedAt: 'updatedAt',
+    deletedAt: 'deletedAt',
     channelId: 'channelId',
-    authorId: 'authorId'
+    authorChannelMemberId: 'authorChannelMemberId'
   };
 
   export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
@@ -20606,6 +20784,13 @@ export namespace Prisma {
    * Reference to a field of type 'CompanyRole[]'
    */
   export type ListEnumCompanyRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CompanyRole[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -20925,9 +21110,12 @@ export namespace Prisma {
     OR?: ChannelWhereInput[]
     NOT?: ChannelWhereInput | ChannelWhereInput[]
     id?: StringFilter<"Channel"> | string
+    title?: StringFilter<"Channel"> | string
     name?: StringFilter<"Channel"> | string
     image?: StringNullableFilter<"Channel"> | string | null
     companyId?: StringFilter<"Channel"> | string
+    createdAt?: DateTimeFilter<"Channel"> | Date | string
+    updatedAt?: DateTimeFilter<"Channel"> | Date | string
     messages?: MessageListRelationFilter
     channelMembers?: ChannelMemberListRelationFilter
     company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
@@ -20935,9 +21123,12 @@ export namespace Prisma {
 
   export type ChannelOrderByWithRelationInput = {
     id?: SortOrder
+    title?: SortOrder
     name?: SortOrder
     image?: SortOrderInput | SortOrder
     companyId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     messages?: MessageOrderByRelationAggregateInput
     channelMembers?: ChannelMemberOrderByRelationAggregateInput
     company?: CompanyOrderByWithRelationInput
@@ -20948,9 +21139,12 @@ export namespace Prisma {
     AND?: ChannelWhereInput | ChannelWhereInput[]
     OR?: ChannelWhereInput[]
     NOT?: ChannelWhereInput | ChannelWhereInput[]
+    title?: StringFilter<"Channel"> | string
     name?: StringFilter<"Channel"> | string
     image?: StringNullableFilter<"Channel"> | string | null
     companyId?: StringFilter<"Channel"> | string
+    createdAt?: DateTimeFilter<"Channel"> | Date | string
+    updatedAt?: DateTimeFilter<"Channel"> | Date | string
     messages?: MessageListRelationFilter
     channelMembers?: ChannelMemberListRelationFilter
     company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
@@ -20958,9 +21152,12 @@ export namespace Prisma {
 
   export type ChannelOrderByWithAggregationInput = {
     id?: SortOrder
+    title?: SortOrder
     name?: SortOrder
     image?: SortOrderInput | SortOrder
     companyId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: ChannelCountOrderByAggregateInput
     _max?: ChannelMaxOrderByAggregateInput
     _min?: ChannelMinOrderByAggregateInput
@@ -20971,42 +21168,77 @@ export namespace Prisma {
     OR?: ChannelScalarWhereWithAggregatesInput[]
     NOT?: ChannelScalarWhereWithAggregatesInput | ChannelScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Channel"> | string
+    title?: StringWithAggregatesFilter<"Channel"> | string
     name?: StringWithAggregatesFilter<"Channel"> | string
     image?: StringNullableWithAggregatesFilter<"Channel"> | string | null
     companyId?: StringWithAggregatesFilter<"Channel"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Channel"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Channel"> | Date | string
   }
 
   export type ChannelMemberWhereInput = {
     AND?: ChannelMemberWhereInput | ChannelMemberWhereInput[]
     OR?: ChannelMemberWhereInput[]
     NOT?: ChannelMemberWhereInput | ChannelMemberWhereInput[]
+    id?: StringFilter<"ChannelMember"> | string
     channelId?: StringFilter<"ChannelMember"> | string
     userId?: StringFilter<"ChannelMember"> | string
+    canSendMessages?: BoolFilter<"ChannelMember"> | boolean
+    canManageMembers?: BoolFilter<"ChannelMember"> | boolean
+    canManageChannel?: BoolFilter<"ChannelMember"> | boolean
+    canModerateMessages?: BoolFilter<"ChannelMember"> | boolean
+    joinedAt?: DateTimeFilter<"ChannelMember"> | Date | string
+    removedAt?: DateTimeNullableFilter<"ChannelMember"> | Date | string | null
     channel?: XOR<ChannelScalarRelationFilter, ChannelWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    messages?: MessageListRelationFilter
   }
 
   export type ChannelMemberOrderByWithRelationInput = {
+    id?: SortOrder
     channelId?: SortOrder
     userId?: SortOrder
+    canSendMessages?: SortOrder
+    canManageMembers?: SortOrder
+    canManageChannel?: SortOrder
+    canModerateMessages?: SortOrder
+    joinedAt?: SortOrder
+    removedAt?: SortOrderInput | SortOrder
     channel?: ChannelOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
+    messages?: MessageOrderByRelationAggregateInput
   }
 
   export type ChannelMemberWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
     channelId_userId?: ChannelMemberChannelIdUserIdCompoundUniqueInput
+    id_channelId?: ChannelMemberIdChannelIdCompoundUniqueInput
     AND?: ChannelMemberWhereInput | ChannelMemberWhereInput[]
     OR?: ChannelMemberWhereInput[]
     NOT?: ChannelMemberWhereInput | ChannelMemberWhereInput[]
     channelId?: StringFilter<"ChannelMember"> | string
     userId?: StringFilter<"ChannelMember"> | string
+    canSendMessages?: BoolFilter<"ChannelMember"> | boolean
+    canManageMembers?: BoolFilter<"ChannelMember"> | boolean
+    canManageChannel?: BoolFilter<"ChannelMember"> | boolean
+    canModerateMessages?: BoolFilter<"ChannelMember"> | boolean
+    joinedAt?: DateTimeFilter<"ChannelMember"> | Date | string
+    removedAt?: DateTimeNullableFilter<"ChannelMember"> | Date | string | null
     channel?: XOR<ChannelScalarRelationFilter, ChannelWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-  }, "channelId_userId">
+    messages?: MessageListRelationFilter
+  }, "id" | "channelId_userId" | "id_channelId">
 
   export type ChannelMemberOrderByWithAggregationInput = {
+    id?: SortOrder
     channelId?: SortOrder
     userId?: SortOrder
+    canSendMessages?: SortOrder
+    canManageMembers?: SortOrder
+    canManageChannel?: SortOrder
+    canModerateMessages?: SortOrder
+    joinedAt?: SortOrder
+    removedAt?: SortOrderInput | SortOrder
     _count?: ChannelMemberCountOrderByAggregateInput
     _max?: ChannelMemberMaxOrderByAggregateInput
     _min?: ChannelMemberMinOrderByAggregateInput
@@ -21016,8 +21248,15 @@ export namespace Prisma {
     AND?: ChannelMemberScalarWhereWithAggregatesInput | ChannelMemberScalarWhereWithAggregatesInput[]
     OR?: ChannelMemberScalarWhereWithAggregatesInput[]
     NOT?: ChannelMemberScalarWhereWithAggregatesInput | ChannelMemberScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ChannelMember"> | string
     channelId?: StringWithAggregatesFilter<"ChannelMember"> | string
     userId?: StringWithAggregatesFilter<"ChannelMember"> | string
+    canSendMessages?: BoolWithAggregatesFilter<"ChannelMember"> | boolean
+    canManageMembers?: BoolWithAggregatesFilter<"ChannelMember"> | boolean
+    canManageChannel?: BoolWithAggregatesFilter<"ChannelMember"> | boolean
+    canModerateMessages?: BoolWithAggregatesFilter<"ChannelMember"> | boolean
+    joinedAt?: DateTimeWithAggregatesFilter<"ChannelMember"> | Date | string
+    removedAt?: DateTimeNullableWithAggregatesFilter<"ChannelMember"> | Date | string | null
   }
 
   export type UserWhereInput = {
@@ -21039,7 +21278,6 @@ export namespace Prisma {
     sessions?: SessionListRelationFilter
     companyMemberships?: CompanyMemberListRelationFilter
     channelMemberships?: ChannelMemberListRelationFilter
-    messages?: MessageListRelationFilter
     createdJobs?: JobListRelationFilter
     companyPosts?: CompanyPostListRelationFilter
     postAcknowledgments?: CompanyPostAcknowledgmentListRelationFilter
@@ -21062,7 +21300,6 @@ export namespace Prisma {
     sessions?: SessionOrderByRelationAggregateInput
     companyMemberships?: CompanyMemberOrderByRelationAggregateInput
     channelMemberships?: ChannelMemberOrderByRelationAggregateInput
-    messages?: MessageOrderByRelationAggregateInput
     createdJobs?: JobOrderByRelationAggregateInput
     companyPosts?: CompanyPostOrderByRelationAggregateInput
     postAcknowledgments?: CompanyPostAcknowledgmentOrderByRelationAggregateInput
@@ -21088,7 +21325,6 @@ export namespace Prisma {
     sessions?: SessionListRelationFilter
     companyMemberships?: CompanyMemberListRelationFilter
     channelMemberships?: ChannelMemberListRelationFilter
-    messages?: MessageListRelationFilter
     createdJobs?: JobListRelationFilter
     companyPosts?: CompanyPostListRelationFilter
     postAcknowledgments?: CompanyPostAcknowledgmentListRelationFilter
@@ -21273,10 +21509,11 @@ export namespace Prisma {
     content?: StringFilter<"Message"> | string
     postedAt?: DateTimeFilter<"Message"> | Date | string
     updatedAt?: DateTimeFilter<"Message"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"Message"> | Date | string | null
     channelId?: StringFilter<"Message"> | string
-    authorId?: StringFilter<"Message"> | string
+    authorChannelMemberId?: StringFilter<"Message"> | string
     channel?: XOR<ChannelScalarRelationFilter, ChannelWhereInput>
-    author?: XOR<UserScalarRelationFilter, UserWhereInput>
+    authorChannelMember?: XOR<ChannelMemberScalarRelationFilter, ChannelMemberWhereInput>
   }
 
   export type MessageOrderByWithRelationInput = {
@@ -21284,10 +21521,11 @@ export namespace Prisma {
     content?: SortOrder
     postedAt?: SortOrder
     updatedAt?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     channelId?: SortOrder
-    authorId?: SortOrder
+    authorChannelMemberId?: SortOrder
     channel?: ChannelOrderByWithRelationInput
-    author?: UserOrderByWithRelationInput
+    authorChannelMember?: ChannelMemberOrderByWithRelationInput
   }
 
   export type MessageWhereUniqueInput = Prisma.AtLeast<{
@@ -21298,10 +21536,11 @@ export namespace Prisma {
     content?: StringFilter<"Message"> | string
     postedAt?: DateTimeFilter<"Message"> | Date | string
     updatedAt?: DateTimeFilter<"Message"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"Message"> | Date | string | null
     channelId?: StringFilter<"Message"> | string
-    authorId?: StringFilter<"Message"> | string
+    authorChannelMemberId?: StringFilter<"Message"> | string
     channel?: XOR<ChannelScalarRelationFilter, ChannelWhereInput>
-    author?: XOR<UserScalarRelationFilter, UserWhereInput>
+    authorChannelMember?: XOR<ChannelMemberScalarRelationFilter, ChannelMemberWhereInput>
   }, "id">
 
   export type MessageOrderByWithAggregationInput = {
@@ -21309,8 +21548,9 @@ export namespace Prisma {
     content?: SortOrder
     postedAt?: SortOrder
     updatedAt?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     channelId?: SortOrder
-    authorId?: SortOrder
+    authorChannelMemberId?: SortOrder
     _count?: MessageCountOrderByAggregateInput
     _max?: MessageMaxOrderByAggregateInput
     _min?: MessageMinOrderByAggregateInput
@@ -21324,8 +21564,9 @@ export namespace Prisma {
     content?: StringWithAggregatesFilter<"Message"> | string
     postedAt?: DateTimeWithAggregatesFilter<"Message"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Message"> | Date | string
+    deletedAt?: DateTimeNullableWithAggregatesFilter<"Message"> | Date | string | null
     channelId?: StringWithAggregatesFilter<"Message"> | string
-    authorId?: StringWithAggregatesFilter<"Message"> | string
+    authorChannelMemberId?: StringWithAggregatesFilter<"Message"> | string
   }
 
   export type JobWhereInput = {
@@ -21995,8 +22236,11 @@ export namespace Prisma {
 
   export type ChannelCreateInput = {
     id?: string
+    title: string
     name: string
     image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     messages?: MessageCreateNestedManyWithoutChannelInput
     channelMembers?: ChannelMemberCreateNestedManyWithoutChannelInput
     company: CompanyCreateNestedOneWithoutChannelsInput
@@ -22004,17 +22248,23 @@ export namespace Prisma {
 
   export type ChannelUncheckedCreateInput = {
     id?: string
+    title: string
     name: string
     image?: string | null
     companyId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
     messages?: MessageUncheckedCreateNestedManyWithoutChannelInput
     channelMembers?: ChannelMemberUncheckedCreateNestedManyWithoutChannelInput
   }
 
   export type ChannelUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: MessageUpdateManyWithoutChannelNestedInput
     channelMembers?: ChannelMemberUpdateManyWithoutChannelNestedInput
     company?: CompanyUpdateOneRequiredWithoutChannelsNestedInput
@@ -22022,65 +22272,129 @@ export namespace Prisma {
 
   export type ChannelUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
     companyId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: MessageUncheckedUpdateManyWithoutChannelNestedInput
     channelMembers?: ChannelMemberUncheckedUpdateManyWithoutChannelNestedInput
   }
 
   export type ChannelCreateManyInput = {
     id?: string
+    title: string
     name: string
     image?: string | null
     companyId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ChannelUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ChannelUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
     companyId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ChannelMemberCreateInput = {
+    id?: string
+    canSendMessages?: boolean
+    canManageMembers?: boolean
+    canManageChannel?: boolean
+    canModerateMessages?: boolean
+    joinedAt?: Date | string
+    removedAt?: Date | string | null
     channel: ChannelCreateNestedOneWithoutChannelMembersInput
     user: UserCreateNestedOneWithoutChannelMembershipsInput
+    messages?: MessageCreateNestedManyWithoutAuthorChannelMemberInput
   }
 
   export type ChannelMemberUncheckedCreateInput = {
+    id?: string
     channelId: string
     userId: string
+    canSendMessages?: boolean
+    canManageMembers?: boolean
+    canManageChannel?: boolean
+    canModerateMessages?: boolean
+    joinedAt?: Date | string
+    removedAt?: Date | string | null
+    messages?: MessageUncheckedCreateNestedManyWithoutAuthorChannelMemberInput
   }
 
   export type ChannelMemberUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    canSendMessages?: BoolFieldUpdateOperationsInput | boolean
+    canManageMembers?: BoolFieldUpdateOperationsInput | boolean
+    canManageChannel?: BoolFieldUpdateOperationsInput | boolean
+    canModerateMessages?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    removedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     channel?: ChannelUpdateOneRequiredWithoutChannelMembersNestedInput
     user?: UserUpdateOneRequiredWithoutChannelMembershipsNestedInput
+    messages?: MessageUpdateManyWithoutAuthorChannelMemberNestedInput
   }
 
   export type ChannelMemberUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
     channelId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    canSendMessages?: BoolFieldUpdateOperationsInput | boolean
+    canManageMembers?: BoolFieldUpdateOperationsInput | boolean
+    canManageChannel?: BoolFieldUpdateOperationsInput | boolean
+    canModerateMessages?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    removedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    messages?: MessageUncheckedUpdateManyWithoutAuthorChannelMemberNestedInput
   }
 
   export type ChannelMemberCreateManyInput = {
+    id?: string
     channelId: string
     userId: string
+    canSendMessages?: boolean
+    canManageMembers?: boolean
+    canManageChannel?: boolean
+    canModerateMessages?: boolean
+    joinedAt?: Date | string
+    removedAt?: Date | string | null
   }
 
   export type ChannelMemberUpdateManyMutationInput = {
-
+    id?: StringFieldUpdateOperationsInput | string
+    canSendMessages?: BoolFieldUpdateOperationsInput | boolean
+    canManageMembers?: BoolFieldUpdateOperationsInput | boolean
+    canManageChannel?: BoolFieldUpdateOperationsInput | boolean
+    canModerateMessages?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    removedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ChannelMemberUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
     channelId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    canSendMessages?: BoolFieldUpdateOperationsInput | boolean
+    canManageMembers?: BoolFieldUpdateOperationsInput | boolean
+    canManageChannel?: BoolFieldUpdateOperationsInput | boolean
+    canModerateMessages?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    removedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type UserCreateInput = {
@@ -22099,7 +22413,6 @@ export namespace Prisma {
     sessions?: SessionCreateNestedManyWithoutUserInput
     companyMemberships?: CompanyMemberCreateNestedManyWithoutUserInput
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
-    messages?: MessageCreateNestedManyWithoutAuthorInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
@@ -22122,7 +22435,6 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     companyMemberships?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
-    messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
@@ -22145,7 +22457,6 @@ export namespace Prisma {
     sessions?: SessionUpdateManyWithoutUserNestedInput
     companyMemberships?: CompanyMemberUpdateManyWithoutUserNestedInput
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
-    messages?: MessageUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
@@ -22168,7 +22479,6 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     companyMemberships?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
-    messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
@@ -22357,8 +22667,9 @@ export namespace Prisma {
     content: string
     postedAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     channel: ChannelCreateNestedOneWithoutMessagesInput
-    author: UserCreateNestedOneWithoutMessagesInput
+    authorChannelMember: ChannelMemberCreateNestedOneWithoutMessagesInput
   }
 
   export type MessageUncheckedCreateInput = {
@@ -22366,8 +22677,9 @@ export namespace Prisma {
     content: string
     postedAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     channelId: string
-    authorId: string
+    authorChannelMemberId: string
   }
 
   export type MessageUpdateInput = {
@@ -22375,8 +22687,9 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     postedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     channel?: ChannelUpdateOneRequiredWithoutMessagesNestedInput
-    author?: UserUpdateOneRequiredWithoutMessagesNestedInput
+    authorChannelMember?: ChannelMemberUpdateOneRequiredWithoutMessagesNestedInput
   }
 
   export type MessageUncheckedUpdateInput = {
@@ -22384,8 +22697,9 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     postedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     channelId?: StringFieldUpdateOperationsInput | string
-    authorId?: StringFieldUpdateOperationsInput | string
+    authorChannelMemberId?: StringFieldUpdateOperationsInput | string
   }
 
   export type MessageCreateManyInput = {
@@ -22393,8 +22707,9 @@ export namespace Prisma {
     content: string
     postedAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     channelId: string
-    authorId: string
+    authorChannelMemberId: string
   }
 
   export type MessageUpdateManyMutationInput = {
@@ -22402,6 +22717,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     postedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type MessageUncheckedUpdateManyInput = {
@@ -22409,8 +22725,9 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     postedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     channelId?: StringFieldUpdateOperationsInput | string
-    authorId?: StringFieldUpdateOperationsInput | string
+    authorChannelMemberId?: StringFieldUpdateOperationsInput | string
   }
 
   export type JobCreateInput = {
@@ -23123,23 +23440,48 @@ export namespace Prisma {
 
   export type ChannelCountOrderByAggregateInput = {
     id?: SortOrder
+    title?: SortOrder
     name?: SortOrder
     image?: SortOrder
     companyId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type ChannelMaxOrderByAggregateInput = {
     id?: SortOrder
+    title?: SortOrder
     name?: SortOrder
     image?: SortOrder
     companyId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type ChannelMinOrderByAggregateInput = {
     id?: SortOrder
+    title?: SortOrder
     name?: SortOrder
     image?: SortOrder
     companyId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type ChannelScalarRelationFilter = {
@@ -23152,22 +23494,56 @@ export namespace Prisma {
     userId: string
   }
 
+  export type ChannelMemberIdChannelIdCompoundUniqueInput = {
+    id: string
+    channelId: string
+  }
+
   export type ChannelMemberCountOrderByAggregateInput = {
+    id?: SortOrder
     channelId?: SortOrder
     userId?: SortOrder
+    canSendMessages?: SortOrder
+    canManageMembers?: SortOrder
+    canManageChannel?: SortOrder
+    canModerateMessages?: SortOrder
+    joinedAt?: SortOrder
+    removedAt?: SortOrder
   }
 
   export type ChannelMemberMaxOrderByAggregateInput = {
+    id?: SortOrder
     channelId?: SortOrder
     userId?: SortOrder
+    canSendMessages?: SortOrder
+    canManageMembers?: SortOrder
+    canManageChannel?: SortOrder
+    canModerateMessages?: SortOrder
+    joinedAt?: SortOrder
+    removedAt?: SortOrder
   }
 
   export type ChannelMemberMinOrderByAggregateInput = {
+    id?: SortOrder
     channelId?: SortOrder
     userId?: SortOrder
+    canSendMessages?: SortOrder
+    canManageMembers?: SortOrder
+    canManageChannel?: SortOrder
+    canModerateMessages?: SortOrder
+    joinedAt?: SortOrder
+    removedAt?: SortOrder
   }
 
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
     notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -23175,7 +23551,10 @@ export namespace Prisma {
     lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -23280,20 +23659,6 @@ export namespace Prisma {
     sessionVersion?: SortOrder
   }
 
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
   export type IntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -23381,13 +23746,19 @@ export namespace Prisma {
     attempts?: SortOrder
   }
 
+  export type ChannelMemberScalarRelationFilter = {
+    is?: ChannelMemberWhereInput
+    isNot?: ChannelMemberWhereInput
+  }
+
   export type MessageCountOrderByAggregateInput = {
     id?: SortOrder
     content?: SortOrder
     postedAt?: SortOrder
     updatedAt?: SortOrder
+    deletedAt?: SortOrder
     channelId?: SortOrder
-    authorId?: SortOrder
+    authorChannelMemberId?: SortOrder
   }
 
   export type MessageMaxOrderByAggregateInput = {
@@ -23395,8 +23766,9 @@ export namespace Prisma {
     content?: SortOrder
     postedAt?: SortOrder
     updatedAt?: SortOrder
+    deletedAt?: SortOrder
     channelId?: SortOrder
-    authorId?: SortOrder
+    authorChannelMemberId?: SortOrder
   }
 
   export type MessageMinOrderByAggregateInput = {
@@ -23404,8 +23776,9 @@ export namespace Prisma {
     content?: SortOrder
     postedAt?: SortOrder
     updatedAt?: SortOrder
+    deletedAt?: SortOrder
     channelId?: SortOrder
-    authorId?: SortOrder
+    authorChannelMemberId?: SortOrder
   }
 
   export type JobCountOrderByAggregateInput = {
@@ -23991,6 +24364,28 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type MessageCreateNestedManyWithoutAuthorChannelMemberInput = {
+    create?: XOR<MessageCreateWithoutAuthorChannelMemberInput, MessageUncheckedCreateWithoutAuthorChannelMemberInput> | MessageCreateWithoutAuthorChannelMemberInput[] | MessageUncheckedCreateWithoutAuthorChannelMemberInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutAuthorChannelMemberInput | MessageCreateOrConnectWithoutAuthorChannelMemberInput[]
+    createMany?: MessageCreateManyAuthorChannelMemberInputEnvelope
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+  }
+
+  export type MessageUncheckedCreateNestedManyWithoutAuthorChannelMemberInput = {
+    create?: XOR<MessageCreateWithoutAuthorChannelMemberInput, MessageUncheckedCreateWithoutAuthorChannelMemberInput> | MessageCreateWithoutAuthorChannelMemberInput[] | MessageUncheckedCreateWithoutAuthorChannelMemberInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutAuthorChannelMemberInput | MessageCreateOrConnectWithoutAuthorChannelMemberInput[]
+    createMany?: MessageCreateManyAuthorChannelMemberInputEnvelope
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
   export type ChannelUpdateOneRequiredWithoutChannelMembersNestedInput = {
     create?: XOR<ChannelCreateWithoutChannelMembersInput, ChannelUncheckedCreateWithoutChannelMembersInput>
     connectOrCreate?: ChannelCreateOrConnectWithoutChannelMembersInput
@@ -24005,6 +24400,34 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutChannelMembershipsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutChannelMembershipsInput, UserUpdateWithoutChannelMembershipsInput>, UserUncheckedUpdateWithoutChannelMembershipsInput>
+  }
+
+  export type MessageUpdateManyWithoutAuthorChannelMemberNestedInput = {
+    create?: XOR<MessageCreateWithoutAuthorChannelMemberInput, MessageUncheckedCreateWithoutAuthorChannelMemberInput> | MessageCreateWithoutAuthorChannelMemberInput[] | MessageUncheckedCreateWithoutAuthorChannelMemberInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutAuthorChannelMemberInput | MessageCreateOrConnectWithoutAuthorChannelMemberInput[]
+    upsert?: MessageUpsertWithWhereUniqueWithoutAuthorChannelMemberInput | MessageUpsertWithWhereUniqueWithoutAuthorChannelMemberInput[]
+    createMany?: MessageCreateManyAuthorChannelMemberInputEnvelope
+    set?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    disconnect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    delete?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    update?: MessageUpdateWithWhereUniqueWithoutAuthorChannelMemberInput | MessageUpdateWithWhereUniqueWithoutAuthorChannelMemberInput[]
+    updateMany?: MessageUpdateManyWithWhereWithoutAuthorChannelMemberInput | MessageUpdateManyWithWhereWithoutAuthorChannelMemberInput[]
+    deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
+  }
+
+  export type MessageUncheckedUpdateManyWithoutAuthorChannelMemberNestedInput = {
+    create?: XOR<MessageCreateWithoutAuthorChannelMemberInput, MessageUncheckedCreateWithoutAuthorChannelMemberInput> | MessageCreateWithoutAuthorChannelMemberInput[] | MessageUncheckedCreateWithoutAuthorChannelMemberInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutAuthorChannelMemberInput | MessageCreateOrConnectWithoutAuthorChannelMemberInput[]
+    upsert?: MessageUpsertWithWhereUniqueWithoutAuthorChannelMemberInput | MessageUpsertWithWhereUniqueWithoutAuthorChannelMemberInput[]
+    createMany?: MessageCreateManyAuthorChannelMemberInputEnvelope
+    set?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    disconnect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    delete?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    update?: MessageUpdateWithWhereUniqueWithoutAuthorChannelMemberInput | MessageUpdateWithWhereUniqueWithoutAuthorChannelMemberInput[]
+    updateMany?: MessageUpdateManyWithWhereWithoutAuthorChannelMemberInput | MessageUpdateManyWithWhereWithoutAuthorChannelMemberInput[]
+    deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
   }
 
   export type EmailVerificationCodeCreateNestedOneWithoutUserInput = {
@@ -24052,13 +24475,6 @@ export namespace Prisma {
     connectOrCreate?: ChannelMemberCreateOrConnectWithoutUserInput | ChannelMemberCreateOrConnectWithoutUserInput[]
     createMany?: ChannelMemberCreateManyUserInputEnvelope
     connect?: ChannelMemberWhereUniqueInput | ChannelMemberWhereUniqueInput[]
-  }
-
-  export type MessageCreateNestedManyWithoutAuthorInput = {
-    create?: XOR<MessageCreateWithoutAuthorInput, MessageUncheckedCreateWithoutAuthorInput> | MessageCreateWithoutAuthorInput[] | MessageUncheckedCreateWithoutAuthorInput[]
-    connectOrCreate?: MessageCreateOrConnectWithoutAuthorInput | MessageCreateOrConnectWithoutAuthorInput[]
-    createMany?: MessageCreateManyAuthorInputEnvelope
-    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
   }
 
   export type JobCreateNestedManyWithoutCreatedByInput = {
@@ -24136,13 +24552,6 @@ export namespace Prisma {
     connect?: ChannelMemberWhereUniqueInput | ChannelMemberWhereUniqueInput[]
   }
 
-  export type MessageUncheckedCreateNestedManyWithoutAuthorInput = {
-    create?: XOR<MessageCreateWithoutAuthorInput, MessageUncheckedCreateWithoutAuthorInput> | MessageCreateWithoutAuthorInput[] | MessageUncheckedCreateWithoutAuthorInput[]
-    connectOrCreate?: MessageCreateOrConnectWithoutAuthorInput | MessageCreateOrConnectWithoutAuthorInput[]
-    createMany?: MessageCreateManyAuthorInputEnvelope
-    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
-  }
-
   export type JobUncheckedCreateNestedManyWithoutCreatedByInput = {
     create?: XOR<JobCreateWithoutCreatedByInput, JobUncheckedCreateWithoutCreatedByInput> | JobCreateWithoutCreatedByInput[] | JobUncheckedCreateWithoutCreatedByInput[]
     connectOrCreate?: JobCreateOrConnectWithoutCreatedByInput | JobCreateOrConnectWithoutCreatedByInput[]
@@ -24169,10 +24578,6 @@ export namespace Prisma {
     connectOrCreate?: CompanyInvitationCreateOrConnectWithoutCreatedByInput | CompanyInvitationCreateOrConnectWithoutCreatedByInput[]
     createMany?: CompanyInvitationCreateManyCreatedByInputEnvelope
     connect?: CompanyInvitationWhereUniqueInput | CompanyInvitationWhereUniqueInput[]
-  }
-
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
   }
 
   export type IntFieldUpdateOperationsInput = {
@@ -24271,20 +24676,6 @@ export namespace Prisma {
     update?: ChannelMemberUpdateWithWhereUniqueWithoutUserInput | ChannelMemberUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: ChannelMemberUpdateManyWithWhereWithoutUserInput | ChannelMemberUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: ChannelMemberScalarWhereInput | ChannelMemberScalarWhereInput[]
-  }
-
-  export type MessageUpdateManyWithoutAuthorNestedInput = {
-    create?: XOR<MessageCreateWithoutAuthorInput, MessageUncheckedCreateWithoutAuthorInput> | MessageCreateWithoutAuthorInput[] | MessageUncheckedCreateWithoutAuthorInput[]
-    connectOrCreate?: MessageCreateOrConnectWithoutAuthorInput | MessageCreateOrConnectWithoutAuthorInput[]
-    upsert?: MessageUpsertWithWhereUniqueWithoutAuthorInput | MessageUpsertWithWhereUniqueWithoutAuthorInput[]
-    createMany?: MessageCreateManyAuthorInputEnvelope
-    set?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
-    disconnect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
-    delete?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
-    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
-    update?: MessageUpdateWithWhereUniqueWithoutAuthorInput | MessageUpdateWithWhereUniqueWithoutAuthorInput[]
-    updateMany?: MessageUpdateManyWithWhereWithoutAuthorInput | MessageUpdateManyWithWhereWithoutAuthorInput[]
-    deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
   }
 
   export type JobUpdateManyWithoutCreatedByNestedInput = {
@@ -24433,20 +24824,6 @@ export namespace Prisma {
     deleteMany?: ChannelMemberScalarWhereInput | ChannelMemberScalarWhereInput[]
   }
 
-  export type MessageUncheckedUpdateManyWithoutAuthorNestedInput = {
-    create?: XOR<MessageCreateWithoutAuthorInput, MessageUncheckedCreateWithoutAuthorInput> | MessageCreateWithoutAuthorInput[] | MessageUncheckedCreateWithoutAuthorInput[]
-    connectOrCreate?: MessageCreateOrConnectWithoutAuthorInput | MessageCreateOrConnectWithoutAuthorInput[]
-    upsert?: MessageUpsertWithWhereUniqueWithoutAuthorInput | MessageUpsertWithWhereUniqueWithoutAuthorInput[]
-    createMany?: MessageCreateManyAuthorInputEnvelope
-    set?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
-    disconnect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
-    delete?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
-    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
-    update?: MessageUpdateWithWhereUniqueWithoutAuthorInput | MessageUpdateWithWhereUniqueWithoutAuthorInput[]
-    updateMany?: MessageUpdateManyWithWhereWithoutAuthorInput | MessageUpdateManyWithWhereWithoutAuthorInput[]
-    deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
-  }
-
   export type JobUncheckedUpdateManyWithoutCreatedByNestedInput = {
     create?: XOR<JobCreateWithoutCreatedByInput, JobUncheckedCreateWithoutCreatedByInput> | JobCreateWithoutCreatedByInput[] | JobUncheckedCreateWithoutCreatedByInput[]
     connectOrCreate?: JobCreateOrConnectWithoutCreatedByInput | JobCreateOrConnectWithoutCreatedByInput[]
@@ -24551,10 +24928,10 @@ export namespace Prisma {
     connect?: ChannelWhereUniqueInput
   }
 
-  export type UserCreateNestedOneWithoutMessagesInput = {
-    create?: XOR<UserCreateWithoutMessagesInput, UserUncheckedCreateWithoutMessagesInput>
-    connectOrCreate?: UserCreateOrConnectWithoutMessagesInput
-    connect?: UserWhereUniqueInput
+  export type ChannelMemberCreateNestedOneWithoutMessagesInput = {
+    create?: XOR<ChannelMemberCreateWithoutMessagesInput, ChannelMemberUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: ChannelMemberCreateOrConnectWithoutMessagesInput
+    connect?: ChannelMemberWhereUniqueInput
   }
 
   export type ChannelUpdateOneRequiredWithoutMessagesNestedInput = {
@@ -24565,12 +24942,12 @@ export namespace Prisma {
     update?: XOR<XOR<ChannelUpdateToOneWithWhereWithoutMessagesInput, ChannelUpdateWithoutMessagesInput>, ChannelUncheckedUpdateWithoutMessagesInput>
   }
 
-  export type UserUpdateOneRequiredWithoutMessagesNestedInput = {
-    create?: XOR<UserCreateWithoutMessagesInput, UserUncheckedCreateWithoutMessagesInput>
-    connectOrCreate?: UserCreateOrConnectWithoutMessagesInput
-    upsert?: UserUpsertWithoutMessagesInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutMessagesInput, UserUpdateWithoutMessagesInput>, UserUncheckedUpdateWithoutMessagesInput>
+  export type ChannelMemberUpdateOneRequiredWithoutMessagesNestedInput = {
+    create?: XOR<ChannelMemberCreateWithoutMessagesInput, ChannelMemberUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: ChannelMemberCreateOrConnectWithoutMessagesInput
+    upsert?: ChannelMemberUpsertWithoutMessagesInput
+    connect?: ChannelMemberWhereUniqueInput
+    update?: XOR<XOR<ChannelMemberUpdateToOneWithWhereWithoutMessagesInput, ChannelMemberUpdateWithoutMessagesInput>, ChannelMemberUncheckedUpdateWithoutMessagesInput>
   }
 
   export type CompanyCreateNestedOneWithoutJobsInput = {
@@ -24891,6 +25268,11 @@ export namespace Prisma {
     _max?: NestedEnumCompanyRoleFilter<$PrismaModel>
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -24900,6 +25282,14 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -24958,7 +25348,6 @@ export namespace Prisma {
     sessions?: SessionCreateNestedManyWithoutUserInput
     companyMemberships?: CompanyMemberCreateNestedManyWithoutUserInput
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
-    messages?: MessageCreateNestedManyWithoutAuthorInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
@@ -24980,7 +25369,6 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     companyMemberships?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
-    messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
@@ -25018,7 +25406,6 @@ export namespace Prisma {
     sessions?: SessionUpdateManyWithoutUserNestedInput
     companyMemberships?: CompanyMemberUpdateManyWithoutUserNestedInput
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
-    messages?: MessageUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
@@ -25040,7 +25427,6 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     companyMemberships?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
-    messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
@@ -25062,7 +25448,6 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutUserInput
     companyMemberships?: CompanyMemberCreateNestedManyWithoutUserInput
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
-    messages?: MessageCreateNestedManyWithoutAuthorInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
@@ -25084,7 +25469,6 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     companyMemberships?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
-    messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
@@ -25122,7 +25506,6 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutUserNestedInput
     companyMemberships?: CompanyMemberUpdateManyWithoutUserNestedInput
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
-    messages?: MessageUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
@@ -25144,7 +25527,6 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     companyMemberships?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
-    messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
@@ -25175,16 +25557,22 @@ export namespace Prisma {
 
   export type ChannelCreateWithoutCompanyInput = {
     id?: string
+    title: string
     name: string
     image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     messages?: MessageCreateNestedManyWithoutChannelInput
     channelMembers?: ChannelMemberCreateNestedManyWithoutChannelInput
   }
 
   export type ChannelUncheckedCreateWithoutCompanyInput = {
     id?: string
+    title: string
     name: string
     image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     messages?: MessageUncheckedCreateNestedManyWithoutChannelInput
     channelMembers?: ChannelMemberUncheckedCreateNestedManyWithoutChannelInput
   }
@@ -25338,9 +25726,12 @@ export namespace Prisma {
     OR?: ChannelScalarWhereInput[]
     NOT?: ChannelScalarWhereInput | ChannelScalarWhereInput[]
     id?: StringFilter<"Channel"> | string
+    title?: StringFilter<"Channel"> | string
     name?: StringFilter<"Channel"> | string
     image?: StringNullableFilter<"Channel"> | string | null
     companyId?: StringFilter<"Channel"> | string
+    createdAt?: DateTimeFilter<"Channel"> | Date | string
+    updatedAt?: DateTimeFilter<"Channel"> | Date | string
   }
 
   export type JobUpsertWithWhereUniqueWithoutCompanyInput = {
@@ -25448,7 +25839,6 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
-    messages?: MessageCreateNestedManyWithoutAuthorInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
@@ -25470,7 +25860,6 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
-    messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
@@ -25547,7 +25936,6 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
-    messages?: MessageUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
@@ -25569,7 +25957,6 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
-    messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
@@ -25626,7 +26013,8 @@ export namespace Prisma {
     content: string
     postedAt?: Date | string
     updatedAt?: Date | string
-    author: UserCreateNestedOneWithoutMessagesInput
+    deletedAt?: Date | string | null
+    authorChannelMember: ChannelMemberCreateNestedOneWithoutMessagesInput
   }
 
   export type MessageUncheckedCreateWithoutChannelInput = {
@@ -25634,7 +26022,8 @@ export namespace Prisma {
     content: string
     postedAt?: Date | string
     updatedAt?: Date | string
-    authorId: string
+    deletedAt?: Date | string | null
+    authorChannelMemberId: string
   }
 
   export type MessageCreateOrConnectWithoutChannelInput = {
@@ -25648,11 +26037,27 @@ export namespace Prisma {
   }
 
   export type ChannelMemberCreateWithoutChannelInput = {
+    id?: string
+    canSendMessages?: boolean
+    canManageMembers?: boolean
+    canManageChannel?: boolean
+    canModerateMessages?: boolean
+    joinedAt?: Date | string
+    removedAt?: Date | string | null
     user: UserCreateNestedOneWithoutChannelMembershipsInput
+    messages?: MessageCreateNestedManyWithoutAuthorChannelMemberInput
   }
 
   export type ChannelMemberUncheckedCreateWithoutChannelInput = {
+    id?: string
     userId: string
+    canSendMessages?: boolean
+    canManageMembers?: boolean
+    canManageChannel?: boolean
+    canModerateMessages?: boolean
+    joinedAt?: Date | string
+    removedAt?: Date | string | null
+    messages?: MessageUncheckedCreateNestedManyWithoutAuthorChannelMemberInput
   }
 
   export type ChannelMemberCreateOrConnectWithoutChannelInput = {
@@ -25728,8 +26133,9 @@ export namespace Prisma {
     content?: StringFilter<"Message"> | string
     postedAt?: DateTimeFilter<"Message"> | Date | string
     updatedAt?: DateTimeFilter<"Message"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"Message"> | Date | string | null
     channelId?: StringFilter<"Message"> | string
-    authorId?: StringFilter<"Message"> | string
+    authorChannelMemberId?: StringFilter<"Message"> | string
   }
 
   export type ChannelMemberUpsertWithWhereUniqueWithoutChannelInput = {
@@ -25752,8 +26158,15 @@ export namespace Prisma {
     AND?: ChannelMemberScalarWhereInput | ChannelMemberScalarWhereInput[]
     OR?: ChannelMemberScalarWhereInput[]
     NOT?: ChannelMemberScalarWhereInput | ChannelMemberScalarWhereInput[]
+    id?: StringFilter<"ChannelMember"> | string
     channelId?: StringFilter<"ChannelMember"> | string
     userId?: StringFilter<"ChannelMember"> | string
+    canSendMessages?: BoolFilter<"ChannelMember"> | boolean
+    canManageMembers?: BoolFilter<"ChannelMember"> | boolean
+    canManageChannel?: BoolFilter<"ChannelMember"> | boolean
+    canModerateMessages?: BoolFilter<"ChannelMember"> | boolean
+    joinedAt?: DateTimeFilter<"ChannelMember"> | Date | string
+    removedAt?: DateTimeNullableFilter<"ChannelMember"> | Date | string | null
   }
 
   export type CompanyUpsertWithoutChannelsInput = {
@@ -25803,17 +26216,23 @@ export namespace Prisma {
 
   export type ChannelCreateWithoutChannelMembersInput = {
     id?: string
+    title: string
     name: string
     image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     messages?: MessageCreateNestedManyWithoutChannelInput
     company: CompanyCreateNestedOneWithoutChannelsInput
   }
 
   export type ChannelUncheckedCreateWithoutChannelMembersInput = {
     id?: string
+    title: string
     name: string
     image?: string | null
     companyId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
     messages?: MessageUncheckedCreateNestedManyWithoutChannelInput
   }
 
@@ -25837,7 +26256,6 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     companyMemberships?: CompanyMemberCreateNestedManyWithoutUserInput
-    messages?: MessageCreateNestedManyWithoutAuthorInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
@@ -25859,7 +26277,6 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     companyMemberships?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
-    messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
@@ -25869,6 +26286,33 @@ export namespace Prisma {
   export type UserCreateOrConnectWithoutChannelMembershipsInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutChannelMembershipsInput, UserUncheckedCreateWithoutChannelMembershipsInput>
+  }
+
+  export type MessageCreateWithoutAuthorChannelMemberInput = {
+    id?: string
+    content: string
+    postedAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    channel: ChannelCreateNestedOneWithoutMessagesInput
+  }
+
+  export type MessageUncheckedCreateWithoutAuthorChannelMemberInput = {
+    id?: string
+    content: string
+    postedAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+  }
+
+  export type MessageCreateOrConnectWithoutAuthorChannelMemberInput = {
+    where: MessageWhereUniqueInput
+    create: XOR<MessageCreateWithoutAuthorChannelMemberInput, MessageUncheckedCreateWithoutAuthorChannelMemberInput>
+  }
+
+  export type MessageCreateManyAuthorChannelMemberInputEnvelope = {
+    data: MessageCreateManyAuthorChannelMemberInput | MessageCreateManyAuthorChannelMemberInput[]
+    skipDuplicates?: boolean
   }
 
   export type ChannelUpsertWithoutChannelMembersInput = {
@@ -25884,17 +26328,23 @@ export namespace Prisma {
 
   export type ChannelUpdateWithoutChannelMembersInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: MessageUpdateManyWithoutChannelNestedInput
     company?: CompanyUpdateOneRequiredWithoutChannelsNestedInput
   }
 
   export type ChannelUncheckedUpdateWithoutChannelMembersInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
     companyId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: MessageUncheckedUpdateManyWithoutChannelNestedInput
   }
 
@@ -25924,7 +26374,6 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     companyMemberships?: CompanyMemberUpdateManyWithoutUserNestedInput
-    messages?: MessageUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
@@ -25946,11 +26395,26 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     companyMemberships?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
-    messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type MessageUpsertWithWhereUniqueWithoutAuthorChannelMemberInput = {
+    where: MessageWhereUniqueInput
+    update: XOR<MessageUpdateWithoutAuthorChannelMemberInput, MessageUncheckedUpdateWithoutAuthorChannelMemberInput>
+    create: XOR<MessageCreateWithoutAuthorChannelMemberInput, MessageUncheckedCreateWithoutAuthorChannelMemberInput>
+  }
+
+  export type MessageUpdateWithWhereUniqueWithoutAuthorChannelMemberInput = {
+    where: MessageWhereUniqueInput
+    data: XOR<MessageUpdateWithoutAuthorChannelMemberInput, MessageUncheckedUpdateWithoutAuthorChannelMemberInput>
+  }
+
+  export type MessageUpdateManyWithWhereWithoutAuthorChannelMemberInput = {
+    where: MessageScalarWhereInput
+    data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyWithoutAuthorChannelMemberInput>
   }
 
   export type EmailVerificationCodeCreateWithoutUserInput = {
@@ -26102,11 +26566,27 @@ export namespace Prisma {
   }
 
   export type ChannelMemberCreateWithoutUserInput = {
+    id?: string
+    canSendMessages?: boolean
+    canManageMembers?: boolean
+    canManageChannel?: boolean
+    canModerateMessages?: boolean
+    joinedAt?: Date | string
+    removedAt?: Date | string | null
     channel: ChannelCreateNestedOneWithoutChannelMembersInput
+    messages?: MessageCreateNestedManyWithoutAuthorChannelMemberInput
   }
 
   export type ChannelMemberUncheckedCreateWithoutUserInput = {
+    id?: string
     channelId: string
+    canSendMessages?: boolean
+    canManageMembers?: boolean
+    canManageChannel?: boolean
+    canModerateMessages?: boolean
+    joinedAt?: Date | string
+    removedAt?: Date | string | null
+    messages?: MessageUncheckedCreateNestedManyWithoutAuthorChannelMemberInput
   }
 
   export type ChannelMemberCreateOrConnectWithoutUserInput = {
@@ -26116,32 +26596,6 @@ export namespace Prisma {
 
   export type ChannelMemberCreateManyUserInputEnvelope = {
     data: ChannelMemberCreateManyUserInput | ChannelMemberCreateManyUserInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type MessageCreateWithoutAuthorInput = {
-    id?: string
-    content: string
-    postedAt?: Date | string
-    updatedAt?: Date | string
-    channel: ChannelCreateNestedOneWithoutMessagesInput
-  }
-
-  export type MessageUncheckedCreateWithoutAuthorInput = {
-    id?: string
-    content: string
-    postedAt?: Date | string
-    updatedAt?: Date | string
-    channelId: string
-  }
-
-  export type MessageCreateOrConnectWithoutAuthorInput = {
-    where: MessageWhereUniqueInput
-    create: XOR<MessageCreateWithoutAuthorInput, MessageUncheckedCreateWithoutAuthorInput>
-  }
-
-  export type MessageCreateManyAuthorInputEnvelope = {
-    data: MessageCreateManyAuthorInput | MessageCreateManyAuthorInput[]
     skipDuplicates?: boolean
   }
 
@@ -26431,22 +26885,6 @@ export namespace Prisma {
     data: XOR<ChannelMemberUpdateManyMutationInput, ChannelMemberUncheckedUpdateManyWithoutUserInput>
   }
 
-  export type MessageUpsertWithWhereUniqueWithoutAuthorInput = {
-    where: MessageWhereUniqueInput
-    update: XOR<MessageUpdateWithoutAuthorInput, MessageUncheckedUpdateWithoutAuthorInput>
-    create: XOR<MessageCreateWithoutAuthorInput, MessageUncheckedCreateWithoutAuthorInput>
-  }
-
-  export type MessageUpdateWithWhereUniqueWithoutAuthorInput = {
-    where: MessageWhereUniqueInput
-    data: XOR<MessageUpdateWithoutAuthorInput, MessageUncheckedUpdateWithoutAuthorInput>
-  }
-
-  export type MessageUpdateManyWithWhereWithoutAuthorInput = {
-    where: MessageScalarWhereInput
-    data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyWithoutAuthorInput>
-  }
-
   export type JobUpsertWithWhereUniqueWithoutCreatedByInput = {
     where: JobWhereUniqueInput
     update: XOR<JobUpdateWithoutCreatedByInput, JobUncheckedUpdateWithoutCreatedByInput>
@@ -26575,7 +27013,6 @@ export namespace Prisma {
     sessions?: SessionCreateNestedManyWithoutUserInput
     companyMemberships?: CompanyMemberCreateNestedManyWithoutUserInput
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
-    messages?: MessageCreateNestedManyWithoutAuthorInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
@@ -26597,7 +27034,6 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     companyMemberships?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
-    messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
@@ -26680,7 +27116,6 @@ export namespace Prisma {
     sessions?: SessionUpdateManyWithoutUserNestedInput
     companyMemberships?: CompanyMemberUpdateManyWithoutUserNestedInput
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
-    messages?: MessageUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
@@ -26702,7 +27137,6 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     companyMemberships?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
-    messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
@@ -26723,7 +27157,6 @@ export namespace Prisma {
     sessions?: SessionCreateNestedManyWithoutUserInput
     companyMemberships?: CompanyMemberCreateNestedManyWithoutUserInput
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
-    messages?: MessageCreateNestedManyWithoutAuthorInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
@@ -26745,7 +27178,6 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     companyMemberships?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
-    messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
@@ -26783,7 +27215,6 @@ export namespace Prisma {
     sessions?: SessionUpdateManyWithoutUserNestedInput
     companyMemberships?: CompanyMemberUpdateManyWithoutUserNestedInput
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
-    messages?: MessageUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
@@ -26805,7 +27236,6 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     companyMemberships?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
-    messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
@@ -26814,17 +27244,23 @@ export namespace Prisma {
 
   export type ChannelCreateWithoutMessagesInput = {
     id?: string
+    title: string
     name: string
     image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     channelMembers?: ChannelMemberCreateNestedManyWithoutChannelInput
     company: CompanyCreateNestedOneWithoutChannelsInput
   }
 
   export type ChannelUncheckedCreateWithoutMessagesInput = {
     id?: string
+    title: string
     name: string
     image?: string | null
     companyId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
     channelMembers?: ChannelMemberUncheckedCreateNestedManyWithoutChannelInput
   }
 
@@ -26833,53 +27269,33 @@ export namespace Prisma {
     create: XOR<ChannelCreateWithoutMessagesInput, ChannelUncheckedCreateWithoutMessagesInput>
   }
 
-  export type UserCreateWithoutMessagesInput = {
+  export type ChannelMemberCreateWithoutMessagesInput = {
     id?: string
-    name?: string | null
-    email?: string | null
-    emailVerified?: Date | string | null
-    passwordHash?: string | null
-    sessionVersion?: number
-    image?: string | null
-    description?: string | null
-    emailVerificationCode?: EmailVerificationCodeCreateNestedOneWithoutUserInput
-    twoFactor?: TwoFactorCreateNestedOneWithoutUserInput
-    twoFactorChallenges?: TwoFactorChallengeCreateNestedManyWithoutUserInput
-    accounts?: AccountCreateNestedManyWithoutUserInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
-    companyMemberships?: CompanyMemberCreateNestedManyWithoutUserInput
-    channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
-    createdJobs?: JobCreateNestedManyWithoutCreatedByInput
-    companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
-    postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
-    sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
+    canSendMessages?: boolean
+    canManageMembers?: boolean
+    canManageChannel?: boolean
+    canModerateMessages?: boolean
+    joinedAt?: Date | string
+    removedAt?: Date | string | null
+    channel: ChannelCreateNestedOneWithoutChannelMembersInput
+    user: UserCreateNestedOneWithoutChannelMembershipsInput
   }
 
-  export type UserUncheckedCreateWithoutMessagesInput = {
+  export type ChannelMemberUncheckedCreateWithoutMessagesInput = {
     id?: string
-    name?: string | null
-    email?: string | null
-    emailVerified?: Date | string | null
-    passwordHash?: string | null
-    sessionVersion?: number
-    image?: string | null
-    description?: string | null
-    emailVerificationCode?: EmailVerificationCodeUncheckedCreateNestedOneWithoutUserInput
-    twoFactor?: TwoFactorUncheckedCreateNestedOneWithoutUserInput
-    twoFactorChallenges?: TwoFactorChallengeUncheckedCreateNestedManyWithoutUserInput
-    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
-    companyMemberships?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
-    channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
-    createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
-    companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
-    postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
-    sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
+    channelId: string
+    userId: string
+    canSendMessages?: boolean
+    canManageMembers?: boolean
+    canManageChannel?: boolean
+    canModerateMessages?: boolean
+    joinedAt?: Date | string
+    removedAt?: Date | string | null
   }
 
-  export type UserCreateOrConnectWithoutMessagesInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutMessagesInput, UserUncheckedCreateWithoutMessagesInput>
+  export type ChannelMemberCreateOrConnectWithoutMessagesInput = {
+    where: ChannelMemberWhereUniqueInput
+    create: XOR<ChannelMemberCreateWithoutMessagesInput, ChannelMemberUncheckedCreateWithoutMessagesInput>
   }
 
   export type ChannelUpsertWithoutMessagesInput = {
@@ -26895,73 +27311,59 @@ export namespace Prisma {
 
   export type ChannelUpdateWithoutMessagesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     channelMembers?: ChannelMemberUpdateManyWithoutChannelNestedInput
     company?: CompanyUpdateOneRequiredWithoutChannelsNestedInput
   }
 
   export type ChannelUncheckedUpdateWithoutMessagesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
     companyId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     channelMembers?: ChannelMemberUncheckedUpdateManyWithoutChannelNestedInput
   }
 
-  export type UserUpsertWithoutMessagesInput = {
-    update: XOR<UserUpdateWithoutMessagesInput, UserUncheckedUpdateWithoutMessagesInput>
-    create: XOR<UserCreateWithoutMessagesInput, UserUncheckedCreateWithoutMessagesInput>
-    where?: UserWhereInput
+  export type ChannelMemberUpsertWithoutMessagesInput = {
+    update: XOR<ChannelMemberUpdateWithoutMessagesInput, ChannelMemberUncheckedUpdateWithoutMessagesInput>
+    create: XOR<ChannelMemberCreateWithoutMessagesInput, ChannelMemberUncheckedCreateWithoutMessagesInput>
+    where?: ChannelMemberWhereInput
   }
 
-  export type UserUpdateToOneWithWhereWithoutMessagesInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutMessagesInput, UserUncheckedUpdateWithoutMessagesInput>
+  export type ChannelMemberUpdateToOneWithWhereWithoutMessagesInput = {
+    where?: ChannelMemberWhereInput
+    data: XOR<ChannelMemberUpdateWithoutMessagesInput, ChannelMemberUncheckedUpdateWithoutMessagesInput>
   }
 
-  export type UserUpdateWithoutMessagesInput = {
+  export type ChannelMemberUpdateWithoutMessagesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
-    sessionVersion?: IntFieldUpdateOperationsInput | number
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    emailVerificationCode?: EmailVerificationCodeUpdateOneWithoutUserNestedInput
-    twoFactor?: TwoFactorUpdateOneWithoutUserNestedInput
-    twoFactorChallenges?: TwoFactorChallengeUpdateManyWithoutUserNestedInput
-    accounts?: AccountUpdateManyWithoutUserNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
-    companyMemberships?: CompanyMemberUpdateManyWithoutUserNestedInput
-    channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
-    createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
-    companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
-    postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
-    sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
+    canSendMessages?: BoolFieldUpdateOperationsInput | boolean
+    canManageMembers?: BoolFieldUpdateOperationsInput | boolean
+    canManageChannel?: BoolFieldUpdateOperationsInput | boolean
+    canModerateMessages?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    removedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    channel?: ChannelUpdateOneRequiredWithoutChannelMembersNestedInput
+    user?: UserUpdateOneRequiredWithoutChannelMembershipsNestedInput
   }
 
-  export type UserUncheckedUpdateWithoutMessagesInput = {
+  export type ChannelMemberUncheckedUpdateWithoutMessagesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
-    sessionVersion?: IntFieldUpdateOperationsInput | number
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    emailVerificationCode?: EmailVerificationCodeUncheckedUpdateOneWithoutUserNestedInput
-    twoFactor?: TwoFactorUncheckedUpdateOneWithoutUserNestedInput
-    twoFactorChallenges?: TwoFactorChallengeUncheckedUpdateManyWithoutUserNestedInput
-    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
-    companyMemberships?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
-    channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
-    createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
-    companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
-    postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
-    sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
+    channelId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    canSendMessages?: BoolFieldUpdateOperationsInput | boolean
+    canManageMembers?: BoolFieldUpdateOperationsInput | boolean
+    canManageChannel?: BoolFieldUpdateOperationsInput | boolean
+    canModerateMessages?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    removedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type CompanyCreateWithoutJobsInput = {
@@ -27019,7 +27421,6 @@ export namespace Prisma {
     sessions?: SessionCreateNestedManyWithoutUserInput
     companyMemberships?: CompanyMemberCreateNestedManyWithoutUserInput
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
-    messages?: MessageCreateNestedManyWithoutAuthorInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
@@ -27041,7 +27442,6 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     companyMemberships?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
-    messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
@@ -27124,7 +27524,6 @@ export namespace Prisma {
     sessions?: SessionUpdateManyWithoutUserNestedInput
     companyMemberships?: CompanyMemberUpdateManyWithoutUserNestedInput
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
-    messages?: MessageUpdateManyWithoutAuthorNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
@@ -27146,7 +27545,6 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     companyMemberships?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
-    messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -27207,7 +27605,6 @@ export namespace Prisma {
     sessions?: SessionCreateNestedManyWithoutUserInput
     companyMemberships?: CompanyMemberCreateNestedManyWithoutUserInput
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
-    messages?: MessageCreateNestedManyWithoutAuthorInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
@@ -27229,7 +27626,6 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     companyMemberships?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
-    messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
@@ -27332,7 +27728,6 @@ export namespace Prisma {
     sessions?: SessionUpdateManyWithoutUserNestedInput
     companyMemberships?: CompanyMemberUpdateManyWithoutUserNestedInput
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
-    messages?: MessageUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
@@ -27354,7 +27749,6 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     companyMemberships?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
-    messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -27417,7 +27811,6 @@ export namespace Prisma {
     sessions?: SessionCreateNestedManyWithoutUserInput
     companyMemberships?: CompanyMemberCreateNestedManyWithoutUserInput
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
-    messages?: MessageCreateNestedManyWithoutAuthorInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
@@ -27439,7 +27832,6 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     companyMemberships?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
-    messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
@@ -27508,7 +27900,6 @@ export namespace Prisma {
     sessions?: SessionUpdateManyWithoutUserNestedInput
     companyMemberships?: CompanyMemberUpdateManyWithoutUserNestedInput
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
-    messages?: MessageUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
@@ -27530,7 +27921,6 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     companyMemberships?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
-    messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -27551,7 +27941,6 @@ export namespace Prisma {
     sessions?: SessionCreateNestedManyWithoutUserInput
     companyMemberships?: CompanyMemberCreateNestedManyWithoutUserInput
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
-    messages?: MessageCreateNestedManyWithoutAuthorInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
@@ -27573,7 +27962,6 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     companyMemberships?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
-    messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
@@ -27611,7 +27999,6 @@ export namespace Prisma {
     sessions?: SessionUpdateManyWithoutUserNestedInput
     companyMemberships?: CompanyMemberUpdateManyWithoutUserNestedInput
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
-    messages?: MessageUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
@@ -27633,7 +28020,6 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     companyMemberships?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
-    messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
@@ -27655,7 +28041,6 @@ export namespace Prisma {
     sessions?: SessionCreateNestedManyWithoutUserInput
     companyMemberships?: CompanyMemberCreateNestedManyWithoutUserInput
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
-    messages?: MessageCreateNestedManyWithoutAuthorInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
@@ -27677,7 +28062,6 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     companyMemberships?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
-    messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
@@ -27715,7 +28099,6 @@ export namespace Prisma {
     sessions?: SessionUpdateManyWithoutUserNestedInput
     companyMemberships?: CompanyMemberUpdateManyWithoutUserNestedInput
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
-    messages?: MessageUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
@@ -27737,7 +28120,6 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     companyMemberships?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
-    messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
@@ -27752,8 +28134,11 @@ export namespace Prisma {
 
   export type ChannelCreateManyCompanyInput = {
     id?: string
+    title: string
     name: string
     image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type JobCreateManyCompanyInput = {
@@ -27806,24 +28191,33 @@ export namespace Prisma {
 
   export type ChannelUpdateWithoutCompanyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: MessageUpdateManyWithoutChannelNestedInput
     channelMembers?: ChannelMemberUpdateManyWithoutChannelNestedInput
   }
 
   export type ChannelUncheckedUpdateWithoutCompanyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: MessageUncheckedUpdateManyWithoutChannelNestedInput
     channelMembers?: ChannelMemberUncheckedUpdateManyWithoutChannelNestedInput
   }
 
   export type ChannelUncheckedUpdateManyWithoutCompanyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type JobUpdateWithoutCompanyInput = {
@@ -27923,11 +28317,19 @@ export namespace Prisma {
     content: string
     postedAt?: Date | string
     updatedAt?: Date | string
-    authorId: string
+    deletedAt?: Date | string | null
+    authorChannelMemberId: string
   }
 
   export type ChannelMemberCreateManyChannelInput = {
+    id?: string
     userId: string
+    canSendMessages?: boolean
+    canManageMembers?: boolean
+    canManageChannel?: boolean
+    canModerateMessages?: boolean
+    joinedAt?: Date | string
+    removedAt?: Date | string | null
   }
 
   export type MessageUpdateWithoutChannelInput = {
@@ -27935,7 +28337,8 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     postedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    author?: UserUpdateOneRequiredWithoutMessagesNestedInput
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authorChannelMember?: ChannelMemberUpdateOneRequiredWithoutMessagesNestedInput
   }
 
   export type MessageUncheckedUpdateWithoutChannelInput = {
@@ -27943,7 +28346,8 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     postedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    authorId?: StringFieldUpdateOperationsInput | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authorChannelMemberId?: StringFieldUpdateOperationsInput | string
   }
 
   export type MessageUncheckedUpdateManyWithoutChannelInput = {
@@ -27951,19 +28355,76 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     postedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    authorId?: StringFieldUpdateOperationsInput | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authorChannelMemberId?: StringFieldUpdateOperationsInput | string
   }
 
   export type ChannelMemberUpdateWithoutChannelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    canSendMessages?: BoolFieldUpdateOperationsInput | boolean
+    canManageMembers?: BoolFieldUpdateOperationsInput | boolean
+    canManageChannel?: BoolFieldUpdateOperationsInput | boolean
+    canModerateMessages?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    removedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutChannelMembershipsNestedInput
+    messages?: MessageUpdateManyWithoutAuthorChannelMemberNestedInput
   }
 
   export type ChannelMemberUncheckedUpdateWithoutChannelInput = {
+    id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    canSendMessages?: BoolFieldUpdateOperationsInput | boolean
+    canManageMembers?: BoolFieldUpdateOperationsInput | boolean
+    canManageChannel?: BoolFieldUpdateOperationsInput | boolean
+    canModerateMessages?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    removedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    messages?: MessageUncheckedUpdateManyWithoutAuthorChannelMemberNestedInput
   }
 
   export type ChannelMemberUncheckedUpdateManyWithoutChannelInput = {
+    id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    canSendMessages?: BoolFieldUpdateOperationsInput | boolean
+    canManageMembers?: BoolFieldUpdateOperationsInput | boolean
+    canManageChannel?: BoolFieldUpdateOperationsInput | boolean
+    canModerateMessages?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    removedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type MessageCreateManyAuthorChannelMemberInput = {
+    id?: string
+    content: string
+    postedAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+  }
+
+  export type MessageUpdateWithoutAuthorChannelMemberInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    postedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    channel?: ChannelUpdateOneRequiredWithoutMessagesNestedInput
+  }
+
+  export type MessageUncheckedUpdateWithoutAuthorChannelMemberInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    postedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type MessageUncheckedUpdateManyWithoutAuthorChannelMemberInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    postedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type TwoFactorChallengeCreateManyUserInput = {
@@ -27999,15 +28460,14 @@ export namespace Prisma {
   }
 
   export type ChannelMemberCreateManyUserInput = {
-    channelId: string
-  }
-
-  export type MessageCreateManyAuthorInput = {
     id?: string
-    content: string
-    postedAt?: Date | string
-    updatedAt?: Date | string
     channelId: string
+    canSendMessages?: boolean
+    canManageMembers?: boolean
+    canManageChannel?: boolean
+    canModerateMessages?: boolean
+    joinedAt?: Date | string
+    removedAt?: Date | string | null
   }
 
   export type JobCreateManyCreatedByInput = {
@@ -28142,39 +28602,38 @@ export namespace Prisma {
   }
 
   export type ChannelMemberUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    canSendMessages?: BoolFieldUpdateOperationsInput | boolean
+    canManageMembers?: BoolFieldUpdateOperationsInput | boolean
+    canManageChannel?: BoolFieldUpdateOperationsInput | boolean
+    canModerateMessages?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    removedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     channel?: ChannelUpdateOneRequiredWithoutChannelMembersNestedInput
+    messages?: MessageUpdateManyWithoutAuthorChannelMemberNestedInput
   }
 
   export type ChannelMemberUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
     channelId?: StringFieldUpdateOperationsInput | string
+    canSendMessages?: BoolFieldUpdateOperationsInput | boolean
+    canManageMembers?: BoolFieldUpdateOperationsInput | boolean
+    canManageChannel?: BoolFieldUpdateOperationsInput | boolean
+    canModerateMessages?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    removedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    messages?: MessageUncheckedUpdateManyWithoutAuthorChannelMemberNestedInput
   }
 
   export type ChannelMemberUncheckedUpdateManyWithoutUserInput = {
-    channelId?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type MessageUpdateWithoutAuthorInput = {
     id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
-    postedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    channel?: ChannelUpdateOneRequiredWithoutMessagesNestedInput
-  }
-
-  export type MessageUncheckedUpdateWithoutAuthorInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
-    postedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     channelId?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type MessageUncheckedUpdateManyWithoutAuthorInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
-    postedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    channelId?: StringFieldUpdateOperationsInput | string
+    canSendMessages?: BoolFieldUpdateOperationsInput | boolean
+    canManageMembers?: BoolFieldUpdateOperationsInput | boolean
+    canManageChannel?: BoolFieldUpdateOperationsInput | boolean
+    canModerateMessages?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    removedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type JobUpdateWithoutCreatedByInput = {

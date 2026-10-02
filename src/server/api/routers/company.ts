@@ -178,11 +178,13 @@ export const companyRouter = createTRPCRouter({
           input.userId,
         );
         // Remove access to this company's channels, while preserving history.
-        await tx.channelMember.deleteMany({
+        await tx.channelMember.updateMany({
           where: {
             userId: input.userId,
             channel: { companyId: input.companyId },
+            removedAt: null,
           },
+          data: { removedAt: new Date() },
         });
         // Old invitations must not allow the removed person to rejoin.
         await tx.companyInvitation.updateMany({
