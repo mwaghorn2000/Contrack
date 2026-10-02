@@ -1,16 +1,20 @@
 "use client";
 
-import { signIn } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 import Image from "next/image";
+import { completionPath } from "~/lib/auth-destination";
 
 export default function GoogleSignInButton({
   redirectTo = "/dashboard",
+  reauthenticate = false,
 }: {
   redirectTo?: string;
+  reauthenticate?: boolean;
 }) {
   async function handleGoogleLogin() {
+    if (reauthenticate) await signOut({ redirect: false });
     await signIn("google", {
-      redirectTo,
+      redirectTo: completionPath(redirectTo),
     });
   }
 

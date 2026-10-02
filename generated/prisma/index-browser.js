@@ -182,6 +182,7 @@ exports.Prisma.UserScalarFieldEnum = {
   email: 'email',
   emailVerified: 'emailVerified',
   passwordHash: 'passwordHash',
+  sessionVersion: 'sessionVersion',
   image: 'image',
   description: 'description'
 };
@@ -248,6 +249,23 @@ exports.Prisma.VerificationTokenScalarFieldEnum = {
   expires: 'expires'
 };
 
+exports.Prisma.TwoFactorScalarFieldEnum = {
+  userId: 'userId',
+  secretEncrypted: 'secretEncrypted',
+  pendingEncrypted: 'pendingEncrypted',
+  pendingExpiresAt: 'pendingExpiresAt',
+  lastUsedStep: 'lastUsedStep',
+  recoveryHashes: 'recoveryHashes',
+  attempts: 'attempts',
+  windowStartedAt: 'windowStartedAt'
+};
+
+exports.Prisma.TwoFactorChallengeScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  expiresAt: 'expiresAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -283,7 +301,9 @@ exports.Prisma.ModelName = {
   Job: 'Job',
   CompanyPost: 'CompanyPost',
   CompanyPostAcknowledgment: 'CompanyPostAcknowledgment',
-  VerificationToken: 'VerificationToken'
+  VerificationToken: 'VerificationToken',
+  TwoFactor: 'TwoFactor',
+  TwoFactorChallenge: 'TwoFactorChallenge'
 };
 
 /**

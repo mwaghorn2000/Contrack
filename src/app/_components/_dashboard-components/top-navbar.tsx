@@ -2,12 +2,20 @@ import Link from "next/link";
 import { Suspense } from "react";
 
 import { auth } from "~/server/auth";
+import { db } from "~/server/db";
 import CompanySelector from "./company-selector";
 import AccountMenu from "./account-menu";
 
 export default async function TopNavBar() {
   const session = await auth();
-  const displayName = session?.user?.name ?? session?.user?.email ?? "Account";
+  // Profile edits can be newer than the name stored in the login token.
+  const user = session?.user.id
+    ? await db.user.findUnique({
+        where: { id: session.user.id },
+        select: { name: true, email: true, image: true },
+      })
+    : null;
+  const displayName = user?.name ?? user?.email ?? "Account";
 
   return (
     <header className="relative z-30 flex min-h-16 shrink-0 flex-wrap items-center gap-4 border-b border-gray-200 bg-white px-4 py-3 sm:gap-6 sm:px-6 lg:px-8">
@@ -18,7 +26,7 @@ export default async function TopNavBar() {
         Contrack.
       </Link>
 
-      {session?.user && (
+      {user && (
         <div className="order-last w-full min-w-0 sm:order-none sm:w-auto">
           <Suspense
             fallback={
@@ -47,17 +55,13 @@ export default async function TopNavBar() {
         </Link>
       </nav>
 
-      {session?.user && (
+      {user && (
         <Suspense
           fallback={
             <span className="ml-auto text-sm text-gray-600">{displayName}</span>
           }
         >
-          <AccountMenu
-            name={session.user.name ?? null}
-            email={session.user.email ?? null}
-            image={session.user.image ?? null}
-          />
+          <AccountMenu name={user.name} email={user.email} image={user.image} />
         </Suspense>
       )}
     </header>

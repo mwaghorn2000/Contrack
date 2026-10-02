@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { auth } from "~/server/auth";
+import { authSession } from "~/server/auth";
 import { db } from "~/server/db";
 import { hashInvitationToken } from "~/server/invitations";
 import { authPath, invitationToken } from "~/lib/invitation-links";
@@ -53,7 +53,9 @@ export default async function InvitationPage({
       </main>
     );
   }
-  const session = await auth();
+  const session = await authSession();
+  if (session?.twoFactorRequired)
+    redirect(`/two-factor?next=${encodeURIComponent(`/invite/${token}`)}`);
   if (!session?.user?.id)
     redirect(authPath("/signup", token, invitation.email));
   const user = await db.user.findUnique({

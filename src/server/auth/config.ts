@@ -9,6 +9,7 @@ import { z } from "zod";
 import { CredentialsSignin } from "next-auth";
 
 import { db } from "~/server/db";
+import { securityToken } from "./security-token";
 
 const loginSchema = z.object({
   email: z.string().trim().email().max(254),
@@ -30,11 +31,19 @@ class EmailNotVerifiedError extends CredentialsSignin {
  */
 declare module "next-auth" {
   interface Session extends DefaultSession {
+    sessionVersion?: number;
+    twoFactorRequired?: boolean;
+    authTime?: number;
+    authProvider?: string;
     user: {
       id: string;
       // ...other properties
       // role: UserRole;
     } & DefaultSession["user"];
+  }
+
+  interface User {
+    credentialVersion?: number;
   }
 
   // interface User {
@@ -88,6 +97,7 @@ export const authConfig = {
           name: user.name,
           email: user.email,
           image: user.image,
+          credentialVersion: user.sessionVersion,
         };
       },
     }),
@@ -103,18 +113,29 @@ export const authConfig = {
   ],
   adapter: PrismaAdapter(db),
   callbacks: {
-    jwt({ token, user }) {
-      if (user) {
-        token.sub = user.id;
-      }
-
-      return token;
+    async jwt({ token, user, account, trigger, session }) {
+      return securityToken(
+        db,
+        token,
+        user?.id
+          ? {
+              userId: user.id,
+              provider: account?.provider ?? "credentials",
+              credentialVersion: user.credentialVersion,
+            }
+          : undefined,
+        trigger === "update" ? session : undefined,
+      );
     },
 
     session({ session, token }) {
       if (token.sub) {
         session.user.id = token.sub;
       }
+      session.sessionVersion = token.sessionVersion ?? 0;
+      session.twoFactorRequired = token.twoFactorRequired === true;
+      session.authTime = token.authTime;
+      session.authProvider = token.authProvider;
 
       return session;
     },

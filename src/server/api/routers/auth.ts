@@ -5,38 +5,18 @@ import * as argon2 from "argon2";
 import { Prisma, type PrismaClient } from "../../../../generated/prisma";
 import { randomInt } from "node:crypto";
 import { sendVerificationEmail } from "~/server/email";
+import { profileNameSchema } from "~/lib/profile-validation";
+import { passwordSchema } from "~/lib/password-validation";
 
 const signupSchema = z.object({
-  fullName: z
-    .string()
-    .trim()
-    .min(1)
-    .refine(
-      (name) => [...name].length <= 100,
-      "Name must be 100 characters or fewer.",
-    )
-    .refine(
-      (name) =>
-        ![...name].some((character) => {
-          const code = character.charCodeAt(0);
-          return code <= 31 || (code >= 127 && code <= 159);
-        }),
-      "Name cannot contain control characters.",
-    ),
+  fullName: profileNameSchema,
   email: z
     .string()
     .trim()
     .min(1, "Enter your email address.")
     .email("Enter a valid email address.")
     .max(254, "Email mmust be 254 characters or fewer."),
-  password: z
-    .string()
-    .regex(/\p{Nd}/u, "include at least one number.")
-    .regex(/[\p{P}\p{S}]/u, "include at least one symbol")
-    .refine((password) => {
-      const length = [...password].length;
-      return length >= 12 && length <= 128;
-    }, "Password must be between 12 and 128 characters"),
+  password: passwordSchema,
 });
 
 const sendEmailSchema = z.object({
@@ -96,9 +76,24 @@ export const authRouter = createTRPCRouter({
         where: {
           email: { equals: input.email, mode: "insensitive" },
         },
+        select: {
+          emailVerified: true,
+          accounts: {
+            where: { provider: "google" },
+            select: { id: true },
+          },
+        },
       });
 
       if (user) {
+        if (user.accounts.length > 0) {
+          throw new TRPCError({
+            code: "CONFLICT",
+            message:
+              "You already have an account with this email. Sign in with Google to continue.",
+          });
+        }
+
         if (user.emailVerified !== null) {
           throw new TRPCError({
             code: "CONFLICT",

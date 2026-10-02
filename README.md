@@ -42,6 +42,43 @@ revocation run in serializable transactions.
 Run `pnpm test` with Docker running. See [the test checklist](docs/api-test-cases.md)
 for coverage and test structure.
 
+## Profiles
+
+Use **My profile** in the account menu to edit your name and optional description.
+Names allow up to 100 characters; descriptions allow 500 characters and line breaks.
+Saving refreshes your name in the account menu and invalidates cached names in
+company posts, acknowledgment lists, and member lists. Profile updates only affect
+the signed-in user. No new migration is needed for these existing user fields.
+
+## Account security
+
+**Account settings → Account security** supports password changes and optional
+authenticator-app two-factor authentication for password and Google sign-ins.
+Setup provides a QR code and manual key, requires a six-digit confirmation, and
+shows ten single-use recovery codes once. Users can download those codes, replace
+them after verification, or disable 2FA. Provider-only accounts manage their
+password with their provider and must have signed in within ten minutes to enroll.
+
+Deploy `20261002000000_account_security` with `pnpm exec prisma migrate deploy`,
+run `pnpm exec prisma generate`, and restart the application. `AUTH_SECRET` must
+be set, including in development. It derives the AES-256-GCM key protecting
+authenticator secrets; keep it stable and backed up. Rotating it invalidates
+sessions and requires a planned migration of encrypted authenticator secrets.
+QR codes are generated locally; setup secrets are not sent to a third-party service.
+
+Changing a password or enabling/disabling 2FA revokes all existing sessions.
+Pending second-factor sessions cannot access protected pages or APIs. Challenges
+and pending setup expire after ten minutes. Security operations share a per-user
+limit of ten attempts per ten-minute window, including across fresh sign-ins.
+Authenticator codes cannot be reused, and recovery-code consumption is atomic.
+Users who lose both their authenticator and all recovery codes cannot bypass 2FA
+through email verification or Google sign-in; an administrative recovery process
+is not included.
+
+Run the security integration tests with
+`pnpm exec vitest run src/server/api/routers/security.test.ts`. They use a disposable
+database and a test-only encryption key.
+
 ## What's next? How do I make an app with this?
 
 We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.

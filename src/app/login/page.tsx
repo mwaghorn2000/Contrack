@@ -11,6 +11,7 @@ import {
 } from "~/lib/invitation-links";
 import AuthLayout from "../_components/auth/auth-layout";
 import GoogleSignInButton from "../_components/auth/google-sign-in-button";
+import { completionPath } from "~/lib/auth-destination";
 
 export default function LoginPage() {
   return (
@@ -68,7 +69,7 @@ function LoginForm() {
         return;
       }
 
-      router.replace(invitationDestination(invite));
+      router.replace(completionPath(invitationDestination(invite)));
       router.refresh();
     } catch {
       setError("Couldn't sign in. Please try again.");
@@ -90,6 +91,11 @@ function LoginForm() {
         <p role="status" className="mb-4 text-sm text-green-700">
           Email verified. Sign in to continue
           {invite ? " to your invitation" : ""}.
+        </p>
+      )}
+      {searchParams.get("securityUpdated") === "1" && (
+        <p role="status" className="mb-4 text-sm text-green-700">
+          Security settings updated. Please sign in again.
         </p>
       )}
       <form className="space-y-4" onSubmit={handleSubmit}>

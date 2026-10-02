@@ -85,6 +85,47 @@ it("signup rejects an already verified email without creating another user", asy
   );
 });
 
+it.each([null, new Date("2026-01-01")])(
+  "signup directs an existing Google user to Google when emailVerified is %s",
+  async (emailVerified) => {
+    const user = await db.user.create({
+      data: {
+        email: email.toUpperCase(),
+        name: "Google User",
+        emailVerified,
+        accounts: {
+          create: {
+            type: "oauth",
+            provider: "google",
+            providerAccountId: "google-user-123",
+          },
+        },
+      },
+    });
+
+    await expect(caller.signup(signup)).rejects.toMatchObject({
+      code: "CONFLICT",
+      message:
+        "You already have an account with this email. Sign in with Google to continue.",
+    });
+    expect(await db.user.count()).toBe(1);
+    expect(await db.user.findUniqueOrThrow({ where: { id: user.id } })).toEqual(
+      user,
+    );
+    expect(await db.account.count()).toBe(1);
+    expect(await db.emailVerificationCode.count()).toBe(0);
+    expect(sendVerificationEmail).not.toHaveBeenCalled();
+  },
+);
+
+it("signup accepts a Gmail address without a linked Google account", async () => {
+  const gmail = "new-person@gmail.com";
+  expect((await caller.signup({ ...signup, email: gmail })).success).toBe(true);
+  const user = await db.user.findUniqueOrThrow({ where: { email: gmail } });
+  expect(await argon2.verify(user.passwordHash!, password)).toBe(true);
+  expect(await db.account.count()).toBe(0);
+});
+
 it("signup preserves an existing unverified account and asks for verification", async () => {
   const user = await db.user.create({
     data: { email, name: "Original", passwordHash: "unchanged" },

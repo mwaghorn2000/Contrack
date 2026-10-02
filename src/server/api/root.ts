@@ -3,6 +3,8 @@ import { authRouter } from "./routers/auth";
 import { companyRouter } from "./routers/company";
 import { jobRouter } from "./routers/job";
 import { invitationRouter } from "./routers/invitation";
+import { profileRouter } from "./routers/profile";
+import { securityRouter } from "./routers/security";
 
 /**
  * This is the primary router for your server.
@@ -14,6 +16,8 @@ export const appRouter = createTRPCRouter({
   company: companyRouter,
   job: jobRouter,
   invitation: invitationRouter,
+  profile: profileRouter,
+  security: securityRouter,
 });
 
 // export type definition of API

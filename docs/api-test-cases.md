@@ -1,6 +1,6 @@
 # API test case checklist
 
-These integration tests cover company, auth, job, and invitation behavior. They call the real tRPC routers with a real Prisma client connected to disposable PostgreSQL containers. Use this document to understand each test and to add cases when route behavior changes.
+These integration tests cover company, auth, job, invitation, profile, and account-security behavior. They call the real tRPC routers with a real Prisma client connected to disposable PostgreSQL containers. Use this document to understand each test and to add cases when route behavior changes.
 
 ## Running the tests
 
@@ -182,9 +182,59 @@ The `company member management` group covers `updateMemberRole` and `removeMembe
 - does not let a removed member acknowledge a post.
 - does not accept a post ID belonging to a different company.
 
+## Profile tests
+
+[profile.test.ts](../src/server/api/routers/profile.test.ts) contains 21 cases for
+`profile.get` and `profile.update`. Updates always use the signed-in user's ID.
+The same name validation is used for signup and profile editing: 1–100 Unicode
+characters after trimming, without control characters. Descriptions allow 500
+Unicode characters and line breaks; empty descriptions are stored as `null`.
+
+- get returns the current user's profile without authentication secrets.
+- update saves a trimmed name and description and preserves account details.
+- get returns the saved name even when the session still has the previous name.
+- update changes only the signed-in user.
+- update rejects a supplied user ID.
+- update rejects extra account fields.
+- update clears a description when it is blank.
+- update accepts a null description.
+- update preserves line breaks within a description.
+- update accepts a one-character name.
+- update accepts a 100-character Unicode name.
+- update rejects an empty name without changing the profile.
+- update rejects a whitespace-only name.
+- update rejects a name longer than 100 characters.
+- update rejects control characters in a name.
+- update accepts a 500-character Unicode description.
+- update rejects a description longer than 500 characters.
+- update rejects null characters in a description before writing to PostgreSQL.
+- get requires authentication.
+- update requires authentication.
+- rejects a session after its user is deleted.
+
+## Account security tests
+
+[security.test.ts](../src/server/api/routers/security.test.ts) contains 23 cases.
+It exercises real password hashing, TOTP verification, encryption, database-backed
+attempt limits, and the JWT security gate with a test-only encryption key.
+
+- Password changes require the current password and, when enabled, a second factor.
+- Incorrect, unchanged, and weak passwords are rejected; Google-only accounts cannot add a password here.
+- Setup secrets are encrypted, bound to the user, and expire before confirmation.
+- Enabling 2FA requires a valid authenticator code and stores only hashes of recovery codes.
+- Password and Google sign-ins both require the second factor when enabled.
+- Client-supplied security flags cannot bypass verification; pending sessions cannot access protected APIs.
+- Expired, missing, wrong-user, and consumed challenges are rejected.
+- Concurrent recovery-code use succeeds only once; authenticator codes cannot be replayed.
+- Attempt limits apply across new sign-in challenges and expire after the cooldown.
+- Replacing recovery codes invalidates previous codes; disabling 2FA clears secrets and challenges.
+- Google-only enrollment requires recent provider sign-in.
+- Anonymous access, supplied user IDs, legacy tokens, stale password logins, and revoked sessions are rejected.
+- Tampering with encrypted authenticator secrets is detected.
+
 ## Auth tests
 
-[auth.test.ts](../src/server/api/routers/auth.test.ts) contains 54 cases.
+[auth.test.ts](../src/server/api/routers/auth.test.ts) contains 57 cases.
 
 Signup names allow 1–100 Unicode code points without control characters. Passwords allow 12–128 code points and require a digit and symbol. Verification codes have six ASCII digits, a ten-minute lifetime, a sixty-second resend cooldown, and a five-failure limit. These procedures are public and are tested without a signed-in session.
 

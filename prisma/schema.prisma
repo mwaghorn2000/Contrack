@@ -109,6 +109,9 @@ model User {
     emailVerified DateTime?
     emailVerificationCode   EmailVerificationCode?
     passwordHash  String?
+    sessionVersion Int @default(0)
+    twoFactor TwoFactor?
+    twoFactorChallenges TwoFactorChallenge[]
     image         String?
     description   String?
 
@@ -215,4 +218,25 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model TwoFactor {
+  userId String @id
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  secretEncrypted String?
+  pendingEncrypted String?
+  pendingExpiresAt DateTime?
+  lastUsedStep Int?
+  recoveryHashes String[] @default([])
+  attempts Int @default(0)
+  windowStartedAt DateTime @default(now())
+}
+
+model TwoFactorChallenge {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+
+  @@index([userId])
 }

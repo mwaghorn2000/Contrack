@@ -1,6 +1,6 @@
 import { Suspense, type ReactNode } from "react";
 import { redirect } from "next/navigation";
-import { auth } from "~/server/auth";
+import { authSession } from "~/server/auth";
 import Sidebar from "../_components/_dashboard-components/sidebar";
 import TopNavBar from "../_components/_dashboard-components/top-navbar";
 import CompanyAccessNotice from "../_components/_dashboard-components/company-access-notice";
@@ -10,7 +10,8 @@ export default async function DashboardLayout({
 }: {
   children: ReactNode;
 }) {
-  const session = await auth();
+  const session = await authSession();
+  if (session?.twoFactorRequired) redirect("/two-factor");
   if (!session?.user) redirect("/login");
 
   return (
