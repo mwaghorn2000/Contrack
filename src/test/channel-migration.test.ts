@@ -39,7 +39,16 @@ beforeAll(async () => {
     "pnpm",
     ["exec", "prisma", "db", "execute", "--url", url, "--stdin"],
     {
-      input: `${previous}\n${fixtures}\n${readFileSync(`prisma/migrations/${migration}/migration.sql`, "utf8")}`,
+      input: `${previous}\n${fixtures}\n${readdirSync("prisma/migrations", {
+        withFileTypes: true,
+      })
+        .filter((entry) => entry.isDirectory() && entry.name >= migration)
+        .map((entry) => entry.name)
+        .sort()
+        .map((name) =>
+          readFileSync(`prisma/migrations/${name}/migration.sql`, "utf8"),
+        )
+        .join("\n")}`,
       stdio: ["pipe", "pipe", "pipe"],
       timeout: 60_000,
     },
@@ -56,16 +65,19 @@ afterAll(async () => {
   }
 }, 60_000);
 
-it("backfills channel titles and timestamps without changing names or images", async () => {
+it("preserves channel names and images while adding timestamps and removing titles", async () => {
   expect(
     await db.channel.findUnique({ where: { id: "general" } }),
   ).toMatchObject({
-    title: "General",
     name: "General",
     image: "https://example.com/channel.png",
     createdAt: expect.any(Date) as Date,
     updatedAt: expect.any(Date) as Date,
   });
+  expect(
+    await db.$queryRaw`SELECT column_name FROM information_schema.columns
+      WHERE table_schema = 'public' AND table_name = 'Channel' AND column_name = 'title'`,
+  ).toEqual([]);
 });
 
 it("preserves message content, timestamps, and author relationships", async () => {
@@ -128,7 +140,7 @@ it("rejects duplicate channel membership", async () => {
 
 it("prevents a message from referencing an author in a different channel", async () => {
   const channel = await db.channel.create({
-    data: { name: "other", title: "Other", companyId: "company" },
+    data: { name: "Other", companyId: "company" },
   });
   const member = await db.channelMember.findUniqueOrThrow({
     where: { channelId_userId: { channelId: "general", userId: "active" } },
@@ -155,8 +167,7 @@ it("prevents deleting an author membership while its messages remain", async () 
 it("allows deleting a whole channel along with its memberships and messages", async () => {
   const channel = await db.channel.create({
     data: {
-      name: "temporary",
-      title: "Temporary",
+      name: "Temporary",
       companyId: "company",
       channelMembers: { create: { userId: "active", canSendMessages: true } },
     },

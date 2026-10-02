@@ -166,7 +166,6 @@ exports.Prisma.CompanyMemberScalarFieldEnum = {
 
 exports.Prisma.ChannelScalarFieldEnum = {
   id: 'id',
-  title: 'title',
   name: 'name',
   image: 'image',
   companyId: 'companyId',

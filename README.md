@@ -52,10 +52,11 @@ the signed-in user. No new migration is needed for these existing user fields.
 
 ## Company chat data model
 
-Migration `20261002010000_channel_membership_permissions` adds channel titles and
+Migration `20261002010000_channel_membership_permissions` adds channel
 timestamps, individual channel-member permissions, and message authors linked to
-`ChannelMember`. Channels retain their `name` and optional `image`; existing names
-also become their initial titles. Each member has a stable ID and a unique
+`ChannelMember`. Migration `20261002020000_channel_name_only` removes the redundant
+`title` field, preserving `name` as the single channel label and the optional
+`image`. Each member has a stable ID and a unique
 `channelId_userId` pair. Permissions default to false: `canSendMessages`,
 `canManageMembers`, `canManageChannel`, and `canModerateMessages`.
 

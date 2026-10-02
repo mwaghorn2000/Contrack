@@ -1244,7 +1244,6 @@ describe("company member management", () => {
     });
     const channel = await db.channel.create({
       data: {
-        title: "General",
         name: "General",
         companyId,
         channelMembers: { create: { id: "history-author", userId: memberId } },
@@ -1259,7 +1258,6 @@ describe("company member management", () => {
     });
     const otherChannel = await db.channel.create({
       data: {
-        title: "Other",
         name: "Other",
         companyId: other.id,
         channelMembers: { create: { userId: memberId } },

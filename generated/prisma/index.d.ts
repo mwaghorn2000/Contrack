@@ -7073,7 +7073,6 @@ export namespace Prisma {
 
   export type ChannelMinAggregateOutputType = {
     id: string | null
-    title: string | null
     name: string | null
     image: string | null
     companyId: string | null
@@ -7083,7 +7082,6 @@ export namespace Prisma {
 
   export type ChannelMaxAggregateOutputType = {
     id: string | null
-    title: string | null
     name: string | null
     image: string | null
     companyId: string | null
@@ -7093,7 +7091,6 @@ export namespace Prisma {
 
   export type ChannelCountAggregateOutputType = {
     id: number
-    title: number
     name: number
     image: number
     companyId: number
@@ -7105,7 +7102,6 @@ export namespace Prisma {
 
   export type ChannelMinAggregateInputType = {
     id?: true
-    title?: true
     name?: true
     image?: true
     companyId?: true
@@ -7115,7 +7111,6 @@ export namespace Prisma {
 
   export type ChannelMaxAggregateInputType = {
     id?: true
-    title?: true
     name?: true
     image?: true
     companyId?: true
@@ -7125,7 +7120,6 @@ export namespace Prisma {
 
   export type ChannelCountAggregateInputType = {
     id?: true
-    title?: true
     name?: true
     image?: true
     companyId?: true
@@ -7208,7 +7202,6 @@ export namespace Prisma {
 
   export type ChannelGroupByOutputType = {
     id: string
-    title: string
     name: string
     image: string | null
     companyId: string
@@ -7235,7 +7228,6 @@ export namespace Prisma {
 
   export type ChannelSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    title?: boolean
     name?: boolean
     image?: boolean
     companyId?: boolean
@@ -7249,7 +7241,6 @@ export namespace Prisma {
 
   export type ChannelSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    title?: boolean
     name?: boolean
     image?: boolean
     companyId?: boolean
@@ -7260,7 +7251,6 @@ export namespace Prisma {
 
   export type ChannelSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    title?: boolean
     name?: boolean
     image?: boolean
     companyId?: boolean
@@ -7271,7 +7261,6 @@ export namespace Prisma {
 
   export type ChannelSelectScalar = {
     id?: boolean
-    title?: boolean
     name?: boolean
     image?: boolean
     companyId?: boolean
@@ -7279,7 +7268,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ChannelOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "name" | "image" | "companyId" | "createdAt" | "updatedAt", ExtArgs["result"]["channel"]>
+  export type ChannelOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "image" | "companyId" | "createdAt" | "updatedAt", ExtArgs["result"]["channel"]>
   export type ChannelInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     messages?: boolean | Channel$messagesArgs<ExtArgs>
     channelMembers?: boolean | Channel$channelMembersArgs<ExtArgs>
@@ -7302,7 +7291,6 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      title: string
       name: string
       image: string | null
       companyId: string
@@ -7735,7 +7723,6 @@ export namespace Prisma {
    */
   interface ChannelFieldRefs {
     readonly id: FieldRef<"Channel", 'String'>
-    readonly title: FieldRef<"Channel", 'String'>
     readonly name: FieldRef<"Channel", 'String'>
     readonly image: FieldRef<"Channel", 'String'>
     readonly companyId: FieldRef<"Channel", 'String'>
@@ -20555,7 +20542,6 @@ export namespace Prisma {
 
   export const ChannelScalarFieldEnum: {
     id: 'id',
-    title: 'title',
     name: 'name',
     image: 'image',
     companyId: 'companyId',
@@ -21110,7 +21096,6 @@ export namespace Prisma {
     OR?: ChannelWhereInput[]
     NOT?: ChannelWhereInput | ChannelWhereInput[]
     id?: StringFilter<"Channel"> | string
-    title?: StringFilter<"Channel"> | string
     name?: StringFilter<"Channel"> | string
     image?: StringNullableFilter<"Channel"> | string | null
     companyId?: StringFilter<"Channel"> | string
@@ -21123,7 +21108,6 @@ export namespace Prisma {
 
   export type ChannelOrderByWithRelationInput = {
     id?: SortOrder
-    title?: SortOrder
     name?: SortOrder
     image?: SortOrderInput | SortOrder
     companyId?: SortOrder
@@ -21139,7 +21123,6 @@ export namespace Prisma {
     AND?: ChannelWhereInput | ChannelWhereInput[]
     OR?: ChannelWhereInput[]
     NOT?: ChannelWhereInput | ChannelWhereInput[]
-    title?: StringFilter<"Channel"> | string
     name?: StringFilter<"Channel"> | string
     image?: StringNullableFilter<"Channel"> | string | null
     companyId?: StringFilter<"Channel"> | string
@@ -21152,7 +21135,6 @@ export namespace Prisma {
 
   export type ChannelOrderByWithAggregationInput = {
     id?: SortOrder
-    title?: SortOrder
     name?: SortOrder
     image?: SortOrderInput | SortOrder
     companyId?: SortOrder
@@ -21168,7 +21150,6 @@ export namespace Prisma {
     OR?: ChannelScalarWhereWithAggregatesInput[]
     NOT?: ChannelScalarWhereWithAggregatesInput | ChannelScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Channel"> | string
-    title?: StringWithAggregatesFilter<"Channel"> | string
     name?: StringWithAggregatesFilter<"Channel"> | string
     image?: StringNullableWithAggregatesFilter<"Channel"> | string | null
     companyId?: StringWithAggregatesFilter<"Channel"> | string
@@ -22236,7 +22217,6 @@ export namespace Prisma {
 
   export type ChannelCreateInput = {
     id?: string
-    title: string
     name: string
     image?: string | null
     createdAt?: Date | string
@@ -22248,7 +22228,6 @@ export namespace Prisma {
 
   export type ChannelUncheckedCreateInput = {
     id?: string
-    title: string
     name: string
     image?: string | null
     companyId: string
@@ -22260,7 +22239,6 @@ export namespace Prisma {
 
   export type ChannelUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22272,7 +22250,6 @@ export namespace Prisma {
 
   export type ChannelUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
     companyId?: StringFieldUpdateOperationsInput | string
@@ -22284,7 +22261,6 @@ export namespace Prisma {
 
   export type ChannelCreateManyInput = {
     id?: string
-    title: string
     name: string
     image?: string | null
     companyId: string
@@ -22294,7 +22270,6 @@ export namespace Prisma {
 
   export type ChannelUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22303,7 +22278,6 @@ export namespace Prisma {
 
   export type ChannelUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
     companyId?: StringFieldUpdateOperationsInput | string
@@ -23440,7 +23414,6 @@ export namespace Prisma {
 
   export type ChannelCountOrderByAggregateInput = {
     id?: SortOrder
-    title?: SortOrder
     name?: SortOrder
     image?: SortOrder
     companyId?: SortOrder
@@ -23450,7 +23423,6 @@ export namespace Prisma {
 
   export type ChannelMaxOrderByAggregateInput = {
     id?: SortOrder
-    title?: SortOrder
     name?: SortOrder
     image?: SortOrder
     companyId?: SortOrder
@@ -23460,7 +23432,6 @@ export namespace Prisma {
 
   export type ChannelMinOrderByAggregateInput = {
     id?: SortOrder
-    title?: SortOrder
     name?: SortOrder
     image?: SortOrder
     companyId?: SortOrder
@@ -25557,7 +25528,6 @@ export namespace Prisma {
 
   export type ChannelCreateWithoutCompanyInput = {
     id?: string
-    title: string
     name: string
     image?: string | null
     createdAt?: Date | string
@@ -25568,7 +25538,6 @@ export namespace Prisma {
 
   export type ChannelUncheckedCreateWithoutCompanyInput = {
     id?: string
-    title: string
     name: string
     image?: string | null
     createdAt?: Date | string
@@ -25726,7 +25695,6 @@ export namespace Prisma {
     OR?: ChannelScalarWhereInput[]
     NOT?: ChannelScalarWhereInput | ChannelScalarWhereInput[]
     id?: StringFilter<"Channel"> | string
-    title?: StringFilter<"Channel"> | string
     name?: StringFilter<"Channel"> | string
     image?: StringNullableFilter<"Channel"> | string | null
     companyId?: StringFilter<"Channel"> | string
@@ -26216,7 +26184,6 @@ export namespace Prisma {
 
   export type ChannelCreateWithoutChannelMembersInput = {
     id?: string
-    title: string
     name: string
     image?: string | null
     createdAt?: Date | string
@@ -26227,7 +26194,6 @@ export namespace Prisma {
 
   export type ChannelUncheckedCreateWithoutChannelMembersInput = {
     id?: string
-    title: string
     name: string
     image?: string | null
     companyId: string
@@ -26328,7 +26294,6 @@ export namespace Prisma {
 
   export type ChannelUpdateWithoutChannelMembersInput = {
     id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26339,7 +26304,6 @@ export namespace Prisma {
 
   export type ChannelUncheckedUpdateWithoutChannelMembersInput = {
     id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
     companyId?: StringFieldUpdateOperationsInput | string
@@ -27244,7 +27208,6 @@ export namespace Prisma {
 
   export type ChannelCreateWithoutMessagesInput = {
     id?: string
-    title: string
     name: string
     image?: string | null
     createdAt?: Date | string
@@ -27255,7 +27218,6 @@ export namespace Prisma {
 
   export type ChannelUncheckedCreateWithoutMessagesInput = {
     id?: string
-    title: string
     name: string
     image?: string | null
     companyId: string
@@ -27311,7 +27273,6 @@ export namespace Prisma {
 
   export type ChannelUpdateWithoutMessagesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27322,7 +27283,6 @@ export namespace Prisma {
 
   export type ChannelUncheckedUpdateWithoutMessagesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
     companyId?: StringFieldUpdateOperationsInput | string
@@ -28134,7 +28094,6 @@ export namespace Prisma {
 
   export type ChannelCreateManyCompanyInput = {
     id?: string
-    title: string
     name: string
     image?: string | null
     createdAt?: Date | string
@@ -28191,7 +28150,6 @@ export namespace Prisma {
 
   export type ChannelUpdateWithoutCompanyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28202,7 +28160,6 @@ export namespace Prisma {
 
   export type ChannelUncheckedUpdateWithoutCompanyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28213,7 +28170,6 @@ export namespace Prisma {
 
   export type ChannelUncheckedUpdateManyWithoutCompanyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

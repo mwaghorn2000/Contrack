@@ -82,7 +82,6 @@ model CompanyMember {
 
 model Channel {
   id             String          @id @default(cuid())
-  title          String
   name           String
   image          String?
   messages       Message[]

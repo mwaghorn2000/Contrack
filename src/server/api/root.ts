@@ -5,6 +5,7 @@ import { jobRouter } from "./routers/job";
 import { invitationRouter } from "./routers/invitation";
 import { profileRouter } from "./routers/profile";
 import { securityRouter } from "./routers/security";
+import { channelRouter } from "./routers/channel";
 
 /**
  * This is the primary router for your server.
@@ -18,6 +19,7 @@ export const appRouter = createTRPCRouter({
   invitation: invitationRouter,
   profile: profileRouter,
   security: securityRouter,
+  channel: channelRouter,
 });
 
 // export type definition of API
