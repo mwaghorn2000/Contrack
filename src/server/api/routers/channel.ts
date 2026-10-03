@@ -108,4 +108,62 @@ export const channelRouter = createTRPCRouter({
 
       return channel;
     }),
+  listChannels: protectedProcedure
+    .input(z.object({ companyId: z.string().cuid() }))
+    .query(async ({ ctx, input }) => {
+      const company = await ctx.db.company.findUnique({
+        where: {
+          id: input.companyId,
+          members: {
+            some: {
+              userId: ctx.session.user.id,
+            },
+          },
+        },
+      });
+
+      if (!company) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You are not a member of this company.",
+        });
+      }
+
+      const channels = await ctx.db.channel.findMany({
+        where: {
+          companyId: input.companyId,
+          channelMembers: {
+            some: {
+              userId: ctx.session.user.id,
+            },
+          },
+          company: {
+            members: {
+              some: {
+                userId: ctx.session.user.id,
+              },
+            },
+          },
+        },
+        include: {
+          channelMembers: true,
+          messages: {
+            orderBy: [{ postedAt: "desc" }, { id: "desc" }],
+            take: 1,
+            select: {
+              postedAt: true,
+            },
+          },
+        },
+      });
+
+      return channels.sort((a, b) => {
+        const aLastMessage = a.messages[0]?.postedAt.getTime() ?? -Infinity;
+        const bLastMessage = b.messages[0]?.postedAt.getTime() ?? -Infinity;
+        if (aLastMessage === bLastMessage) {
+          return a.id.localeCompare(b.id);
+        }
+        return aLastMessage > bLastMessage ? -1 : 1;
+      });
+    }),
 });

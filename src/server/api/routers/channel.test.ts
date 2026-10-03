@@ -238,3 +238,134 @@ it("getChannel throws an error if the input is missing", async () => {
   // @ts-expect-error Testing missing input
   await expect(caller.getChannel()).rejects.toThrow();
 });
+
+/// Tests for the listChannels procedure
+
+it("listChannels returns all channels for the company that the user is a member of", async () => {
+  const channel1 = await caller.createChannel({
+    name: "List Channel 1",
+    companyId,
+  });
+  const channel2 = await caller.createChannel({
+    name: "List Channel 2",
+    companyId,
+  });
+  const result = await caller.listChannels({ companyId });
+  expect(result).toHaveLength(2);
+  const channelIds = result.map((channel) => channel.id);
+  expect(channelIds).toContain(channel1.id);
+  expect(channelIds).toContain(channel2.id);
+});
+
+it("listChannels returns an empty array if the user is not a member of any channels in the company", async () => {
+  const otherUser = await db.user.create({
+    data: { name: "Other User", email: "other@example.com" },
+  });
+  const otherCaller = channelRouter.createCaller({
+    db,
+    session: {
+      user: { id: otherUser.id, name: otherUser.name, email: otherUser.email },
+      expires: new Date(Date.now() + 3_600_000).toISOString(),
+    },
+    headers: new Headers(),
+  });
+  const result = await otherCaller.listChannels({ companyId });
+  expect(result).toHaveLength(0);
+});
+
+it("listChannels throws an error if the user is not a member of the company", async () => {
+  const nonMemberUser = await db.user.create({
+    data: { name: "Non Member", email: "nonmember@example.com" },
+  });
+  const nonMemberCaller = channelRouter.createCaller({
+    db,
+    session: {
+      user: {
+        id: nonMemberUser.id,
+        name: nonMemberUser.name,
+        email: nonMemberUser.email,
+      },
+      expires: new Date(Date.now() + 3_600_000).toISOString(),
+    },
+    headers: new Headers(),
+  });
+  await expect(nonMemberCaller.listChannels({ companyId })).rejects.toThrow();
+});
+
+it("listChannels throws an error if the input is invalid", async () => {
+  await expect(
+    caller.listChannels({ companyId: "" }), // Invalid companyId
+  ).rejects.toThrow();
+  await expect(
+    caller.listChannels({ companyId: "invalid-uuid" }), // Invalid UUID format
+  ).rejects.toThrow();
+});
+
+it("listChannels throws an error if the input is missing", async () => {
+  // @ts-expect-error Testing missing input
+  await expect(caller.listChannels()).rejects.toThrow();
+});
+
+it("listChannels returns an empty array if there are no channels in the company", async () => {
+  const result = await caller.listChannels({ companyId });
+  expect(result).toHaveLength(0);
+});
+
+it("listChannels returns only channels that the user is a member of", async () => {
+  const channel1 = await caller.createChannel({
+    name: "Member Channel",
+    companyId,
+  });
+  const otherUser = await db.user.create({
+    data: { name: "Other User", email: "other@example.com" },
+  });
+  const otherCaller = channelRouter.createCaller({
+    db,
+    session: {
+      user: { id: otherUser.id, name: otherUser.name, email: otherUser.email },
+      expires: new Date(Date.now() + 3_600_000).toISOString(),
+    },
+    headers: new Headers(),
+  });
+  const result = await otherCaller.listChannels({ companyId });
+  expect(result).toHaveLength(0);
+});
+
+it("listChannels returns channels in the correct order of posts", async () => {
+  const db = database!.db;
+
+  const member1 = await db.channelMember.findFirstOrThrow({
+    where: { channelId: channel1.id, userId },
+  });
+
+  const member2 = await db.channelMember.findFirstOrThrow({
+    where: { channelId: channel2.id, userId },
+  });
+
+  await db.message.createMany({
+    data: [
+      {
+        content: "Message in Channel 1",
+        channelId: channel1.id,
+        authorChannelMemberId: member1.id,
+        postedAt: new Date("2026-01-01T10:00:00Z"),
+      },
+      {
+        content: "Message in Channel 2",
+        channelId: channel2.id,
+        authorChannelMemberId: member2.id,
+        postedAt: new Date("2026-01-01T11:00:00Z"),
+      },
+      {
+        content: "Another Message in Channel 1",
+        channelId: channel1.id,
+        authorChannelMemberId: member1.id,
+        postedAt: new Date("2026-01-01T12:00:00Z"),
+      },
+    ],
+  });
+  const result = await caller.listChannels({ companyId });
+  // Assuming the channels are returned in order of last message timestamp
+  expect(result[0]?.id).toBe(channel1.id);
+  expect(result[1]?.id).toBe(channel2.id);
+});
