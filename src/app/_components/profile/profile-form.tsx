@@ -9,6 +9,7 @@ import {
   updateProfileSchema,
 } from "~/lib/profile-validation";
 import MemberAvatar from "../_dashboard-components/_home-components/member-avatar";
+import ImageUploadButton, { uploadImage } from "../uploads/image-upload-button";
 
 export default function ProfileForm({
   initialProfile,
@@ -29,12 +30,25 @@ export default function ProfileForm({
   const utils = api.useUtils();
   const router = useRouter();
   const save = api.profile.update.useMutation();
+  const createAvatarUpload = api.profile.createAvatarUpload.useMutation();
+  const setAvatar = api.profile.setAvatar.useMutation();
+  const removeAvatar = api.profile.removeAvatar.useMutation();
   const hasChanges =
     name !== (profile.name ?? "") ||
     description !== (profile.description ?? "");
   const descriptionLength = [...description].length;
   const inputClass =
     "mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus-visible:outline-2 focus-visible:outline-gray-900 disabled:bg-gray-50 disabled:text-gray-500";
+
+  function refreshProfile(updated: RouterOutputs["profile"]["get"]) {
+    setProfile(updated);
+    utils.profile.get.setData(undefined, updated);
+    // Refresh cached names and photos in member lists, posts, and acknowledgment lists.
+    void utils.company.getCompanyPosts.invalidate();
+    void utils.company.getPostAcknowledgments.invalidate();
+    void utils.invitation.members.invalidate();
+    router.refresh();
+  }
 
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -55,16 +69,10 @@ export default function ProfileForm({
     setFieldErrors({});
     try {
       const updated = await save.mutateAsync(parsed.data);
-      setProfile(updated);
       setName(updated.name ?? "");
       setDescription(updated.description ?? "");
       setMessage("Profile saved.");
-      utils.profile.get.setData(undefined, updated);
-      // Refresh cached names in member lists, posts, and acknowledgment lists.
-      void utils.company.getCompanyPosts.invalidate();
-      void utils.company.getPostAcknowledgments.invalidate();
-      void utils.invitation.members.invalidate();
-      router.refresh();
+      refreshProfile(updated);
     } catch (error) {
       setError(
         error instanceof Error
@@ -76,7 +84,7 @@ export default function ProfileForm({
 
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-6">
-      <div className="flex items-center gap-3 border-b border-gray-200 pb-5">
+      <div className="flex flex-wrap items-center gap-3 border-b border-gray-200 pb-5">
         <MemberAvatar
           name={profile.name ?? profile.email ?? "Account"}
           image={profile.image}
@@ -88,6 +96,24 @@ export default function ProfileForm({
           <p className="mt-1 text-sm break-all text-gray-500">
             {profile.email ?? "No email address"}
           </p>
+        </div>
+        <div className="ml-auto">
+          <ImageUploadButton
+            kind="avatar"
+            label={profile.image ? "Change photo" : "Upload photo"}
+            hasImage={Boolean(profile.image)}
+            onUpload={async (file) =>
+              refreshProfile(
+                await uploadImage(file, {
+                  create: (file) => createAvatarUpload.mutateAsync(file),
+                  confirm: (key) => setAvatar.mutateAsync({ key }),
+                }),
+              )
+            }
+            onRemove={async () =>
+              refreshProfile(await removeAvatar.mutateAsync())
+            }
+          />
         </div>
       </div>
       <form className="mt-6 space-y-5" noValidate onSubmit={handleSubmit}>

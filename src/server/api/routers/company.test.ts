@@ -10,10 +10,26 @@ import {
 import { startTestDatabase, clearTestDatabase } from "~/test/database";
 import { companyRouter } from "./company";
 import type { PrismaClient } from "../../../../generated/prisma";
+import { deleteObject, deletePrefix, getObjectInfo } from "~/server/storage";
 
 // Only prevent application services from loading. Queries use real PostgreSQL.
 vi.mock("~/server/auth", () => ({ auth: vi.fn() }));
 vi.mock("~/server/db", () => ({ db: {} }));
+vi.mock("~/server/storage", () => {
+  const base = "https://images.example.com/";
+  return {
+    storageConfigured: vi.fn(() => true),
+    publicUrl: (key: string) => `${base}${key}`,
+    keyFromPublicUrl: (url: string) =>
+      url.startsWith(base) ? url.slice(base.length) : null,
+    createUploadUrl: vi.fn((key: string) =>
+      Promise.resolve(`https://upload.example.com/${key}`),
+    ),
+    getObjectInfo: vi.fn(),
+    deleteObject: vi.fn(),
+    deletePrefix: vi.fn(),
+  };
+});
 
 let database: Awaited<ReturnType<typeof startTestDatabase>> | undefined;
 let db: PrismaClient;
@@ -28,6 +44,13 @@ beforeAll(async () => {
 }, 120_000);
 
 beforeEach(async () => {
+  vi.mocked(getObjectInfo).mockReset();
+  vi.mocked(getObjectInfo).mockResolvedValue({
+    size: 1024,
+    contentType: "image/png",
+  });
+  vi.mocked(deleteObject).mockReset();
+  vi.mocked(deletePrefix).mockReset();
   await clearTestDatabase(db);
   const user = await db.user.create({
     data: { name: "Test User", email: "owner@example.com" },
@@ -1638,5 +1661,188 @@ describe("recent post acknowledgments", () => {
     expect(
       await db.companyPostAcknowledgment.count({ where: { postId } }),
     ).toBe(6);
+  });
+});
+
+describe("company images", () => {
+  async function uploadedKey(kind: "logo" | "banner") {
+    const upload = await caller.createImageUpload({
+      companyId,
+      kind,
+      contentType: "image/png",
+      size: 1024,
+    });
+    return upload.key;
+  }
+
+  async function callerWithRole(role: "ADMIN" | "MEMBER" | "CONTRACTOR") {
+    const user = await db.user.create({
+      data: { name: role, email: `${role.toLowerCase()}@example.com` },
+    });
+    await db.companyMember.create({
+      data: { companyId, userId: user.id, role },
+    });
+    return companyRouter.createCaller({
+      db,
+      session: {
+        user: { id: user.id, name: user.name, email: user.email },
+        expires: new Date(Date.now() + 3_600_000).toISOString(),
+      },
+      headers: new Headers(),
+    });
+  }
+
+  it("createImageUpload returns a signed upload in the company's folder", async () => {
+    const key = await uploadedKey("banner");
+    expect(key).toMatch(
+      new RegExp(`^companies/${companyId}/banner/[0-9a-f-]{36}\\.png$`),
+    );
+  });
+
+  it("createImageUpload allows banners up to 10 MB but logos only up to 5 MB", async () => {
+    const size = 5 * 1024 * 1024 + 1;
+    await expect(
+      caller.createImageUpload({
+        companyId,
+        kind: "banner",
+        contentType: "image/jpeg",
+        size,
+      }),
+    ).resolves.toHaveProperty("key");
+    await expect(
+      caller.createImageUpload({
+        companyId,
+        kind: "logo",
+        contentType: "image/jpeg",
+        size,
+      }),
+    ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+  });
+
+  it("setImage saves a logo and a banner to their own columns", async () => {
+    const logo = await uploadedKey("logo");
+    const banner = await uploadedKey("banner");
+    await caller.setImage({ companyId, kind: "logo", key: logo });
+    await caller.setImage({ companyId, kind: "banner", key: banner });
+    expect(
+      await db.company.findUniqueOrThrow({ where: { id: companyId } }),
+    ).toMatchObject({
+      image: `https://images.example.com/${logo}`,
+      bannerImage: `https://images.example.com/${banner}`,
+    });
+  });
+
+  it("setImage deletes the replaced image", async () => {
+    const first = await uploadedKey("banner");
+    await caller.setImage({ companyId, kind: "banner", key: first });
+    const second = await uploadedKey("banner");
+    await caller.setImage({ companyId, kind: "banner", key: second });
+    expect(deleteObject).toHaveBeenCalledExactlyOnceWith(first);
+  });
+
+  it("setImage rejects a key from another company's folder", async () => {
+    const other = await db.company.create({
+      data: {
+        name: "Other",
+        members: { create: { userId, role: "OWNER" } },
+      },
+    });
+    const key = `companies/${other.id}/logo/00000000-0000-4000-8000-000000000000.png`;
+    await expect(
+      caller.setImage({ companyId, kind: "logo", key }),
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
+  });
+
+  it("setImage rejects a banner key used as the logo", async () => {
+    const key = await uploadedKey("banner");
+    await expect(
+      caller.setImage({ companyId, kind: "logo", key }),
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
+  });
+
+  it("admins can change company images", async () => {
+    const admin = await callerWithRole("ADMIN");
+    const upload = await admin.createImageUpload({
+      companyId,
+      kind: "logo",
+      contentType: "image/png",
+      size: 1024,
+    });
+    await expect(
+      admin.setImage({ companyId, kind: "logo", key: upload.key }),
+    ).resolves.toEqual({ url: `https://images.example.com/${upload.key}` });
+  });
+
+  it.each(["MEMBER", "CONTRACTOR"] as const)(
+    "%s cannot change company images",
+    async (role) => {
+      const member = await callerWithRole(role);
+      await expect(
+        member.createImageUpload({
+          companyId,
+          kind: "logo",
+          contentType: "image/png",
+          size: 1024,
+        }),
+      ).rejects.toMatchObject({ code: "NOT_FOUND" });
+      const key = await uploadedKey("logo");
+      await expect(
+        member.setImage({ companyId, kind: "logo", key }),
+      ).rejects.toMatchObject({ code: "NOT_FOUND" });
+      await expect(
+        member.removeImage({ companyId, kind: "logo" }),
+      ).rejects.toMatchObject({ code: "NOT_FOUND" });
+    },
+  );
+
+  it("non-members cannot request company image uploads", async () => {
+    const outsider = await db.company.create({ data: { name: "Outsider" } });
+    await expect(
+      caller.createImageUpload({
+        companyId: outsider.id,
+        kind: "logo",
+        contentType: "image/png",
+        size: 1024,
+      }),
+    ).rejects.toMatchObject({ code: "NOT_FOUND" });
+  });
+
+  it("removeImage clears only the requested image and deletes it", async () => {
+    const logo = await uploadedKey("logo");
+    const banner = await uploadedKey("banner");
+    await caller.setImage({ companyId, kind: "logo", key: logo });
+    await caller.setImage({ companyId, kind: "banner", key: banner });
+    await caller.removeImage({ companyId, kind: "banner" });
+    expect(
+      await db.company.findUniqueOrThrow({ where: { id: companyId } }),
+    ).toMatchObject({
+      image: `https://images.example.com/${logo}`,
+      bannerImage: null,
+    });
+    expect(deleteObject).toHaveBeenCalledExactlyOnceWith(banner);
+  });
+
+  it("removeImage does not delete an image URL from elsewhere", async () => {
+    await db.company.update({
+      where: { id: companyId },
+      data: { image: "https://example.com/logo.png" },
+    });
+    await caller.removeImage({ companyId, kind: "logo" });
+    expect(deleteObject).not.toHaveBeenCalled();
+  });
+
+  it("deleteCompany deletes the company's images", async () => {
+    await caller.deleteCompany({ companyId });
+    expect(deletePrefix).toHaveBeenCalledExactlyOnceWith(
+      `companies/${companyId}/`,
+    );
+  });
+
+  it("deleteCompany succeeds when deleting images fails", async () => {
+    vi.mocked(deletePrefix).mockRejectedValueOnce(new Error("offline"));
+    vi.spyOn(console, "error").mockImplementationOnce(() => undefined);
+    await expect(caller.deleteCompany({ companyId })).resolves.toEqual({
+      success: true,
+    });
   });
 });

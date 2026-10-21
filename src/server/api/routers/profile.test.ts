@@ -1,10 +1,30 @@
 import { afterAll, beforeAll, beforeEach, expect, it, vi } from "vitest";
 import type { PrismaClient } from "../../../../generated/prisma";
 import { clearTestDatabase, startTestDatabase } from "~/test/database";
+import {
+  deleteObject,
+  getObjectInfo,
+  storageConfigured,
+} from "~/server/storage";
 import { profileRouter } from "./profile";
 
 vi.mock("~/server/auth", () => ({ auth: vi.fn() }));
 vi.mock("~/server/db", () => ({ db: {} }));
+vi.mock("~/server/storage", () => {
+  const base = "https://images.example.com/";
+  return {
+    storageConfigured: vi.fn(() => true),
+    publicUrl: (key: string) => `${base}${key}`,
+    keyFromPublicUrl: (url: string) =>
+      url.startsWith(base) ? url.slice(base.length) : null,
+    createUploadUrl: vi.fn((key: string) =>
+      Promise.resolve(`https://upload.example.com/${key}`),
+    ),
+    getObjectInfo: vi.fn(),
+    deleteObject: vi.fn(),
+    deletePrefix: vi.fn(),
+  };
+});
 
 let database: Awaited<ReturnType<typeof startTestDatabase>> | undefined;
 let db: PrismaClient;
@@ -17,6 +37,13 @@ beforeAll(async () => {
 }, 120_000);
 
 beforeEach(async () => {
+  vi.mocked(storageConfigured).mockReturnValue(true);
+  vi.mocked(getObjectInfo).mockReset();
+  vi.mocked(getObjectInfo).mockResolvedValue({
+    size: 1024,
+    contentType: "image/png",
+  });
+  vi.mocked(deleteObject).mockReset();
   await clearTestDatabase(db);
   const user = await db.user.create({
     data: {
@@ -239,4 +266,152 @@ it("rejects a session after its user is deleted", async () => {
   await expect(
     caller.update({ name: "Name", description: null }),
   ).rejects.toMatchObject({ code: "UNAUTHORIZED" });
+});
+
+async function uploadedAvatarKey() {
+  const upload = await caller.createAvatarUpload({
+    contentType: "image/png",
+    size: 1024,
+  });
+  return upload.key;
+}
+
+it("createAvatarUpload returns a signed upload in the user's folder", async () => {
+  const upload = await caller.createAvatarUpload({
+    contentType: "image/webp",
+    size: 2048,
+  });
+  expect(upload.key).toMatch(
+    new RegExp(`^users/${userId}/avatar/[0-9a-f-]{36}\\.webp$`),
+  );
+  expect(upload.uploadUrl).toBe(`https://upload.example.com/${upload.key}`);
+  expect(upload.headers).toEqual({ "Content-Type": "image/webp" });
+});
+
+it("createAvatarUpload rejects unsupported image types", async () => {
+  await expect(
+    caller.createAvatarUpload({
+      contentType: "image/svg+xml" as "image/png",
+      size: 10,
+    }),
+  ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+});
+
+it("createAvatarUpload rejects images larger than 5 MB", async () => {
+  await expect(
+    caller.createAvatarUpload({
+      contentType: "image/png",
+      size: 5 * 1024 * 1024 + 1,
+    }),
+  ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+});
+
+it("createAvatarUpload explains when storage is not configured", async () => {
+  vi.mocked(storageConfigured).mockReturnValue(false);
+  await expect(
+    caller.createAvatarUpload({ contentType: "image/png", size: 10 }),
+  ).rejects.toMatchObject({ code: "PRECONDITION_FAILED" });
+});
+
+it("setAvatar saves the uploaded image and keeps an external previous image", async () => {
+  const key = await uploadedAvatarKey();
+  expect(await caller.setAvatar({ key })).toMatchObject({
+    image: `https://images.example.com/${key}`,
+  });
+  expect(
+    (await db.user.findUniqueOrThrow({ where: { id: userId } })).image,
+  ).toBe(`https://images.example.com/${key}`);
+  expect(deleteObject).not.toHaveBeenCalled();
+});
+
+it("setAvatar deletes the previous uploaded avatar", async () => {
+  const first = await uploadedAvatarKey();
+  await caller.setAvatar({ key: first });
+  const second = await uploadedAvatarKey();
+  await caller.setAvatar({ key: second });
+  expect(deleteObject).toHaveBeenCalledExactlyOnceWith(first);
+});
+
+it("setAvatar rejects another user's upload", async () => {
+  const other = await db.user.create({ data: { name: "Other person" } });
+  const key = `users/${other.id}/avatar/00000000-0000-4000-8000-000000000000.png`;
+  await expect(caller.setAvatar({ key })).rejects.toMatchObject({
+    code: "FORBIDDEN",
+  });
+  expect(
+    (await db.user.findUniqueOrThrow({ where: { id: userId } })).image,
+  ).toBe("https://example.com/avatar.png");
+});
+
+it("setAvatar rejects keys outside the upload format", async () => {
+  await expect(
+    caller.setAvatar({ key: `users/${userId}/avatar/../../secret.png` }),
+  ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+});
+
+it("setAvatar rejects an upload that was never completed", async () => {
+  vi.mocked(getObjectInfo).mockResolvedValue(null);
+  const key = await uploadedAvatarKey();
+  await expect(caller.setAvatar({ key })).rejects.toMatchObject({
+    code: "NOT_FOUND",
+  });
+});
+
+it("setAvatar deletes and rejects an oversized upload", async () => {
+  vi.mocked(getObjectInfo).mockResolvedValue({
+    size: 5 * 1024 * 1024 + 1,
+    contentType: "image/png",
+  });
+  const key = await uploadedAvatarKey();
+  await expect(caller.setAvatar({ key })).rejects.toMatchObject({
+    code: "BAD_REQUEST",
+  });
+  expect(deleteObject).toHaveBeenCalledExactlyOnceWith(key);
+  expect(
+    (await db.user.findUniqueOrThrow({ where: { id: userId } })).image,
+  ).toBe("https://example.com/avatar.png");
+});
+
+it("setAvatar deletes and rejects an upload with a different content type", async () => {
+  vi.mocked(getObjectInfo).mockResolvedValue({
+    size: 1024,
+    contentType: "text/html",
+  });
+  const key = await uploadedAvatarKey();
+  await expect(caller.setAvatar({ key })).rejects.toMatchObject({
+    code: "BAD_REQUEST",
+  });
+  expect(deleteObject).toHaveBeenCalledExactlyOnceWith(key);
+});
+
+it("setAvatar still saves when deleting the previous avatar fails", async () => {
+  const first = await uploadedAvatarKey();
+  await caller.setAvatar({ key: first });
+  vi.mocked(deleteObject).mockRejectedValueOnce(new Error("offline"));
+  vi.spyOn(console, "error").mockImplementationOnce(() => undefined);
+  const second = await uploadedAvatarKey();
+  expect((await caller.setAvatar({ key: second })).image).toBe(
+    `https://images.example.com/${second}`,
+  );
+});
+
+it("removeAvatar clears the photo and deletes an uploaded avatar", async () => {
+  const key = await uploadedAvatarKey();
+  await caller.setAvatar({ key });
+  expect((await caller.removeAvatar()).image).toBeNull();
+  expect(deleteObject).toHaveBeenCalledExactlyOnceWith(key);
+});
+
+it("avatar procedures require authentication", async () => {
+  const anonymous = profileRouter.createCaller({
+    db,
+    session: null,
+    headers: new Headers(),
+  });
+  await expect(
+    anonymous.createAvatarUpload({ contentType: "image/png", size: 10 }),
+  ).rejects.toMatchObject({ code: "UNAUTHORIZED" });
+  await expect(anonymous.removeAvatar()).rejects.toMatchObject({
+    code: "UNAUTHORIZED",
+  });
 });

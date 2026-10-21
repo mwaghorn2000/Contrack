@@ -21,12 +21,17 @@ export default async function HomePage({
     ]),
   );
   const role = company.members[0]?.role;
+  const canManage = role === "OWNER" || role === "ADMIN";
   return (
     <div className="mx-auto flex w-full max-w-[1000px] flex-col gap-6">
       <CompanyHeader
+        companyId={companyId}
+        canManage={canManage}
+        hasLogo={Boolean(company.image)}
+        hasBanner={Boolean(company.bannerImage)}
         name={company.name}
         image={company.image ?? "/placeholder-logo.png"}
-        bannerImage="/placeholder-banner.png"
+        bannerImage={company.bannerImage ?? "/placeholder-banner.png"}
         description={company.description ?? ""}
         website={company.website ?? ""}
         email={company.email ?? ""}
@@ -36,7 +41,7 @@ export default async function HomePage({
         key={companyId}
         companyId={companyId}
         initialPosts={posts}
-        canManage={role === "OWNER" || role === "ADMIN"}
+        canManage={canManage}
         viewer={company.members[0]?.user ?? { name: null, image: null }}
       />
     </div>

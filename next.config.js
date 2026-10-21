@@ -4,6 +4,10 @@
  */
 import "./src/env.js";
 
+const imageBucketUrl = process.env.S3_PUBLIC_URL
+  ? new URL(process.env.S3_PUBLIC_URL)
+  : null;
+
 /** @type {import("next").NextConfig} */
 const config = {
   images: {
@@ -26,6 +30,18 @@ const config = {
         port: "",
         pathname: "/embed/avatars/**",
       },
+      ...(imageBucketUrl
+        ? [
+            {
+              protocol: /** @type {"http" | "https"} */ (
+                imageBucketUrl.protocol.slice(0, -1)
+              ),
+              hostname: imageBucketUrl.hostname,
+              port: imageBucketUrl.port,
+              pathname: `${imageBucketUrl.pathname.replace(/\/$/, "")}/**`,
+            },
+          ]
+        : []),
     ],
   },
 };

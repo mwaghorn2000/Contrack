@@ -2,6 +2,20 @@
 
 This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
 
+## Image uploads
+
+Users can upload a profile photo from **My profile**. Owners and admins can upload
+a company logo when creating a company, and change the logo or banner from the
+company home page. Files go straight from the browser to an S3-compatible bucket
+through five-minute signed upload URLs; the server then checks the file type
+(JPEG, PNG, WebP, or GIF) and size (5 MB, or 10 MB for banners) before saving its
+URL. Replaced images are deleted, and deleting a company deletes its images.
+
+Set the `S3_*` variables in `.env.example` to enable uploads; without them the
+upload buttons report that uploads are not set up. The bucket must allow public
+reads from `S3_PUBLIC_URL` and a CORS rule allowing `PUT` with the `Content-Type`
+header from `APP_URL`. Add a lifecycle rule if you want to remove abandoned uploads.
+
 ## Company invitations
 
 Owners and admins can invite people from **People**, choosing Member or Contractor

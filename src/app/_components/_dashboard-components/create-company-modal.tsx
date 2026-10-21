@@ -4,16 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 import { api } from "~/trpc/react";
+import { imageFileError } from "~/lib/image-upload";
+import { uploadImage } from "~/app/_components/uploads/image-upload-button";
 
 const profileFields = [
-  {
-    key: "image",
-    label: "Photo URL",
-    type: "url",
-    placeholder: "https://example.com/logo.png",
-    autoComplete: "off",
-    maxLength: undefined,
-  },
   {
     key: "email",
     label: "Email",
@@ -50,14 +44,18 @@ export default function CreateCompanyModal({
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [logo, setLogo] = useState<File | null>(null);
+  const [logoError, setLogoError] = useState("");
+  const [uploadingLogo, setUploadingLogo] = useState(false);
   const [profile, setProfile] = useState({
-    image: "",
     email: "",
     website: "",
     phone: "",
   });
   const [validationError, setValidationError] = useState("");
   const utils = api.useUtils();
+  const createLogoUpload = api.company.createImageUpload.useMutation();
+  const setLogoImage = api.company.setImage.useMutation();
   const createCompany = api.company.createCompany.useMutation({
     onSuccess(company) {
       utils.company.listCompanies.setData(undefined, (companies) => [
@@ -71,9 +69,9 @@ export default function CreateCompanyModal({
         },
       ]);
       void utils.company.listCompanies.invalidate();
-      onCreated(company.id);
     },
   });
+  const pending = createCompany.isPending || uploadingLogo;
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -93,7 +91,7 @@ export default function CreateCompanyModal({
       aria-describedby="create-company-description"
       onCancel={(event) => {
         event.preventDefault();
-        if (!createCompany.isPending) onClose();
+        if (!pending) onClose();
       }}
       className="fixed inset-0 m-auto max-h-[90dvh] w-[calc(100%_-_2rem)] max-w-md overflow-y-auto rounded-xl border border-gray-200 bg-white p-6 text-gray-900 shadow-xl backdrop:bg-black/40"
     >
@@ -105,23 +103,53 @@ export default function CreateCompanyModal({
       </p>
       <form
         className="mt-6 space-y-4"
-        aria-busy={createCompany.isPending}
-        onSubmit={(event) => {
+        aria-busy={pending}
+        onSubmit={async (event) => {
           event.preventDefault();
-          if (createCompany.isPending) return;
+          if (pending) return;
           if (!name.trim()) {
             setValidationError("Enter a company name.");
             return;
           }
           setValidationError("");
-          createCompany.mutate({
-            name: name.trim(),
-            description: description.trim() || undefined,
-            image: profile.image.trim() || undefined,
-            email: profile.email.trim() || undefined,
-            website: profile.website.trim() || undefined,
-            phone: profile.phone.trim() || undefined,
-          });
+          let company;
+          try {
+            company = await createCompany.mutateAsync({
+              name: name.trim(),
+              description: description.trim() || undefined,
+              email: profile.email.trim() || undefined,
+              website: profile.website.trim() || undefined,
+              phone: profile.phone.trim() || undefined,
+            });
+          } catch {
+            return; // Shown from createCompany.error below.
+          }
+          if (logo) {
+            setUploadingLogo(true);
+            try {
+              await uploadImage(logo, {
+                create: (file) =>
+                  createLogoUpload.mutateAsync({
+                    companyId: company.id,
+                    kind: "logo",
+                    ...file,
+                  }),
+                confirm: (key) =>
+                  setLogoImage.mutateAsync({
+                    companyId: company.id,
+                    kind: "logo",
+                    key,
+                  }),
+              });
+              void utils.company.listCompanies.invalidate();
+            } catch (error) {
+              // The company exists, so continue; the logo can be added later.
+              console.error("Failed to upload company logo", error);
+            } finally {
+              setUploadingLogo(false);
+            }
+          }
+          onCreated(company.id);
         }}
       >
         <div>
@@ -140,7 +168,7 @@ export default function CreateCompanyModal({
               setName(event.target.value);
               setValidationError("");
             }}
-            disabled={createCompany.isPending}
+            disabled={pending}
             aria-invalid={Boolean(validationError)}
             aria-describedby={
               validationError ? "company-name-error" : undefined
@@ -172,9 +200,47 @@ export default function CreateCompanyModal({
             maxLength={300}
             value={description}
             onChange={(event) => setDescription(event.target.value)}
-            disabled={createCompany.isPending}
+            disabled={pending}
             className="mt-1 w-full resize-y rounded-md border border-gray-300 px-3 py-2 text-sm focus-visible:outline-2 focus-visible:outline-gray-900 disabled:bg-gray-50"
           />
+        </div>
+        <div>
+          <label htmlFor="company-logo" className="block text-sm font-medium">
+            Logo <span className="font-normal text-gray-500">(optional)</span>
+          </label>
+          <input
+            id="company-logo"
+            name="logo"
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            onChange={(event) => {
+              const file = event.target.files?.[0] ?? null;
+              const error = file ? imageFileError("logo", file) : null;
+              setLogoError(error ?? "");
+              setLogo(error ? null : file);
+              if (error) event.target.value = "";
+            }}
+            disabled={pending}
+            aria-invalid={Boolean(logoError)}
+            aria-describedby={
+              logoError
+                ? "company-logo-help company-logo-error"
+                : "company-logo-help"
+            }
+            className="mt-1 w-full text-sm text-gray-700 file:mr-3 file:rounded-md file:border file:border-gray-300 file:bg-white file:px-3 file:py-1.5 file:text-sm file:font-medium hover:file:bg-gray-50 disabled:opacity-50"
+          />
+          <p id="company-logo-help" className="mt-1 text-xs text-gray-500">
+            JPEG, PNG, WebP, or GIF up to 5 MB.
+          </p>
+          {logoError && (
+            <p
+              id="company-logo-error"
+              role="alert"
+              className="mt-1 text-sm text-red-600"
+            >
+              {logoError}
+            </p>
+          )}
         </div>
         {profileFields.map((field) => (
           <div key={field.key}>
@@ -199,17 +265,9 @@ export default function CreateCompanyModal({
                   [field.key]: event.target.value,
                 }))
               }
-              disabled={createCompany.isPending}
-              aria-describedby={
-                field.key === "image" ? "company-image-help" : undefined
-              }
+              disabled={pending}
               className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus-visible:outline-2 focus-visible:outline-gray-900 disabled:bg-gray-50"
             />
-            {field.key === "image" && (
-              <p id="company-image-help" className="mt-1 text-xs text-gray-500">
-                Paste a link to your company photo or logo.
-              </p>
-            )}
           </div>
         ))}
         {createCompany.isError && (
@@ -233,17 +291,21 @@ export default function CreateCompanyModal({
           <button
             type="button"
             onClick={onClose}
-            disabled={createCompany.isPending}
+            disabled={pending}
             className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50 disabled:opacity-50"
           >
             Cancel
           </button>
           <button
             type="submit"
-            disabled={createCompany.isPending}
+            disabled={pending}
             className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 disabled:opacity-50"
           >
-            {createCompany.isPending ? "Creating…" : "Create company"}
+            {uploadingLogo
+              ? "Uploading logo…"
+              : createCompany.isPending
+                ? "Creating…"
+                : "Create company"}
           </button>
         </div>
       </form>

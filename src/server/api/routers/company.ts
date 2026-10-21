@@ -3,6 +3,16 @@ import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import type { Prisma } from "../../../../generated/prisma";
 import { serializableTransaction } from "~/server/transactions";
+import { imageFileSchema } from "~/lib/image-upload";
+import {
+  companyFolder,
+  companyImageFolder,
+  confirmImageUpload,
+  createImageUpload,
+  deleteReplacedImage,
+  imageKeySchema,
+} from "~/server/image-uploads";
+import { deletePrefix, storageConfigured } from "~/server/storage";
 
 const memberIdentitySchema = z.object({
   companyId: z.string().cuid(),
@@ -41,6 +51,53 @@ async function requireManageableMember(
       message: "Only the owner can manage admins.",
     });
   return { actor, member };
+}
+
+const companyImageSchema = z.object({
+  companyId: z.string().cuid(),
+  kind: z.enum(["logo", "banner"]),
+});
+
+const companyImageColumns = { logo: "image", banner: "bannerImage" } as const;
+
+async function requireCompanyManager(
+  db: Prisma.TransactionClient,
+  companyId: string,
+  userId: string,
+) {
+  const company = await db.company.findFirst({
+    where: {
+      id: companyId,
+      members: { some: { userId, role: { in: ["OWNER", "ADMIN"] } } },
+    },
+    select: { image: true, bannerImage: true },
+  });
+  if (!company)
+    throw new TRPCError({
+      code: "NOT_FOUND",
+      message: "Company not found or you don't have permission to update it",
+    });
+  return company;
+}
+
+async function replaceCompanyImage(
+  db: Prisma.TransactionClient,
+  input: z.infer<typeof companyImageSchema>,
+  userId: string,
+  url: string | null,
+) {
+  const previous = await requireCompanyManager(db, input.companyId, userId);
+  const column = companyImageColumns[input.kind];
+  await db.company.update({
+    where: { id: input.companyId },
+    data: { [column]: url },
+  });
+  await deleteReplacedImage(
+    companyImageFolder(input.companyId, input.kind),
+    previous[column],
+    url,
+  );
+  return { url };
 }
 
 const postIdentitySchema = z.object({
@@ -310,6 +367,15 @@ export const companyRouter = createTRPCRouter({
         });
       }
 
+      if (storageConfigured()) {
+        try {
+          await deletePrefix(companyFolder(input.companyId));
+        } catch (error) {
+          // The company is already deleted; leftover images are harmless.
+          console.error("Failed to delete company images", error);
+        }
+      }
+
       return { success: true };
     }),
   updateCompany: protectedProcedure
@@ -344,6 +410,35 @@ export const companyRouter = createTRPCRouter({
       }
 
       return { success: true };
+    }),
+
+  createImageUpload: protectedProcedure
+    .input(companyImageSchema.merge(imageFileSchema))
+    .mutation(async ({ ctx, input }) => {
+      await requireCompanyManager(ctx.db, input.companyId, ctx.session.user.id);
+      return createImageUpload(
+        companyImageFolder(input.companyId, input.kind),
+        input.kind,
+        input,
+      );
+    }),
+
+  setImage: protectedProcedure
+    .input(companyImageSchema.extend({ key: imageKeySchema }))
+    .mutation(async ({ ctx, input }) => {
+      await requireCompanyManager(ctx.db, input.companyId, ctx.session.user.id);
+      const url = await confirmImageUpload(
+        companyImageFolder(input.companyId, input.kind),
+        input.kind,
+        input.key,
+      );
+      return replaceCompanyImage(ctx.db, input, ctx.session.user.id, url);
+    }),
+
+  removeImage: protectedProcedure
+    .input(companyImageSchema)
+    .mutation(async ({ ctx, input }) => {
+      return replaceCompanyImage(ctx.db, input, ctx.session.user.id, null);
     }),
 
   getCompanyPosts: protectedProcedure

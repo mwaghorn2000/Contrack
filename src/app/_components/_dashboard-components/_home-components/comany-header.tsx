@@ -1,6 +1,11 @@
 import Image from "next/image";
+import CompanyImageControls from "./company-image-controls";
 
 type CompanyHeaderProp = {
+  companyId: string;
+  canManage: boolean;
+  hasLogo: boolean;
+  hasBanner: boolean;
   name: string;
   image: string;
   bannerImage: string;
@@ -11,6 +16,10 @@ type CompanyHeaderProp = {
 };
 
 export default function CompanyHeader({
+  companyId,
+  canManage,
+  hasLogo,
+  hasBanner,
   name,
   image,
   bannerImage,
@@ -26,6 +35,13 @@ export default function CompanyHeader({
         style={{ backgroundImage: `url("${bannerImage}")` }}
       >
         <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent" />
+        {canManage && (
+          <CompanyImageControls
+            companyId={companyId}
+            hasLogo={hasLogo}
+            hasBanner={hasBanner}
+          />
+        )}
         <Image
           src={image}
           alt={`${name} logo`}
