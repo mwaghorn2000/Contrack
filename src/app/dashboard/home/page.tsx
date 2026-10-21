@@ -27,8 +27,6 @@ export default async function HomePage({
       <CompanyHeader
         companyId={companyId}
         canManage={canManage}
-        hasLogo={Boolean(company.image)}
-        hasBanner={Boolean(company.bannerImage)}
         name={company.name}
         image={company.image ?? "/placeholder-logo.png"}
         bannerImage={company.bannerImage ?? "/placeholder-banner.png"}

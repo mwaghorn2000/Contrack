@@ -1,11 +1,9 @@
 import Image from "next/image";
-import CompanyImageControls from "./company-image-controls";
+import CompanyImageEditButton from "./company-image-edit-button";
 
 type CompanyHeaderProp = {
   companyId: string;
   canManage: boolean;
-  hasLogo: boolean;
-  hasBanner: boolean;
   name: string;
   image: string;
   bannerImage: string;
@@ -18,8 +16,6 @@ type CompanyHeaderProp = {
 export default function CompanyHeader({
   companyId,
   canManage,
-  hasLogo,
-  hasBanner,
   name,
   image,
   bannerImage,
@@ -36,19 +32,28 @@ export default function CompanyHeader({
       >
         <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent" />
         {canManage && (
-          <CompanyImageControls
+          <CompanyImageEditButton
             companyId={companyId}
-            hasLogo={hasLogo}
-            hasBanner={hasBanner}
+            kind="banner"
+            className="absolute top-3 right-3 z-20 sm:top-4 sm:right-4"
           />
         )}
-        <Image
-          src={image}
-          alt={`${name} logo`}
-          width={128}
-          height={128}
-          className="absolute -bottom-10 left-4 z-10 h-20 w-20 rounded-2xl bg-white object-contain p-2 shadow-sm ring-4 ring-gray-50 sm:-bottom-16 sm:left-6 sm:h-32 sm:w-32 sm:p-3"
-        />
+        <div className="absolute -bottom-10 left-4 z-10 sm:-bottom-16 sm:left-6">
+          <Image
+            src={image}
+            alt={`${name} logo`}
+            width={128}
+            height={128}
+            className="h-20 w-20 rounded-2xl bg-white object-contain p-2 shadow-sm ring-4 ring-gray-50 sm:h-32 sm:w-32 sm:p-3"
+          />
+          {canManage && (
+            <CompanyImageEditButton
+              companyId={companyId}
+              kind="logo"
+              className="absolute right-1 bottom-1 sm:right-2 sm:bottom-2"
+            />
+          )}
+        </div>
       </div>
       <div className="flex w-full items-start justify-between gap-8 px-4 pt-14 pb-4 sm:px-6 sm:pt-20 sm:pb-6">
         <div className="min-w-0 flex-1">
