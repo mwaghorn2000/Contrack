@@ -10,6 +10,9 @@ generator client {
 datasource db {
   provider  = "postgresql"
   url = env("DATABASE_URL")
+  // Migrations need a direct (non-pooled) connection: the pooler can strand
+  // Prisma's migration advisory lock on a shared connection.
+  directUrl = env("DIRECT_URL")
 }
 
 enum CompanyRole {

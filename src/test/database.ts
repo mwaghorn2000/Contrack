@@ -12,7 +12,7 @@ export async function startTestDatabase() {
 
   try {
     execFileSync("pnpm", ["exec", "prisma", "migrate", "deploy"], {
-      env: { ...process.env, DATABASE_URL: url },
+      env: { ...process.env, DATABASE_URL: url, DIRECT_URL: url },
       stdio: "inherit",
       timeout: 60_000,
     });
