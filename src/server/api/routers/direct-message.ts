@@ -2,6 +2,7 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { Prisma } from "../../../../generated/prisma";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { unreadCounts } from "~/server/chat-unread";
 import { publishConversationsChanged } from "~/server/realtime";
 
 function directKey(companyId: string, userIds: [string, string]) {
@@ -42,6 +43,11 @@ export const directMessageRouter = createTRPCRouter({
           },
         },
       });
+      const unread = await unreadCounts(
+        ctx.db,
+        userId,
+        conversations.map(({ id }) => id),
+      );
       return conversations
         .flatMap((conversation) => {
           const user = conversation.channelMembers[0]?.user;
@@ -52,6 +58,7 @@ export const directMessageRouter = createTRPCRouter({
               user,
               lastMessageAt: conversation.messages[0]?.postedAt ?? null,
               createdAt: conversation.createdAt,
+              unreadCount: unread.get(conversation.id) ?? 0,
             },
           ];
         })

@@ -15,6 +15,7 @@ import {
   deleteReplacedKey,
   imageKeySchema,
 } from "~/server/image-uploads";
+import { unreadCounts } from "~/server/chat-unread";
 import { signedImageUrl } from "~/server/messages/types";
 import { publishConversationsChanged } from "~/server/realtime";
 import { deletePrefix, storageConfigured } from "~/server/storage";
@@ -228,6 +229,11 @@ export const channelRouter = createTRPCRouter({
         },
       });
 
+      const unread = await unreadCounts(
+        ctx.db,
+        userId,
+        channels.map(({ id }) => id),
+      );
       const summaries = await Promise.all(
         channels.map(async (channel) => {
           const member = channel.channelMembers[0];
@@ -249,6 +255,7 @@ export const channelRouter = createTRPCRouter({
             name: channel.name,
             imageUrl: await signedImageUrl(channel.image),
             lastMessageAt: channel.messages[0]?.postedAt ?? null,
+            unreadCount: unread.get(channel.id) ?? 0,
             permissions,
           };
         }),

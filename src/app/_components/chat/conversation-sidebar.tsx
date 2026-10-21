@@ -7,6 +7,7 @@ import MemberAvatar from "../_dashboard-components/_home-components/member-avata
 import ChannelIcon from "./channel-icon";
 import CreateChannelModal from "./create-channel-modal";
 import NewDirectMessageModal from "./new-direct-message-modal";
+import UnreadBadge from "./unread-badge";
 import { useRealtime } from "./realtime-provider";
 
 export type ChatMode = "channels" | "dms";
@@ -47,14 +48,17 @@ export default function ConversationSidebar({
   const href = (id: string) =>
     `/dashboard/${mode === "channels" ? "chat" : "dms"}/${id}?${new URLSearchParams({ companyId })}`;
   const canAdd = mode === "dms" || canCreateChannels;
+  // The open conversation is marked read, so it never shows a badge.
+  const showUnread = (conversation: { id: string; unreadCount: number }) =>
+    conversation.id !== activeId && conversation.unreadCount > 0;
 
   return (
     <nav
       aria-label={mode === "channels" ? "Channels" : "Direct messages"}
-      className="flex min-h-0 w-full flex-col border-gray-200 bg-gray-50 md:w-64 md:border-r"
+      className="flex min-h-0 w-full flex-col border-gray-200 bg-gray-50 md:w-64 md:shrink-0 md:border-r"
     >
       <div className="flex items-center justify-between gap-2 border-b border-gray-200 px-4 py-3">
-        <h2 className="text-sm font-semibold text-gray-900">
+        <h2 className="min-w-0 truncate text-sm font-semibold text-gray-900">
           {mode === "channels" ? "Channels" : "Direct messages"}
         </h2>
         {canAdd && (
@@ -63,7 +67,7 @@ export default function ConversationSidebar({
             onClick={() => setDialog(true)}
             aria-label={mode === "channels" ? "Create channel" : "New message"}
             title={mode === "channels" ? "Create channel" : "New message"}
-            className="flex size-7 items-center justify-center rounded-md text-gray-600 hover:bg-gray-200 hover:text-gray-900 focus-visible:outline-2 focus-visible:outline-gray-900"
+            className="flex size-7 shrink-0 items-center justify-center rounded-md text-gray-600 hover:bg-gray-200 hover:text-gray-900 focus-visible:outline-2 focus-visible:outline-gray-900"
           >
             <svg
               aria-hidden="true"
@@ -107,17 +111,29 @@ export default function ConversationSidebar({
                       imageUrl={channel.imageUrl}
                       size="sm"
                     />
-                    <span className="min-w-0 truncate">{channel.name}</span>
+                    <span
+                      className={`min-w-0 truncate ${showUnread(channel) ? "font-semibold text-gray-900" : ""}`}
+                    >
+                      {channel.name}
+                    </span>
+                    <UnreadBadge
+                      count={showUnread(channel) ? channel.unreadCount : 0}
+                      label="unread messages"
+                    />
                   </Link>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="px-2 py-1.5 text-sm text-gray-500">
-              {canCreateChannels
-                ? "No channels yet. Create one with +."
-                : "You haven’t been added to any channels yet."}
-            </p>
+            <EmptyList
+              text={
+                canCreateChannels
+                  ? "No channels yet."
+                  : "You haven’t been added to any channels yet."
+              }
+              action={canCreateChannels ? "Create a channel" : null}
+              onAction={() => setDialog(true)}
+            />
           )
         ) : directMessages.data?.length ? (
           <ul className="space-y-0.5">
@@ -134,17 +150,27 @@ export default function ConversationSidebar({
                     name={conversation.user.name ?? "Member"}
                     image={conversation.user.image}
                   />
-                  <span className="min-w-0 truncate">
+                  <span
+                    className={`min-w-0 truncate ${showUnread(conversation) ? "font-semibold text-gray-900" : ""}`}
+                  >
                     {conversation.user.name ?? "Unnamed member"}
                   </span>
+                  <UnreadBadge
+                    count={
+                      showUnread(conversation) ? conversation.unreadCount : 0
+                    }
+                    label="unread messages"
+                  />
                 </Link>
               </li>
             ))}
           </ul>
         ) : (
-          <p className="px-2 py-1.5 text-sm text-gray-500">
-            No conversations yet. Start one with +.
-          </p>
+          <EmptyList
+            text="No conversations yet."
+            action="Start a conversation"
+            onAction={() => setDialog(true)}
+          />
         )}
       </div>
       {dialog &&
@@ -162,5 +188,30 @@ export default function ConversationSidebar({
           />
         ))}
     </nav>
+  );
+}
+
+function EmptyList({
+  text,
+  action,
+  onAction,
+}: {
+  text: string;
+  action: string | null;
+  onAction: () => void;
+}) {
+  return (
+    <div className="space-y-2 px-2 py-1.5">
+      <p className="text-sm text-gray-500">{text}</p>
+      {action && (
+        <button
+          type="button"
+          onClick={onAction}
+          className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-gray-900"
+        >
+          {action}
+        </button>
+      )}
+    </div>
   );
 }

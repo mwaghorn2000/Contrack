@@ -11,11 +11,42 @@ import {
 import { env } from "~/env";
 import { api } from "~/trpc/react";
 
-const RealtimeContext = createContext<Pusher | null>(null);
+type Handler = (data: unknown) => void;
 
-/** The shared Pusher connection, or null when realtime is not configured. */
+type Realtime = {
+  /**
+   * Listens for an event on a channel. Several components can listen to the
+   * same channel; it is unsubscribed when the last one stops.
+   */
+  listen: (channelName: string, event: string, handler: Handler) => () => void;
+};
+
+const RealtimeContext = createContext<Realtime | null>(null);
+
+/** The shared realtime connection, or null when realtime is not configured. */
 export function useRealtime() {
   return useContext(RealtimeContext);
+}
+
+function createRealtime(pusher: Pusher): Realtime {
+  const listeners = new Map<string, number>();
+  return {
+    listen(channelName, event, handler) {
+      const channel = pusher.subscribe(channelName);
+      listeners.set(channelName, (listeners.get(channelName) ?? 0) + 1);
+      channel.bind(event, handler);
+      return () => {
+        channel.unbind(event, handler);
+        const remaining = (listeners.get(channelName) ?? 1) - 1;
+        if (remaining > 0) {
+          listeners.set(channelName, remaining);
+        } else {
+          listeners.delete(channelName);
+          pusher.unsubscribe(channelName);
+        }
+      };
+    },
+  };
 }
 
 export default function RealtimeProvider({
@@ -45,27 +76,28 @@ export default function RealtimeProvider({
       },
     });
   });
+  const [realtime] = useState(() => (pusher ? createRealtime(pusher) : null));
 
   useEffect(() => () => pusher?.disconnect(), [pusher]);
 
   // Channel or direct message lists changed, e.g. you were added to a channel.
-  useEffect(() => {
-    if (!pusher) return;
-    const channel = pusher.subscribe(`private-user-${userId}`);
-    const refresh = () => {
-      void utils.channel.listChannels.invalidate();
-      void utils.directMessage.list.invalidate();
-      void utils.channel.getChannel.invalidate();
-    };
-    channel.bind("conversations-changed", refresh);
-    return () => {
-      channel.unbind("conversations-changed", refresh);
-      pusher.unsubscribe(`private-user-${userId}`);
-    };
-  }, [pusher, userId, utils]);
+  useEffect(
+    () =>
+      realtime?.listen(
+        `private-user-${userId}`,
+        "conversations-changed",
+        () => {
+          void utils.channel.listChannels.invalidate();
+          void utils.directMessage.list.invalidate();
+          void utils.channel.getChannel.invalidate();
+          void utils.message.unreadSummary.invalidate();
+        },
+      ),
+    [realtime, userId, utils],
+  );
 
   return (
-    <RealtimeContext.Provider value={pusher}>
+    <RealtimeContext.Provider value={realtime}>
       {children}
     </RealtimeContext.Provider>
   );

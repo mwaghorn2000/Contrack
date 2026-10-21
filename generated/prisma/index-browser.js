@@ -198,6 +198,12 @@ exports.Prisma.UserScalarFieldEnum = {
   description: 'description'
 };
 
+exports.Prisma.ChannelReadScalarFieldEnum = {
+  channelId: 'channelId',
+  userId: 'userId',
+  lastReadAt: 'lastReadAt'
+};
+
 exports.Prisma.ImageUploadScalarFieldEnum = {
   id: 'id',
   key: 'key',
@@ -338,6 +344,7 @@ exports.Prisma.ModelName = {
   Channel: 'Channel',
   ChannelMember: 'ChannelMember',
   User: 'User',
+  ChannelRead: 'ChannelRead',
   ImageUpload: 'ImageUpload',
   CompanyInvitation: 'CompanyInvitation',
   EmailVerificationCode: 'EmailVerificationCode',

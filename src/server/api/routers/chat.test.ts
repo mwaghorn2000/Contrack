@@ -672,3 +672,106 @@ describe("realtime authorization", () => {
       ).rejects.toMatchObject({ code: "FORBIDDEN" });
   });
 });
+
+describe("unread messages", () => {
+  async function channelWithMember() {
+    const channel = await owner.channel.createChannel({
+      companyId,
+      name: "Updates",
+      memberIds: [ids.member],
+    });
+    return channel.id;
+  }
+
+  async function unreadFor(caller: typeof owner, channelId: string) {
+    const channels = await caller.channel.listChannels({ companyId });
+    return channels.find(({ id }) => id === channelId)?.unreadCount;
+  }
+
+  it("counts other people's messages but not your own", async () => {
+    const channelId = await channelWithMember();
+    await owner.message.send({ channelId, body: text("One") });
+    await owner.message.send({ channelId, body: text("Two") });
+    await member.message.send({ channelId, body: text("Reply") });
+    expect(await unreadFor(member, channelId)).toBe(2);
+    expect(await unreadFor(owner, channelId)).toBe(1);
+  });
+
+  it("markRead clears the count until someone posts again", async () => {
+    const channelId = await channelWithMember();
+    await owner.message.send({ channelId, body: text("One") });
+    await member.message.markRead({ channelId });
+    expect(await unreadFor(member, channelId)).toBe(0);
+    await owner.message.send({ channelId, body: text("Two") });
+    expect(await unreadFor(member, channelId)).toBe(1);
+  });
+
+  it("messages from before you joined are not unread", async () => {
+    const channel = await owner.channel.createChannel({
+      companyId,
+      name: "Old",
+    });
+    await owner.message.send({ channelId: channel.id, body: text("Before") });
+    await owner.channel.setMember({
+      channelId: channel.id,
+      userId: ids.member,
+      permissions: sendPermission,
+    });
+    expect(await unreadFor(member, channel.id)).toBe(0);
+  });
+
+  it("deleted messages are not counted", async () => {
+    const channelId = await channelWithMember();
+    const message = await owner.message.send({ channelId, body: text("Oops") });
+    await db.message.update({
+      where: { id: message.id },
+      data: { deletedAt: new Date() },
+    });
+    expect(await unreadFor(member, channelId)).toBe(0);
+  });
+
+  it("the summary totals channels and direct messages separately", async () => {
+    const channelId = await channelWithMember();
+    await owner.message.send({ channelId, body: text("Channel news") });
+    const { id: dmId } = await contractor.dm.open({
+      companyId,
+      userId: ids.member,
+    });
+    await contractor.message.send({ channelId: dmId, body: text("Hi") });
+    await contractor.message.send({
+      channelId: dmId,
+      body: text("Are you there?"),
+    });
+
+    const summary = await member.message.unreadSummary({ companyId });
+    expect(summary).toMatchObject({ channels: 1, directMessages: 2 });
+    expect(summary.conversationIds.sort()).toEqual([channelId, dmId].sort());
+    expect((await member.dm.list({ companyId }))[0]?.unreadCount).toBe(2);
+  });
+
+  it("the owner's summary includes every channel but not other people's DMs", async () => {
+    const channel = await admin.channel.createChannel({
+      companyId,
+      name: "Ops",
+    });
+    await admin.message.send({ channelId: channel.id, body: text("Status") });
+    const { id: dmId } = await member.dm.open({
+      companyId,
+      userId: ids.contractor,
+    });
+    await member.message.send({ channelId: dmId, body: text("Private") });
+
+    const summary = await owner.message.unreadSummary({ companyId });
+    expect(summary).toMatchObject({ channels: 1, directMessages: 0 });
+    expect(summary.conversationIds).toEqual([channel.id]);
+  });
+
+  it("markRead needs access to the conversation", async () => {
+    const channelId = await channelWithMember();
+    await expect(
+      contractor.message.markRead({ channelId }),
+    ).rejects.toMatchObject({
+      code: "NOT_FOUND",
+    });
+  });
+});

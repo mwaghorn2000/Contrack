@@ -49,6 +49,11 @@ export type ChannelMember = $Result.DefaultSelection<Prisma.$ChannelMemberPayloa
  */
 export type User = $Result.DefaultSelection<Prisma.$UserPayload>
 /**
+ * Model ChannelRead
+ * 
+ */
+export type ChannelRead = $Result.DefaultSelection<Prisma.$ChannelReadPayload>
+/**
  * Model ImageUpload
  * 
  */
@@ -329,6 +334,16 @@ export class PrismaClient<
     * ```
     */
   get user(): Prisma.UserDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.channelRead`: Exposes CRUD operations for the **ChannelRead** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ChannelReads
+    * const channelReads = await prisma.channelRead.findMany()
+    * ```
+    */
+  get channelRead(): Prisma.ChannelReadDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.imageUpload`: Exposes CRUD operations for the **ImageUpload** model.
@@ -877,6 +892,7 @@ export namespace Prisma {
     Channel: 'Channel',
     ChannelMember: 'ChannelMember',
     User: 'User',
+    ChannelRead: 'ChannelRead',
     ImageUpload: 'ImageUpload',
     CompanyInvitation: 'CompanyInvitation',
     EmailVerificationCode: 'EmailVerificationCode',
@@ -905,7 +921,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "account" | "session" | "company" | "companyMember" | "channel" | "channelMember" | "user" | "imageUpload" | "companyInvitation" | "emailVerificationCode" | "message" | "job" | "companyPost" | "companyPostAcknowledgment" | "verificationToken" | "twoFactor" | "twoFactorChallenge"
+      modelProps: "account" | "session" | "company" | "companyMember" | "channel" | "channelMember" | "user" | "channelRead" | "imageUpload" | "companyInvitation" | "emailVerificationCode" | "message" | "job" | "companyPost" | "companyPostAcknowledgment" | "verificationToken" | "twoFactor" | "twoFactorChallenge"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1424,6 +1440,80 @@ export namespace Prisma {
           count: {
             args: Prisma.UserCountArgs<ExtArgs>
             result: $Utils.Optional<UserCountAggregateOutputType> | number
+          }
+        }
+      }
+      ChannelRead: {
+        payload: Prisma.$ChannelReadPayload<ExtArgs>
+        fields: Prisma.ChannelReadFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ChannelReadFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelReadPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ChannelReadFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelReadPayload>
+          }
+          findFirst: {
+            args: Prisma.ChannelReadFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelReadPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ChannelReadFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelReadPayload>
+          }
+          findMany: {
+            args: Prisma.ChannelReadFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelReadPayload>[]
+          }
+          create: {
+            args: Prisma.ChannelReadCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelReadPayload>
+          }
+          createMany: {
+            args: Prisma.ChannelReadCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ChannelReadCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelReadPayload>[]
+          }
+          delete: {
+            args: Prisma.ChannelReadDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelReadPayload>
+          }
+          update: {
+            args: Prisma.ChannelReadUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelReadPayload>
+          }
+          deleteMany: {
+            args: Prisma.ChannelReadDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ChannelReadUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ChannelReadUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelReadPayload>[]
+          }
+          upsert: {
+            args: Prisma.ChannelReadUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelReadPayload>
+          }
+          aggregate: {
+            args: Prisma.ChannelReadAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateChannelRead>
+          }
+          groupBy: {
+            args: Prisma.ChannelReadGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ChannelReadGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ChannelReadCountArgs<ExtArgs>
+            result: $Utils.Optional<ChannelReadCountAggregateOutputType> | number
           }
         }
       }
@@ -2270,6 +2360,7 @@ export namespace Prisma {
     channel?: ChannelOmit
     channelMember?: ChannelMemberOmit
     user?: UserOmit
+    channelRead?: ChannelReadOmit
     imageUpload?: ImageUploadOmit
     companyInvitation?: CompanyInvitationOmit
     emailVerificationCode?: EmailVerificationCodeOmit
@@ -2429,11 +2520,13 @@ export namespace Prisma {
   export type ChannelCountOutputType = {
     messages: number
     channelMembers: number
+    reads: number
   }
 
   export type ChannelCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     messages?: boolean | ChannelCountOutputTypeCountMessagesArgs
     channelMembers?: boolean | ChannelCountOutputTypeCountChannelMembersArgs
+    reads?: boolean | ChannelCountOutputTypeCountReadsArgs
   }
 
   // Custom InputTypes
@@ -2459,6 +2552,13 @@ export namespace Prisma {
    */
   export type ChannelCountOutputTypeCountChannelMembersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ChannelMemberWhereInput
+  }
+
+  /**
+   * ChannelCountOutputType without action
+   */
+  export type ChannelCountOutputTypeCountReadsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChannelReadWhereInput
   }
 
 
@@ -2508,6 +2608,7 @@ export namespace Prisma {
     postAcknowledgments: number
     sentInvitations: number
     imageUploads: number
+    channelReads: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2521,6 +2622,7 @@ export namespace Prisma {
     postAcknowledgments?: boolean | UserCountOutputTypeCountPostAcknowledgmentsArgs
     sentInvitations?: boolean | UserCountOutputTypeCountSentInvitationsArgs
     imageUploads?: boolean | UserCountOutputTypeCountImageUploadsArgs
+    channelReads?: boolean | UserCountOutputTypeCountChannelReadsArgs
   }
 
   // Custom InputTypes
@@ -2602,6 +2704,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountImageUploadsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ImageUploadWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountChannelReadsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChannelReadWhereInput
   }
 
 
@@ -7375,6 +7484,7 @@ export namespace Prisma {
     updatedAt?: boolean
     messages?: boolean | Channel$messagesArgs<ExtArgs>
     channelMembers?: boolean | Channel$channelMembersArgs<ExtArgs>
+    reads?: boolean | Channel$readsArgs<ExtArgs>
     company?: boolean | CompanyDefaultArgs<ExtArgs>
     _count?: boolean | ChannelCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["channel"]>
@@ -7418,6 +7528,7 @@ export namespace Prisma {
   export type ChannelInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     messages?: boolean | Channel$messagesArgs<ExtArgs>
     channelMembers?: boolean | Channel$channelMembersArgs<ExtArgs>
+    reads?: boolean | Channel$readsArgs<ExtArgs>
     company?: boolean | CompanyDefaultArgs<ExtArgs>
     _count?: boolean | ChannelCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -7433,6 +7544,7 @@ export namespace Prisma {
     objects: {
       messages: Prisma.$MessagePayload<ExtArgs>[]
       channelMembers: Prisma.$ChannelMemberPayload<ExtArgs>[]
+      reads: Prisma.$ChannelReadPayload<ExtArgs>[]
       company: Prisma.$CompanyPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -7840,6 +7952,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     messages<T extends Channel$messagesArgs<ExtArgs> = {}>(args?: Subset<T, Channel$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     channelMembers<T extends Channel$channelMembersArgs<ExtArgs> = {}>(args?: Subset<T, Channel$channelMembersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    reads<T extends Channel$readsArgs<ExtArgs> = {}>(args?: Subset<T, Channel$readsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelReadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -8319,6 +8432,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ChannelMemberScalarFieldEnum | ChannelMemberScalarFieldEnum[]
+  }
+
+  /**
+   * Channel.reads
+   */
+  export type Channel$readsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelRead
+     */
+    select?: ChannelReadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelRead
+     */
+    omit?: ChannelReadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelReadInclude<ExtArgs> | null
+    where?: ChannelReadWhereInput
+    orderBy?: ChannelReadOrderByWithRelationInput | ChannelReadOrderByWithRelationInput[]
+    cursor?: ChannelReadWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ChannelReadScalarFieldEnum | ChannelReadScalarFieldEnum[]
   }
 
   /**
@@ -9722,6 +9859,7 @@ export namespace Prisma {
     postAcknowledgments?: boolean | User$postAcknowledgmentsArgs<ExtArgs>
     sentInvitations?: boolean | User$sentInvitationsArgs<ExtArgs>
     imageUploads?: boolean | User$imageUploadsArgs<ExtArgs>
+    channelReads?: boolean | User$channelReadsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -9772,6 +9910,7 @@ export namespace Prisma {
     postAcknowledgments?: boolean | User$postAcknowledgmentsArgs<ExtArgs>
     sentInvitations?: boolean | User$sentInvitationsArgs<ExtArgs>
     imageUploads?: boolean | User$imageUploadsArgs<ExtArgs>
+    channelReads?: boolean | User$channelReadsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -9792,6 +9931,7 @@ export namespace Prisma {
       postAcknowledgments: Prisma.$CompanyPostAcknowledgmentPayload<ExtArgs>[]
       sentInvitations: Prisma.$CompanyInvitationPayload<ExtArgs>[]
       imageUploads: Prisma.$ImageUploadPayload<ExtArgs>[]
+      channelReads: Prisma.$ChannelReadPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -10208,6 +10348,7 @@ export namespace Prisma {
     postAcknowledgments<T extends User$postAcknowledgmentsArgs<ExtArgs> = {}>(args?: Subset<T, User$postAcknowledgmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyPostAcknowledgmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     sentInvitations<T extends User$sentInvitationsArgs<ExtArgs> = {}>(args?: Subset<T, User$sentInvitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyInvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     imageUploads<T extends User$imageUploadsArgs<ExtArgs> = {}>(args?: Subset<T, User$imageUploadsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImageUploadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    channelReads<T extends User$channelReadsArgs<ExtArgs> = {}>(args?: Subset<T, User$channelReadsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelReadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10911,6 +11052,30 @@ export namespace Prisma {
   }
 
   /**
+   * User.channelReads
+   */
+  export type User$channelReadsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelRead
+     */
+    select?: ChannelReadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelRead
+     */
+    omit?: ChannelReadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelReadInclude<ExtArgs> | null
+    where?: ChannelReadWhereInput
+    orderBy?: ChannelReadOrderByWithRelationInput | ChannelReadOrderByWithRelationInput[]
+    cursor?: ChannelReadWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ChannelReadScalarFieldEnum | ChannelReadScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10926,6 +11091,1046 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: UserInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ChannelRead
+   */
+
+  export type AggregateChannelRead = {
+    _count: ChannelReadCountAggregateOutputType | null
+    _min: ChannelReadMinAggregateOutputType | null
+    _max: ChannelReadMaxAggregateOutputType | null
+  }
+
+  export type ChannelReadMinAggregateOutputType = {
+    channelId: string | null
+    userId: string | null
+    lastReadAt: Date | null
+  }
+
+  export type ChannelReadMaxAggregateOutputType = {
+    channelId: string | null
+    userId: string | null
+    lastReadAt: Date | null
+  }
+
+  export type ChannelReadCountAggregateOutputType = {
+    channelId: number
+    userId: number
+    lastReadAt: number
+    _all: number
+  }
+
+
+  export type ChannelReadMinAggregateInputType = {
+    channelId?: true
+    userId?: true
+    lastReadAt?: true
+  }
+
+  export type ChannelReadMaxAggregateInputType = {
+    channelId?: true
+    userId?: true
+    lastReadAt?: true
+  }
+
+  export type ChannelReadCountAggregateInputType = {
+    channelId?: true
+    userId?: true
+    lastReadAt?: true
+    _all?: true
+  }
+
+  export type ChannelReadAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ChannelRead to aggregate.
+     */
+    where?: ChannelReadWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ChannelReads to fetch.
+     */
+    orderBy?: ChannelReadOrderByWithRelationInput | ChannelReadOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ChannelReadWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ChannelReads from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ChannelReads.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ChannelReads
+    **/
+    _count?: true | ChannelReadCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ChannelReadMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ChannelReadMaxAggregateInputType
+  }
+
+  export type GetChannelReadAggregateType<T extends ChannelReadAggregateArgs> = {
+        [P in keyof T & keyof AggregateChannelRead]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateChannelRead[P]>
+      : GetScalarType<T[P], AggregateChannelRead[P]>
+  }
+
+
+
+
+  export type ChannelReadGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChannelReadWhereInput
+    orderBy?: ChannelReadOrderByWithAggregationInput | ChannelReadOrderByWithAggregationInput[]
+    by: ChannelReadScalarFieldEnum[] | ChannelReadScalarFieldEnum
+    having?: ChannelReadScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ChannelReadCountAggregateInputType | true
+    _min?: ChannelReadMinAggregateInputType
+    _max?: ChannelReadMaxAggregateInputType
+  }
+
+  export type ChannelReadGroupByOutputType = {
+    channelId: string
+    userId: string
+    lastReadAt: Date
+    _count: ChannelReadCountAggregateOutputType | null
+    _min: ChannelReadMinAggregateOutputType | null
+    _max: ChannelReadMaxAggregateOutputType | null
+  }
+
+  type GetChannelReadGroupByPayload<T extends ChannelReadGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ChannelReadGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ChannelReadGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ChannelReadGroupByOutputType[P]>
+            : GetScalarType<T[P], ChannelReadGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ChannelReadSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    channelId?: boolean
+    userId?: boolean
+    lastReadAt?: boolean
+    channel?: boolean | ChannelDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["channelRead"]>
+
+  export type ChannelReadSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    channelId?: boolean
+    userId?: boolean
+    lastReadAt?: boolean
+    channel?: boolean | ChannelDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["channelRead"]>
+
+  export type ChannelReadSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    channelId?: boolean
+    userId?: boolean
+    lastReadAt?: boolean
+    channel?: boolean | ChannelDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["channelRead"]>
+
+  export type ChannelReadSelectScalar = {
+    channelId?: boolean
+    userId?: boolean
+    lastReadAt?: boolean
+  }
+
+  export type ChannelReadOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"channelId" | "userId" | "lastReadAt", ExtArgs["result"]["channelRead"]>
+  export type ChannelReadInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    channel?: boolean | ChannelDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ChannelReadIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    channel?: boolean | ChannelDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ChannelReadIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    channel?: boolean | ChannelDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $ChannelReadPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ChannelRead"
+    objects: {
+      channel: Prisma.$ChannelPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      channelId: string
+      userId: string
+      lastReadAt: Date
+    }, ExtArgs["result"]["channelRead"]>
+    composites: {}
+  }
+
+  type ChannelReadGetPayload<S extends boolean | null | undefined | ChannelReadDefaultArgs> = $Result.GetResult<Prisma.$ChannelReadPayload, S>
+
+  type ChannelReadCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ChannelReadFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ChannelReadCountAggregateInputType | true
+    }
+
+  export interface ChannelReadDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ChannelRead'], meta: { name: 'ChannelRead' } }
+    /**
+     * Find zero or one ChannelRead that matches the filter.
+     * @param {ChannelReadFindUniqueArgs} args - Arguments to find a ChannelRead
+     * @example
+     * // Get one ChannelRead
+     * const channelRead = await prisma.channelRead.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ChannelReadFindUniqueArgs>(args: SelectSubset<T, ChannelReadFindUniqueArgs<ExtArgs>>): Prisma__ChannelReadClient<$Result.GetResult<Prisma.$ChannelReadPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ChannelRead that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ChannelReadFindUniqueOrThrowArgs} args - Arguments to find a ChannelRead
+     * @example
+     * // Get one ChannelRead
+     * const channelRead = await prisma.channelRead.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ChannelReadFindUniqueOrThrowArgs>(args: SelectSubset<T, ChannelReadFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ChannelReadClient<$Result.GetResult<Prisma.$ChannelReadPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ChannelRead that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelReadFindFirstArgs} args - Arguments to find a ChannelRead
+     * @example
+     * // Get one ChannelRead
+     * const channelRead = await prisma.channelRead.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ChannelReadFindFirstArgs>(args?: SelectSubset<T, ChannelReadFindFirstArgs<ExtArgs>>): Prisma__ChannelReadClient<$Result.GetResult<Prisma.$ChannelReadPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ChannelRead that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelReadFindFirstOrThrowArgs} args - Arguments to find a ChannelRead
+     * @example
+     * // Get one ChannelRead
+     * const channelRead = await prisma.channelRead.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ChannelReadFindFirstOrThrowArgs>(args?: SelectSubset<T, ChannelReadFindFirstOrThrowArgs<ExtArgs>>): Prisma__ChannelReadClient<$Result.GetResult<Prisma.$ChannelReadPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ChannelReads that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelReadFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ChannelReads
+     * const channelReads = await prisma.channelRead.findMany()
+     * 
+     * // Get first 10 ChannelReads
+     * const channelReads = await prisma.channelRead.findMany({ take: 10 })
+     * 
+     * // Only select the `channelId`
+     * const channelReadWithChannelIdOnly = await prisma.channelRead.findMany({ select: { channelId: true } })
+     * 
+     */
+    findMany<T extends ChannelReadFindManyArgs>(args?: SelectSubset<T, ChannelReadFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelReadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ChannelRead.
+     * @param {ChannelReadCreateArgs} args - Arguments to create a ChannelRead.
+     * @example
+     * // Create one ChannelRead
+     * const ChannelRead = await prisma.channelRead.create({
+     *   data: {
+     *     // ... data to create a ChannelRead
+     *   }
+     * })
+     * 
+     */
+    create<T extends ChannelReadCreateArgs>(args: SelectSubset<T, ChannelReadCreateArgs<ExtArgs>>): Prisma__ChannelReadClient<$Result.GetResult<Prisma.$ChannelReadPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ChannelReads.
+     * @param {ChannelReadCreateManyArgs} args - Arguments to create many ChannelReads.
+     * @example
+     * // Create many ChannelReads
+     * const channelRead = await prisma.channelRead.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ChannelReadCreateManyArgs>(args?: SelectSubset<T, ChannelReadCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ChannelReads and returns the data saved in the database.
+     * @param {ChannelReadCreateManyAndReturnArgs} args - Arguments to create many ChannelReads.
+     * @example
+     * // Create many ChannelReads
+     * const channelRead = await prisma.channelRead.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ChannelReads and only return the `channelId`
+     * const channelReadWithChannelIdOnly = await prisma.channelRead.createManyAndReturn({
+     *   select: { channelId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ChannelReadCreateManyAndReturnArgs>(args?: SelectSubset<T, ChannelReadCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelReadPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ChannelRead.
+     * @param {ChannelReadDeleteArgs} args - Arguments to delete one ChannelRead.
+     * @example
+     * // Delete one ChannelRead
+     * const ChannelRead = await prisma.channelRead.delete({
+     *   where: {
+     *     // ... filter to delete one ChannelRead
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ChannelReadDeleteArgs>(args: SelectSubset<T, ChannelReadDeleteArgs<ExtArgs>>): Prisma__ChannelReadClient<$Result.GetResult<Prisma.$ChannelReadPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ChannelRead.
+     * @param {ChannelReadUpdateArgs} args - Arguments to update one ChannelRead.
+     * @example
+     * // Update one ChannelRead
+     * const channelRead = await prisma.channelRead.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ChannelReadUpdateArgs>(args: SelectSubset<T, ChannelReadUpdateArgs<ExtArgs>>): Prisma__ChannelReadClient<$Result.GetResult<Prisma.$ChannelReadPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ChannelReads.
+     * @param {ChannelReadDeleteManyArgs} args - Arguments to filter ChannelReads to delete.
+     * @example
+     * // Delete a few ChannelReads
+     * const { count } = await prisma.channelRead.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ChannelReadDeleteManyArgs>(args?: SelectSubset<T, ChannelReadDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ChannelReads.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelReadUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ChannelReads
+     * const channelRead = await prisma.channelRead.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ChannelReadUpdateManyArgs>(args: SelectSubset<T, ChannelReadUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ChannelReads and returns the data updated in the database.
+     * @param {ChannelReadUpdateManyAndReturnArgs} args - Arguments to update many ChannelReads.
+     * @example
+     * // Update many ChannelReads
+     * const channelRead = await prisma.channelRead.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ChannelReads and only return the `channelId`
+     * const channelReadWithChannelIdOnly = await prisma.channelRead.updateManyAndReturn({
+     *   select: { channelId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ChannelReadUpdateManyAndReturnArgs>(args: SelectSubset<T, ChannelReadUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelReadPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ChannelRead.
+     * @param {ChannelReadUpsertArgs} args - Arguments to update or create a ChannelRead.
+     * @example
+     * // Update or create a ChannelRead
+     * const channelRead = await prisma.channelRead.upsert({
+     *   create: {
+     *     // ... data to create a ChannelRead
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ChannelRead we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ChannelReadUpsertArgs>(args: SelectSubset<T, ChannelReadUpsertArgs<ExtArgs>>): Prisma__ChannelReadClient<$Result.GetResult<Prisma.$ChannelReadPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ChannelReads.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelReadCountArgs} args - Arguments to filter ChannelReads to count.
+     * @example
+     * // Count the number of ChannelReads
+     * const count = await prisma.channelRead.count({
+     *   where: {
+     *     // ... the filter for the ChannelReads we want to count
+     *   }
+     * })
+    **/
+    count<T extends ChannelReadCountArgs>(
+      args?: Subset<T, ChannelReadCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ChannelReadCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ChannelRead.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelReadAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ChannelReadAggregateArgs>(args: Subset<T, ChannelReadAggregateArgs>): Prisma.PrismaPromise<GetChannelReadAggregateType<T>>
+
+    /**
+     * Group by ChannelRead.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelReadGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ChannelReadGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ChannelReadGroupByArgs['orderBy'] }
+        : { orderBy?: ChannelReadGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ChannelReadGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetChannelReadGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ChannelRead model
+   */
+  readonly fields: ChannelReadFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ChannelRead.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ChannelReadClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    channel<T extends ChannelDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ChannelDefaultArgs<ExtArgs>>): Prisma__ChannelClient<$Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ChannelRead model
+   */
+  interface ChannelReadFieldRefs {
+    readonly channelId: FieldRef<"ChannelRead", 'String'>
+    readonly userId: FieldRef<"ChannelRead", 'String'>
+    readonly lastReadAt: FieldRef<"ChannelRead", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ChannelRead findUnique
+   */
+  export type ChannelReadFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelRead
+     */
+    select?: ChannelReadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelRead
+     */
+    omit?: ChannelReadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelReadInclude<ExtArgs> | null
+    /**
+     * Filter, which ChannelRead to fetch.
+     */
+    where: ChannelReadWhereUniqueInput
+  }
+
+  /**
+   * ChannelRead findUniqueOrThrow
+   */
+  export type ChannelReadFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelRead
+     */
+    select?: ChannelReadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelRead
+     */
+    omit?: ChannelReadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelReadInclude<ExtArgs> | null
+    /**
+     * Filter, which ChannelRead to fetch.
+     */
+    where: ChannelReadWhereUniqueInput
+  }
+
+  /**
+   * ChannelRead findFirst
+   */
+  export type ChannelReadFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelRead
+     */
+    select?: ChannelReadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelRead
+     */
+    omit?: ChannelReadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelReadInclude<ExtArgs> | null
+    /**
+     * Filter, which ChannelRead to fetch.
+     */
+    where?: ChannelReadWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ChannelReads to fetch.
+     */
+    orderBy?: ChannelReadOrderByWithRelationInput | ChannelReadOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ChannelReads.
+     */
+    cursor?: ChannelReadWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ChannelReads from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ChannelReads.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ChannelReads.
+     */
+    distinct?: ChannelReadScalarFieldEnum | ChannelReadScalarFieldEnum[]
+  }
+
+  /**
+   * ChannelRead findFirstOrThrow
+   */
+  export type ChannelReadFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelRead
+     */
+    select?: ChannelReadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelRead
+     */
+    omit?: ChannelReadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelReadInclude<ExtArgs> | null
+    /**
+     * Filter, which ChannelRead to fetch.
+     */
+    where?: ChannelReadWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ChannelReads to fetch.
+     */
+    orderBy?: ChannelReadOrderByWithRelationInput | ChannelReadOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ChannelReads.
+     */
+    cursor?: ChannelReadWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ChannelReads from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ChannelReads.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ChannelReads.
+     */
+    distinct?: ChannelReadScalarFieldEnum | ChannelReadScalarFieldEnum[]
+  }
+
+  /**
+   * ChannelRead findMany
+   */
+  export type ChannelReadFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelRead
+     */
+    select?: ChannelReadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelRead
+     */
+    omit?: ChannelReadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelReadInclude<ExtArgs> | null
+    /**
+     * Filter, which ChannelReads to fetch.
+     */
+    where?: ChannelReadWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ChannelReads to fetch.
+     */
+    orderBy?: ChannelReadOrderByWithRelationInput | ChannelReadOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ChannelReads.
+     */
+    cursor?: ChannelReadWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ChannelReads from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ChannelReads.
+     */
+    skip?: number
+    distinct?: ChannelReadScalarFieldEnum | ChannelReadScalarFieldEnum[]
+  }
+
+  /**
+   * ChannelRead create
+   */
+  export type ChannelReadCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelRead
+     */
+    select?: ChannelReadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelRead
+     */
+    omit?: ChannelReadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelReadInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ChannelRead.
+     */
+    data: XOR<ChannelReadCreateInput, ChannelReadUncheckedCreateInput>
+  }
+
+  /**
+   * ChannelRead createMany
+   */
+  export type ChannelReadCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ChannelReads.
+     */
+    data: ChannelReadCreateManyInput | ChannelReadCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ChannelRead createManyAndReturn
+   */
+  export type ChannelReadCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelRead
+     */
+    select?: ChannelReadSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelRead
+     */
+    omit?: ChannelReadOmit<ExtArgs> | null
+    /**
+     * The data used to create many ChannelReads.
+     */
+    data: ChannelReadCreateManyInput | ChannelReadCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelReadIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ChannelRead update
+   */
+  export type ChannelReadUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelRead
+     */
+    select?: ChannelReadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelRead
+     */
+    omit?: ChannelReadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelReadInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ChannelRead.
+     */
+    data: XOR<ChannelReadUpdateInput, ChannelReadUncheckedUpdateInput>
+    /**
+     * Choose, which ChannelRead to update.
+     */
+    where: ChannelReadWhereUniqueInput
+  }
+
+  /**
+   * ChannelRead updateMany
+   */
+  export type ChannelReadUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ChannelReads.
+     */
+    data: XOR<ChannelReadUpdateManyMutationInput, ChannelReadUncheckedUpdateManyInput>
+    /**
+     * Filter which ChannelReads to update
+     */
+    where?: ChannelReadWhereInput
+    /**
+     * Limit how many ChannelReads to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ChannelRead updateManyAndReturn
+   */
+  export type ChannelReadUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelRead
+     */
+    select?: ChannelReadSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelRead
+     */
+    omit?: ChannelReadOmit<ExtArgs> | null
+    /**
+     * The data used to update ChannelReads.
+     */
+    data: XOR<ChannelReadUpdateManyMutationInput, ChannelReadUncheckedUpdateManyInput>
+    /**
+     * Filter which ChannelReads to update
+     */
+    where?: ChannelReadWhereInput
+    /**
+     * Limit how many ChannelReads to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelReadIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ChannelRead upsert
+   */
+  export type ChannelReadUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelRead
+     */
+    select?: ChannelReadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelRead
+     */
+    omit?: ChannelReadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelReadInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ChannelRead to update in case it exists.
+     */
+    where: ChannelReadWhereUniqueInput
+    /**
+     * In case the ChannelRead found by the `where` argument doesn't exist, create a new ChannelRead with this data.
+     */
+    create: XOR<ChannelReadCreateInput, ChannelReadUncheckedCreateInput>
+    /**
+     * In case the ChannelRead was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ChannelReadUpdateInput, ChannelReadUncheckedUpdateInput>
+  }
+
+  /**
+   * ChannelRead delete
+   */
+  export type ChannelReadDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelRead
+     */
+    select?: ChannelReadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelRead
+     */
+    omit?: ChannelReadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelReadInclude<ExtArgs> | null
+    /**
+     * Filter which ChannelRead to delete.
+     */
+    where: ChannelReadWhereUniqueInput
+  }
+
+  /**
+   * ChannelRead deleteMany
+   */
+  export type ChannelReadDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ChannelReads to delete
+     */
+    where?: ChannelReadWhereInput
+    /**
+     * Limit how many ChannelReads to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ChannelRead without action
+   */
+  export type ChannelReadDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelRead
+     */
+    select?: ChannelReadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelRead
+     */
+    omit?: ChannelReadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelReadInclude<ExtArgs> | null
   }
 
 
@@ -21841,6 +23046,15 @@ export namespace Prisma {
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+  export const ChannelReadScalarFieldEnum: {
+    channelId: 'channelId',
+    userId: 'userId',
+    lastReadAt: 'lastReadAt'
+  };
+
+  export type ChannelReadScalarFieldEnum = (typeof ChannelReadScalarFieldEnum)[keyof typeof ChannelReadScalarFieldEnum]
+
+
   export const ImageUploadScalarFieldEnum: {
     id: 'id',
     key: 'key',
@@ -22437,6 +23651,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Channel"> | Date | string
     messages?: MessageListRelationFilter
     channelMembers?: ChannelMemberListRelationFilter
+    reads?: ChannelReadListRelationFilter
     company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
   }
 
@@ -22451,6 +23666,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     messages?: MessageOrderByRelationAggregateInput
     channelMembers?: ChannelMemberOrderByRelationAggregateInput
+    reads?: ChannelReadOrderByRelationAggregateInput
     company?: CompanyOrderByWithRelationInput
   }
 
@@ -22468,6 +23684,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Channel"> | Date | string
     messages?: MessageListRelationFilter
     channelMembers?: ChannelMemberListRelationFilter
+    reads?: ChannelReadListRelationFilter
     company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
   }, "id" | "directKey">
 
@@ -22606,6 +23823,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentListRelationFilter
     sentInvitations?: CompanyInvitationListRelationFilter
     imageUploads?: ImageUploadListRelationFilter
+    channelReads?: ChannelReadListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -22629,6 +23847,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentOrderByRelationAggregateInput
     sentInvitations?: CompanyInvitationOrderByRelationAggregateInput
     imageUploads?: ImageUploadOrderByRelationAggregateInput
+    channelReads?: ChannelReadOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -22655,6 +23874,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentListRelationFilter
     sentInvitations?: CompanyInvitationListRelationFilter
     imageUploads?: ImageUploadListRelationFilter
+    channelReads?: ChannelReadListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -22685,6 +23905,55 @@ export namespace Prisma {
     sessionVersion?: IntWithAggregatesFilter<"User"> | number
     image?: StringNullableWithAggregatesFilter<"User"> | string | null
     description?: StringNullableWithAggregatesFilter<"User"> | string | null
+  }
+
+  export type ChannelReadWhereInput = {
+    AND?: ChannelReadWhereInput | ChannelReadWhereInput[]
+    OR?: ChannelReadWhereInput[]
+    NOT?: ChannelReadWhereInput | ChannelReadWhereInput[]
+    channelId?: StringFilter<"ChannelRead"> | string
+    userId?: StringFilter<"ChannelRead"> | string
+    lastReadAt?: DateTimeFilter<"ChannelRead"> | Date | string
+    channel?: XOR<ChannelScalarRelationFilter, ChannelWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type ChannelReadOrderByWithRelationInput = {
+    channelId?: SortOrder
+    userId?: SortOrder
+    lastReadAt?: SortOrder
+    channel?: ChannelOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type ChannelReadWhereUniqueInput = Prisma.AtLeast<{
+    channelId_userId?: ChannelReadChannelIdUserIdCompoundUniqueInput
+    AND?: ChannelReadWhereInput | ChannelReadWhereInput[]
+    OR?: ChannelReadWhereInput[]
+    NOT?: ChannelReadWhereInput | ChannelReadWhereInput[]
+    channelId?: StringFilter<"ChannelRead"> | string
+    userId?: StringFilter<"ChannelRead"> | string
+    lastReadAt?: DateTimeFilter<"ChannelRead"> | Date | string
+    channel?: XOR<ChannelScalarRelationFilter, ChannelWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "channelId_userId">
+
+  export type ChannelReadOrderByWithAggregationInput = {
+    channelId?: SortOrder
+    userId?: SortOrder
+    lastReadAt?: SortOrder
+    _count?: ChannelReadCountOrderByAggregateInput
+    _max?: ChannelReadMaxOrderByAggregateInput
+    _min?: ChannelReadMinOrderByAggregateInput
+  }
+
+  export type ChannelReadScalarWhereWithAggregatesInput = {
+    AND?: ChannelReadScalarWhereWithAggregatesInput | ChannelReadScalarWhereWithAggregatesInput[]
+    OR?: ChannelReadScalarWhereWithAggregatesInput[]
+    NOT?: ChannelReadScalarWhereWithAggregatesInput | ChannelReadScalarWhereWithAggregatesInput[]
+    channelId?: StringWithAggregatesFilter<"ChannelRead"> | string
+    userId?: StringWithAggregatesFilter<"ChannelRead"> | string
+    lastReadAt?: DateTimeWithAggregatesFilter<"ChannelRead"> | Date | string
   }
 
   export type ImageUploadWhereInput = {
@@ -23635,6 +24904,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     messages?: MessageCreateNestedManyWithoutChannelInput
     channelMembers?: ChannelMemberCreateNestedManyWithoutChannelInput
+    reads?: ChannelReadCreateNestedManyWithoutChannelInput
     company: CompanyCreateNestedOneWithoutChannelsInput
   }
 
@@ -23649,6 +24919,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     messages?: MessageUncheckedCreateNestedManyWithoutChannelInput
     channelMembers?: ChannelMemberUncheckedCreateNestedManyWithoutChannelInput
+    reads?: ChannelReadUncheckedCreateNestedManyWithoutChannelInput
   }
 
   export type ChannelUpdateInput = {
@@ -23661,6 +24932,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: MessageUpdateManyWithoutChannelNestedInput
     channelMembers?: ChannelMemberUpdateManyWithoutChannelNestedInput
+    reads?: ChannelReadUpdateManyWithoutChannelNestedInput
     company?: CompanyUpdateOneRequiredWithoutChannelsNestedInput
   }
 
@@ -23675,6 +24947,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: MessageUncheckedUpdateManyWithoutChannelNestedInput
     channelMembers?: ChannelMemberUncheckedUpdateManyWithoutChannelNestedInput
+    reads?: ChannelReadUncheckedUpdateManyWithoutChannelNestedInput
   }
 
   export type ChannelCreateManyInput = {
@@ -23816,6 +25089,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
     imageUploads?: ImageUploadCreateNestedManyWithoutUserInput
+    channelReads?: ChannelReadCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -23839,6 +25113,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
     imageUploads?: ImageUploadUncheckedCreateNestedManyWithoutUserInput
+    channelReads?: ChannelReadUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -23862,6 +25137,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
     imageUploads?: ImageUploadUpdateManyWithoutUserNestedInput
+    channelReads?: ChannelReadUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -23885,6 +25161,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
     imageUploads?: ImageUploadUncheckedUpdateManyWithoutUserNestedInput
+    channelReads?: ChannelReadUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -23918,6 +25195,46 @@ export namespace Prisma {
     sessionVersion?: IntFieldUpdateOperationsInput | number
     image?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type ChannelReadCreateInput = {
+    lastReadAt: Date | string
+    channel: ChannelCreateNestedOneWithoutReadsInput
+    user: UserCreateNestedOneWithoutChannelReadsInput
+  }
+
+  export type ChannelReadUncheckedCreateInput = {
+    channelId: string
+    userId: string
+    lastReadAt: Date | string
+  }
+
+  export type ChannelReadUpdateInput = {
+    lastReadAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    channel?: ChannelUpdateOneRequiredWithoutReadsNestedInput
+    user?: UserUpdateOneRequiredWithoutChannelReadsNestedInput
+  }
+
+  export type ChannelReadUncheckedUpdateInput = {
+    channelId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    lastReadAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelReadCreateManyInput = {
+    channelId: string
+    userId: string
+    lastReadAt: Date | string
+  }
+
+  export type ChannelReadUpdateManyMutationInput = {
+    lastReadAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelReadUncheckedUpdateManyInput = {
+    channelId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    lastReadAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ImageUploadCreateInput = {
@@ -24908,11 +26225,21 @@ export namespace Prisma {
     none?: ChannelMemberWhereInput
   }
 
+  export type ChannelReadListRelationFilter = {
+    every?: ChannelReadWhereInput
+    some?: ChannelReadWhereInput
+    none?: ChannelReadWhereInput
+  }
+
   export type MessageOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type ChannelMemberOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ChannelReadOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -25174,6 +26501,29 @@ export namespace Prisma {
     _sum?: NestedIntFilter<$PrismaModel>
     _min?: NestedIntFilter<$PrismaModel>
     _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type ChannelReadChannelIdUserIdCompoundUniqueInput = {
+    channelId: string
+    userId: string
+  }
+
+  export type ChannelReadCountOrderByAggregateInput = {
+    channelId?: SortOrder
+    userId?: SortOrder
+    lastReadAt?: SortOrder
+  }
+
+  export type ChannelReadMaxOrderByAggregateInput = {
+    channelId?: SortOrder
+    userId?: SortOrder
+    lastReadAt?: SortOrder
+  }
+
+  export type ChannelReadMinOrderByAggregateInput = {
+    channelId?: SortOrder
+    userId?: SortOrder
+    lastReadAt?: SortOrder
   }
 
   export type ImageUploadCountOrderByAggregateInput = {
@@ -25863,6 +27213,13 @@ export namespace Prisma {
     connect?: ChannelMemberWhereUniqueInput | ChannelMemberWhereUniqueInput[]
   }
 
+  export type ChannelReadCreateNestedManyWithoutChannelInput = {
+    create?: XOR<ChannelReadCreateWithoutChannelInput, ChannelReadUncheckedCreateWithoutChannelInput> | ChannelReadCreateWithoutChannelInput[] | ChannelReadUncheckedCreateWithoutChannelInput[]
+    connectOrCreate?: ChannelReadCreateOrConnectWithoutChannelInput | ChannelReadCreateOrConnectWithoutChannelInput[]
+    createMany?: ChannelReadCreateManyChannelInputEnvelope
+    connect?: ChannelReadWhereUniqueInput | ChannelReadWhereUniqueInput[]
+  }
+
   export type CompanyCreateNestedOneWithoutChannelsInput = {
     create?: XOR<CompanyCreateWithoutChannelsInput, CompanyUncheckedCreateWithoutChannelsInput>
     connectOrCreate?: CompanyCreateOrConnectWithoutChannelsInput
@@ -25881,6 +27238,13 @@ export namespace Prisma {
     connectOrCreate?: ChannelMemberCreateOrConnectWithoutChannelInput | ChannelMemberCreateOrConnectWithoutChannelInput[]
     createMany?: ChannelMemberCreateManyChannelInputEnvelope
     connect?: ChannelMemberWhereUniqueInput | ChannelMemberWhereUniqueInput[]
+  }
+
+  export type ChannelReadUncheckedCreateNestedManyWithoutChannelInput = {
+    create?: XOR<ChannelReadCreateWithoutChannelInput, ChannelReadUncheckedCreateWithoutChannelInput> | ChannelReadCreateWithoutChannelInput[] | ChannelReadUncheckedCreateWithoutChannelInput[]
+    connectOrCreate?: ChannelReadCreateOrConnectWithoutChannelInput | ChannelReadCreateOrConnectWithoutChannelInput[]
+    createMany?: ChannelReadCreateManyChannelInputEnvelope
+    connect?: ChannelReadWhereUniqueInput | ChannelReadWhereUniqueInput[]
   }
 
   export type EnumChannelKindFieldUpdateOperationsInput = {
@@ -25913,6 +27277,20 @@ export namespace Prisma {
     update?: ChannelMemberUpdateWithWhereUniqueWithoutChannelInput | ChannelMemberUpdateWithWhereUniqueWithoutChannelInput[]
     updateMany?: ChannelMemberUpdateManyWithWhereWithoutChannelInput | ChannelMemberUpdateManyWithWhereWithoutChannelInput[]
     deleteMany?: ChannelMemberScalarWhereInput | ChannelMemberScalarWhereInput[]
+  }
+
+  export type ChannelReadUpdateManyWithoutChannelNestedInput = {
+    create?: XOR<ChannelReadCreateWithoutChannelInput, ChannelReadUncheckedCreateWithoutChannelInput> | ChannelReadCreateWithoutChannelInput[] | ChannelReadUncheckedCreateWithoutChannelInput[]
+    connectOrCreate?: ChannelReadCreateOrConnectWithoutChannelInput | ChannelReadCreateOrConnectWithoutChannelInput[]
+    upsert?: ChannelReadUpsertWithWhereUniqueWithoutChannelInput | ChannelReadUpsertWithWhereUniqueWithoutChannelInput[]
+    createMany?: ChannelReadCreateManyChannelInputEnvelope
+    set?: ChannelReadWhereUniqueInput | ChannelReadWhereUniqueInput[]
+    disconnect?: ChannelReadWhereUniqueInput | ChannelReadWhereUniqueInput[]
+    delete?: ChannelReadWhereUniqueInput | ChannelReadWhereUniqueInput[]
+    connect?: ChannelReadWhereUniqueInput | ChannelReadWhereUniqueInput[]
+    update?: ChannelReadUpdateWithWhereUniqueWithoutChannelInput | ChannelReadUpdateWithWhereUniqueWithoutChannelInput[]
+    updateMany?: ChannelReadUpdateManyWithWhereWithoutChannelInput | ChannelReadUpdateManyWithWhereWithoutChannelInput[]
+    deleteMany?: ChannelReadScalarWhereInput | ChannelReadScalarWhereInput[]
   }
 
   export type CompanyUpdateOneRequiredWithoutChannelsNestedInput = {
@@ -25949,6 +27327,20 @@ export namespace Prisma {
     update?: ChannelMemberUpdateWithWhereUniqueWithoutChannelInput | ChannelMemberUpdateWithWhereUniqueWithoutChannelInput[]
     updateMany?: ChannelMemberUpdateManyWithWhereWithoutChannelInput | ChannelMemberUpdateManyWithWhereWithoutChannelInput[]
     deleteMany?: ChannelMemberScalarWhereInput | ChannelMemberScalarWhereInput[]
+  }
+
+  export type ChannelReadUncheckedUpdateManyWithoutChannelNestedInput = {
+    create?: XOR<ChannelReadCreateWithoutChannelInput, ChannelReadUncheckedCreateWithoutChannelInput> | ChannelReadCreateWithoutChannelInput[] | ChannelReadUncheckedCreateWithoutChannelInput[]
+    connectOrCreate?: ChannelReadCreateOrConnectWithoutChannelInput | ChannelReadCreateOrConnectWithoutChannelInput[]
+    upsert?: ChannelReadUpsertWithWhereUniqueWithoutChannelInput | ChannelReadUpsertWithWhereUniqueWithoutChannelInput[]
+    createMany?: ChannelReadCreateManyChannelInputEnvelope
+    set?: ChannelReadWhereUniqueInput | ChannelReadWhereUniqueInput[]
+    disconnect?: ChannelReadWhereUniqueInput | ChannelReadWhereUniqueInput[]
+    delete?: ChannelReadWhereUniqueInput | ChannelReadWhereUniqueInput[]
+    connect?: ChannelReadWhereUniqueInput | ChannelReadWhereUniqueInput[]
+    update?: ChannelReadUpdateWithWhereUniqueWithoutChannelInput | ChannelReadUpdateWithWhereUniqueWithoutChannelInput[]
+    updateMany?: ChannelReadUpdateManyWithWhereWithoutChannelInput | ChannelReadUpdateManyWithWhereWithoutChannelInput[]
+    deleteMany?: ChannelReadScalarWhereInput | ChannelReadScalarWhereInput[]
   }
 
   export type ChannelCreateNestedOneWithoutChannelMembersInput = {
@@ -26111,6 +27503,13 @@ export namespace Prisma {
     connect?: ImageUploadWhereUniqueInput | ImageUploadWhereUniqueInput[]
   }
 
+  export type ChannelReadCreateNestedManyWithoutUserInput = {
+    create?: XOR<ChannelReadCreateWithoutUserInput, ChannelReadUncheckedCreateWithoutUserInput> | ChannelReadCreateWithoutUserInput[] | ChannelReadUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ChannelReadCreateOrConnectWithoutUserInput | ChannelReadCreateOrConnectWithoutUserInput[]
+    createMany?: ChannelReadCreateManyUserInputEnvelope
+    connect?: ChannelReadWhereUniqueInput | ChannelReadWhereUniqueInput[]
+  }
+
   export type EmailVerificationCodeUncheckedCreateNestedOneWithoutUserInput = {
     create?: XOR<EmailVerificationCodeCreateWithoutUserInput, EmailVerificationCodeUncheckedCreateWithoutUserInput>
     connectOrCreate?: EmailVerificationCodeCreateOrConnectWithoutUserInput
@@ -26191,6 +27590,13 @@ export namespace Prisma {
     connectOrCreate?: ImageUploadCreateOrConnectWithoutUserInput | ImageUploadCreateOrConnectWithoutUserInput[]
     createMany?: ImageUploadCreateManyUserInputEnvelope
     connect?: ImageUploadWhereUniqueInput | ImageUploadWhereUniqueInput[]
+  }
+
+  export type ChannelReadUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<ChannelReadCreateWithoutUserInput, ChannelReadUncheckedCreateWithoutUserInput> | ChannelReadCreateWithoutUserInput[] | ChannelReadUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ChannelReadCreateOrConnectWithoutUserInput | ChannelReadCreateOrConnectWithoutUserInput[]
+    createMany?: ChannelReadCreateManyUserInputEnvelope
+    connect?: ChannelReadWhereUniqueInput | ChannelReadWhereUniqueInput[]
   }
 
   export type IntFieldUpdateOperationsInput = {
@@ -26361,6 +27767,20 @@ export namespace Prisma {
     deleteMany?: ImageUploadScalarWhereInput | ImageUploadScalarWhereInput[]
   }
 
+  export type ChannelReadUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ChannelReadCreateWithoutUserInput, ChannelReadUncheckedCreateWithoutUserInput> | ChannelReadCreateWithoutUserInput[] | ChannelReadUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ChannelReadCreateOrConnectWithoutUserInput | ChannelReadCreateOrConnectWithoutUserInput[]
+    upsert?: ChannelReadUpsertWithWhereUniqueWithoutUserInput | ChannelReadUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ChannelReadCreateManyUserInputEnvelope
+    set?: ChannelReadWhereUniqueInput | ChannelReadWhereUniqueInput[]
+    disconnect?: ChannelReadWhereUniqueInput | ChannelReadWhereUniqueInput[]
+    delete?: ChannelReadWhereUniqueInput | ChannelReadWhereUniqueInput[]
+    connect?: ChannelReadWhereUniqueInput | ChannelReadWhereUniqueInput[]
+    update?: ChannelReadUpdateWithWhereUniqueWithoutUserInput | ChannelReadUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ChannelReadUpdateManyWithWhereWithoutUserInput | ChannelReadUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ChannelReadScalarWhereInput | ChannelReadScalarWhereInput[]
+  }
+
   export type EmailVerificationCodeUncheckedUpdateOneWithoutUserNestedInput = {
     create?: XOR<EmailVerificationCodeCreateWithoutUserInput, EmailVerificationCodeUncheckedCreateWithoutUserInput>
     connectOrCreate?: EmailVerificationCodeCreateOrConnectWithoutUserInput
@@ -26519,6 +27939,48 @@ export namespace Prisma {
     update?: ImageUploadUpdateWithWhereUniqueWithoutUserInput | ImageUploadUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: ImageUploadUpdateManyWithWhereWithoutUserInput | ImageUploadUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: ImageUploadScalarWhereInput | ImageUploadScalarWhereInput[]
+  }
+
+  export type ChannelReadUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ChannelReadCreateWithoutUserInput, ChannelReadUncheckedCreateWithoutUserInput> | ChannelReadCreateWithoutUserInput[] | ChannelReadUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ChannelReadCreateOrConnectWithoutUserInput | ChannelReadCreateOrConnectWithoutUserInput[]
+    upsert?: ChannelReadUpsertWithWhereUniqueWithoutUserInput | ChannelReadUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ChannelReadCreateManyUserInputEnvelope
+    set?: ChannelReadWhereUniqueInput | ChannelReadWhereUniqueInput[]
+    disconnect?: ChannelReadWhereUniqueInput | ChannelReadWhereUniqueInput[]
+    delete?: ChannelReadWhereUniqueInput | ChannelReadWhereUniqueInput[]
+    connect?: ChannelReadWhereUniqueInput | ChannelReadWhereUniqueInput[]
+    update?: ChannelReadUpdateWithWhereUniqueWithoutUserInput | ChannelReadUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ChannelReadUpdateManyWithWhereWithoutUserInput | ChannelReadUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ChannelReadScalarWhereInput | ChannelReadScalarWhereInput[]
+  }
+
+  export type ChannelCreateNestedOneWithoutReadsInput = {
+    create?: XOR<ChannelCreateWithoutReadsInput, ChannelUncheckedCreateWithoutReadsInput>
+    connectOrCreate?: ChannelCreateOrConnectWithoutReadsInput
+    connect?: ChannelWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutChannelReadsInput = {
+    create?: XOR<UserCreateWithoutChannelReadsInput, UserUncheckedCreateWithoutChannelReadsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutChannelReadsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ChannelUpdateOneRequiredWithoutReadsNestedInput = {
+    create?: XOR<ChannelCreateWithoutReadsInput, ChannelUncheckedCreateWithoutReadsInput>
+    connectOrCreate?: ChannelCreateOrConnectWithoutReadsInput
+    upsert?: ChannelUpsertWithoutReadsInput
+    connect?: ChannelWhereUniqueInput
+    update?: XOR<XOR<ChannelUpdateToOneWithWhereWithoutReadsInput, ChannelUpdateWithoutReadsInput>, ChannelUncheckedUpdateWithoutReadsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutChannelReadsNestedInput = {
+    create?: XOR<UserCreateWithoutChannelReadsInput, UserUncheckedCreateWithoutChannelReadsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutChannelReadsInput
+    upsert?: UserUpsertWithoutChannelReadsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutChannelReadsInput, UserUpdateWithoutChannelReadsInput>, UserUncheckedUpdateWithoutChannelReadsInput>
   }
 
   export type UserCreateNestedOneWithoutImageUploadsInput = {
@@ -27069,6 +28531,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
     imageUploads?: ImageUploadCreateNestedManyWithoutUserInput
+    channelReads?: ChannelReadCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -27091,6 +28554,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
     imageUploads?: ImageUploadUncheckedCreateNestedManyWithoutUserInput
+    channelReads?: ChannelReadUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -27129,6 +28593,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
     imageUploads?: ImageUploadUpdateManyWithoutUserNestedInput
+    channelReads?: ChannelReadUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -27151,6 +28616,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
     imageUploads?: ImageUploadUncheckedUpdateManyWithoutUserNestedInput
+    channelReads?: ChannelReadUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
@@ -27173,6 +28639,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
     imageUploads?: ImageUploadCreateNestedManyWithoutUserInput
+    channelReads?: ChannelReadCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -27195,6 +28662,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
     imageUploads?: ImageUploadUncheckedCreateNestedManyWithoutUserInput
+    channelReads?: ChannelReadUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -27233,6 +28701,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
     imageUploads?: ImageUploadUpdateManyWithoutUserNestedInput
+    channelReads?: ChannelReadUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -27255,6 +28724,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
     imageUploads?: ImageUploadUncheckedUpdateManyWithoutUserNestedInput
+    channelReads?: ChannelReadUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CompanyMemberCreateWithoutCompanyInput = {
@@ -27289,6 +28759,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     messages?: MessageCreateNestedManyWithoutChannelInput
     channelMembers?: ChannelMemberCreateNestedManyWithoutChannelInput
+    reads?: ChannelReadCreateNestedManyWithoutChannelInput
   }
 
   export type ChannelUncheckedCreateWithoutCompanyInput = {
@@ -27301,6 +28772,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     messages?: MessageUncheckedCreateNestedManyWithoutChannelInput
     channelMembers?: ChannelMemberUncheckedCreateNestedManyWithoutChannelInput
+    reads?: ChannelReadUncheckedCreateNestedManyWithoutChannelInput
   }
 
   export type ChannelCreateOrConnectWithoutCompanyInput = {
@@ -27571,6 +29043,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
     imageUploads?: ImageUploadCreateNestedManyWithoutUserInput
+    channelReads?: ChannelReadCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCompanyMembershipsInput = {
@@ -27593,6 +29066,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
     imageUploads?: ImageUploadUncheckedCreateNestedManyWithoutUserInput
+    channelReads?: ChannelReadUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCompanyMembershipsInput = {
@@ -27670,6 +29144,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
     imageUploads?: ImageUploadUpdateManyWithoutUserNestedInput
+    channelReads?: ChannelReadUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCompanyMembershipsInput = {
@@ -27692,6 +29167,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
     imageUploads?: ImageUploadUncheckedUpdateManyWithoutUserNestedInput
+    channelReads?: ChannelReadUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CompanyUpsertWithoutMembersInput = {
@@ -27805,6 +29281,26 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ChannelReadCreateWithoutChannelInput = {
+    lastReadAt: Date | string
+    user: UserCreateNestedOneWithoutChannelReadsInput
+  }
+
+  export type ChannelReadUncheckedCreateWithoutChannelInput = {
+    userId: string
+    lastReadAt: Date | string
+  }
+
+  export type ChannelReadCreateOrConnectWithoutChannelInput = {
+    where: ChannelReadWhereUniqueInput
+    create: XOR<ChannelReadCreateWithoutChannelInput, ChannelReadUncheckedCreateWithoutChannelInput>
+  }
+
+  export type ChannelReadCreateManyChannelInputEnvelope = {
+    data: ChannelReadCreateManyChannelInput | ChannelReadCreateManyChannelInput[]
+    skipDuplicates?: boolean
+  }
+
   export type CompanyCreateWithoutChannelsInput = {
     id?: string
     name: string
@@ -27906,6 +29402,31 @@ export namespace Prisma {
     removedAt?: DateTimeNullableFilter<"ChannelMember"> | Date | string | null
   }
 
+  export type ChannelReadUpsertWithWhereUniqueWithoutChannelInput = {
+    where: ChannelReadWhereUniqueInput
+    update: XOR<ChannelReadUpdateWithoutChannelInput, ChannelReadUncheckedUpdateWithoutChannelInput>
+    create: XOR<ChannelReadCreateWithoutChannelInput, ChannelReadUncheckedCreateWithoutChannelInput>
+  }
+
+  export type ChannelReadUpdateWithWhereUniqueWithoutChannelInput = {
+    where: ChannelReadWhereUniqueInput
+    data: XOR<ChannelReadUpdateWithoutChannelInput, ChannelReadUncheckedUpdateWithoutChannelInput>
+  }
+
+  export type ChannelReadUpdateManyWithWhereWithoutChannelInput = {
+    where: ChannelReadScalarWhereInput
+    data: XOR<ChannelReadUpdateManyMutationInput, ChannelReadUncheckedUpdateManyWithoutChannelInput>
+  }
+
+  export type ChannelReadScalarWhereInput = {
+    AND?: ChannelReadScalarWhereInput | ChannelReadScalarWhereInput[]
+    OR?: ChannelReadScalarWhereInput[]
+    NOT?: ChannelReadScalarWhereInput | ChannelReadScalarWhereInput[]
+    channelId?: StringFilter<"ChannelRead"> | string
+    userId?: StringFilter<"ChannelRead"> | string
+    lastReadAt?: DateTimeFilter<"ChannelRead"> | Date | string
+  }
+
   export type CompanyUpsertWithoutChannelsInput = {
     update: XOR<CompanyUpdateWithoutChannelsInput, CompanyUncheckedUpdateWithoutChannelsInput>
     create: XOR<CompanyCreateWithoutChannelsInput, CompanyUncheckedCreateWithoutChannelsInput>
@@ -27960,6 +29481,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     messages?: MessageCreateNestedManyWithoutChannelInput
+    reads?: ChannelReadCreateNestedManyWithoutChannelInput
     company: CompanyCreateNestedOneWithoutChannelsInput
   }
 
@@ -27973,6 +29495,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     messages?: MessageUncheckedCreateNestedManyWithoutChannelInput
+    reads?: ChannelReadUncheckedCreateNestedManyWithoutChannelInput
   }
 
   export type ChannelCreateOrConnectWithoutChannelMembersInput = {
@@ -28000,6 +29523,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
     imageUploads?: ImageUploadCreateNestedManyWithoutUserInput
+    channelReads?: ChannelReadCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutChannelMembershipsInput = {
@@ -28022,6 +29546,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
     imageUploads?: ImageUploadUncheckedCreateNestedManyWithoutUserInput
+    channelReads?: ChannelReadUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutChannelMembershipsInput = {
@@ -28080,6 +29605,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: MessageUpdateManyWithoutChannelNestedInput
+    reads?: ChannelReadUpdateManyWithoutChannelNestedInput
     company?: CompanyUpdateOneRequiredWithoutChannelsNestedInput
   }
 
@@ -28093,6 +29619,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: MessageUncheckedUpdateManyWithoutChannelNestedInput
+    reads?: ChannelReadUncheckedUpdateManyWithoutChannelNestedInput
   }
 
   export type UserUpsertWithoutChannelMembershipsInput = {
@@ -28126,6 +29653,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
     imageUploads?: ImageUploadUpdateManyWithoutUserNestedInput
+    channelReads?: ChannelReadUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutChannelMembershipsInput = {
@@ -28148,6 +29676,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
     imageUploads?: ImageUploadUncheckedUpdateManyWithoutUserNestedInput
+    channelReads?: ChannelReadUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type MessageUpsertWithWhereUniqueWithoutAuthorChannelMemberInput = {
@@ -28484,6 +30013,26 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ChannelReadCreateWithoutUserInput = {
+    lastReadAt: Date | string
+    channel: ChannelCreateNestedOneWithoutReadsInput
+  }
+
+  export type ChannelReadUncheckedCreateWithoutUserInput = {
+    channelId: string
+    lastReadAt: Date | string
+  }
+
+  export type ChannelReadCreateOrConnectWithoutUserInput = {
+    where: ChannelReadWhereUniqueInput
+    create: XOR<ChannelReadCreateWithoutUserInput, ChannelReadUncheckedCreateWithoutUserInput>
+  }
+
+  export type ChannelReadCreateManyUserInputEnvelope = {
+    data: ChannelReadCreateManyUserInput | ChannelReadCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type EmailVerificationCodeUpsertWithoutUserInput = {
     update: XOR<EmailVerificationCodeUpdateWithoutUserInput, EmailVerificationCodeUncheckedUpdateWithoutUserInput>
     create: XOR<EmailVerificationCodeCreateWithoutUserInput, EmailVerificationCodeUncheckedCreateWithoutUserInput>
@@ -28758,6 +30307,198 @@ export namespace Prisma {
     confirmedAt?: DateTimeNullableFilter<"ImageUpload"> | Date | string | null
   }
 
+  export type ChannelReadUpsertWithWhereUniqueWithoutUserInput = {
+    where: ChannelReadWhereUniqueInput
+    update: XOR<ChannelReadUpdateWithoutUserInput, ChannelReadUncheckedUpdateWithoutUserInput>
+    create: XOR<ChannelReadCreateWithoutUserInput, ChannelReadUncheckedCreateWithoutUserInput>
+  }
+
+  export type ChannelReadUpdateWithWhereUniqueWithoutUserInput = {
+    where: ChannelReadWhereUniqueInput
+    data: XOR<ChannelReadUpdateWithoutUserInput, ChannelReadUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ChannelReadUpdateManyWithWhereWithoutUserInput = {
+    where: ChannelReadScalarWhereInput
+    data: XOR<ChannelReadUpdateManyMutationInput, ChannelReadUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type ChannelCreateWithoutReadsInput = {
+    id?: string
+    kind?: $Enums.ChannelKind
+    name: string
+    image?: string | null
+    directKey?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: MessageCreateNestedManyWithoutChannelInput
+    channelMembers?: ChannelMemberCreateNestedManyWithoutChannelInput
+    company: CompanyCreateNestedOneWithoutChannelsInput
+  }
+
+  export type ChannelUncheckedCreateWithoutReadsInput = {
+    id?: string
+    kind?: $Enums.ChannelKind
+    name: string
+    image?: string | null
+    directKey?: string | null
+    companyId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: MessageUncheckedCreateNestedManyWithoutChannelInput
+    channelMembers?: ChannelMemberUncheckedCreateNestedManyWithoutChannelInput
+  }
+
+  export type ChannelCreateOrConnectWithoutReadsInput = {
+    where: ChannelWhereUniqueInput
+    create: XOR<ChannelCreateWithoutReadsInput, ChannelUncheckedCreateWithoutReadsInput>
+  }
+
+  export type UserCreateWithoutChannelReadsInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    sessionVersion?: number
+    image?: string | null
+    description?: string | null
+    emailVerificationCode?: EmailVerificationCodeCreateNestedOneWithoutUserInput
+    twoFactor?: TwoFactorCreateNestedOneWithoutUserInput
+    twoFactorChallenges?: TwoFactorChallengeCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    companyMemberships?: CompanyMemberCreateNestedManyWithoutUserInput
+    channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
+    createdJobs?: JobCreateNestedManyWithoutCreatedByInput
+    companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
+    postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
+    sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
+    imageUploads?: ImageUploadCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutChannelReadsInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    sessionVersion?: number
+    image?: string | null
+    description?: string | null
+    emailVerificationCode?: EmailVerificationCodeUncheckedCreateNestedOneWithoutUserInput
+    twoFactor?: TwoFactorUncheckedCreateNestedOneWithoutUserInput
+    twoFactorChallenges?: TwoFactorChallengeUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    companyMemberships?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
+    channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
+    createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
+    companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
+    sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
+    imageUploads?: ImageUploadUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutChannelReadsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutChannelReadsInput, UserUncheckedCreateWithoutChannelReadsInput>
+  }
+
+  export type ChannelUpsertWithoutReadsInput = {
+    update: XOR<ChannelUpdateWithoutReadsInput, ChannelUncheckedUpdateWithoutReadsInput>
+    create: XOR<ChannelCreateWithoutReadsInput, ChannelUncheckedCreateWithoutReadsInput>
+    where?: ChannelWhereInput
+  }
+
+  export type ChannelUpdateToOneWithWhereWithoutReadsInput = {
+    where?: ChannelWhereInput
+    data: XOR<ChannelUpdateWithoutReadsInput, ChannelUncheckedUpdateWithoutReadsInput>
+  }
+
+  export type ChannelUpdateWithoutReadsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kind?: EnumChannelKindFieldUpdateOperationsInput | $Enums.ChannelKind
+    name?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    directKey?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: MessageUpdateManyWithoutChannelNestedInput
+    channelMembers?: ChannelMemberUpdateManyWithoutChannelNestedInput
+    company?: CompanyUpdateOneRequiredWithoutChannelsNestedInput
+  }
+
+  export type ChannelUncheckedUpdateWithoutReadsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kind?: EnumChannelKindFieldUpdateOperationsInput | $Enums.ChannelKind
+    name?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    directKey?: NullableStringFieldUpdateOperationsInput | string | null
+    companyId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: MessageUncheckedUpdateManyWithoutChannelNestedInput
+    channelMembers?: ChannelMemberUncheckedUpdateManyWithoutChannelNestedInput
+  }
+
+  export type UserUpsertWithoutChannelReadsInput = {
+    update: XOR<UserUpdateWithoutChannelReadsInput, UserUncheckedUpdateWithoutChannelReadsInput>
+    create: XOR<UserCreateWithoutChannelReadsInput, UserUncheckedCreateWithoutChannelReadsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutChannelReadsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutChannelReadsInput, UserUncheckedUpdateWithoutChannelReadsInput>
+  }
+
+  export type UserUpdateWithoutChannelReadsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionVersion?: IntFieldUpdateOperationsInput | number
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerificationCode?: EmailVerificationCodeUpdateOneWithoutUserNestedInput
+    twoFactor?: TwoFactorUpdateOneWithoutUserNestedInput
+    twoFactorChallenges?: TwoFactorChallengeUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    companyMemberships?: CompanyMemberUpdateManyWithoutUserNestedInput
+    channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
+    createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
+    companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
+    sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
+    imageUploads?: ImageUploadUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutChannelReadsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionVersion?: IntFieldUpdateOperationsInput | number
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerificationCode?: EmailVerificationCodeUncheckedUpdateOneWithoutUserNestedInput
+    twoFactor?: TwoFactorUncheckedUpdateOneWithoutUserNestedInput
+    twoFactorChallenges?: TwoFactorChallengeUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    companyMemberships?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
+    channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
+    createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
+    companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
+    sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
+    imageUploads?: ImageUploadUncheckedUpdateManyWithoutUserNestedInput
+  }
+
   export type UserCreateWithoutImageUploadsInput = {
     id?: string
     name?: string | null
@@ -28778,6 +30519,7 @@ export namespace Prisma {
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
+    channelReads?: ChannelReadCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutImageUploadsInput = {
@@ -28800,6 +30542,7 @@ export namespace Prisma {
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
+    channelReads?: ChannelReadUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutImageUploadsInput = {
@@ -28838,6 +30581,7 @@ export namespace Prisma {
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
+    channelReads?: ChannelReadUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutImageUploadsInput = {
@@ -28860,6 +30604,7 @@ export namespace Prisma {
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
+    channelReads?: ChannelReadUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CompanyCreateWithoutInvitationsInput = {
@@ -28921,6 +30666,7 @@ export namespace Prisma {
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
     imageUploads?: ImageUploadCreateNestedManyWithoutUserInput
+    channelReads?: ChannelReadCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSentInvitationsInput = {
@@ -28943,6 +30689,7 @@ export namespace Prisma {
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     imageUploads?: ImageUploadUncheckedCreateNestedManyWithoutUserInput
+    channelReads?: ChannelReadUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSentInvitationsInput = {
@@ -29026,6 +30773,7 @@ export namespace Prisma {
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
     imageUploads?: ImageUploadUpdateManyWithoutUserNestedInput
+    channelReads?: ChannelReadUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSentInvitationsInput = {
@@ -29048,6 +30796,7 @@ export namespace Prisma {
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     imageUploads?: ImageUploadUncheckedUpdateManyWithoutUserNestedInput
+    channelReads?: ChannelReadUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutEmailVerificationCodeInput = {
@@ -29070,6 +30819,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
     imageUploads?: ImageUploadCreateNestedManyWithoutUserInput
+    channelReads?: ChannelReadCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutEmailVerificationCodeInput = {
@@ -29092,6 +30842,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
     imageUploads?: ImageUploadUncheckedCreateNestedManyWithoutUserInput
+    channelReads?: ChannelReadUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutEmailVerificationCodeInput = {
@@ -29130,6 +30881,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
     imageUploads?: ImageUploadUpdateManyWithoutUserNestedInput
+    channelReads?: ChannelReadUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutEmailVerificationCodeInput = {
@@ -29152,6 +30904,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
     imageUploads?: ImageUploadUncheckedUpdateManyWithoutUserNestedInput
+    channelReads?: ChannelReadUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ChannelCreateWithoutMessagesInput = {
@@ -29163,6 +30916,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     channelMembers?: ChannelMemberCreateNestedManyWithoutChannelInput
+    reads?: ChannelReadCreateNestedManyWithoutChannelInput
     company: CompanyCreateNestedOneWithoutChannelsInput
   }
 
@@ -29176,6 +30930,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     channelMembers?: ChannelMemberUncheckedCreateNestedManyWithoutChannelInput
+    reads?: ChannelReadUncheckedCreateNestedManyWithoutChannelInput
   }
 
   export type ChannelCreateOrConnectWithoutMessagesInput = {
@@ -29232,6 +30987,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     channelMembers?: ChannelMemberUpdateManyWithoutChannelNestedInput
+    reads?: ChannelReadUpdateManyWithoutChannelNestedInput
     company?: CompanyUpdateOneRequiredWithoutChannelsNestedInput
   }
 
@@ -29245,6 +31001,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     channelMembers?: ChannelMemberUncheckedUpdateManyWithoutChannelNestedInput
+    reads?: ChannelReadUncheckedUpdateManyWithoutChannelNestedInput
   }
 
   export type ChannelMemberUpsertWithoutMessagesInput = {
@@ -29341,6 +31098,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
     imageUploads?: ImageUploadCreateNestedManyWithoutUserInput
+    channelReads?: ChannelReadCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCreatedJobsInput = {
@@ -29363,6 +31121,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
     imageUploads?: ImageUploadUncheckedCreateNestedManyWithoutUserInput
+    channelReads?: ChannelReadUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreatedJobsInput = {
@@ -29446,6 +31205,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
     imageUploads?: ImageUploadUpdateManyWithoutUserNestedInput
+    channelReads?: ChannelReadUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedJobsInput = {
@@ -29468,6 +31228,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
     imageUploads?: ImageUploadUncheckedUpdateManyWithoutUserNestedInput
+    channelReads?: ChannelReadUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CompanyCreateWithoutPostsInput = {
@@ -29529,6 +31290,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
     imageUploads?: ImageUploadCreateNestedManyWithoutUserInput
+    channelReads?: ChannelReadCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCompanyPostsInput = {
@@ -29551,6 +31313,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
     imageUploads?: ImageUploadUncheckedCreateNestedManyWithoutUserInput
+    channelReads?: ChannelReadUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCompanyPostsInput = {
@@ -29654,6 +31417,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
     imageUploads?: ImageUploadUpdateManyWithoutUserNestedInput
+    channelReads?: ChannelReadUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCompanyPostsInput = {
@@ -29676,6 +31440,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
     imageUploads?: ImageUploadUncheckedUpdateManyWithoutUserNestedInput
+    channelReads?: ChannelReadUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CompanyPostAcknowledgmentUpsertWithWhereUniqueWithoutPostInput = {
@@ -29739,6 +31504,7 @@ export namespace Prisma {
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
     imageUploads?: ImageUploadCreateNestedManyWithoutUserInput
+    channelReads?: ChannelReadCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutPostAcknowledgmentsInput = {
@@ -29761,6 +31527,7 @@ export namespace Prisma {
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
     imageUploads?: ImageUploadUncheckedCreateNestedManyWithoutUserInput
+    channelReads?: ChannelReadUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutPostAcknowledgmentsInput = {
@@ -29830,6 +31597,7 @@ export namespace Prisma {
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
     imageUploads?: ImageUploadUpdateManyWithoutUserNestedInput
+    channelReads?: ChannelReadUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPostAcknowledgmentsInput = {
@@ -29852,6 +31620,7 @@ export namespace Prisma {
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
     imageUploads?: ImageUploadUncheckedUpdateManyWithoutUserNestedInput
+    channelReads?: ChannelReadUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutTwoFactorInput = {
@@ -29874,6 +31643,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
     imageUploads?: ImageUploadCreateNestedManyWithoutUserInput
+    channelReads?: ChannelReadCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTwoFactorInput = {
@@ -29896,6 +31666,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
     imageUploads?: ImageUploadUncheckedCreateNestedManyWithoutUserInput
+    channelReads?: ChannelReadUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTwoFactorInput = {
@@ -29934,6 +31705,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
     imageUploads?: ImageUploadUpdateManyWithoutUserNestedInput
+    channelReads?: ChannelReadUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTwoFactorInput = {
@@ -29956,6 +31728,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
     imageUploads?: ImageUploadUncheckedUpdateManyWithoutUserNestedInput
+    channelReads?: ChannelReadUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutTwoFactorChallengesInput = {
@@ -29978,6 +31751,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
     imageUploads?: ImageUploadCreateNestedManyWithoutUserInput
+    channelReads?: ChannelReadCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTwoFactorChallengesInput = {
@@ -30000,6 +31774,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
     imageUploads?: ImageUploadUncheckedCreateNestedManyWithoutUserInput
+    channelReads?: ChannelReadUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTwoFactorChallengesInput = {
@@ -30038,6 +31813,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
     imageUploads?: ImageUploadUpdateManyWithoutUserNestedInput
+    channelReads?: ChannelReadUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTwoFactorChallengesInput = {
@@ -30060,6 +31836,7 @@ export namespace Prisma {
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
     imageUploads?: ImageUploadUncheckedUpdateManyWithoutUserNestedInput
+    channelReads?: ChannelReadUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CompanyMemberCreateManyCompanyInput = {
@@ -30136,6 +31913,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: MessageUpdateManyWithoutChannelNestedInput
     channelMembers?: ChannelMemberUpdateManyWithoutChannelNestedInput
+    reads?: ChannelReadUpdateManyWithoutChannelNestedInput
   }
 
   export type ChannelUncheckedUpdateWithoutCompanyInput = {
@@ -30148,6 +31926,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: MessageUncheckedUpdateManyWithoutChannelNestedInput
     channelMembers?: ChannelMemberUncheckedUpdateManyWithoutChannelNestedInput
+    reads?: ChannelReadUncheckedUpdateManyWithoutChannelNestedInput
   }
 
   export type ChannelUncheckedUpdateManyWithoutCompanyInput = {
@@ -30274,6 +32053,11 @@ export namespace Prisma {
     removedAt?: Date | string | null
   }
 
+  export type ChannelReadCreateManyChannelInput = {
+    userId: string
+    lastReadAt: Date | string
+  }
+
   export type MessageUpdateWithoutChannelInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
@@ -30340,6 +32124,21 @@ export namespace Prisma {
     canModerateMessages?: BoolFieldUpdateOperationsInput | boolean
     joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     removedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ChannelReadUpdateWithoutChannelInput = {
+    lastReadAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutChannelReadsNestedInput
+  }
+
+  export type ChannelReadUncheckedUpdateWithoutChannelInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    lastReadAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelReadUncheckedUpdateManyWithoutChannelInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    lastReadAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MessageCreateManyAuthorChannelMemberInput = {
@@ -30466,6 +32265,11 @@ export namespace Prisma {
     key: string
     createdAt?: Date | string
     confirmedAt?: Date | string | null
+  }
+
+  export type ChannelReadCreateManyUserInput = {
+    channelId: string
+    lastReadAt: Date | string
   }
 
   export type TwoFactorChallengeUpdateWithoutUserInput = {
@@ -30725,6 +32529,21 @@ export namespace Prisma {
     key?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     confirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ChannelReadUpdateWithoutUserInput = {
+    lastReadAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    channel?: ChannelUpdateOneRequiredWithoutReadsNestedInput
+  }
+
+  export type ChannelReadUncheckedUpdateWithoutUserInput = {
+    channelId?: StringFieldUpdateOperationsInput | string
+    lastReadAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelReadUncheckedUpdateManyWithoutUserInput = {
+    channelId?: StringFieldUpdateOperationsInput | string
+    lastReadAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CompanyPostAcknowledgmentCreateManyPostInput = {
