@@ -49,6 +49,8 @@ export const profileRouter = createTRPCRouter({
     .input(imageFileSchema)
     .mutation(async ({ ctx, input }) => {
       return createImageUpload(
+        ctx.db,
+        ctx.session.user.id,
         userImageFolder(ctx.session.user.id),
         "avatar",
         input,
@@ -59,7 +61,13 @@ export const profileRouter = createTRPCRouter({
     .input(z.object({ key: imageKeySchema }).strict())
     .mutation(async ({ ctx, input }) => {
       const folder = userImageFolder(ctx.session.user.id);
-      const image = await confirmImageUpload(folder, "avatar", input.key);
+      const image = await confirmImageUpload(
+        ctx.db,
+        ctx.session.user.id,
+        folder,
+        "avatar",
+        input.key,
+      );
       return replaceAvatar(ctx.db, ctx.session.user.id, folder, image);
     }),
 

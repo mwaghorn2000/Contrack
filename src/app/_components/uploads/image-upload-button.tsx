@@ -2,7 +2,9 @@
 
 import { useRef, useState } from "react";
 import {
+  IMAGE_KINDS,
   imageFileError,
+  imageSelectionError,
   type ImageContentType,
   type ImageKind,
 } from "~/lib/image-upload";
@@ -13,9 +15,41 @@ type UploadTarget = {
   headers: Record<string, string>;
 };
 
+/**
+ * Re-encodes the image so photo metadata such as GPS location is not uploaded,
+ * and scales it down to the size it is displayed at. GIFs are kept as they are
+ * so animations survive.
+ */
+async function prepareImage(file: File, kind: ImageKind) {
+  if (file.type === "image/gif") return file;
+  let bitmap: ImageBitmap;
+  try {
+    bitmap = await createImageBitmap(file);
+  } catch {
+    throw new Error("This image could not be read. Try a different file.");
+  }
+  const { maxDimension } = IMAGE_KINDS[kind];
+  const scale = Math.min(
+    1,
+    maxDimension / Math.max(bitmap.width, bitmap.height),
+  );
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.round(bitmap.width * scale);
+  canvas.height = Math.round(bitmap.height * scale);
+  canvas.getContext("2d")?.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  bitmap.close();
+  const blob = await new Promise<Blob | null>((resolve) =>
+    canvas.toBlob(resolve, file.type, 0.9),
+  );
+  // Some browsers cannot encode WebP and fall back to PNG; either is allowed.
+  if (!blob) throw new Error("This image could not be processed.");
+  return new File([blob], file.name, { type: blob.type });
+}
+
 /** Requests an upload URL, sends the file directly to storage, then confirms it. */
 export async function uploadImage<T>(
-  file: File,
+  original: File,
+  kind: ImageKind,
   steps: {
     create: (file: {
       contentType: ImageContentType;
@@ -24,7 +58,9 @@ export async function uploadImage<T>(
     confirm: (key: string) => Promise<T>;
   },
 ) {
-  // The file type was checked by imageFileError before uploading.
+  const file = await prepareImage(original, kind);
+  const error = imageFileError(kind, file);
+  if (error) throw new Error(error);
   const target = await steps.create({
     contentType: file.type as ImageContentType,
     size: file.size,
@@ -145,7 +181,7 @@ export default function ImageUploadButton({
           const file = event.target.files?.[0];
           event.target.value = "";
           if (!file) return;
-          const fileError = imageFileError(kind, file);
+          const fileError = imageSelectionError(kind, file);
           if (fileError) {
             setError(fileError);
             return;

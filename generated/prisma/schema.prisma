@@ -8,8 +8,11 @@ generator client {
 
 // prisma/schema.prisma
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  // Migrations need a direct (non-pooled) connection: the pooler can strand
+  // Prisma's migration advisory lock on a shared connection.
+  directUrl = env("DIRECT_URL")
 }
 
 enum CompanyRole {
@@ -138,6 +141,21 @@ model User {
   companyPosts        CompanyPost[]
   postAcknowledgments CompanyPostAcknowledgment[]
   sentInvitations     CompanyInvitation[]
+  imageUploads        ImageUpload[]
+}
+
+// Upload URLs issued to a user. Confirming an upload requires its record, and
+// recent records enforce the upload rate limit.
+model ImageUpload {
+  id          String    @id @default(cuid())
+  key         String    @unique
+  userId      String
+  createdAt   DateTime  @default(now())
+  confirmedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
 }
 
 model CompanyInvitation {

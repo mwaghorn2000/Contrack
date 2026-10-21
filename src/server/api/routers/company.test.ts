@@ -18,6 +18,7 @@ vi.mock("~/server/db", () => ({ db: {} }));
 vi.mock("~/server/storage", () => {
   const base = "https://images.example.com/";
   return {
+    UPLOAD_CACHE_CONTROL: "public, max-age=31536000, immutable",
     storageConfigured: vi.fn(() => true),
     publicUrl: (key: string) => `${base}${key}`,
     keyFromPublicUrl: (url: string) =>
@@ -96,7 +97,6 @@ it("createCompany trims the name and saves optional profile fields", async () =>
   const input = {
     name: "  Acme  ",
     description: "Building things",
-    image: "https://example.com/logo.png",
     website: "https://example.com",
     email: "hello@example.com",
     phone: "12345",
@@ -107,10 +107,9 @@ it("createCompany trims the name and saves optional profile fields", async () =>
   ).toMatchObject({ ...input, name: "Acme" });
 });
 
-it("createCompany accepts null image and description", async () => {
+it("createCompany accepts a null description", async () => {
   const company = await caller.createCompany({
     name: "Acme",
-    image: null,
     description: null,
   });
   expect(company.image).toBeNull();
@@ -201,12 +200,15 @@ it("createCompany rejects a 301-character description without saving anything", 
   expect(await db.companyMember.count()).toBe(1);
 });
 
-it("createCompany rejects an invalid image URL without saving anything", async () => {
-  await expect(
-    caller.createCompany({ name: "Acme", image: "not-a-url" }),
-  ).rejects.toMatchObject({ code: "BAD_REQUEST" });
-  expect(await db.company.count()).toBe(1);
-  expect(await db.companyMember.count()).toBe(1);
+it("createCompany and updateCompany ignore a pasted logo URL", async () => {
+  // Logos can only be set through uploads.
+  const input = { name: "Acme", image: "https://example.com/logo.png" };
+  const company = await caller.createCompany(input);
+  expect(company.image).toBeNull();
+  await caller.updateCompany({ companyId: company.id, ...input });
+  expect(
+    (await db.company.findUniqueOrThrow({ where: { id: company.id } })).image,
+  ).toBeNull();
 });
 
 it("createCompany rejects an invalid website URL without saving anything", async () => {
@@ -1829,6 +1831,22 @@ describe("company images", () => {
     });
     await caller.removeImage({ companyId, kind: "logo" });
     expect(deleteObject).not.toHaveBeenCalled();
+  });
+
+  it("setImage rejects an upload requested by another admin", async () => {
+    const admin = await callerWithRole("ADMIN");
+    const key = await uploadedKey("logo");
+    await expect(
+      admin.setImage({ companyId, kind: "logo", key }),
+    ).rejects.toMatchObject({ code: "NOT_FOUND" });
+  });
+
+  it("setImage confirms each upload only once", async () => {
+    const key = await uploadedKey("logo");
+    await caller.setImage({ companyId, kind: "logo", key });
+    await expect(
+      caller.setImage({ companyId, kind: "logo", key }),
+    ).rejects.toMatchObject({ code: "NOT_FOUND" });
   });
 
   it("deleteCompany deletes the company's images", async () => {

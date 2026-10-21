@@ -13,6 +13,8 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { env } from "~/env";
 
 const UPLOAD_URL_TTL_SECONDS = 5 * 60;
+// Each upload has a unique key, so it can be cached indefinitely.
+export const UPLOAD_CACHE_CONTROL = "public, max-age=31536000, immutable";
 
 let client: S3Client | undefined;
 
@@ -37,6 +39,8 @@ function config() {
     endpoint: S3_ENDPOINT,
     // Neon and other S3-compatible providers require path-style addressing.
     forcePathStyle: Boolean(S3_ENDPOINT),
+    // A presigned upload has no body to checksum when the URL is created.
+    requestChecksumCalculation: "WHEN_REQUIRED",
     credentials: {
       accessKeyId: S3_ACCESS_KEY_ID,
       secretAccessKey: S3_SECRET_ACCESS_KEY,
@@ -71,7 +75,15 @@ export function keyFromPublicUrl(url: string) {
   return url.startsWith(prefix) ? url.slice(prefix.length) : null;
 }
 
-export async function createUploadUrl(key: string, contentType: string) {
+/**
+ * Signs a PUT for exactly this type and size: storage rejects any upload whose
+ * Content-Type, Content-Length or Cache-Control differs.
+ */
+export async function createUploadUrl(
+  key: string,
+  contentType: string,
+  size: number,
+) {
   const { client, bucket } = requireConfig();
   return getSignedUrl(
     client,
@@ -79,10 +91,17 @@ export async function createUploadUrl(key: string, contentType: string) {
       Bucket: bucket,
       Key: key,
       ContentType: contentType,
-      // Each upload has a unique key, so it can be cached indefinitely.
-      CacheControl: "public, max-age=31536000, immutable",
+      ContentLength: size,
+      CacheControl: UPLOAD_CACHE_CONTROL,
     }),
-    { expiresIn: UPLOAD_URL_TTL_SECONDS },
+    {
+      expiresIn: UPLOAD_URL_TTL_SECONDS,
+      signableHeaders: new Set([
+        "content-type",
+        "content-length",
+        "cache-control",
+      ]),
+    },
   );
 }
 

@@ -28,7 +28,7 @@ export default function CompanyImageEditButton({
       label={kind === "logo" ? "Change logo" : "Change banner"}
       className={className}
       onUpload={async (file) => {
-        await uploadImage(file, {
+        await uploadImage(file, kind, {
           create: (file) =>
             createUpload.mutateAsync({ companyId, kind, ...file }),
           confirm: (key) => setImage.mutateAsync({ companyId, kind, key }),
