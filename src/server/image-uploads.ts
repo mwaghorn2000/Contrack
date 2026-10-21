@@ -7,7 +7,9 @@ import {
   imageFileError,
   type ImageKind,
 } from "~/lib/image-upload";
+import type { Prisma } from "../../generated/prisma";
 import {
+  UPLOAD_CACHE_CONTROL,
   createUploadUrl,
   deleteObject,
   getObjectInfo,
@@ -42,7 +44,12 @@ function requireStorage() {
     });
 }
 
+export const IMAGE_UPLOADS_PER_HOUR = 30;
+const HOUR_MS = 60 * 60 * 1000;
+
 export async function createImageUpload(
+  db: Prisma.TransactionClient,
+  userId: string,
   folder: string,
   kind: ImageKind,
   file: { contentType: keyof typeof IMAGE_CONTENT_TYPES; size: number },
@@ -53,16 +60,35 @@ export async function createImageUpload(
     size: file.size,
   });
   if (error) throw new TRPCError({ code: "BAD_REQUEST", message: error });
+  const recent = await db.imageUpload.count({
+    where: { userId, createdAt: { gt: new Date(Date.now() - HOUR_MS) } },
+  });
+  if (recent >= IMAGE_UPLOADS_PER_HOUR)
+    throw new TRPCError({
+      code: "TOO_MANY_REQUESTS",
+      message: "You have uploaded too many images. Please try again later.",
+    });
   const key = `${folder}/${randomUUID()}.${IMAGE_CONTENT_TYPES[file.contentType]}`;
+  const uploadUrl = await createUploadUrl(key, file.contentType, file.size);
+  await db.imageUpload.create({ data: { key, userId } });
   return {
     key,
-    uploadUrl: await createUploadUrl(key, file.contentType),
-    headers: { "Content-Type": file.contentType },
+    uploadUrl,
+    // Storage rejects the upload unless these exact signed headers are sent.
+    headers: {
+      "Content-Type": file.contentType,
+      "Cache-Control": UPLOAD_CACHE_CONTROL,
+    },
   };
 }
 
-/** Checks that an uploaded object belongs to the folder and is a valid image. */
+/**
+ * Claims an upload this user requested in the last hour, then checks that the
+ * stored object is a valid image. Each upload can be confirmed only once.
+ */
 export async function confirmImageUpload(
+  db: Prisma.TransactionClient,
+  userId: string,
   folder: string,
   kind: ImageKind,
   key: string,
@@ -73,7 +99,16 @@ export async function confirmImageUpload(
       code: "FORBIDDEN",
       message: "This upload does not belong to you.",
     });
-  const object = await getObjectInfo(key);
+  const claimed = await db.imageUpload.updateMany({
+    where: {
+      key,
+      userId,
+      confirmedAt: null,
+      createdAt: { gt: new Date(Date.now() - HOUR_MS) },
+    },
+    data: { confirmedAt: new Date() },
+  });
+  const object = claimed.count === 1 ? await getObjectInfo(key) : null;
   if (!object)
     throw new TRPCError({
       code: "NOT_FOUND",

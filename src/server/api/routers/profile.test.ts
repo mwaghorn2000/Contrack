@@ -2,10 +2,12 @@ import { afterAll, beforeAll, beforeEach, expect, it, vi } from "vitest";
 import type { PrismaClient } from "../../../../generated/prisma";
 import { clearTestDatabase, startTestDatabase } from "~/test/database";
 import {
+  createUploadUrl,
   deleteObject,
   getObjectInfo,
   storageConfigured,
 } from "~/server/storage";
+import { IMAGE_UPLOADS_PER_HOUR } from "~/server/image-uploads";
 import { profileRouter } from "./profile";
 
 vi.mock("~/server/auth", () => ({ auth: vi.fn() }));
@@ -13,6 +15,7 @@ vi.mock("~/server/db", () => ({ db: {} }));
 vi.mock("~/server/storage", () => {
   const base = "https://images.example.com/";
   return {
+    UPLOAD_CACHE_CONTROL: "public, max-age=31536000, immutable",
     storageConfigured: vi.fn(() => true),
     publicUrl: (key: string) => `${base}${key}`,
     keyFromPublicUrl: (url: string) =>
@@ -285,7 +288,44 @@ it("createAvatarUpload returns a signed upload in the user's folder", async () =
     new RegExp(`^users/${userId}/avatar/[0-9a-f-]{36}\\.webp$`),
   );
   expect(upload.uploadUrl).toBe(`https://upload.example.com/${upload.key}`);
-  expect(upload.headers).toEqual({ "Content-Type": "image/webp" });
+  // The URL is signed for this exact type and size, so these must be sent.
+  expect(createUploadUrl).toHaveBeenLastCalledWith(
+    upload.key,
+    "image/webp",
+    2048,
+  );
+  expect(upload.headers).toEqual({
+    "Content-Type": "image/webp",
+    "Cache-Control": "public, max-age=31536000, immutable",
+  });
+  expect(
+    await db.imageUpload.findUniqueOrThrow({ where: { key: upload.key } }),
+  ).toMatchObject({ userId, confirmedAt: null });
+});
+
+it("createAvatarUpload limits how many uploads a user can request per hour", async () => {
+  await db.imageUpload.createMany({
+    data: Array.from({ length: IMAGE_UPLOADS_PER_HOUR }, (_, index) => ({
+      key: `users/${userId}/avatar/old-${index}.png`,
+      userId,
+    })),
+  });
+  await expect(
+    caller.createAvatarUpload({ contentType: "image/png", size: 10 }),
+  ).rejects.toMatchObject({ code: "TOO_MANY_REQUESTS" });
+});
+
+it("createAvatarUpload allows new uploads once older requests are an hour old", async () => {
+  await db.imageUpload.createMany({
+    data: Array.from({ length: IMAGE_UPLOADS_PER_HOUR }, (_, index) => ({
+      key: `users/${userId}/avatar/old-${index}.png`,
+      userId,
+      createdAt: new Date(Date.now() - 61 * 60 * 1000),
+    })),
+  });
+  await expect(
+    caller.createAvatarUpload({ contentType: "image/png", size: 10 }),
+  ).resolves.toHaveProperty("key");
 });
 
 it("createAvatarUpload rejects unsupported image types", async () => {
@@ -341,6 +381,33 @@ it("setAvatar rejects another user's upload", async () => {
   expect(
     (await db.user.findUniqueOrThrow({ where: { id: userId } })).image,
   ).toBe("https://example.com/avatar.png");
+});
+
+it("setAvatar rejects a key in the user's folder that was never requested", async () => {
+  const key = `users/${userId}/avatar/00000000-0000-4000-8000-000000000000.png`;
+  await expect(caller.setAvatar({ key })).rejects.toMatchObject({
+    code: "NOT_FOUND",
+  });
+  expect(getObjectInfo).not.toHaveBeenCalled();
+});
+
+it("setAvatar confirms each upload only once", async () => {
+  const key = await uploadedAvatarKey();
+  await caller.setAvatar({ key });
+  await expect(caller.setAvatar({ key })).rejects.toMatchObject({
+    code: "NOT_FOUND",
+  });
+});
+
+it("setAvatar rejects an upload requested more than an hour ago", async () => {
+  const key = await uploadedAvatarKey();
+  await db.imageUpload.update({
+    where: { key },
+    data: { createdAt: new Date(Date.now() - 61 * 60 * 1000) },
+  });
+  await expect(caller.setAvatar({ key })).rejects.toMatchObject({
+    code: "NOT_FOUND",
+  });
 });
 
 it("setAvatar rejects keys outside the upload format", async () => {

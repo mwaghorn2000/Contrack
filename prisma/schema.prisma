@@ -142,6 +142,21 @@ model User {
     companyPosts        CompanyPost[]
     postAcknowledgments CompanyPostAcknowledgment[]
     sentInvitations CompanyInvitation[]
+    imageUploads    ImageUpload[]
+}
+
+// Upload URLs issued to a user. Confirming an upload requires its record, and
+// recent records enforce the upload rate limit.
+model ImageUpload {
+    id          String    @id @default(cuid())
+    key         String    @unique
+    userId      String
+    createdAt   DateTime  @default(now())
+    confirmedAt DateTime?
+
+    user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId, createdAt])
 }
 
 model CompanyInvitation {

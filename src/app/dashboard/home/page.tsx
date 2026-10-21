@@ -2,6 +2,7 @@ import CompanyHeader from "~/app/_components/_dashboard-components/_home-compone
 import CompanyPosts from "~/app/_components/_dashboard-components/_home-components/company-posts";
 import { api } from "~/trpc/server";
 import { withCompanyAccess } from "~/server/company-access";
+import { keyFromPublicUrl } from "~/server/storage";
 
 export default async function HomePage({
   searchParams,
@@ -28,7 +29,12 @@ export default async function HomePage({
         companyId={companyId}
         canManage={canManage}
         name={company.name}
-        image={company.image ?? "/placeholder-logo.png"}
+        // Older companies may have a pasted logo URL that next/image rejects.
+        image={
+          company.image && keyFromPublicUrl(company.image)
+            ? company.image
+            : "/placeholder-logo.png"
+        }
         bannerImage={company.bannerImage ?? "/placeholder-banner.png"}
         description={company.description ?? ""}
         website={company.website ?? ""}

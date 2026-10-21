@@ -104,7 +104,7 @@ export default function ProfileForm({
             hasImage={Boolean(profile.image)}
             onUpload={async (file) =>
               refreshProfile(
-                await uploadImage(file, {
+                await uploadImage(file, "avatar", {
                   create: (file) => createAvatarUpload.mutateAsync(file),
                   confirm: (key) => setAvatar.mutateAsync({ key }),
                 }),

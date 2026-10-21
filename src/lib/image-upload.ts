@@ -11,9 +11,9 @@ export const IMAGE_CONTENT_TYPES = {
 export type ImageContentType = keyof typeof IMAGE_CONTENT_TYPES;
 
 export const IMAGE_KINDS = {
-  avatar: { maxBytes: 5 * 1024 * 1024 },
-  logo: { maxBytes: 5 * 1024 * 1024 },
-  banner: { maxBytes: 10 * 1024 * 1024 },
+  avatar: { maxBytes: 5 * 1024 * 1024, maxDimension: 512 },
+  logo: { maxBytes: 5 * 1024 * 1024, maxDimension: 512 },
+  banner: { maxBytes: 10 * 1024 * 1024, maxDimension: 2400 },
 } as const;
 
 export type ImageKind = keyof typeof IMAGE_KINDS;
@@ -40,4 +40,17 @@ export function imageFileError(
     return `Images must be ${maxBytes / 1024 / 1024} MB or smaller.`;
   if (file.size <= 0) return "This image is empty.";
   return null;
+}
+
+/**
+ * Checks a file chosen in the browser. Other images are resized before upload,
+ * so only GIFs, which are uploaded unchanged, need their size checked here.
+ */
+export function imageSelectionError(
+  kind: ImageKind,
+  file: { type: string; size: number },
+) {
+  return file.type === "image/gif"
+    ? imageFileError(kind, file)
+    : imageFileError(kind, { type: file.type, size: 1 });
 }

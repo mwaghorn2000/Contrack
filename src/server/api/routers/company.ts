@@ -152,7 +152,6 @@ const createCompanySchema = z.object({
     .trim()
     .min(1, "Company name must not left empty")
     .max(100, "Company name must be less than 100 characters"),
-  image: z.string().url().nullish(),
   description: z
     .string()
     .max(300, "Company description must be less than 301 characters")
@@ -320,7 +319,6 @@ export const companyRouter = createTRPCRouter({
         const company = await tx.company.create({
           data: {
             name: input.name,
-            image: input.image,
             description: input.description,
             website: input.website,
             email: input.email,
@@ -393,7 +391,6 @@ export const companyRouter = createTRPCRouter({
         },
         data: {
           name: input.name,
-          image: input.image,
           description: input.description,
           website: input.website,
           email: input.email,
@@ -417,6 +414,8 @@ export const companyRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       await requireCompanyManager(ctx.db, input.companyId, ctx.session.user.id);
       return createImageUpload(
+        ctx.db,
+        ctx.session.user.id,
         companyImageFolder(input.companyId, input.kind),
         input.kind,
         input,
@@ -428,6 +427,8 @@ export const companyRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       await requireCompanyManager(ctx.db, input.companyId, ctx.session.user.id);
       const url = await confirmImageUpload(
+        ctx.db,
+        ctx.session.user.id,
         companyImageFolder(input.companyId, input.kind),
         input.kind,
         input.key,

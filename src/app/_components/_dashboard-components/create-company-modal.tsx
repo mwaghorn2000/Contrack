@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 import { api } from "~/trpc/react";
-import { imageFileError } from "~/lib/image-upload";
+import { imageSelectionError } from "~/lib/image-upload";
 import { uploadImage } from "~/app/_components/uploads/image-upload-button";
 
 const profileFields = [
@@ -127,7 +127,7 @@ export default function CreateCompanyModal({
           if (logo) {
             setUploadingLogo(true);
             try {
-              await uploadImage(logo, {
+              await uploadImage(logo, "logo", {
                 create: (file) =>
                   createLogoUpload.mutateAsync({
                     companyId: company.id,
@@ -215,7 +215,7 @@ export default function CreateCompanyModal({
             accept="image/jpeg,image/png,image/webp,image/gif"
             onChange={(event) => {
               const file = event.target.files?.[0] ?? null;
-              const error = file ? imageFileError("logo", file) : null;
+              const error = file ? imageSelectionError("logo", file) : null;
               setLogoError(error ?? "");
               setLogo(error ? null : file);
               if (error) event.target.value = "";
@@ -230,7 +230,7 @@ export default function CreateCompanyModal({
             className="mt-1 w-full text-sm text-gray-700 file:mr-3 file:rounded-md file:border file:border-gray-300 file:bg-white file:px-3 file:py-1.5 file:text-sm file:font-medium hover:file:bg-gray-50 disabled:opacity-50"
           />
           <p id="company-logo-help" className="mt-1 text-xs text-gray-500">
-            JPEG, PNG, WebP, or GIF up to 5 MB.
+            JPEG, PNG, WebP, or GIF (GIFs up to 5 MB).
           </p>
           {logoError && (
             <p
