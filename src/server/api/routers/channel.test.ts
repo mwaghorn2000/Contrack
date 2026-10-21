@@ -312,7 +312,7 @@ it("listChannels returns an empty array if there are no channels in the company"
 });
 
 it("listChannels returns only channels that the user is a member of", async () => {
-  const channel1 = await caller.createChannel({
+  await caller.createChannel({
     name: "Member Channel",
     companyId,
   });
@@ -333,6 +333,8 @@ it("listChannels returns only channels that the user is a member of", async () =
 
 it("listChannels returns channels in the correct order of posts", async () => {
   const db = database!.db;
+  const channel1 = await caller.createChannel({ name: "Channel 1", companyId });
+  const channel2 = await caller.createChannel({ name: "Channel 2", companyId });
 
   const member1 = await db.channelMember.findFirstOrThrow({
     where: { channelId: channel1.id, userId },
