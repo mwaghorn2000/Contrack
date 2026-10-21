@@ -3,38 +3,60 @@
 import { useEffect } from "react";
 import type { ChatMessage } from "~/lib/chat-message";
 import { api } from "~/trpc/react";
-import { useAddMessageToCache } from "./message-cache";
+import {
+  useAddMessageToCache,
+  useRemoveMessageFromCache,
+  useReplaceMessageInCache,
+} from "./message-cache";
 import { useRealtime } from "./realtime-provider";
 
-/** Receives new messages for the open conversation as they are sent. */
+type MessageEvent = ChatMessage & {
+  postedAt: string;
+  editedAt: string | null;
+};
+
+// Events arrive as JSON, so dates are strings.
+function parseMessage(data: unknown): ChatMessage {
+  const message = data as MessageEvent;
+  return {
+    ...message,
+    postedAt: new Date(message.postedAt),
+    editedAt: message.editedAt ? new Date(message.editedAt) : null,
+  };
+}
+
+/** Receives new, edited and deleted messages for the open conversation. */
 export function useConversationEvents(channelId: string) {
   const realtime = useRealtime();
   const utils = api.useUtils();
   const addMessage = useAddMessageToCache(channelId);
+  const replaceMessage = useReplaceMessageInCache(channelId);
+  const removeMessage = useRemoveMessageFromCache(channelId);
 
   useEffect(() => {
     if (!realtime) return;
     const name = `private-conversation-${channelId}`;
     let subscribedBefore = false;
-    const stopMessages = realtime.listen(name, "message", (data) => {
-      const message = data as ChatMessage & { postedAt: string };
-      // Events arrive as JSON, so dates are strings.
-      addMessage({ ...message, postedAt: new Date(message.postedAt) });
-    });
-    // After a reconnect, fetch anything sent while the connection was down.
-    const stopSubscribed = realtime.listen(
-      name,
-      "pusher:subscription_succeeded",
-      () => {
+    const stops = [
+      realtime.listen(name, "message", (data) =>
+        addMessage(parseMessage(data)),
+      ),
+      realtime.listen(name, "message-updated", (data) =>
+        replaceMessage(parseMessage(data)),
+      ),
+      realtime.listen(name, "message-deleted", (data) =>
+        removeMessage((data as { id: string }).id),
+      ),
+      // After a reconnect, fetch anything sent while the connection was down.
+      realtime.listen(name, "pusher:subscription_succeeded", () => {
         if (subscribedBefore) void utils.message.list.invalidate({ channelId });
         subscribedBefore = true;
-      },
-    );
+      }),
+    ];
     return () => {
-      stopMessages();
-      stopSubscribed();
+      for (const stop of stops) stop();
     };
-  }, [realtime, channelId, utils, addMessage]);
+  }, [realtime, channelId, utils, addMessage, replaceMessage, removeMessage]);
 
   return { live: realtime !== null };
 }

@@ -1,12 +1,18 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import { Prisma } from "../../../../generated/prisma";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { imageFileSchema } from "~/lib/image-upload";
-import { sendMessageBodySchema } from "~/lib/chat-message";
-import { requireConversationAccess } from "~/server/chat-access";
+import { messageTextSchema, sendMessageBodySchema } from "~/lib/chat-message";
+import {
+  getConversationAccess,
+  requireConversationAccess,
+} from "~/server/chat-access";
 import { unreadCounts, visibleConversations } from "~/server/chat-unread";
 import { channelImageFolder, createImageUpload } from "~/server/image-uploads";
 import {
+  cleanUpDeletedMessage,
+  messageEditRule,
   messageRowSelect,
   prepareMessage,
   serializeMessage,
@@ -18,6 +24,26 @@ export const MESSAGES_PER_WINDOW = 10;
 const RATE_LIMIT_WINDOW_MS = 10_000;
 
 const channelIdSchema = z.object({ channelId: z.string().cuid() });
+
+const messageIdSchema = z.object({ messageId: z.string().cuid() });
+
+/** Loads a message the user can see, with their permissions in its conversation. */
+async function requireMessage(
+  db: Prisma.TransactionClient,
+  userId: string,
+  messageId: string,
+) {
+  const row = await db.message.findFirst({
+    where: { id: messageId, deletedAt: null },
+    select: messageRowSelect,
+  });
+  // Someone who can't see the conversation can't tell the message exists.
+  const access =
+    row && (await getConversationAccess(db, userId, row.channelId));
+  if (!row || !access)
+    throw new TRPCError({ code: "NOT_FOUND", message: "Message not found." });
+  return { row, access, isAuthor: row.authorChannelMember.user.id === userId };
+}
 
 export const messageRouter = createTRPCRouter({
   /** Newest first. Pass the returned cursor to load older messages. */
@@ -126,6 +152,74 @@ export const messageRouter = createTRPCRouter({
       const message = await serializeMessage(row);
       await publishToConversation(input.channelId, "message", message);
       return message;
+    }),
+
+  /** Changes the text of your own message (an image's caption). */
+  edit: protectedProcedure
+    .input(messageIdSchema.extend({ content: messageTextSchema }))
+    .mutation(async ({ ctx, input }) => {
+      const { row, access, isAuthor } = await requireMessage(
+        ctx.db,
+        ctx.session.user.id,
+        input.messageId,
+      );
+      if (!isAuthor || !access.permissions.canSendMessages)
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You can only edit your own messages.",
+        });
+      const rule = messageEditRule(row.type);
+      if (!rule)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "This kind of message can't be edited.",
+        });
+      if (!rule.allowEmpty && !input.content)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Enter a message.",
+        });
+      if (input.content === row.content) return serializeMessage(row);
+      const updated = await ctx.db.message.update({
+        where: { id: row.id },
+        data: { content: input.content, editedAt: new Date() },
+        select: messageRowSelect,
+      });
+      const message = await serializeMessage(updated);
+      await publishToConversation(row.channelId, "message-updated", message);
+      return message;
+    }),
+
+  /** Deletes your own message, or anyone's if you can moderate the channel. */
+  delete: protectedProcedure
+    .input(messageIdSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { row, access, isAuthor } = await requireMessage(
+        ctx.db,
+        ctx.session.user.id,
+        input.messageId,
+      );
+      if (!isAuthor && !access.permissions.canModerateMessages)
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You can't delete other people's messages here.",
+        });
+      // Keep the row so pagination and read positions stay consistent, but
+      // remove what was said.
+      const deleted = await ctx.db.message.updateMany({
+        where: { id: row.id, deletedAt: null },
+        data: { deletedAt: new Date(), content: "", data: Prisma.DbNull },
+      });
+      if (deleted.count === 0)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Message not found.",
+        });
+      await cleanUpDeletedMessage(row);
+      await publishToConversation(row.channelId, "message-deleted", {
+        id: row.id,
+      });
+      return { success: true };
     }),
 
   /** Marks everything in the conversation up to now as read. */

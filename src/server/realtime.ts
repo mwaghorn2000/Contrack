@@ -58,9 +58,12 @@ async function trigger(channels: string[], event: string, data: unknown) {
   }
 }
 
+export type ConversationEvent =
+  "message" | "message-updated" | "message-deleted";
+
 export async function publishToConversation(
   channelId: string,
-  event: "message",
+  event: ConversationEvent,
   data: unknown,
 ) {
   await trigger([conversationChannelName(channelId)], event, data);

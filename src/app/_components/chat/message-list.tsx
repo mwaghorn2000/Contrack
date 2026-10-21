@@ -26,6 +26,8 @@ function sameDay(a: Date, b: Date) {
 export default function MessageList({
   channelId,
   currentUserId,
+  canSend,
+  canModerate,
   live,
   pending,
   emptyText,
@@ -33,6 +35,10 @@ export default function MessageList({
 }: {
   channelId: string;
   currentUserId: string;
+  /** Whether the viewer can send, and so edit their own messages. */
+  canSend: boolean;
+  /** Whether the viewer can delete other people's messages. */
+  canModerate: boolean;
   live: boolean;
   pending: PendingMessage[];
   emptyText: string;
@@ -171,6 +177,8 @@ export default function MessageList({
                 message={message}
                 compact={compact}
                 own={message.author.id === currentUserId}
+                canEdit={canSend && message.author.id === currentUserId}
+                canDelete={canModerate || message.author.id === currentUserId}
               />
             </li>
           );
