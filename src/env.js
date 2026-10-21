@@ -26,6 +26,9 @@ export const env = createEnv({
     S3_SECRET_ACCESS_KEY: z.string().optional(),
     S3_BUCKET: z.string().optional(),
     S3_PUBLIC_URL: z.string().url().optional(),
+    // Chat falls back to polling until the Pusher settings are provided.
+    PUSHER_APP_ID: z.string().optional(),
+    PUSHER_SECRET: z.string().optional(),
   },
 
   /**
@@ -34,7 +37,8 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
-    // NEXT_PUBLIC_CLIENTVAR: z.string(),
+    NEXT_PUBLIC_PUSHER_KEY: z.string().optional(),
+    NEXT_PUBLIC_PUSHER_CLUSTER: z.string().optional(),
   },
 
   /**
@@ -55,6 +59,10 @@ export const env = createEnv({
     S3_SECRET_ACCESS_KEY: process.env.S3_SECRET_ACCESS_KEY,
     S3_BUCKET: process.env.S3_BUCKET,
     S3_PUBLIC_URL: process.env.S3_PUBLIC_URL,
+    PUSHER_APP_ID: process.env.PUSHER_APP_ID,
+    PUSHER_SECRET: process.env.PUSHER_SECRET,
+    NEXT_PUBLIC_PUSHER_KEY: process.env.NEXT_PUBLIC_PUSHER_KEY,
+    NEXT_PUBLIC_PUSHER_CLUSTER: process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

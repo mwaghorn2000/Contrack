@@ -6,6 +6,9 @@ import { invitationRouter } from "./routers/invitation";
 import { profileRouter } from "./routers/profile";
 import { securityRouter } from "./routers/security";
 import { channelRouter } from "./routers/channel";
+import { directMessageRouter } from "./routers/direct-message";
+import { messageRouter } from "./routers/message";
+import { realtimeRouter } from "./routers/realtime";
 
 /**
  * This is the primary router for your server.
@@ -20,6 +23,9 @@ export const appRouter = createTRPCRouter({
   profile: profileRouter,
   security: securityRouter,
   channel: channelRouter,
+  directMessage: directMessageRouter,
+  message: messageRouter,
+  realtime: realtimeRouter,
 });
 
 // export type definition of API

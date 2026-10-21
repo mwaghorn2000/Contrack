@@ -3,6 +3,7 @@ import "server-only";
 import {
   DeleteObjectCommand,
   DeleteObjectsCommand,
+  GetObjectCommand,
   HeadObjectCommand,
   ListObjectsV2Command,
   NotFound,
@@ -101,6 +102,25 @@ export async function createUploadUrl(
         "content-length",
         "cache-control",
       ]),
+    },
+  );
+}
+
+const HOUR_MS = 60 * 60 * 1000;
+
+/**
+ * Signs a GET for a private object. Signatures start on the hour and last two
+ * hours, so a URL stays the same (and browser-cacheable) within each hour and
+ * remains valid for at least one hour after it is issued.
+ */
+export async function signedReadUrl(key: string) {
+  const { client, bucket } = requireConfig();
+  return getSignedUrl(
+    client,
+    new GetObjectCommand({ Bucket: bucket, Key: key }),
+    {
+      expiresIn: 2 * 60 * 60,
+      signingDate: new Date(Math.floor(Date.now() / HOUR_MS) * HOUR_MS),
     },
   );
 }

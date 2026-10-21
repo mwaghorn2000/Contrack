@@ -6,6 +6,16 @@ import type { PrismaClient } from "../../../../generated/prisma";
 // Only prevent application services from loading. Queries use real PostgreSQL.
 vi.mock("~/server/auth", () => ({ auth: vi.fn() }));
 vi.mock("~/server/db", () => ({ db: {} }));
+vi.mock("~/server/realtime", () => ({
+  publishConversationsChanged: vi.fn(),
+  publishToConversation: vi.fn(),
+}));
+vi.mock("~/server/storage", () => ({
+  storageConfigured: () => false,
+  signedReadUrl: vi.fn(),
+  deletePrefix: vi.fn(),
+  deleteObject: vi.fn(),
+}));
 
 let database: Awaited<ReturnType<typeof startTestDatabase>> | undefined;
 let db: PrismaClient;
@@ -259,7 +269,11 @@ it("listChannels returns all channels for the company that the user is a member 
 
 it("listChannels returns an empty array if the user is not a member of any channels in the company", async () => {
   const otherUser = await db.user.create({
-    data: { name: "Other User", email: "other@example.com" },
+    data: {
+      name: "Other User",
+      email: "other@example.com",
+      companyMemberships: { create: { companyId, role: "MEMBER" } },
+    },
   });
   const otherCaller = channelRouter.createCaller({
     db,
@@ -317,7 +331,11 @@ it("listChannels returns only channels that the user is a member of", async () =
     companyId,
   });
   const otherUser = await db.user.create({
-    data: { name: "Other User", email: "other@example.com" },
+    data: {
+      name: "Other User",
+      email: "other@example.com",
+      companyMemberships: { create: { companyId, role: "MEMBER" } },
+    },
   });
   const otherCaller = channelRouter.createCaller({
     db,

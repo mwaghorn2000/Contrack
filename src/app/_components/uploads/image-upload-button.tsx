@@ -21,12 +21,16 @@ type UploadTarget = {
  * so animations survive.
  */
 async function prepareImage(file: File, kind: ImageKind) {
-  if (file.type === "image/gif") return file;
   let bitmap: ImageBitmap;
   try {
     bitmap = await createImageBitmap(file);
   } catch {
     throw new Error("This image could not be read. Try a different file.");
+  }
+  if (file.type === "image/gif") {
+    const size = { width: bitmap.width, height: bitmap.height };
+    bitmap.close();
+    return { file, ...size };
   }
   const { maxDimension } = IMAGE_KINDS[kind];
   const scale = Math.min(
@@ -43,7 +47,11 @@ async function prepareImage(file: File, kind: ImageKind) {
   );
   // Some browsers cannot encode WebP and fall back to PNG; either is allowed.
   if (!blob) throw new Error("This image could not be processed.");
-  return new File([blob], file.name, { type: blob.type });
+  return {
+    file: new File([blob], file.name, { type: blob.type }),
+    width: canvas.width,
+    height: canvas.height,
+  };
 }
 
 /** Requests an upload URL, sends the file directly to storage, then confirms it. */
@@ -55,10 +63,13 @@ export async function uploadImage<T>(
       contentType: ImageContentType;
       size: number;
     }) => Promise<UploadTarget>;
-    confirm: (key: string) => Promise<T>;
+    confirm: (
+      key: string,
+      size: { width: number; height: number },
+    ) => Promise<T>;
   },
 ) {
-  const file = await prepareImage(original, kind);
+  const { file, width, height } = await prepareImage(original, kind);
   const error = imageFileError(kind, file);
   if (error) throw new Error(error);
   const target = await steps.create({
@@ -72,7 +83,7 @@ export async function uploadImage<T>(
   });
   if (!response.ok)
     throw new Error("Could not upload the image. Please try again.");
-  return steps.confirm(target.key);
+  return steps.confirm(target.key, { width, height });
 }
 
 export default function ImageUploadButton({

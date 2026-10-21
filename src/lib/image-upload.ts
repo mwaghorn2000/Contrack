@@ -14,6 +14,7 @@ export const IMAGE_KINDS = {
   avatar: { maxBytes: 5 * 1024 * 1024, maxDimension: 512 },
   logo: { maxBytes: 5 * 1024 * 1024, maxDimension: 512 },
   banner: { maxBytes: 10 * 1024 * 1024, maxDimension: 2400 },
+  message: { maxBytes: 10 * 1024 * 1024, maxDimension: 2000 },
 } as const;
 
 export type ImageKind = keyof typeof IMAGE_KINDS;

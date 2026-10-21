@@ -36,6 +36,18 @@ export function companyFolder(companyId: string) {
   return `companies/${companyId}/`;
 }
 
+// Channel files are private: rows store their keys and reads use signed URLs.
+export function channelImageFolder(
+  channelId: string,
+  kind: "icon" | "messages",
+) {
+  return `channels/${channelId}/${kind}`;
+}
+
+export function channelFolder(channelId: string) {
+  return `channels/${channelId}/`;
+}
+
 function requireStorage() {
   if (!storageConfigured())
     throw new TRPCError({
@@ -85,8 +97,22 @@ export async function createImageUpload(
 /**
  * Claims an upload this user requested in the last hour, then checks that the
  * stored object is a valid image. Each upload can be confirmed only once.
+ * Returns the public URL of the image.
  */
 export async function confirmImageUpload(
+  db: Prisma.TransactionClient,
+  userId: string,
+  folder: string,
+  kind: ImageKind,
+  key: string,
+) {
+  return publicUrl(
+    await confirmPrivateImageUpload(db, userId, folder, kind, key),
+  );
+}
+
+/** Like confirmImageUpload, but returns the key of a private image. */
+export async function confirmPrivateImageUpload(
   db: Prisma.TransactionClient,
   userId: string,
   folder: string,
@@ -132,7 +158,7 @@ export async function confirmImageUpload(
         }) ?? "The uploaded image is not valid.",
     });
   }
-  return publicUrl(key);
+  return key;
 }
 
 /** Deletes a replaced image when it was stored in this folder. */
@@ -148,6 +174,21 @@ export async function deleteReplacedImage(
     await deleteObject(key);
   } catch (error) {
     // The new image is already saved; an orphaned file is harmless.
+    console.error("Failed to delete replaced image", error);
+  }
+}
+
+/** Deletes a replaced private image when it was stored in this folder. */
+export async function deleteReplacedKey(
+  folder: string,
+  previousKey: string | null,
+  currentKey: string | null,
+) {
+  if (!previousKey || previousKey === currentKey) return;
+  if (!previousKey.startsWith(`${folder}/`)) return;
+  try {
+    await deleteObject(previousKey);
+  } catch (error) {
     console.error("Failed to delete replaced image", error);
   }
 }
