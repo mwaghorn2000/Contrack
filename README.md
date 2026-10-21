@@ -16,6 +16,26 @@ upload buttons report that uploads are not set up. The bucket must allow public
 reads from `S3_PUBLIC_URL` and a CORS rule allowing `PUT` with the `Content-Type`
 header from `APP_URL`. Add a lifecycle rule if you want to remove abandoned uploads.
 
+## Chat
+
+**Company Chat** lists channels and **DMs** lists one-to-one conversations, each
+with the conversation list on the left and messages on the right.
+
+- **Owners** see and manage every channel. **Admins** create channels and see the
+  ones they created or were added to. Everyone else sees channels they were added
+  to. Per-channel permissions control who can send messages, manage members, and
+  edit the channel. Direct messages are private to their two members.
+- Messages load 50 at a time, with older pages loading as you scroll up. Each
+  message type (currently text and image) has its own component in
+  `src/app/_components/chat/messages/`; see `src/lib/chat-message.ts` for how to
+  add a type.
+- New messages arrive through Pusher Channels. Set the `PUSHER_*` variables in
+  `.env.example` (cluster `ap4` for Sydney); without them, chat checks for new
+  messages every few seconds instead.
+- Channel icons and chat images are private: they are stored under `channels/`
+  in the bucket and shown through signed URLs. The bucket policy should allow
+  public reads only for `users/*` and `companies/*`.
+
 ## Company invitations
 
 Owners and admins can invite people from **People**, choosing Member or Contractor

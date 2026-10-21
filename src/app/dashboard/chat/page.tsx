@@ -1,3 +1,10 @@
-export default function CompanyChatPage() {
-  return <h1 className="text-2xl font-semibold text-gray-900">Company Chat</h1>;
+import { ChatIndexPage } from "~/app/_components/chat/chat-pages";
+
+export default async function CompanyChatPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ companyId?: string }>;
+}) {
+  const { companyId } = await searchParams;
+  return <ChatIndexPage mode="channels" companyId={companyId} />;
 }

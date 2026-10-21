@@ -83,10 +83,20 @@ model CompanyMember {
   @@unique([userId, companyId])
 }
 
+enum ChannelKind {
+  CHANNEL
+  DIRECT
+}
+
 model Channel {
   id             String          @id @default(cuid())
+  kind           ChannelKind     @default(CHANNEL)
+  // Empty for direct messages; the UI shows the other member's name.
   name           String
+  // Storage key of the channel icon. Channel files are private and signed on read.
   image          String?
+  // "<companyId>:<userId>:<userId>" (sorted) so each pair has one direct message.
+  directKey      String?         @unique
   messages       Message[]
   channelMembers ChannelMember[]
 
@@ -188,11 +198,20 @@ model EmailVerificationCode {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+enum MessageType {
+  TEXT
+  IMAGE
+}
+
 model Message {
-  id        String    @id @default(cuid())
+  id        String      @id @default(cuid())
+  type      MessageType @default(TEXT)
+  // Text body, or the caption of an image ("" when there is none).
   content   String
-  postedAt  DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  // Type-specific payload, validated by src/server/messages/types.ts.
+  data      Json?
+  postedAt  DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
   deletedAt DateTime?
 
   channelId String
