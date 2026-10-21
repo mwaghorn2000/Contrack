@@ -43,6 +43,9 @@ export default function MessageList({
     { channelId },
     {
       getNextPageParam: (page) => page.nextCursor,
+      // Realtime only updates a conversation while it is open, so reload it
+      // every time it opens. The cached messages show until the reload ends.
+      refetchOnMount: "always",
       // Without realtime, check for new messages regularly instead.
       refetchInterval: live ? false : 5_000,
     },
