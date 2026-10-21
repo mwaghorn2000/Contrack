@@ -240,6 +240,7 @@ exports.Prisma.MessageScalarFieldEnum = {
   data: 'data',
   postedAt: 'postedAt',
   updatedAt: 'updatedAt',
+  editedAt: 'editedAt',
   deletedAt: 'deletedAt',
   channelId: 'channelId',
   authorChannelMemberId: 'authorChannelMemberId'

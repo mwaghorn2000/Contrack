@@ -10,7 +10,7 @@ import { z } from "zod";
 
 export const MESSAGE_MAX_LENGTH = 4000;
 
-const textSchema = z
+export const messageTextSchema = z
   .string()
   .trim()
   .max(
@@ -27,14 +27,14 @@ const dimensionSchema = z.number().int().positive().max(10_000);
 export const sendMessageBodySchema = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("TEXT"),
-    content: textSchema.pipe(z.string().min(1, "Enter a message.")),
+    content: messageTextSchema.pipe(z.string().min(1, "Enter a message.")),
   }),
   z.object({
     type: z.literal("IMAGE"),
     key: z.string().max(200),
     width: dimensionSchema,
     height: dimensionSchema,
-    caption: textSchema.default(""),
+    caption: messageTextSchema.default(""),
   }),
 ]);
 
@@ -45,6 +45,7 @@ type ChatMessageBase = {
   channelId: string;
   content: string;
   postedAt: Date;
+  editedAt: Date | null;
   author: { id: string; name: string | null; image: string | null };
 };
 

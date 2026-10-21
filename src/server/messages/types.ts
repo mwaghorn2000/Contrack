@@ -6,7 +6,11 @@ import {
   confirmPrivateImageUpload,
   imageKeySchema,
 } from "~/server/image-uploads";
-import { signedReadUrl, storageConfigured } from "~/server/storage";
+import {
+  deleteObject,
+  signedReadUrl,
+  storageConfigured,
+} from "~/server/storage";
 
 type SendContext = {
   db: Prisma.TransactionClient;
@@ -20,6 +24,7 @@ export const messageRowSelect = {
   content: true,
   data: true,
   postedAt: true,
+  editedAt: true,
   channelId: true,
   authorChannelMember: {
     select: { user: { select: { id: true, name: true, image: true } } },
@@ -34,6 +39,14 @@ type MessageHandler<T extends MessageType> = {
     context: SendContext,
     body: Extract<SendMessageBody, { type: T }>,
   ) => Promise<{ content: string; data?: Prisma.InputJsonValue }>;
+  /**
+   * Whether the author can change the text afterwards, and whether it may be
+   * left empty (an image caption can; a text message can't). Null if the type
+   * can't be edited.
+   */
+  edit: { allowEmpty: boolean } | null;
+  /** Cleans up anything stored outside the database when the message is deleted. */
+  onDelete?: (row: MessageRow) => Promise<void>;
   /** Adds the type-specific fields for the UI. */
   serialize: (
     row: MessageRow,
@@ -44,7 +57,7 @@ type MessageHandler<T extends MessageType> = {
 
 type ChatMessageBaseOf = Pick<
   ChatMessage,
-  "id" | "channelId" | "content" | "postedAt" | "author"
+  "id" | "channelId" | "content" | "postedAt" | "editedAt" | "author"
 >;
 
 const imageDataSchema = z.object({
@@ -55,10 +68,17 @@ const imageDataSchema = z.object({
 
 const handlers: { [T in MessageType]: MessageHandler<T> } = {
   TEXT: {
+    edit: { allowEmpty: false },
     prepare: async (_context, body) => ({ content: body.content }),
     serialize: async () => ({ type: "TEXT" }),
   },
   IMAGE: {
+    edit: { allowEmpty: true },
+    onDelete: async (row) => {
+      const data = imageDataSchema.safeParse(row.data);
+      if (data.success && storageConfigured())
+        await deleteObject(data.data.key);
+    },
     prepare: async ({ db, userId, channelId }, body) => {
       const key = await confirmPrivateImageUpload(
         db,
@@ -105,7 +125,21 @@ export async function serializeMessage(row: MessageRow): Promise<ChatMessage> {
     channelId: row.channelId,
     content: row.content,
     postedAt: row.postedAt,
+    editedAt: row.editedAt,
     author: row.authorChannelMember.user,
     ...(await handler.serialize(row)),
   } as ChatMessage;
+}
+
+export function messageEditRule(type: MessageType) {
+  return handlers[type].edit;
+}
+
+/** Best effort: the message is already deleted, so a leftover file is harmless. */
+export async function cleanUpDeletedMessage(row: MessageRow) {
+  try {
+    await handlers[row.type].onDelete?.(row);
+  } catch (error) {
+    console.error("Failed to clean up a deleted message", error);
+  }
 }

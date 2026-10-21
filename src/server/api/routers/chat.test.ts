@@ -9,7 +9,7 @@ import {
 } from "vitest";
 import type { CompanyRole, PrismaClient } from "../../../../generated/prisma";
 import { clearTestDatabase, startTestDatabase } from "~/test/database";
-import { getObjectInfo } from "~/server/storage";
+import { deleteObject, getObjectInfo } from "~/server/storage";
 import {
   authorizeChannel,
   publishConversationsChanged,
@@ -773,5 +773,158 @@ describe("unread messages", () => {
     ).rejects.toMatchObject({
       code: "NOT_FOUND",
     });
+  });
+});
+
+describe("editing and deleting messages", () => {
+  async function channelWithMember() {
+    const channel = await owner.channel.createChannel({
+      companyId,
+      name: "Edits",
+      memberIds: [ids.member, ids.contractor],
+    });
+    return channel.id;
+  }
+
+  it("the author can edit their message, which is marked as edited", async () => {
+    const channelId = await channelWithMember();
+    const sent = await member.message.send({ channelId, body: text("Helo") });
+    expect(sent.editedAt).toBeNull();
+    const edited = await member.message.edit({
+      messageId: sent.id,
+      content: " Hello ",
+    });
+    expect(edited).toMatchObject({ id: sent.id, content: "Hello" });
+    expect(edited.editedAt).toBeInstanceOf(Date);
+    expect(publishToConversation).toHaveBeenLastCalledWith(
+      channelId,
+      "message-updated",
+      edited,
+    );
+    expect(
+      (await contractor.message.list({ channelId })).items[0],
+    ).toMatchObject({
+      content: "Hello",
+    });
+  });
+
+  it("nobody else can edit a message, including moderators", async () => {
+    const channelId = await channelWithMember();
+    const sent = await member.message.send({ channelId, body: text("Mine") });
+    for (const caller of [contractor, owner])
+      await expect(
+        caller.message.edit({ messageId: sent.id, content: "Changed" }),
+      ).rejects.toMatchObject({ code: "FORBIDDEN" });
+  });
+
+  it("a text message can't be edited to nothing, but an image caption can", async () => {
+    const channelId = await channelWithMember();
+    const sent = await member.message.send({ channelId, body: text("Text") });
+    await expect(
+      member.message.edit({ messageId: sent.id, content: "   " }),
+    ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+
+    const { key } = await member.message.createImageUpload({
+      channelId,
+      contentType: "image/png",
+      size: 1024,
+    });
+    const image = await member.message.send({
+      channelId,
+      body: { type: "IMAGE", key, width: 10, height: 10, caption: "Caption" },
+    });
+    await expect(
+      member.message.edit({ messageId: image.id, content: "" }),
+    ).resolves.toMatchObject({ type: "IMAGE", content: "" });
+  });
+
+  it("someone who can no longer send messages can't edit", async () => {
+    const channelId = await channelWithMember();
+    const sent = await member.message.send({ channelId, body: text("Before") });
+    await owner.channel.setMember({
+      channelId,
+      userId: ids.member,
+      permissions: readOnly,
+    });
+    await expect(
+      member.message.edit({ messageId: sent.id, content: "After" }),
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
+  });
+
+  it("the author can delete their message, and everyone is told", async () => {
+    const channelId = await channelWithMember();
+    const sent = await member.message.send({ channelId, body: text("Oops") });
+    await member.message.delete({ messageId: sent.id });
+    expect((await contractor.message.list({ channelId })).items).toEqual([]);
+    expect(publishToConversation).toHaveBeenLastCalledWith(
+      channelId,
+      "message-deleted",
+      { id: sent.id },
+    );
+    expect(
+      await db.message.findUniqueOrThrow({ where: { id: sent.id } }),
+    ).toMatchObject({
+      content: "",
+      data: null,
+    });
+  });
+
+  it("moderators can delete other people's messages; others can't", async () => {
+    const channelId = await channelWithMember();
+    const sent = await member.message.send({ channelId, body: text("Rude") });
+    await expect(
+      contractor.message.delete({ messageId: sent.id }),
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(owner.message.delete({ messageId: sent.id })).resolves.toEqual(
+      {
+        success: true,
+      },
+    );
+  });
+
+  it("deleting an image message deletes the image file", async () => {
+    const channelId = await channelWithMember();
+    const { key } = await member.message.createImageUpload({
+      channelId,
+      contentType: "image/png",
+      size: 1024,
+    });
+    const image = await member.message.send({
+      channelId,
+      body: { type: "IMAGE", key, width: 10, height: 10 },
+    });
+    vi.mocked(deleteObject).mockClear();
+    await member.message.delete({ messageId: image.id });
+    expect(deleteObject).toHaveBeenCalledExactlyOnceWith(key);
+  });
+
+  it("a deleted message can't be edited or deleted again", async () => {
+    const channelId = await channelWithMember();
+    const sent = await member.message.send({ channelId, body: text("Gone") });
+    await member.message.delete({ messageId: sent.id });
+    await expect(
+      member.message.edit({ messageId: sent.id, content: "Back" }),
+    ).rejects.toMatchObject({ code: "NOT_FOUND" });
+    await expect(
+      member.message.delete({ messageId: sent.id }),
+    ).rejects.toMatchObject({
+      code: "NOT_FOUND",
+    });
+  });
+
+  it("people who can't see the conversation can't find its messages", async () => {
+    const channelId = await channelWithMember();
+    const sent = await member.message.send({
+      channelId,
+      body: text("Private"),
+    });
+    await expect(
+      admin.message.delete({ messageId: sent.id }),
+    ).rejects.toMatchObject({
+      code: "NOT_FOUND",
+    });
+    await expect(
+      outsider.message.edit({ messageId: sent.id, content: "x" }),
+    ).rejects.toMatchObject({ code: "NOT_FOUND" });
   });
 });

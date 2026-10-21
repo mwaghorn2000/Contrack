@@ -229,6 +229,8 @@ model Message {
     data        Json?
     postedAt    DateTime    @default(now())
     updatedAt   DateTime    @updatedAt
+    // Set when the author changes the text, shown as "(edited)".
+    editedAt    DateTime?
     deletedAt   DateTime?
 
     channelId   String

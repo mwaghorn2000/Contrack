@@ -118,6 +118,8 @@ export default function ConversationView({
       <MessageList
         channelId={channelId}
         currentUserId={currentUserId}
+        canSend={permissions.canSendMessages}
+        canModerate={permissions.canModerateMessages}
         live={live}
         pending={pending}
         onNewestChange={markReadIfVisible}

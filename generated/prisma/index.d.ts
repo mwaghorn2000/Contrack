@@ -15431,6 +15431,7 @@ export namespace Prisma {
     content: string | null
     postedAt: Date | null
     updatedAt: Date | null
+    editedAt: Date | null
     deletedAt: Date | null
     channelId: string | null
     authorChannelMemberId: string | null
@@ -15442,6 +15443,7 @@ export namespace Prisma {
     content: string | null
     postedAt: Date | null
     updatedAt: Date | null
+    editedAt: Date | null
     deletedAt: Date | null
     channelId: string | null
     authorChannelMemberId: string | null
@@ -15454,6 +15456,7 @@ export namespace Prisma {
     data: number
     postedAt: number
     updatedAt: number
+    editedAt: number
     deletedAt: number
     channelId: number
     authorChannelMemberId: number
@@ -15467,6 +15470,7 @@ export namespace Prisma {
     content?: true
     postedAt?: true
     updatedAt?: true
+    editedAt?: true
     deletedAt?: true
     channelId?: true
     authorChannelMemberId?: true
@@ -15478,6 +15482,7 @@ export namespace Prisma {
     content?: true
     postedAt?: true
     updatedAt?: true
+    editedAt?: true
     deletedAt?: true
     channelId?: true
     authorChannelMemberId?: true
@@ -15490,6 +15495,7 @@ export namespace Prisma {
     data?: true
     postedAt?: true
     updatedAt?: true
+    editedAt?: true
     deletedAt?: true
     channelId?: true
     authorChannelMemberId?: true
@@ -15575,6 +15581,7 @@ export namespace Prisma {
     data: JsonValue | null
     postedAt: Date
     updatedAt: Date
+    editedAt: Date | null
     deletedAt: Date | null
     channelId: string
     authorChannelMemberId: string
@@ -15604,6 +15611,7 @@ export namespace Prisma {
     data?: boolean
     postedAt?: boolean
     updatedAt?: boolean
+    editedAt?: boolean
     deletedAt?: boolean
     channelId?: boolean
     authorChannelMemberId?: boolean
@@ -15618,6 +15626,7 @@ export namespace Prisma {
     data?: boolean
     postedAt?: boolean
     updatedAt?: boolean
+    editedAt?: boolean
     deletedAt?: boolean
     channelId?: boolean
     authorChannelMemberId?: boolean
@@ -15632,6 +15641,7 @@ export namespace Prisma {
     data?: boolean
     postedAt?: boolean
     updatedAt?: boolean
+    editedAt?: boolean
     deletedAt?: boolean
     channelId?: boolean
     authorChannelMemberId?: boolean
@@ -15646,12 +15656,13 @@ export namespace Prisma {
     data?: boolean
     postedAt?: boolean
     updatedAt?: boolean
+    editedAt?: boolean
     deletedAt?: boolean
     channelId?: boolean
     authorChannelMemberId?: boolean
   }
 
-  export type MessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "content" | "data" | "postedAt" | "updatedAt" | "deletedAt" | "channelId" | "authorChannelMemberId", ExtArgs["result"]["message"]>
+  export type MessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "content" | "data" | "postedAt" | "updatedAt" | "editedAt" | "deletedAt" | "channelId" | "authorChannelMemberId", ExtArgs["result"]["message"]>
   export type MessageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     channel?: boolean | ChannelDefaultArgs<ExtArgs>
     authorChannelMember?: boolean | ChannelMemberDefaultArgs<ExtArgs>
@@ -15678,6 +15689,7 @@ export namespace Prisma {
       data: Prisma.JsonValue | null
       postedAt: Date
       updatedAt: Date
+      editedAt: Date | null
       deletedAt: Date | null
       channelId: string
       authorChannelMemberId: string
@@ -16112,6 +16124,7 @@ export namespace Prisma {
     readonly data: FieldRef<"Message", 'Json'>
     readonly postedAt: FieldRef<"Message", 'DateTime'>
     readonly updatedAt: FieldRef<"Message", 'DateTime'>
+    readonly editedAt: FieldRef<"Message", 'DateTime'>
     readonly deletedAt: FieldRef<"Message", 'DateTime'>
     readonly channelId: FieldRef<"Message", 'String'>
     readonly authorChannelMemberId: FieldRef<"Message", 'String'>
@@ -23100,6 +23113,7 @@ export namespace Prisma {
     data: 'data',
     postedAt: 'postedAt',
     updatedAt: 'updatedAt',
+    editedAt: 'editedAt',
     deletedAt: 'deletedAt',
     channelId: 'channelId',
     authorChannelMemberId: 'authorChannelMemberId'
@@ -24161,6 +24175,7 @@ export namespace Prisma {
     data?: JsonNullableFilter<"Message">
     postedAt?: DateTimeFilter<"Message"> | Date | string
     updatedAt?: DateTimeFilter<"Message"> | Date | string
+    editedAt?: DateTimeNullableFilter<"Message"> | Date | string | null
     deletedAt?: DateTimeNullableFilter<"Message"> | Date | string | null
     channelId?: StringFilter<"Message"> | string
     authorChannelMemberId?: StringFilter<"Message"> | string
@@ -24175,6 +24190,7 @@ export namespace Prisma {
     data?: SortOrderInput | SortOrder
     postedAt?: SortOrder
     updatedAt?: SortOrder
+    editedAt?: SortOrderInput | SortOrder
     deletedAt?: SortOrderInput | SortOrder
     channelId?: SortOrder
     authorChannelMemberId?: SortOrder
@@ -24192,6 +24208,7 @@ export namespace Prisma {
     data?: JsonNullableFilter<"Message">
     postedAt?: DateTimeFilter<"Message"> | Date | string
     updatedAt?: DateTimeFilter<"Message"> | Date | string
+    editedAt?: DateTimeNullableFilter<"Message"> | Date | string | null
     deletedAt?: DateTimeNullableFilter<"Message"> | Date | string | null
     channelId?: StringFilter<"Message"> | string
     authorChannelMemberId?: StringFilter<"Message"> | string
@@ -24206,6 +24223,7 @@ export namespace Prisma {
     data?: SortOrderInput | SortOrder
     postedAt?: SortOrder
     updatedAt?: SortOrder
+    editedAt?: SortOrderInput | SortOrder
     deletedAt?: SortOrderInput | SortOrder
     channelId?: SortOrder
     authorChannelMemberId?: SortOrder
@@ -24224,6 +24242,7 @@ export namespace Prisma {
     data?: JsonNullableWithAggregatesFilter<"Message">
     postedAt?: DateTimeWithAggregatesFilter<"Message"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Message"> | Date | string
+    editedAt?: DateTimeNullableWithAggregatesFilter<"Message"> | Date | string | null
     deletedAt?: DateTimeNullableWithAggregatesFilter<"Message"> | Date | string | null
     channelId?: StringWithAggregatesFilter<"Message"> | string
     authorChannelMemberId?: StringWithAggregatesFilter<"Message"> | string
@@ -25443,6 +25462,7 @@ export namespace Prisma {
     data?: NullableJsonNullValueInput | InputJsonValue
     postedAt?: Date | string
     updatedAt?: Date | string
+    editedAt?: Date | string | null
     deletedAt?: Date | string | null
     channel: ChannelCreateNestedOneWithoutMessagesInput
     authorChannelMember: ChannelMemberCreateNestedOneWithoutMessagesInput
@@ -25455,6 +25475,7 @@ export namespace Prisma {
     data?: NullableJsonNullValueInput | InputJsonValue
     postedAt?: Date | string
     updatedAt?: Date | string
+    editedAt?: Date | string | null
     deletedAt?: Date | string | null
     channelId: string
     authorChannelMemberId: string
@@ -25467,6 +25488,7 @@ export namespace Prisma {
     data?: NullableJsonNullValueInput | InputJsonValue
     postedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     channel?: ChannelUpdateOneRequiredWithoutMessagesNestedInput
     authorChannelMember?: ChannelMemberUpdateOneRequiredWithoutMessagesNestedInput
@@ -25479,6 +25501,7 @@ export namespace Prisma {
     data?: NullableJsonNullValueInput | InputJsonValue
     postedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     channelId?: StringFieldUpdateOperationsInput | string
     authorChannelMemberId?: StringFieldUpdateOperationsInput | string
@@ -25491,6 +25514,7 @@ export namespace Prisma {
     data?: NullableJsonNullValueInput | InputJsonValue
     postedAt?: Date | string
     updatedAt?: Date | string
+    editedAt?: Date | string | null
     deletedAt?: Date | string | null
     channelId: string
     authorChannelMemberId: string
@@ -25503,6 +25527,7 @@ export namespace Prisma {
     data?: NullableJsonNullValueInput | InputJsonValue
     postedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
@@ -25513,6 +25538,7 @@ export namespace Prisma {
     data?: NullableJsonNullValueInput | InputJsonValue
     postedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     channelId?: StringFieldUpdateOperationsInput | string
     authorChannelMemberId?: StringFieldUpdateOperationsInput | string
@@ -26663,6 +26689,7 @@ export namespace Prisma {
     data?: SortOrder
     postedAt?: SortOrder
     updatedAt?: SortOrder
+    editedAt?: SortOrder
     deletedAt?: SortOrder
     channelId?: SortOrder
     authorChannelMemberId?: SortOrder
@@ -26674,6 +26701,7 @@ export namespace Prisma {
     content?: SortOrder
     postedAt?: SortOrder
     updatedAt?: SortOrder
+    editedAt?: SortOrder
     deletedAt?: SortOrder
     channelId?: SortOrder
     authorChannelMemberId?: SortOrder
@@ -26685,6 +26713,7 @@ export namespace Prisma {
     content?: SortOrder
     postedAt?: SortOrder
     updatedAt?: SortOrder
+    editedAt?: SortOrder
     deletedAt?: SortOrder
     channelId?: SortOrder
     authorChannelMemberId?: SortOrder
@@ -29222,6 +29251,7 @@ export namespace Prisma {
     data?: NullableJsonNullValueInput | InputJsonValue
     postedAt?: Date | string
     updatedAt?: Date | string
+    editedAt?: Date | string | null
     deletedAt?: Date | string | null
     authorChannelMember: ChannelMemberCreateNestedOneWithoutMessagesInput
   }
@@ -29233,6 +29263,7 @@ export namespace Prisma {
     data?: NullableJsonNullValueInput | InputJsonValue
     postedAt?: Date | string
     updatedAt?: Date | string
+    editedAt?: Date | string | null
     deletedAt?: Date | string | null
     authorChannelMemberId: string
   }
@@ -29366,6 +29397,7 @@ export namespace Prisma {
     data?: JsonNullableFilter<"Message">
     postedAt?: DateTimeFilter<"Message"> | Date | string
     updatedAt?: DateTimeFilter<"Message"> | Date | string
+    editedAt?: DateTimeNullableFilter<"Message"> | Date | string | null
     deletedAt?: DateTimeNullableFilter<"Message"> | Date | string | null
     channelId?: StringFilter<"Message"> | string
     authorChannelMemberId?: StringFilter<"Message"> | string
@@ -29561,6 +29593,7 @@ export namespace Prisma {
     data?: NullableJsonNullValueInput | InputJsonValue
     postedAt?: Date | string
     updatedAt?: Date | string
+    editedAt?: Date | string | null
     deletedAt?: Date | string | null
     channel: ChannelCreateNestedOneWithoutMessagesInput
   }
@@ -29572,6 +29605,7 @@ export namespace Prisma {
     data?: NullableJsonNullValueInput | InputJsonValue
     postedAt?: Date | string
     updatedAt?: Date | string
+    editedAt?: Date | string | null
     deletedAt?: Date | string | null
   }
 
@@ -32038,6 +32072,7 @@ export namespace Prisma {
     data?: NullableJsonNullValueInput | InputJsonValue
     postedAt?: Date | string
     updatedAt?: Date | string
+    editedAt?: Date | string | null
     deletedAt?: Date | string | null
     authorChannelMemberId: string
   }
@@ -32065,6 +32100,7 @@ export namespace Prisma {
     data?: NullableJsonNullValueInput | InputJsonValue
     postedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     authorChannelMember?: ChannelMemberUpdateOneRequiredWithoutMessagesNestedInput
   }
@@ -32076,6 +32112,7 @@ export namespace Prisma {
     data?: NullableJsonNullValueInput | InputJsonValue
     postedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     authorChannelMemberId?: StringFieldUpdateOperationsInput | string
   }
@@ -32087,6 +32124,7 @@ export namespace Prisma {
     data?: NullableJsonNullValueInput | InputJsonValue
     postedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     authorChannelMemberId?: StringFieldUpdateOperationsInput | string
   }
@@ -32148,6 +32186,7 @@ export namespace Prisma {
     data?: NullableJsonNullValueInput | InputJsonValue
     postedAt?: Date | string
     updatedAt?: Date | string
+    editedAt?: Date | string | null
     deletedAt?: Date | string | null
   }
 
@@ -32158,6 +32197,7 @@ export namespace Prisma {
     data?: NullableJsonNullValueInput | InputJsonValue
     postedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     channel?: ChannelUpdateOneRequiredWithoutMessagesNestedInput
   }
@@ -32169,6 +32209,7 @@ export namespace Prisma {
     data?: NullableJsonNullValueInput | InputJsonValue
     postedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
@@ -32179,6 +32220,7 @@ export namespace Prisma {
     data?: NullableJsonNullValueInput | InputJsonValue
     postedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 

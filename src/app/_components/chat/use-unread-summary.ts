@@ -31,11 +31,17 @@ export function useUnreadSummary(companyId: string | null) {
         void utils.directMessage.list.invalidate();
       }, 300);
     };
+    // A deleted message may have been unread.
     const stops = conversationKey
       .split(",")
-      .map((id) =>
+      .flatMap((id) => [
         realtime.listen(`private-conversation-${id}`, "message", refresh),
-      );
+        realtime.listen(
+          `private-conversation-${id}`,
+          "message-deleted",
+          refresh,
+        ),
+      ]);
     return () => {
       clearTimeout(timer);
       for (const stop of stops) stop();
