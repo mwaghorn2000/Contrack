@@ -4,6 +4,7 @@ import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { imageFileSchema } from "~/lib/image-upload";
 import { sendMessageBodySchema } from "~/lib/chat-message";
 import { requireConversationAccess } from "~/server/chat-access";
+import { unreadCounts, visibleConversations } from "~/server/chat-unread";
 import { channelImageFolder, createImageUpload } from "~/server/image-uploads";
 import {
   messageRowSelect,
@@ -125,6 +126,57 @@ export const messageRouter = createTRPCRouter({
       const message = await serializeMessage(row);
       await publishToConversation(input.channelId, "message", message);
       return message;
+    }),
+
+  /** Marks everything in the conversation up to now as read. */
+  markRead: protectedProcedure
+    .input(channelIdSchema)
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+      await requireConversationAccess(ctx.db, userId, input.channelId);
+      // Read up to the newest message, using the database's timestamps so the
+      // app server's clock can't make a message look read or unread.
+      const newest = await ctx.db.message.findFirst({
+        where: { channelId: input.channelId, deletedAt: null },
+        orderBy: [{ postedAt: "desc" }, { id: "desc" }],
+        select: { postedAt: true },
+      });
+      const lastReadAt = newest?.postedAt ?? new Date();
+      await ctx.db.channelRead.upsert({
+        where: { channelId_userId: { channelId: input.channelId, userId } },
+        create: { channelId: input.channelId, userId, lastReadAt },
+        update: { lastReadAt },
+      });
+      return { success: true };
+    }),
+
+  /** Unread counts for the sidebar badges, plus every conversation to listen to. */
+  unreadSummary: protectedProcedure
+    .input(z.object({ companyId: z.string().cuid() }))
+    .query(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+      const conversations = await visibleConversations(
+        ctx.db,
+        userId,
+        input.companyId,
+      );
+      const counts = await unreadCounts(
+        ctx.db,
+        userId,
+        conversations.map(({ id }) => id),
+      );
+      let channels = 0;
+      let directMessages = 0;
+      for (const { id, kind } of conversations) {
+        const unread = counts.get(id) ?? 0;
+        if (kind === "CHANNEL") channels += unread;
+        else directMessages += unread;
+      }
+      return {
+        channels,
+        directMessages,
+        conversationIds: conversations.map(({ id }) => id),
+      };
     }),
 
   createImageUpload: protectedProcedure

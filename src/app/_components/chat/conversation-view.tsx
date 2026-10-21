@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { RouterOutputs } from "~/trpc/react";
 import { api } from "~/trpc/react";
 import MemberAvatar from "../_dashboard-components/_home-components/member-avatar";
@@ -36,6 +36,30 @@ export default function ConversationView({
   const utils = api.useUtils();
   const [pending, setPending] = useState<PendingMessage[]>([]);
   const [settingsOpen, setSettingsOpen] = useState(false);
+
+  // Mark the conversation read while it is on screen.
+  const { mutate: markRead } = api.message.markRead.useMutation({
+    onSuccess() {
+      const clear = <T extends { id: string; unreadCount: number }>(
+        list: T[] | undefined,
+      ) =>
+        list?.map((item) =>
+          item.id === channelId ? { ...item, unreadCount: 0 } : item,
+        );
+      const listInput = { companyId: initialConversation.companyId };
+      utils.channel.listChannels.setData(listInput, clear);
+      utils.directMessage.list.setData(listInput, clear);
+      void utils.message.unreadSummary.invalidate();
+    },
+  });
+  const markReadIfVisible = useCallback(() => {
+    if (document.visibilityState === "visible") markRead({ channelId });
+  }, [markRead, channelId]);
+  useEffect(() => {
+    document.addEventListener("visibilitychange", markReadIfVisible);
+    return () =>
+      document.removeEventListener("visibilitychange", markReadIfVisible);
+  }, [markReadIfVisible]);
 
   const isDirect = conversation.kind === "DIRECT";
   const title = isDirect
@@ -93,8 +117,10 @@ export default function ConversationView({
       </header>
       <MessageList
         channelId={channelId}
+        currentUserId={currentUserId}
         live={live}
         pending={pending}
+        onNewestChange={markReadIfVisible}
         emptyText={
           isDirect
             ? `This is the beginning of your conversation with ${title}.`

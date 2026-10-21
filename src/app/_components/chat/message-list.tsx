@@ -25,14 +25,19 @@ function sameDay(a: Date, b: Date) {
 
 export default function MessageList({
   channelId,
+  currentUserId,
   live,
   pending,
   emptyText,
+  onNewestChange,
 }: {
   channelId: string;
+  currentUserId: string;
   live: boolean;
   pending: PendingMessage[];
   emptyText: string;
+  /** Called when the newest loaded message changes, e.g. to mark it read. */
+  onNewestChange: (messageId: string) => void;
 }) {
   const messages = api.message.list.useInfiniteQuery(
     { channelId },
@@ -76,6 +81,10 @@ export default function MessageList({
     scroll.scrollTop += scroll.scrollHeight - heightBeforeOlder.current;
     heightBeforeOlder.current = null;
   }, [oldestId]);
+
+  useEffect(() => {
+    if (newestId) onNewestChange(newestId);
+  }, [newestId, onNewestChange]);
 
   // Follow new messages while the reader is at the bottom.
   useLayoutEffect(() => {
@@ -155,20 +164,29 @@ export default function MessageList({
                   <span className="h-px flex-1 bg-gray-200" />
                 </div>
               )}
-              <MessageItem message={message} compact={compact} />
+              <MessageItem
+                message={message}
+                compact={compact}
+                own={message.author.id === currentUserId}
+              />
             </li>
           );
         })}
       </ol>
       {pending.length > 0 && (
-        <ul aria-label="Sending">
+        <ul aria-label="Sending" className="mt-0.5 space-y-0.5">
           {pending.map((message) => (
-            <li
-              key={message.id}
-              className={`px-4 py-1 pl-16 text-sm whitespace-pre-wrap ${message.failed ? "text-red-700" : "text-gray-400"}`}
-            >
-              {message.label}
-              {message.failed && " — not sent"}
+            <li key={message.id} className="flex justify-end px-4">
+              <p
+                className={`max-w-[min(32rem,80%)] rounded-2xl rounded-br-md px-3 py-2 text-sm whitespace-pre-wrap ${
+                  message.failed
+                    ? "bg-red-50 text-red-800"
+                    : "bg-gray-900 text-white opacity-50"
+                }`}
+              >
+                {message.label}
+                {message.failed && " — not sent"}
+              </p>
             </li>
           ))}
         </ul>

@@ -10,42 +10,59 @@ const timeFormat = new Intl.DateTimeFormat(undefined, {
 export default function MessageItem({
   message,
   compact,
+  own,
 }: {
   message: ChatMessage;
   /** Follows a recent message by the same person, so the header is hidden. */
   compact: boolean;
+  /** Sent by the person viewing, so it sits on the right. */
+  own: boolean;
 }) {
   const name = message.author.name ?? "Unknown";
-  const time = timeFormat.format(message.postedAt);
-  return (
-    <div
-      className={`group flex gap-3 rounded-md px-4 hover:bg-gray-50 ${compact ? "py-0.5" : "mt-3 py-1"}`}
+  const time = (
+    <time
+      dateTime={message.postedAt.toISOString()}
+      title={message.postedAt.toLocaleString()}
+      className="text-xs text-gray-500"
     >
-      <div className="w-9 shrink-0">
-        {compact ? (
-          <time
-            dateTime={message.postedAt.toISOString()}
-            className="invisible block pt-1 text-right text-[10px] text-gray-400 group-hover:visible"
-          >
-            {time}
-          </time>
-        ) : (
-          <MemberAvatar name={name} image={message.author.image} />
-        )}
+      {timeFormat.format(message.postedAt)}
+    </time>
+  );
+  const bubble = (
+    <div
+      className={`w-fit max-w-full rounded-2xl ${message.type === "IMAGE" ? "p-1" : "px-3 py-2"} ${
+        own
+          ? "rounded-br-md bg-gray-900 text-white"
+          : "rounded-bl-md bg-gray-100 text-gray-900"
+      }`}
+    >
+      <MessageContent message={message} />
+    </div>
+  );
+
+  if (own)
+    return (
+      <div
+        className={`flex flex-col items-end px-4 ${compact ? "mt-0.5" : "mt-3"}`}
+      >
+        {!compact && <p className="mb-1 pr-1">{time}</p>}
+        <div className="flex max-w-[min(32rem,80%)] justify-end">{bubble}</div>
       </div>
-      <div className="min-w-0 flex-1">
+    );
+
+  return (
+    <div className={`flex gap-2 px-4 ${compact ? "mt-0.5" : "mt-3"}`}>
+      <div className="w-9 shrink-0">
+        {!compact && <MemberAvatar name={name} image={message.author.image} />}
+      </div>
+      <div className="flex max-w-[min(32rem,80%)] min-w-0 flex-col items-start">
         {!compact && (
-          <p className="flex items-baseline gap-2">
+          <p className="mb-1 flex items-baseline gap-2 pl-1">
             <span className="text-sm font-semibold text-gray-900">{name}</span>
-            <time
-              dateTime={message.postedAt.toISOString()}
-              className="text-xs text-gray-500"
-            >
-              {time}
-            </time>
+            {time}
           </p>
         )}
-        <MessageContent message={message} />
+        {bubble}
       </div>
     </div>
   );

@@ -5,6 +5,8 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 
 import { api } from "~/trpc/react";
+import UnreadBadge from "../chat/unread-badge";
+import { useUnreadSummary } from "../chat/use-unread-summary";
 
 const navigationItems = [
   { label: "Home", href: "/dashboard" },
@@ -27,11 +29,16 @@ export default function Sidebar() {
   const jobs = api.job.listCompanyJobs.useQuery(
     selectedCompany ? { companyId: selectedCompany.id } : skipToken,
   );
+  const unread = useUnreadSummary(selectedCompany?.id ?? null);
+  const unreadCounts: Record<string, number> = {
+    "/dashboard/chat": unread?.channels ?? 0,
+    "/dashboard/dms": unread?.directMessages ?? 0,
+  };
   const role = selectedCompany?.members[0]?.role;
   const canAddJob = role === "OWNER" || role === "ADMIN";
 
   return (
-    <aside className="w-full shrink-0 border-b border-gray-200 bg-gray-50 p-4 md:w-60 md:border-r md:border-b-0 md:min-h-0 md:overflow-y-auto">
+    <aside className="w-full shrink-0 border-b border-gray-200 bg-gray-50 p-4 md:min-h-0 md:w-60 md:overflow-y-auto md:border-r md:border-b-0">
       <nav aria-label="Sidebar navigation" className="space-y-1">
         {navigationItems.map(({ label, href }) => {
           const isActive =
@@ -46,13 +53,17 @@ export default function Sidebar() {
               key={href}
               href={destination}
               aria-current={isActive ? "page" : undefined}
-              className={`block rounded-md px-3 py-2 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900 ${
+              className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900 ${
                 isActive
                   ? "bg-gray-200 text-gray-900"
                   : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
               }`}
             >
               {label}
+              <UnreadBadge
+                count={unreadCounts[href] ?? 0}
+                label="unread messages"
+              />
             </Link>
           );
         })}

@@ -6,7 +6,7 @@ const URL_PATTERN = /(https?:\/\/[^\s<]+[^\s<.,;:!?)\]'"])/g;
 export function MessageText({ text }: { text: string }) {
   if (!text) return null;
   return (
-    <p className="text-sm leading-6 break-words whitespace-pre-wrap text-gray-800">
+    <p className="text-sm leading-6 break-words whitespace-pre-wrap">
       {text.split(URL_PATTERN).map((part, index) =>
         index % 2 === 1 ? (
           <a
@@ -14,7 +14,7 @@ export function MessageText({ text }: { text: string }) {
             href={part}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-700 underline hover:text-blue-900"
+            className="underline underline-offset-2 hover:opacity-80"
           >
             {part}
           </a>

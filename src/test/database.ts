@@ -45,6 +45,7 @@ export async function clearTestDatabase(db: PrismaClient) {
   await db.companyMember.deleteMany();
   await db.company.deleteMany();
   await db.emailVerificationCode.deleteMany();
+  await db.channelRead.deleteMany();
   await db.imageUpload.deleteMany();
   await db.account.deleteMany();
   await db.session.deleteMany();

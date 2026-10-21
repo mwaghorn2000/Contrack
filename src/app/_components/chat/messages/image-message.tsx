@@ -24,7 +24,7 @@ export default function ImageMessage({
           href={url}
           target="_blank"
           rel="noopener noreferrer"
-          className="block w-fit max-w-full overflow-hidden rounded-lg border border-gray-200"
+          className="block w-fit max-w-full overflow-hidden rounded-xl"
         >
           <Image
             src={url}
@@ -36,11 +36,13 @@ export default function ImageMessage({
           />
         </a>
       ) : (
-        <p className="rounded-lg border border-dashed border-gray-300 px-3 py-2 text-sm text-gray-500">
-          Image unavailable
-        </p>
+        <p className="px-2 py-1 text-sm opacity-70">Image unavailable</p>
       )}
-      <MessageText text={message.content} />
+      {message.content && (
+        <div className="px-2 pb-1">
+          <MessageText text={message.content} />
+        </div>
+      )}
     </div>
   );
 }

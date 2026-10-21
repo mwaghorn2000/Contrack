@@ -24,7 +24,7 @@ export default function ChatShell({
     // Fill the dashboard's main area edge to edge, cancelling its padding.
     <div className="-m-6 flex h-[calc(100dvh-4rem)] min-h-0 overflow-hidden md:h-[calc(100%+3rem)]">
       <div
-        className={`${activeId ? "hidden md:flex" : "flex"} min-h-0 w-full md:w-auto`}
+        className={`${activeId ? "hidden md:flex" : "flex"} min-h-0 w-full md:w-auto md:shrink-0`}
       >
         <ConversationSidebar
           mode={mode}

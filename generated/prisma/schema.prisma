@@ -99,6 +99,7 @@ model Channel {
   directKey      String?         @unique
   messages       Message[]
   channelMembers ChannelMember[]
+  reads          ChannelRead[]
 
   companyId String
   company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
@@ -152,6 +153,21 @@ model User {
   postAcknowledgments CompanyPostAcknowledgment[]
   sentInvitations     CompanyInvitation[]
   imageUploads        ImageUpload[]
+  channelReads        ChannelRead[]
+}
+
+// When a user last read a channel or direct message. Separate from
+// ChannelMember because the owner can read channels without being a member.
+model ChannelRead {
+  channelId  String
+  userId     String
+  lastReadAt DateTime
+
+  channel Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([channelId, userId])
+  @@index([userId])
 }
 
 // Upload URLs issued to a user. Confirming an upload requires its record, and
