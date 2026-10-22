@@ -4,7 +4,11 @@ import { z } from "zod";
 import type { Prisma } from "../../../../generated/prisma";
 import { imageFileSchema, imageKeySchema } from "~/lib/image-upload";
 import {
+  ALL_PERMISSIONS,
+  permissionsFor,
+  requireCompanyRole,
   requireConversationAccess,
+  visibleChannelsWhere,
   type ChannelPermissions,
 } from "~/server/chat-access";
 import {
@@ -13,9 +17,9 @@ import {
   confirmPrivateImageUpload,
   createImageUpload,
   deleteReplacedKey,
+  signedImageUrl,
 } from "~/server/image-uploads";
 import { unreadCounts } from "~/server/chat-unread";
-import { signedImageUrl } from "~/server/messages/types";
 import { publishConversationsChanged } from "~/server/realtime";
 import { deletePrefix, storageConfigured } from "~/server/storage";
 import { serializableTransaction } from "~/server/transactions";
@@ -41,20 +45,6 @@ const permissionsSchema = z.object({
   canManageChannel: z.boolean(),
   canModerateMessages: z.boolean(),
 });
-
-async function requireCompanyRole(
-  db: Prisma.TransactionClient,
-  companyId: string,
-  userId: string,
-) {
-  const membership = await db.companyMember.findUnique({
-    where: { userId_companyId: { companyId, userId } },
-    select: { role: true },
-  });
-  if (!membership)
-    throw new TRPCError({ code: "NOT_FOUND", message: "Company not found." });
-  return membership.role;
-}
 
 async function requireUniqueName(
   db: Prisma.TransactionClient,
@@ -138,13 +128,7 @@ export const channelRouter = createTRPCRouter({
             companyId: input.companyId,
             channelMembers: {
               create: [
-                {
-                  userId,
-                  canSendMessages: true,
-                  canManageMembers: true,
-                  canManageChannel: true,
-                  canModerateMessages: true,
-                },
+                { userId, ...ALL_PERMISSIONS },
                 ...memberIds.map((id) => ({
                   userId: id,
                   canSendMessages: true,
@@ -152,6 +136,7 @@ export const channelRouter = createTRPCRouter({
               ],
             },
           },
+          select: { id: true, name: true, companyId: true },
         });
       });
       await publishConversationsChanged(
@@ -200,10 +185,7 @@ export const channelRouter = createTRPCRouter({
       const channels = await ctx.db.channel.findMany({
         where: {
           companyId: input.companyId,
-          kind: "CHANNEL",
-          ...(isOwner
-            ? {}
-            : { channelMembers: { some: { userId, removedAt: null } } }),
+          ...visibleChannelsWhere(userId, role),
         },
         select: {
           id: true,
@@ -235,20 +217,10 @@ export const channelRouter = createTRPCRouter({
       );
       const summaries = await Promise.all(
         channels.map(async (channel) => {
-          const member = channel.channelMembers[0];
-          const permissions: ChannelPermissions = isOwner
-            ? {
-                canSendMessages: true,
-                canManageMembers: true,
-                canManageChannel: true,
-                canModerateMessages: true,
-              }
-            : {
-                canSendMessages: member?.canSendMessages ?? false,
-                canManageMembers: member?.canManageMembers ?? false,
-                canManageChannel: member?.canManageChannel ?? false,
-                canModerateMessages: member?.canModerateMessages ?? false,
-              };
+          const permissions = permissionsFor(
+            isOwner,
+            channel.channelMembers[0],
+          );
           return {
             id: channel.id,
             name: channel.name,

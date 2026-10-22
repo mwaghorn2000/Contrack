@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server";
-import type { Prisma } from "../../generated/prisma";
+import type { CompanyRole, Prisma } from "../../generated/prisma";
 
 export type ChannelPermissions = {
   canSendMessages: boolean;
@@ -15,12 +15,30 @@ const NO_PERMISSIONS: ChannelPermissions = {
   canModerateMessages: false,
 };
 
-const ALL_PERMISSIONS: ChannelPermissions = {
+export const ALL_PERMISSIONS: ChannelPermissions = {
   canSendMessages: true,
   canManageMembers: true,
   canManageChannel: true,
   canModerateMessages: true,
 };
+
+/**
+ * Everything for the company owner; otherwise the flags on the user's channel
+ * membership, or nothing without one.
+ */
+export function permissionsFor(
+  isOwner: boolean,
+  member: ChannelPermissions | null | undefined,
+): ChannelPermissions {
+  if (isOwner) return { ...ALL_PERMISSIONS };
+  if (!member) return { ...NO_PERMISSIONS };
+  return {
+    canSendMessages: member.canSendMessages,
+    canManageMembers: member.canManageMembers,
+    canManageChannel: member.canManageChannel,
+    canModerateMessages: member.canModerateMessages,
+  };
+}
 
 /**
  * What a user can do in a channel or direct message.
@@ -70,16 +88,7 @@ export async function getConversationAccess(
   const member = channelMembers[0] ?? null;
   const isOwner = companyRole === "OWNER" && channel.kind === "CHANNEL";
   if (!isOwner && !member) return null;
-  const permissions: ChannelPermissions = isOwner
-    ? ALL_PERMISSIONS
-    : member
-      ? {
-          canSendMessages: member.canSendMessages,
-          canManageMembers: member.canManageMembers,
-          canManageChannel: member.canManageChannel,
-          canModerateMessages: member.canModerateMessages,
-        }
-      : NO_PERMISSIONS;
+  const permissions = permissionsFor(isOwner, member);
   return { channel: details, companyRole, isOwner, member, permissions };
 }
 
@@ -109,4 +118,32 @@ export async function requireConversationAccess(
       message: PERMISSION_MESSAGES[permission],
     });
   return access;
+}
+
+/** The user's role in the company; NOT_FOUND if they aren't a member. */
+export async function requireCompanyRole(
+  db: Prisma.TransactionClient,
+  companyId: string,
+  userId: string,
+) {
+  const membership = await db.companyMember.findUnique({
+    where: { userId_companyId: { companyId, userId } },
+    select: { role: true },
+  });
+  if (!membership)
+    throw new TRPCError({ code: "NOT_FOUND", message: "Company not found." });
+  return membership.role;
+}
+
+/** Filters to the channels (not direct messages) this user can see. */
+export function visibleChannelsWhere(
+  userId: string,
+  role: CompanyRole,
+): Prisma.ChannelWhereInput {
+  return {
+    kind: "CHANNEL",
+    ...(role === "OWNER"
+      ? {}
+      : { channelMembers: { some: { userId, removedAt: null } } }),
+  };
 }

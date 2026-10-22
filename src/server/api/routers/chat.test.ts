@@ -866,7 +866,11 @@ describe("editing and deleting messages", () => {
     });
     await expect(
       member.message.edit({ messageId: sent.id, content: "After" }),
-    ).rejects.toMatchObject({ code: "FORBIDDEN" });
+    ).rejects.toMatchObject({
+      code: "FORBIDDEN",
+      message:
+        "You can't edit messages here because you can no longer send messages in this channel.",
+    });
   });
 
   it("the author can delete their message, and everyone is told", async () => {

@@ -4,12 +4,9 @@ import type { ChatMessage, SendMessageBody } from "~/lib/chat-message";
 import {
   channelImageFolder,
   confirmPrivateImageUpload,
+  signedImageUrl,
 } from "~/server/image-uploads";
-import {
-  deleteObject,
-  signedReadUrl,
-  storageConfigured,
-} from "~/server/storage";
+import { deleteObject, storageConfigured } from "~/server/storage";
 
 type SendContext = {
   db: Prisma.TransactionClient;
@@ -106,10 +103,6 @@ const handlers: { [T in MessageType]: MessageHandler<T> } = {
     },
   },
 };
-
-export async function signedImageUrl(key: string | null) {
-  return key && storageConfigured() ? signedReadUrl(key) : null;
-}
 
 export function prepareMessage(context: SendContext, body: SendMessageBody) {
   // The discriminated union guarantees body matches its handler.
