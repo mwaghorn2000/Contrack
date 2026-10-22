@@ -4,10 +4,7 @@ import { useState } from "react";
 import { MESSAGE_MAX_LENGTH, type ChatMessage } from "~/lib/chat-message";
 import { api } from "~/trpc/react";
 import MemberAvatar from "../_dashboard-components/_home-components/member-avatar";
-import {
-  useRemoveMessageFromCache,
-  useReplaceMessageInCache,
-} from "./message-cache";
+import { useMessageCache } from "./message-cache";
 import MessageContent from "./messages/registry";
 
 const timeFormat = new Intl.DateTimeFormat(undefined, {
@@ -35,17 +32,16 @@ export default function MessageItem({
 }) {
   const [mode, setMode] = useState<"view" | "edit" | "confirm-delete">("view");
   const [draft, setDraft] = useState(message.content);
-  const replaceMessage = useReplaceMessageInCache(message.channelId);
-  const removeMessage = useRemoveMessageFromCache(message.channelId);
+  const messageCache = useMessageCache(message.channelId);
   const edit = api.message.edit.useMutation({
     onSuccess(updated) {
-      replaceMessage(updated);
+      messageCache.replace(updated);
       setMode("view");
     },
   });
   const remove = api.message.delete.useMutation({
     onSuccess() {
-      removeMessage(message.id);
+      messageCache.remove(message.id);
     },
   });
   const error = edit.error ?? remove.error;
