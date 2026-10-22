@@ -6,6 +6,7 @@ import { imageFileSchema, imageKeySchema } from "~/lib/image-upload";
 import {
   ALL_PERMISSIONS,
   permissionsFor,
+  requireCanManageMember,
   requireCompanyRole,
   requireConversationAccess,
   visibleChannelsWhere,
@@ -413,6 +414,12 @@ export const channelRouter = createTRPCRouter({
               code: "FORBIDDEN",
               message: "You can only grant permissions you have yourself.",
             });
+          await requireCanManageMember(
+            tx,
+            channel.id,
+            permissions,
+            input.userId,
+          );
         }
         const target = await tx.companyMember.findUnique({
           where: {
@@ -447,7 +454,7 @@ export const channelRouter = createTRPCRouter({
     .input(channelIdSchema.extend({ userId: z.string().cuid() }))
     .mutation(async ({ ctx, input }) => {
       const actorId = ctx.session.user.id;
-      const { channel, isOwner } = await requireConversationAccess(
+      const { channel, isOwner, permissions } = await requireConversationAccess(
         ctx.db,
         actorId,
         input.channelId,
@@ -459,6 +466,13 @@ export const channelRouter = createTRPCRouter({
           code: "FORBIDDEN",
           message: "You can't remove yourself from a channel.",
         });
+      if (!isOwner)
+        await requireCanManageMember(
+          ctx.db,
+          channel.id,
+          permissions,
+          input.userId,
+        );
       // Keep the membership row so the person's past messages keep their author.
       const result = await ctx.db.channelMember.updateMany({
         where: { channelId: channel.id, userId: input.userId, removedAt: null },
