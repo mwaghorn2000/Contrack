@@ -912,6 +912,32 @@ describe("editing and deleting messages", () => {
     });
   });
 
+  it("an edit that races a delete doesn't bring the message back", async () => {
+    const channelId = await channelWithMember();
+    const sent = await member.message.send({ channelId, body: text("Gone") });
+    // Delete the message just after edit has loaded it.
+    const findFirst = db.message.findFirst.bind(db.message);
+    const spy = vi.spyOn(db.message, "findFirst").mockImplementationOnce(((
+      ...args: Parameters<typeof findFirst>
+    ) =>
+      findFirst(...args).then(async (row) => {
+        await db.message.update({
+          where: { id: sent.id },
+          data: { deletedAt: new Date() },
+        });
+        return row;
+      })) as typeof findFirst);
+    vi.mocked(publishToConversation).mockClear();
+    await expect(
+      member.message.edit({ messageId: sent.id, content: "Back" }),
+    ).rejects.toMatchObject({ code: "NOT_FOUND" });
+    spy.mockRestore();
+    expect(
+      await db.message.findUniqueOrThrow({ where: { id: sent.id } }),
+    ).toMatchObject({ content: "Gone", editedAt: null });
+    expect(publishToConversation).not.toHaveBeenCalled();
+  });
+
   it("people who can't see the conversation can't find its messages", async () => {
     const channelId = await channelWithMember();
     const sent = await member.message.send({
