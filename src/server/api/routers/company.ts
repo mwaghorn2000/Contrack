@@ -83,10 +83,9 @@ async function requireCompanyManager(
 async function replaceCompanyImage(
   db: Prisma.TransactionClient,
   input: z.infer<typeof companyImageSchema>,
-  userId: string,
+  previous: Awaited<ReturnType<typeof requireCompanyManager>>,
   url: string | null,
 ) {
-  const previous = await requireCompanyManager(db, input.companyId, userId);
   const column = companyImageColumns[input.kind];
   await db.company.update({
     where: { id: input.companyId },
@@ -437,7 +436,11 @@ export const companyRouter = createTRPCRouter({
   setImage: protectedProcedure
     .input(companyImageSchema.extend({ key: imageKeySchema }))
     .mutation(async ({ ctx, input }) => {
-      await requireCompanyManager(ctx.db, input.companyId, ctx.session.user.id);
+      const previous = await requireCompanyManager(
+        ctx.db,
+        input.companyId,
+        ctx.session.user.id,
+      );
       const url = await confirmImageUpload(
         ctx.db,
         ctx.session.user.id,
@@ -445,13 +448,18 @@ export const companyRouter = createTRPCRouter({
         input.kind,
         input.key,
       );
-      return replaceCompanyImage(ctx.db, input, ctx.session.user.id, url);
+      return replaceCompanyImage(ctx.db, input, previous, url);
     }),
 
   removeImage: protectedProcedure
     .input(companyImageSchema)
     .mutation(async ({ ctx, input }) => {
-      return replaceCompanyImage(ctx.db, input, ctx.session.user.id, null);
+      const previous = await requireCompanyManager(
+        ctx.db,
+        input.companyId,
+        ctx.session.user.id,
+      );
+      return replaceCompanyImage(ctx.db, input, previous, null);
     }),
 
   getCompanyPosts: protectedProcedure
