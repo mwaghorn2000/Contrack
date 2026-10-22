@@ -246,6 +246,13 @@ exports.Prisma.MessageScalarFieldEnum = {
   authorChannelMemberId: 'authorChannelMemberId'
 };
 
+exports.Prisma.MessageEditScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  messageId: 'messageId',
+  editorId: 'editorId'
+};
+
 exports.Prisma.JobScalarFieldEnum = {
   id: 'id',
   title: 'title',
@@ -350,6 +357,7 @@ exports.Prisma.ModelName = {
   CompanyInvitation: 'CompanyInvitation',
   EmailVerificationCode: 'EmailVerificationCode',
   Message: 'Message',
+  MessageEdit: 'MessageEdit',
   Job: 'Job',
   CompanyPost: 'CompanyPost',
   CompanyPostAcknowledgment: 'CompanyPostAcknowledgment',

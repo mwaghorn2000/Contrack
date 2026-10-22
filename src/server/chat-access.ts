@@ -120,6 +120,38 @@ export async function requireConversationAccess(
   return access;
 }
 
+/**
+ * Refuses when the target's channel membership has a permission the actor
+ * lacks, so a manager can't remove or demote someone with more power.
+ */
+export async function requireCanManageMember(
+  db: Prisma.TransactionClient,
+  channelId: string,
+  actorPermissions: ChannelPermissions,
+  userId: string,
+) {
+  const target = await db.channelMember.findFirst({
+    where: { channelId, userId, removedAt: null },
+    select: {
+      canSendMessages: true,
+      canManageMembers: true,
+      canManageChannel: true,
+      canModerateMessages: true,
+    },
+  });
+  const permissions = Object.keys(
+    ALL_PERMISSIONS,
+  ) as (keyof ChannelPermissions)[];
+  if (
+    target &&
+    permissions.some((key) => target[key] && !actorPermissions[key])
+  )
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "You can't change someone who has permissions you don't.",
+    });
+}
+
 /** The user's role in the company; NOT_FOUND if they aren't a member. */
 export async function requireCompanyRole(
   db: Prisma.TransactionClient,

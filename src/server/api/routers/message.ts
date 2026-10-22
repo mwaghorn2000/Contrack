@@ -46,6 +46,30 @@ async function requireMessage(
   return { row, access, isAuthor: row.authorChannelMember.user.id === userId };
 }
 
+/**
+ * Refuses when the user has posted or edited too many messages recently. Each
+ * send and each edit counts once.
+ */
+async function requireMessageRate(
+  db: Prisma.TransactionClient,
+  userId: string,
+) {
+  const since = new Date(Date.now() - RATE_LIMIT_WINDOW_MS);
+  const [sent, edited] = await Promise.all([
+    db.message.count({
+      where: { authorChannelMember: { userId }, postedAt: { gt: since } },
+    }),
+    db.messageEdit.count({
+      where: { editorId: userId, createdAt: { gt: since } },
+    }),
+  ]);
+  if (sent + edited >= MESSAGES_PER_WINDOW)
+    throw new TRPCError({
+      code: "TOO_MANY_REQUESTS",
+      message: "You're sending messages too quickly. Please wait a moment.",
+    });
+}
+
 export const messageRouter = createTRPCRouter({
   /** Newest first. Pass the returned cursor to load older messages. */
   list: protectedProcedure
@@ -107,17 +131,7 @@ export const messageRouter = createTRPCRouter({
         input.channelId,
         "canSendMessages",
       );
-      const recent = await ctx.db.message.count({
-        where: {
-          authorChannelMember: { userId },
-          postedAt: { gt: new Date(Date.now() - RATE_LIMIT_WINDOW_MS) },
-        },
-      });
-      if (recent >= MESSAGES_PER_WINDOW)
-        throw new TRPCError({
-          code: "TOO_MANY_REQUESTS",
-          message: "You're sending messages too quickly. Please wait a moment.",
-        });
+      await requireMessageRate(ctx.db, userId);
       const prepared = await prepareMessage(
         { db: ctx.db, userId, channelId: input.channelId },
         input.body,
@@ -180,17 +194,24 @@ export const messageRouter = createTRPCRouter({
           message: "Enter a message.",
         });
       if (input.content === row.content) return serializeMessage(row);
+      await requireMessageRate(ctx.db, ctx.session.user.id);
       // Match on deletedAt too, so a message deleted since it was loaded
       // isn't brought back.
-      const result = await ctx.db.message.updateMany({
-        where: { id: row.id, deletedAt: null },
-        data: { content: input.content, editedAt: new Date() },
-      });
-      if (result.count === 0)
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Message not found.",
+      // The edit is logged with the change, for the rate limit.
+      await ctx.db.$transaction(async (tx) => {
+        const result = await tx.message.updateMany({
+          where: { id: row.id, deletedAt: null },
+          data: { content: input.content, editedAt: new Date() },
         });
+        if (result.count === 0)
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Message not found.",
+          });
+        await tx.messageEdit.create({
+          data: { messageId: row.id, editorId: ctx.session.user.id },
+        });
+      });
       const updated = await ctx.db.message.findUniqueOrThrow({
         where: { id: row.id },
         select: messageRowSelect,
@@ -272,7 +293,7 @@ export const messageRouter = createTRPCRouter({
       let channels = 0;
       let directMessages = 0;
       for (const { id, kind } of conversations) {
-        const unread = counts.get(id) ?? 0;
+        const unread = counts.get(id)?.unread ?? 0;
         if (kind === "CHANNEL") channels += unread;
         else directMessages += unread;
       }

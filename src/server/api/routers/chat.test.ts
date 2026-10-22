@@ -355,6 +355,103 @@ describe("channel management", () => {
     ).resolves.toEqual({ success: true });
   });
 
+  describe("managing someone with more permissions", () => {
+    // The admin creates the channel, so they have every permission in it.
+    async function channelWithManager() {
+      const channel = await admin.channel.createChannel({
+        companyId,
+        name: "Crew",
+        memberIds: [ids.contractor],
+      });
+      await admin.channel.setMember({
+        channelId: channel.id,
+        userId: ids.member,
+        permissions: { ...sendPermission, canManageMembers: true },
+      });
+      return channel.id;
+    }
+
+    it("a manager can't remove them", async () => {
+      const channelId = await channelWithManager();
+      await expect(
+        member.channel.removeMember({ channelId, userId: ids.admin }),
+      ).rejects.toMatchObject({
+        code: "FORBIDDEN",
+        message: "You can't change someone who has permissions you don't.",
+      });
+      await expect(
+        member.channel.removeMember({ channelId, userId: ids.contractor }),
+      ).resolves.toEqual({ success: true });
+    });
+
+    it("a manager can't reduce their permissions", async () => {
+      const channelId = await channelWithManager();
+      await expect(
+        member.channel.setMember({
+          channelId,
+          userId: ids.admin,
+          permissions: sendPermission,
+        }),
+      ).rejects.toMatchObject({ code: "FORBIDDEN" });
+      expect(
+        await db.channelMember.findFirstOrThrow({
+          where: { channelId, userId: ids.admin },
+        }),
+      ).toMatchObject({ canManageChannel: true, removedAt: null });
+    });
+
+    it("the owner still can", async () => {
+      const channelId = await channelWithManager();
+      await expect(
+        owner.channel.setMember({
+          channelId,
+          userId: ids.admin,
+          permissions: sendPermission,
+        }),
+      ).resolves.toEqual({ success: true });
+      await expect(
+        owner.channel.removeMember({ channelId, userId: ids.admin }),
+      ).resolves.toEqual({ success: true });
+    });
+
+    it("someone no longer in the channel can't be removed but can be re-added", async () => {
+      const channelId = await channelWithManager();
+      await admin.channel.removeMember({ channelId, userId: ids.contractor });
+      await expect(
+        member.channel.removeMember({ channelId, userId: ids.contractor }),
+      ).rejects.toMatchObject({
+        code: "NOT_FOUND",
+        message: "This person is not in the channel.",
+      });
+      await expect(
+        member.channel.setMember({
+          channelId,
+          userId: ids.contractor,
+          permissions: sendPermission,
+        }),
+      ).resolves.toEqual({ success: true });
+      expect(
+        await db.channelMember.findFirstOrThrow({
+          where: { channelId, userId: ids.contractor },
+        }),
+      ).toMatchObject({ canSendMessages: true, removedAt: null });
+    });
+
+    it("someone outside the company can't be removed or added", async () => {
+      const channelId = await channelWithManager();
+      await expect(
+        member.channel.removeMember({ channelId, userId: ids.outsider }),
+      ).rejects.toMatchObject({ code: "NOT_FOUND" });
+      await expect(
+        member.channel.setMember({
+          channelId,
+          userId: ids.outsider,
+          permissions: sendPermission,
+        }),
+      ).rejects.toMatchObject({ code: "NOT_FOUND" });
+    });
+  });
+
   it("only company members can be added to a channel", async () => {
     const channel = await owner.channel.createChannel({
       companyId,
@@ -392,6 +489,25 @@ describe("direct messages", () => {
     expect(
       (await member.dm.open({ companyId, userId: ids.contractor })).id,
     ).toBe(first.id);
+  });
+
+  it("repeated simultaneous opens leave one conversation with both members", async () => {
+    const results = await Promise.all(
+      Array.from({ length: 3 }, () => [
+        member.dm.open({ companyId, userId: ids.contractor }),
+        contractor.dm.open({ companyId, userId: ids.member }),
+      ]).flat(),
+    );
+    expect(new Set(results.map(({ id }) => id)).size).toBe(1);
+    expect(
+      await db.channelMember.findMany({
+        where: { channelId: results[0]!.id, removedAt: null },
+        select: { userId: true },
+        orderBy: { userId: "asc" },
+      }),
+    ).toEqual(
+      [ids.member, ids.contractor].sort().map((userId) => ({ userId })),
+    );
   });
 
   it("both people can message each other and see the conversation in their list", async () => {
@@ -706,6 +822,36 @@ describe("unread messages", () => {
     return channels.find(({ id }) => id === channelId)?.unreadCount;
   }
 
+  it("the last message time ignores deleted messages but includes your own", async () => {
+    const channelId = await channelWithMember();
+    const first = await member.message.send({ channelId, body: text("Mine") });
+    const latest = await owner.message.send({ channelId, body: text("Gone") });
+    await owner.message.delete({ messageId: latest.id });
+    const dm = await member.dm.open({ companyId, userId: ids.contractor });
+    const reply = await member.message.send({
+      channelId: dm.id,
+      body: text("Hi"),
+    });
+    const deletedReply = await contractor.message.send({
+      channelId: dm.id,
+      body: text("Oops"),
+    });
+    await contractor.message.delete({ messageId: deletedReply.id });
+
+    const channel = (await member.channel.listChannels({ companyId })).find(
+      ({ id }) => id === channelId,
+    );
+    expect(channel?.lastMessageAt).toEqual(first.postedAt);
+    const [conversation] = await member.dm.list({ companyId });
+    expect(conversation?.lastMessageAt).toEqual(reply.postedAt);
+
+    await member.message.delete({ messageId: first.id });
+    const emptied = (await member.channel.listChannels({ companyId })).find(
+      ({ id }) => id === channelId,
+    );
+    expect(emptied?.lastMessageAt).toBeNull();
+  });
+
   it("counts other people's messages but not your own", async () => {
     const channelId = await channelWithMember();
     await owner.message.send({ channelId, body: text("One") });
@@ -934,6 +1080,49 @@ describe("editing and deleting messages", () => {
     });
   });
 
+  it("edits share the limit on how quickly someone can post", async () => {
+    const channelId = await channelWithMember();
+    const author = await db.channelMember.findFirstOrThrow({
+      where: { channelId, userId: ids.member },
+    });
+    // Posted long ago, so only the edits count towards the limit.
+    const postedAt = new Date("2026-01-01T00:00:00Z");
+    await db.message.createMany({
+      data: Array.from({ length: MESSAGES_PER_WINDOW + 1 }, (_, index) => ({
+        content: `Old ${index}`,
+        channelId,
+        authorChannelMemberId: author.id,
+        postedAt,
+      })),
+    });
+    const messages = await db.message.findMany({
+      where: { channelId },
+      orderBy: { content: "asc" },
+    });
+    for (const message of messages.slice(0, MESSAGES_PER_WINDOW))
+      await member.message.edit({ messageId: message.id, content: "Edited" });
+    await expect(
+      member.message.edit({ messageId: messages.at(-1)!.id, content: "More" }),
+    ).rejects.toMatchObject({ code: "TOO_MANY_REQUESTS" });
+    await expect(
+      member.message.send({ channelId, body: text("New") }),
+    ).rejects.toMatchObject({ code: "TOO_MANY_REQUESTS" });
+  });
+
+  it("editing one message over and over is rate limited", async () => {
+    const channelId = await channelWithMember();
+    const sent = await member.message.send({ channelId, body: text("Draft") });
+    // The send counts too, so these edits fill the limit.
+    for (let index = 1; index < MESSAGES_PER_WINDOW; index += 1)
+      await member.message.edit({
+        messageId: sent.id,
+        content: `Draft ${index}`,
+      });
+    await expect(
+      member.message.edit({ messageId: sent.id, content: "One more" }),
+    ).rejects.toMatchObject({ code: "TOO_MANY_REQUESTS" });
+  });
+
   it("an edit that races a delete doesn't bring the message back", async () => {
     const channelId = await channelWithMember();
     const sent = await member.message.send({ channelId, body: text("Gone") });
@@ -958,6 +1147,9 @@ describe("editing and deleting messages", () => {
       await db.message.findUniqueOrThrow({ where: { id: sent.id } }),
     ).toMatchObject({ content: "Gone", editedAt: null });
     expect(publishToConversation).not.toHaveBeenCalled();
+    expect(await db.messageEdit.count({ where: { messageId: sent.id } })).toBe(
+      0,
+    );
   });
 
   it("people who can't see the conversation can't find its messages", async () => {

@@ -6,6 +6,7 @@ import { imageFileSchema, imageKeySchema } from "~/lib/image-upload";
 import {
   ALL_PERMISSIONS,
   permissionsFor,
+  requireCanManageMember,
   requireCompanyRole,
   requireConversationAccess,
   visibleChannelsWhere,
@@ -201,16 +202,10 @@ export const channelRouter = createTRPCRouter({
               canModerateMessages: true,
             },
           },
-          messages: {
-            where: { deletedAt: null },
-            orderBy: [{ postedAt: "desc" }, { id: "desc" }],
-            take: 1,
-            select: { postedAt: true },
-          },
         },
       });
 
-      const unread = await unreadCounts(
+      const summary = await unreadCounts(
         ctx.db,
         userId,
         channels.map(({ id }) => id),
@@ -225,8 +220,8 @@ export const channelRouter = createTRPCRouter({
             id: channel.id,
             name: channel.name,
             imageUrl: await signedImageUrl(channel.image),
-            lastMessageAt: channel.messages[0]?.postedAt ?? null,
-            unreadCount: unread.get(channel.id) ?? 0,
+            lastMessageAt: summary.get(channel.id)?.lastMessageAt ?? null,
+            unreadCount: summary.get(channel.id)?.unread ?? 0,
             permissions,
           };
         }),
@@ -413,6 +408,12 @@ export const channelRouter = createTRPCRouter({
               code: "FORBIDDEN",
               message: "You can only grant permissions you have yourself.",
             });
+          await requireCanManageMember(
+            tx,
+            channel.id,
+            permissions,
+            input.userId,
+          );
         }
         const target = await tx.companyMember.findUnique({
           where: {
@@ -447,28 +448,44 @@ export const channelRouter = createTRPCRouter({
     .input(channelIdSchema.extend({ userId: z.string().cuid() }))
     .mutation(async ({ ctx, input }) => {
       const actorId = ctx.session.user.id;
-      const { channel, isOwner } = await requireConversationAccess(
-        ctx.db,
-        actorId,
-        input.channelId,
-        "canManageMembers",
-      );
-      requireChannelKind(channel.kind);
-      if (!isOwner && input.userId === actorId)
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "You can't remove yourself from a channel.",
+      // One transaction, so the target's permissions can't change between
+      // the check and the removal.
+      await serializableTransaction(ctx.db, async (tx) => {
+        const { channel, isOwner, permissions } =
+          await requireConversationAccess(
+            tx,
+            actorId,
+            input.channelId,
+            "canManageMembers",
+          );
+        requireChannelKind(channel.kind);
+        if (!isOwner && input.userId === actorId)
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "You can't remove yourself from a channel.",
+          });
+        if (!isOwner)
+          await requireCanManageMember(
+            tx,
+            channel.id,
+            permissions,
+            input.userId,
+          );
+        // Keep the membership row so the person's past messages keep their author.
+        const result = await tx.channelMember.updateMany({
+          where: {
+            channelId: channel.id,
+            userId: input.userId,
+            removedAt: null,
+          },
+          data: { removedAt: new Date() },
         });
-      // Keep the membership row so the person's past messages keep their author.
-      const result = await ctx.db.channelMember.updateMany({
-        where: { channelId: channel.id, userId: input.userId, removedAt: null },
-        data: { removedAt: new Date() },
+        if (result.count === 0)
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "This person is not in the channel.",
+          });
       });
-      if (result.count === 0)
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "This person is not in the channel.",
-        });
       await publishConversationsChanged([input.userId]);
       return { success: true };
     }),

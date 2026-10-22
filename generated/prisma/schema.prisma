@@ -154,6 +154,7 @@ model User {
   sentInvitations     CompanyInvitation[]
   imageUploads        ImageUpload[]
   channelReads        ChannelRead[]
+  messageEdits        MessageEdit[]
 }
 
 // When a user last read a channel or direct message. Separate from
@@ -237,9 +238,25 @@ model Message {
 
   authorChannelMemberId String
   authorChannelMember   ChannelMember @relation(fields: [authorChannelMemberId, channelId], references: [id, channelId], onDelete: NoAction)
+  edits                 MessageEdit[]
 
   @@index([channelId, postedAt, id])
   @@index([authorChannelMemberId, channelId])
+}
+
+// One row per edit, so repeated edits of a message count towards the rate limit.
+model MessageEdit {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  messageId String
+  message   Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  editorId String
+  editor   User   @relation(fields: [editorId], references: [id], onDelete: Cascade)
+
+  @@index([editorId, createdAt])
+  @@index([messageId])
 }
 
 model Job {
