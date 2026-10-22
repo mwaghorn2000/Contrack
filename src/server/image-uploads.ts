@@ -14,6 +14,7 @@ import {
   getObjectInfo,
   keyFromPublicUrl,
   publicUrl,
+  signedReadUrl,
   storageConfigured,
 } from "~/server/storage";
 
@@ -169,6 +170,10 @@ export async function deleteReplacedImage(
     // The new image is already saved; an orphaned file is harmless.
     console.error("Failed to delete replaced image", error);
   }
+}
+
+export async function signedImageUrl(key: string | null) {
+  return key && storageConfigured() ? signedReadUrl(key) : null;
 }
 
 /** Deletes a replaced private image when it was stored in this folder. */

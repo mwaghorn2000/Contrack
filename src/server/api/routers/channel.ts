@@ -17,9 +17,9 @@ import {
   confirmPrivateImageUpload,
   createImageUpload,
   deleteReplacedKey,
+  signedImageUrl,
 } from "~/server/image-uploads";
 import { unreadCounts } from "~/server/chat-unread";
-import { signedImageUrl } from "~/server/messages/types";
 import { publishConversationsChanged } from "~/server/realtime";
 import { deletePrefix, storageConfigured } from "~/server/storage";
 import { serializableTransaction } from "~/server/transactions";
