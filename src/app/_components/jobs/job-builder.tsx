@@ -35,15 +35,18 @@ export default function JobBuilder({ companyId }: { companyId: string }) {
       onSubmit={(event) => {
         event.preventDefault();
         if (!name.trim()) return;
+        const id = crypto.randomUUID();
         addJob(companyId, {
-          id: crypto.randomUUID(),
+          id,
           name: name.trim(),
           description: description.trim(),
           photoUrl,
           memberIds,
           tiles,
         });
-        router.push(listHref);
+        router.push(
+          `/dashboard/jobs/${id}?${new URLSearchParams({ companyId })}`,
+        );
       }}
     >
       <div className="flex items-center justify-between gap-4">

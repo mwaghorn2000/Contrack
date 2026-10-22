@@ -57,7 +57,9 @@ test("saving a job with Text tiles adds it to the list", async () => {
   ).toHaveProperty("value", "");
   await user.click(screen.getByRole("button", { name: "Save job" }));
 
-  expect(push).toHaveBeenCalledWith("/dashboard/jobs?companyId=company-1");
+  expect(push).toHaveBeenCalledWith(
+    expect.stringMatching(/^\/dashboard\/jobs\/[\w-]+\?companyId=company-1$/),
+  );
   const card = screen.getByRole("article");
   expect(within(card).getByText("Roof inspection")).toBeTruthy();
   expect(within(card).getByText("North side")).toBeTruthy();

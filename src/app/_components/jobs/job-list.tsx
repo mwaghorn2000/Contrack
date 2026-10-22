@@ -34,7 +34,12 @@ export default function JobList({
         <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {jobs.map((job) => (
             <li key={job.id}>
-              <JobCard job={job} />
+              <Link
+                href={`/dashboard/jobs/${job.id}?${new URLSearchParams({ companyId })}`}
+                className="block rounded-lg hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
+              >
+                <JobCard job={job} />
+              </Link>
             </li>
           ))}
         </ul>

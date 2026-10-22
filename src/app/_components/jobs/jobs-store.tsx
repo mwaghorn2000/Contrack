@@ -96,6 +96,11 @@ export function useCompanyJobs(companyId: string) {
   return useJobsStore().jobs(companyId);
 }
 
+/** Returns one of a company's jobs, or undefined when there is no such job. */
+export function useJob(companyId: string, jobId: string) {
+  return useCompanyJobs(companyId).find((job) => job.id === jobId);
+}
+
 /** Returns a function that saves a new job to a company. */
 export function useAddJob() {
   return useJobsStore().addJob;
