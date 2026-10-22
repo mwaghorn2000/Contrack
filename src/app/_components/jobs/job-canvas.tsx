@@ -1,3 +1,4 @@
+import { useDroppable } from "@dnd-kit/core";
 import {
   SortableContext,
   verticalListSortingStrategy,
@@ -5,14 +6,23 @@ import {
 import type { Dispatch, SetStateAction } from "react";
 import type { JobTile } from "~/lib/job-tiles";
 import CanvasTile from "./canvas-tile";
+import { CANVAS_DROP_ID } from "./tile-drop";
 
-/** The job's tiles in order, each with a drag handle and its inline editor. */
+/**
+ * The job's tiles in order, each with its type's inline editor. While a new
+ * tile is dragged in, `insertBefore` marks where it would land and a zone
+ * after the last tile accepts drops at the end.
+ */
 export default function JobCanvas({
   tiles,
   onChange,
+  addingTile,
+  insertBefore,
 }: {
   tiles: JobTile[];
   onChange: Dispatch<SetStateAction<JobTile[]>>;
+  addingTile: boolean;
+  insertBefore: string | null;
 }) {
   return (
     <div className="space-y-3">
@@ -23,7 +33,14 @@ export default function JobCanvas({
         >
           <ol aria-label="Job tiles" className="space-y-3">
             {tiles.map((tile, index) => (
-              <li key={tile.id}>
+              <li
+                key={tile.id}
+                className={
+                  insertBefore === tile.id
+                    ? "border-t-4 border-gray-900 pt-2"
+                    : ""
+                }
+              >
                 <CanvasTile
                   tile={tile}
                   position={index + 1}
@@ -45,11 +62,26 @@ export default function JobCanvas({
           </ol>
         </SortableContext>
       )}
-      {tiles.length === 0 && (
-        <p className="rounded-lg border border-dashed border-gray-300 p-8 text-center text-sm text-gray-500">
-          Add tiles from the palette to build this job.
-        </p>
+      {(tiles.length === 0 || addingTile) && (
+        <EndZone>
+          {tiles.length === 0
+            ? "Drag tiles here, or click one in the palette, to build this job."
+            : "Drop here to add at the end."}
+        </EndZone>
       )}
     </div>
+  );
+}
+
+/** The drop zone after the last tile, which is also the empty canvas. */
+function EndZone({ children }: { children: string }) {
+  const { setNodeRef, isOver } = useDroppable({ id: CANVAS_DROP_ID });
+  return (
+    <p
+      ref={setNodeRef}
+      className={`rounded-lg border border-dashed p-8 text-center text-sm text-gray-500 ${isOver ? "border-gray-900 bg-gray-100" : "border-gray-300"}`}
+    >
+      {children}
+    </p>
   );
 }

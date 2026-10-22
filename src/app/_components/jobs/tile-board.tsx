@@ -1,20 +1,23 @@
 import {
   closestCenter,
   DndContext,
+  DragOverlay,
   KeyboardSensor,
   PointerSensor,
+  pointerWithin,
   useSensor,
   useSensors,
   type Active,
   type Announcements,
+  type CollisionDetection,
   type UniqueIdentifier,
 } from "@dnd-kit/core";
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
-import type { Dispatch, SetStateAction } from "react";
-import type { JobTile } from "~/lib/job-tiles";
+import { useState, type Dispatch, type SetStateAction } from "react";
+import type { JobTile, TileType } from "~/lib/job-tiles";
 import JobCanvas from "./job-canvas";
 import TilePalette from "./tile-palette";
-import { dropTile, type DragSource } from "./tile-drop";
+import { CANVAS_DROP_ID, dropTile, type DragSource } from "./tile-drop";
 import { createTile, tileTypes } from "./tiles/registry";
 
 /** Reads what a drag is carrying from the data its draggable registered. */
@@ -23,8 +26,22 @@ function sourceOf(active: Active) {
 }
 
 /**
- * The palette beside the canvas, whose tiles can be reordered by dragging
- * their handles with a pointer or the keyboard.
+ * New tiles land where the pointer is, so letting go anywhere else adds
+ * nothing. Moved tiles snap to the nearest tile, which keyboard moves need.
+ */
+const collisionDetection: CollisionDetection = (args) =>
+  "newType" in sourceOf(args.active)
+    ? pointerWithin(args)
+    : closestCenter({
+        ...args,
+        droppableContainers: args.droppableContainers.filter(
+          (container) => container.id !== CANVAS_DROP_ID,
+        ),
+      });
+
+/**
+ * The palette beside the canvas, sharing one drag-and-drop context so tiles
+ * can be dragged in from the palette and reordered on the canvas.
  */
 export default function TileBoard({
   tiles,
@@ -33,6 +50,8 @@ export default function TileBoard({
   tiles: JobTile[];
   onChange: Dispatch<SetStateAction<JobTile[]>>;
 }) {
+  const [newType, setNewType] = useState<TileType | null>(null);
+  const [insertBefore, setInsertBefore] = useState<string | null>(null);
   const sensors = useSensors(
     // A short distance lets palette clicks still add tiles.
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -47,7 +66,12 @@ export default function TileBoard({
     const tile = tiles[index];
     return tile ? `${tileTypes[tile.type].label} tile ${index + 1}` : "the end";
   };
-  const describe = (active: Active) => nameOf(active.id);
+  const describe = (active: Active) => {
+    const source = sourceOf(active);
+    return "newType" in source
+      ? `New ${tileTypes[source.newType].label} tile`
+      : nameOf(active.id);
+  };
   const announcements: Announcements = {
     onDragStart: ({ active }) => `Picked up ${describe(active)}.`,
     onDragOver: ({ active, over }) =>
@@ -59,18 +83,32 @@ export default function TileBoard({
     onDragCancel: ({ active }) => `Moving ${describe(active)} was cancelled.`,
   };
 
+  const reset = () => {
+    setNewType(null);
+    setInsertBefore(null);
+  };
+
   return (
     <DndContext
       sensors={sensors}
-      // Moved tiles snap to the nearest tile, which keyboard moves need.
-      collisionDetection={closestCenter}
+      collisionDetection={collisionDetection}
       accessibility={{ announcements }}
+      onDragStart={({ active }) => {
+        const source = sourceOf(active);
+        if ("newType" in source) setNewType(source.newType);
+      }}
+      onDragOver={({ active, over }) => {
+        if ("newType" in sourceOf(active))
+          setInsertBefore(over ? String(over.id) : null);
+      }}
       onDragEnd={({ active, over }) => {
         const source = sourceOf(active);
         onChange((current) =>
           dropTile(current, source, over ? String(over.id) : null),
         );
+        reset();
       }}
+      onDragCancel={reset}
     >
       <div className="grid gap-6 md:grid-cols-[14rem_minmax(0,1fr)]">
         <TilePalette
@@ -78,8 +116,22 @@ export default function TileBoard({
             onChange((current) => [...current, createTile(type)])
           }
         />
-        <JobCanvas tiles={tiles} onChange={onChange} />
+        <JobCanvas
+          tiles={tiles}
+          onChange={onChange}
+          addingTile={newType !== null}
+          insertBefore={insertBefore}
+        />
       </div>
+      {/* Only palette drags use an overlay; moved tiles drag themselves, and
+          a mounted overlay would be measured in their place. */}
+      {newType && (
+        <DragOverlay dropAnimation={null}>
+          <div className="rounded-md border border-gray-400 bg-white px-3 py-2 text-sm font-medium shadow-lg">
+            {tileTypes[newType].icon} {tileTypes[newType].label}
+          </div>
+        </DragOverlay>
+      )}
     </DndContext>
   );
 }
