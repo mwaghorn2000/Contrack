@@ -1,4 +1,5 @@
 import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { expect, test } from "vitest";
 import { createTestProvider } from "~/test/ui";
 import JobView from "./job-view";
@@ -107,4 +108,32 @@ test("says people are loading rather than that the job has none", () => {
 
   expect(screen.getByText("Loading people…")).toBeTruthy();
   expect(screen.queryByText("No one is on this job yet.")).toBeNull();
+});
+
+test("owners and admins can preview the job as one of its members", async () => {
+  const user = userEvent.setup();
+  renderView({ userId: "user-1", isManager: true });
+  const preview = screen.getByLabelText("Preview as");
+  await screen.findByRole("option", { name: "Kim" });
+
+  await user.selectOptions(preview, "Kim");
+  expect(screen.getByRole("status").textContent).toMatch(/Previewing as Kim/);
+  expect(screen.getAllByRole("region", { name: "Text" })).toHaveLength(1);
+  await user.selectOptions(preview, "Jaxon");
+  expect(screen.getAllByRole("region", { name: "Text" })).toHaveLength(2);
+  // Ada is an owner, so previewing as her still shows every tile.
+  await user.selectOptions(preview, "Kim");
+  await user.selectOptions(preview, "Ada");
+  expect(screen.getAllByRole("region", { name: "Text" })).toHaveLength(2);
+
+  await user.selectOptions(preview, "You (every tile)");
+  expect(screen.queryByText(/Previewing as/)).toBeNull();
+});
+
+test("owners and admins get an Edit link", () => {
+  renderView({ userId: "user-1", isManager: true });
+
+  expect(screen.getByRole("link", { name: "Edit" }).getAttribute("href")).toBe(
+    "/dashboard/jobs/job-1/edit?companyId=company-1",
+  );
 });
