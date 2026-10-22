@@ -93,6 +93,12 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - Router tests live in a `*.test.ts` beside the router, or in a shared file for a feature (`chat.test.ts` covers `message.ts`, `direct-message.ts`, and `realtime.ts`). New procedures need tests for the happy path, unauthenticated users, users without permission, and invalid input.
 - Bug fixes include a test that fails without the fix.
 
+#### UI tests
+- Component and hook tests live in a `*.test.tsx` beside the component. The `.tsx` extension puts them in vitest's `ui` project, which runs in jsdom with React's development build; `.test.ts` files run in the `server` project in node.
+- Render with `createTestProvider` from `src/test/ui.tsx`: it uses the real tRPC and React Query providers, with requests answered by a handler you pass instead of the network.
+- Mock what reaches outside the browser: `pusher-js` (or `useRealtime`), `~/env`, and upload helpers, using `vi.mock`.
+- Run them with `pnpm test src/app`.
+
 ## 6. Before Committing
 - Run `pnpm check`, `pnpm test`, and `pnpm format:write`; all must pass.
 - No `any`, no `@ts-ignore`, no `console.log` left behind.
