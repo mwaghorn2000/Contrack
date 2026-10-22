@@ -157,10 +157,16 @@ export const messageRouter = createTRPCRouter({
         ctx.session.user.id,
         input.messageId,
       );
-      if (!isAuthor || !access.permissions.canSendMessages)
+      if (!isAuthor)
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "You can only edit your own messages.",
+        });
+      if (!access.permissions.canSendMessages)
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message:
+            "You can't edit messages here because you can no longer send messages in this channel.",
         });
       const rule = messageEditRule(row.type);
       if (!rule)
