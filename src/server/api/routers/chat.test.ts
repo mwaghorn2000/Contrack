@@ -1112,7 +1112,7 @@ describe("editing and deleting messages", () => {
   it("editing one message over and over is rate limited", async () => {
     const channelId = await channelWithMember();
     const sent = await member.message.send({ channelId, body: text("Draft") });
-    // The send counts too, so this edit fills the limit.
+    // The send counts too, so these edits fill the limit.
     for (let index = 1; index < MESSAGES_PER_WINDOW; index += 1)
       await member.message.edit({
         messageId: sent.id,
@@ -1147,6 +1147,9 @@ describe("editing and deleting messages", () => {
       await db.message.findUniqueOrThrow({ where: { id: sent.id } }),
     ).toMatchObject({ content: "Gone", editedAt: null });
     expect(publishToConversation).not.toHaveBeenCalled();
+    expect(await db.messageEdit.count({ where: { messageId: sent.id } })).toBe(
+      0,
+    );
   });
 
   it("people who can't see the conversation can't find its messages", async () => {
