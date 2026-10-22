@@ -26,11 +26,10 @@ export default function ConversationView({
   isCompanyOwner: boolean;
 }) {
   const channelId = initialConversation.id;
-  const conversation =
-    api.channel.getChannel.useQuery(
-      { channelId },
-      { initialData: initialConversation },
-    ).data ?? initialConversation;
+  const conversation = api.channel.getChannel.useQuery(
+    { channelId },
+    { initialData: initialConversation },
+  ).data;
   const { live } = useConversationEvents(channelId);
   const messageCache = useMessageCache(channelId);
   const utils = api.useUtils();
