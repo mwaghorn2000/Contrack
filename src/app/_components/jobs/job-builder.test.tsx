@@ -64,6 +64,28 @@ test("saving a job with Text tiles adds it to the list", async () => {
   expect(within(card).getByText("2 members · 2 tiles")).toBeTruthy();
 });
 
+test("taking someone off the job removes them from tile visibility", async () => {
+  const user = userEvent.setup();
+  renderBuilder();
+
+  const jaxon = await screen.findByRole("checkbox", { name: /Jaxon/ });
+  await user.click(jaxon);
+  await user.click(screen.getByRole("button", { name: "Add Text tile" }));
+  await user.click(
+    screen.getByRole("button", { name: "Visibility of Text tile 1" }),
+  );
+  await user.click(
+    screen.getByRole("radio", { name: "Only selected members" }),
+  );
+  await user.click(screen.getByRole("checkbox", { name: "Jaxon" }));
+  expect(screen.getByText("1 member")).toBeTruthy();
+
+  await user.click(jaxon);
+
+  expect(screen.getByText("Admins only")).toBeTruthy();
+  expect(screen.getByText("Add people to the job first.")).toBeTruthy();
+});
+
 test("Cancel goes back to the list", () => {
   renderBuilder();
   expect(
