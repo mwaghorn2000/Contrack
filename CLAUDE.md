@@ -97,7 +97,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - Component and hook tests live in a `*.test.tsx` beside the component. The `.tsx` extension puts them in vitest's `ui` project, which runs in jsdom with React's development build; `.test.ts` files run in the `server` project in node.
 - Render with `createTestProvider` from `src/test/ui.tsx`: it uses the real tRPC and React Query providers, with requests answered by a handler you pass instead of the network.
 - Mock what reaches outside the browser: `pusher-js` (or `useRealtime`), `~/env`, and upload helpers, using `vi.mock`.
-- Run them with `pnpm test src/app`.
+- Run them with `pnpm test --project ui`.
 
 ## 6. Before Committing
 - Run `pnpm check`, `pnpm test`, and `pnpm format:write`; all must pass.
