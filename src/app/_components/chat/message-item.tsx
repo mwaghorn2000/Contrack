@@ -151,7 +151,7 @@ export default function MessageItem({
   const actions =
     mode === "view" && (canEdit || canDelete) ? (
       // Shown on hover, or when tabbing through the conversation.
-      <div className="flex shrink-0 self-center opacity-0 transition group-focus-within:opacity-100 group-hover:opacity-100">
+      <div className="flex shrink-0 self-center opacity-0 transition group-focus-within:opacity-100 group-hover:opacity-100 [@media(hover:none)]:opacity-100">
         {canEdit && (
           <button
             type="button"
