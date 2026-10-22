@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import JobView from "~/app/_components/jobs/job-view";
+import { isManagerRole } from "~/lib/company-roles";
 import { authSession } from "~/server/auth";
 import { withCompanyAccess } from "~/server/company-access";
 import { api } from "~/trpc/server";
@@ -29,7 +30,7 @@ export default async function JobPage({
       jobId={jobId}
       viewer={{
         userId: session.user.id,
-        isManager: role === "OWNER" || role === "ADMIN",
+        isManager: isManagerRole(role),
       }}
     />
   );

@@ -1,5 +1,6 @@
 import { api } from "~/trpc/server";
 import JobList from "~/app/_components/jobs/job-list";
+import { isManagerRole } from "~/lib/company-roles";
 import { withCompanyAccess } from "~/server/company-access";
 
 /** Loads the viewer's role in the selected company and shows its jobs. */
@@ -14,10 +15,5 @@ export default async function JobsPage({
     api.company.getCompany({ companyId }),
   );
   const role = company.members[0]?.role;
-  return (
-    <JobList
-      companyId={companyId}
-      canManage={role === "OWNER" || role === "ADMIN"}
-    />
-  );
+  return <JobList companyId={companyId} canManage={isManagerRole(role)} />;
 }
