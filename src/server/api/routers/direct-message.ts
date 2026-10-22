@@ -30,15 +30,9 @@ export const directMessageRouter = createTRPCRouter({
             where: { userId: { not: userId } },
             select: { user: { select: { id: true, name: true, image: true } } },
           },
-          messages: {
-            where: { deletedAt: null },
-            orderBy: [{ postedAt: "desc" }, { id: "desc" }],
-            take: 1,
-            select: { postedAt: true },
-          },
         },
       });
-      const unread = await unreadCounts(
+      const summary = await unreadCounts(
         ctx.db,
         userId,
         conversations.map(({ id }) => id),
@@ -51,9 +45,10 @@ export const directMessageRouter = createTRPCRouter({
             {
               id: conversation.id,
               user,
-              lastMessageAt: conversation.messages[0]?.postedAt ?? null,
+              lastMessageAt:
+                summary.get(conversation.id)?.lastMessageAt ?? null,
               createdAt: conversation.createdAt,
-              unreadCount: unread.get(conversation.id) ?? 0,
+              unreadCount: summary.get(conversation.id)?.unread ?? 0,
             },
           ];
         })

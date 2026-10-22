@@ -285,7 +285,7 @@ export const messageRouter = createTRPCRouter({
       let channels = 0;
       let directMessages = 0;
       for (const { id, kind } of conversations) {
-        const unread = counts.get(id) ?? 0;
+        const unread = counts.get(id)?.unread ?? 0;
         if (kind === "CHANNEL") channels += unread;
         else directMessages += unread;
       }

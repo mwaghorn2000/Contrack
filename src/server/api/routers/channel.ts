@@ -202,16 +202,10 @@ export const channelRouter = createTRPCRouter({
               canModerateMessages: true,
             },
           },
-          messages: {
-            where: { deletedAt: null },
-            orderBy: [{ postedAt: "desc" }, { id: "desc" }],
-            take: 1,
-            select: { postedAt: true },
-          },
         },
       });
 
-      const unread = await unreadCounts(
+      const summary = await unreadCounts(
         ctx.db,
         userId,
         channels.map(({ id }) => id),
@@ -226,8 +220,8 @@ export const channelRouter = createTRPCRouter({
             id: channel.id,
             name: channel.name,
             imageUrl: await signedImageUrl(channel.image),
-            lastMessageAt: channel.messages[0]?.postedAt ?? null,
-            unreadCount: unread.get(channel.id) ?? 0,
+            lastMessageAt: summary.get(channel.id)?.lastMessageAt ?? null,
+            unreadCount: summary.get(channel.id)?.unread ?? 0,
             permissions,
           };
         }),
