@@ -1,6 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
+import { createTestProvider } from "~/test/ui";
 import JobBuilder from "./job-builder";
 import JobList from "./job-list";
 import { JobsStoreProvider } from "./jobs-store";
@@ -13,11 +14,23 @@ afterEach(() => vi.unstubAllGlobals());
 
 /** Renders the builder with the list beside it, sharing one empty store. */
 function renderBuilder() {
+  const { Wrapper } = createTestProvider((path) =>
+    path === "invitation.members"
+      ? [
+          { role: "OWNER", user: { id: "user-1", name: "Ada", image: null } },
+          {
+            role: "MEMBER",
+            user: { id: "user-2", name: "Jaxon", image: null },
+          },
+        ]
+      : null,
+  );
   render(
     <JobsStoreProvider initialJobs={[]}>
       <JobBuilder companyId="company-1" />
       <JobList companyId="company-1" canManage />
     </JobsStoreProvider>,
+    { wrapper: Wrapper },
   );
 }
 
@@ -27,6 +40,8 @@ test("saving a job with Text tiles adds it to the list", async () => {
 
   await user.type(screen.getByLabelText("Name"), "  Roof inspection ");
   await user.type(screen.getByLabelText(/Description/), "North side");
+  await user.click(await screen.findByRole("checkbox", { name: /Ada/ }));
+  await user.click(screen.getByRole("checkbox", { name: /Jaxon/ }));
   await user.click(screen.getByRole("button", { name: "Add Text tile" }));
   await user.click(screen.getByRole("button", { name: "Add Text tile" }));
   const first = within(screen.getByRole("region", { name: "Text tile 1" }));
@@ -46,7 +61,7 @@ test("saving a job with Text tiles adds it to the list", async () => {
   const card = screen.getByRole("article");
   expect(within(card).getByText("Roof inspection")).toBeTruthy();
   expect(within(card).getByText("North side")).toBeTruthy();
-  expect(within(card).getByText("0 members · 2 tiles")).toBeTruthy();
+  expect(within(card).getByText("2 members · 2 tiles")).toBeTruthy();
 });
 
 test("Cancel goes back to the list", () => {
