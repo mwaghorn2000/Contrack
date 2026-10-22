@@ -33,14 +33,15 @@ export default function JobCanvas({
         >
           <ol aria-label="Job tiles" className="space-y-3">
             {tiles.map((tile, index) => (
-              <li
-                key={tile.id}
-                className={
-                  insertBefore === tile.id
-                    ? "border-t-4 border-gray-900 pt-2"
-                    : ""
-                }
-              >
+              <li key={tile.id} className="relative">
+                {/* Drawn in the gap so the tiles don't shift, since dnd-kit
+                    doesn't re-measure them mid-drag. */}
+                {insertBefore === tile.id && (
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-x-0 -top-2 h-1 rounded bg-gray-900"
+                  />
+                )}
                 <CanvasTile
                   tile={tile}
                   position={index + 1}

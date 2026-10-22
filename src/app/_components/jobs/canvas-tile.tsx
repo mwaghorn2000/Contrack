@@ -48,6 +48,7 @@ export default function CanvasTile<T extends JobTile>({
           {...attributes}
           {...listeners}
           aria-label={`Move ${name}`}
+          data-tile-handle
           className={`${iconButtonClass} cursor-grab touch-none`}
         >
           ⠿
@@ -58,7 +59,17 @@ export default function CanvasTile<T extends JobTile>({
         <span className="flex-1">{label}</span>
         <button
           type="button"
-          onClick={onRemove}
+          onClick={(event) => {
+            // Keeps keyboard users' place by focusing the next tile's handle,
+            // or the previous one's when this is the last tile.
+            const item = event.currentTarget.closest("li");
+            const neighbour =
+              item?.nextElementSibling ?? item?.previousElementSibling;
+            onRemove();
+            neighbour
+              ?.querySelector<HTMLElement>("[data-tile-handle]")
+              ?.focus();
+          }}
           aria-label={`Remove ${name}`}
           className={iconButtonClass}
         >

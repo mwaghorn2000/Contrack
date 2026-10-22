@@ -66,6 +66,7 @@ export default function TileBoard({
     const tile = tiles[index];
     return tile ? `${tileTypes[tile.type].label} tile ${index + 1}` : "the end";
   };
+  // Names what is being dragged: a new tile, or a tile already on the canvas.
   const describe = (active: Active) => {
     const source = sourceOf(active);
     return "newType" in source
@@ -75,7 +76,9 @@ export default function TileBoard({
   const announcements: Announcements = {
     onDragStart: ({ active }) => `Picked up ${describe(active)}.`,
     onDragOver: ({ active, over }) =>
-      over ? `${describe(active)} is over ${nameOf(over.id)}.` : undefined,
+      over && over.id !== active.id
+        ? `${describe(active)} is over ${nameOf(over.id)}.`
+        : undefined,
     onDragEnd: ({ active, over }) =>
       over
         ? `${describe(active)} was dropped at ${nameOf(over.id)}.`
@@ -83,6 +86,7 @@ export default function TileBoard({
     onDragCancel: ({ active }) => `Moving ${describe(active)} was cancelled.`,
   };
 
+  // Clears the palette drag's overlay and insert line.
   const reset = () => {
     setNewType(null);
     setInsertBefore(null);
@@ -90,6 +94,9 @@ export default function TileBoard({
 
   return (
     <DndContext
+      // A fixed id keeps dnd-kit's generated ids the same on the server and in
+      // the browser, so hydration matches.
+      id="tile-board"
       sensors={sensors}
       collisionDetection={collisionDetection}
       accessibility={{ announcements }}
