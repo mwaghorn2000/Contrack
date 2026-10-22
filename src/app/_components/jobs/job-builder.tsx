@@ -4,8 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import type { JobTile } from "~/lib/job-tiles";
+import { keepJobMembers, type JobTile } from "~/lib/job-tiles";
 import { IMAGE_CONTENT_TYPES } from "~/lib/image-upload";
+import { api } from "~/trpc/react";
 import JobMembers from "./job-members";
 import { useAddJob } from "./jobs-store";
 import TileBoard from "./tile-board";
@@ -22,6 +23,10 @@ export default function JobBuilder({ companyId }: { companyId: string }) {
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [memberIds, setMemberIds] = useState<string[]>([]);
   const [tiles, setTiles] = useState<JobTile[]>([]);
+  const companyMembers = api.invitation.members.useQuery({ companyId });
+  const people = (companyMembers.data ?? [])
+    .filter(({ user }) => memberIds.includes(user.id))
+    .map(({ user }) => user);
   const listHref = `/dashboard/jobs?${new URLSearchParams({ companyId })}`;
 
   return (
@@ -125,9 +130,13 @@ export default function JobBuilder({ companyId }: { companyId: string }) {
       <JobMembers
         companyId={companyId}
         memberIds={memberIds}
-        onChange={setMemberIds}
+        onChange={(ids) => {
+          setMemberIds(ids);
+          // People taken off the job can no longer be picked for tiles.
+          setTiles((current) => keepJobMembers(current, ids));
+        }}
       />
-      <TileBoard tiles={tiles} onChange={setTiles} />
+      <TileBoard tiles={tiles} people={people} onChange={setTiles} />
     </form>
   );
 }

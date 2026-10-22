@@ -1,29 +1,34 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { useState } from "react";
 import type { JobTile } from "~/lib/job-tiles";
 import type { DragSource } from "./tile-drop";
+import TileSettings, { visibilityLabel, type JobPerson } from "./tile-settings";
 import { definitionFor } from "./tiles/registry";
 
 const iconButtonClass =
   "rounded px-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-2 focus-visible:outline-gray-900";
 
 /**
- * One tile on the canvas: a header with a drag handle, its type and a remove
- * button, then its inline editor.
+ * One tile on the canvas: a header with a drag handle, its type, who can see
+ * it and remove and settings buttons, then its inline editor.
  */
 export default function CanvasTile<T extends JobTile>({
   tile,
   position,
+  people,
   onChange,
   onRemove,
 }: {
   tile: T;
   position: number;
+  people: JobPerson[];
   onChange: (tile: T) => void;
   onRemove: () => void;
 }) {
   const { label, icon, Editor } = definitionFor(tile);
   const name = `${label} tile ${position}`;
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const source: DragSource = { tileId: tile.id };
   const {
     setNodeRef,
@@ -57,6 +62,20 @@ export default function CanvasTile<T extends JobTile>({
           {icon}
         </span>
         <span className="flex-1">{label}</span>
+        <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-normal text-gray-600">
+          <span className="sr-only">Visible to: </span>
+          {visibilityLabel(tile.visibility)}
+        </span>
+        <button
+          type="button"
+          onClick={() => setSettingsOpen((open) => !open)}
+          aria-expanded={settingsOpen}
+          aria-label={`Visibility of ${name}`}
+          className={iconButtonClass}
+        >
+          {/* A gear drawn as text, not a colour emoji. */}
+          {"\u2699\uFE0E"}
+        </button>
         <button
           type="button"
           onClick={(event) => {
@@ -76,6 +95,14 @@ export default function CanvasTile<T extends JobTile>({
           ✕
         </button>
       </div>
+      {settingsOpen && (
+        <TileSettings
+          tileId={tile.id}
+          visibility={tile.visibility}
+          people={people}
+          onChange={(visibility) => onChange({ ...tile, visibility })}
+        />
+      )}
       <div className="p-3">
         <Editor
           config={tile.config}

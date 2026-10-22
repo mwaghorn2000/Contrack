@@ -17,6 +17,7 @@ import { useState, type Dispatch, type SetStateAction } from "react";
 import type { JobTile, TileType } from "~/lib/job-tiles";
 import JobCanvas from "./job-canvas";
 import TilePalette from "./tile-palette";
+import type { JobPerson } from "./tile-settings";
 import { CANVAS_DROP_ID, dropTile, type DragSource } from "./tile-drop";
 import { createTile, tileTypes } from "./tiles/registry";
 
@@ -45,9 +46,11 @@ const collisionDetection: CollisionDetection = (args) =>
  */
 export default function TileBoard({
   tiles,
+  people,
   onChange,
 }: {
   tiles: JobTile[];
+  people: JobPerson[];
   onChange: Dispatch<SetStateAction<JobTile[]>>;
 }) {
   const [newType, setNewType] = useState<TileType | null>(null);
@@ -125,6 +128,7 @@ export default function TileBoard({
         />
         <JobCanvas
           tiles={tiles}
+          people={people}
           onChange={onChange}
           addingTile={newType !== null}
           insertBefore={insertBefore}

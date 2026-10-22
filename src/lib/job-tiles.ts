@@ -18,3 +18,41 @@ export const tileSchema = z.discriminatedUnion("type", [textTileSchema]);
 
 export type JobTile = z.infer<typeof tileSchema>;
 export type TileType = JobTile["type"];
+
+export type TileVisibility = z.infer<typeof tileVisibilitySchema>;
+
+/**
+ * Whether someone can see a tile. Company owners and admins see every tile,
+ * as they see every channel; others need it open to everyone or to be listed.
+ */
+export function canSeeTile(
+  tile: JobTile,
+  viewer: { userId: string; isManager: boolean },
+) {
+  const { visibility } = tile;
+  return (
+    viewer.isManager ||
+    visibility.mode === "everyone" ||
+    visibility.userIds.includes(viewer.userId)
+  );
+}
+
+/** Drops people who are no longer on the job from every tile's visibility. */
+export function keepJobMembers(
+  tiles: JobTile[],
+  memberIds: string[],
+): JobTile[] {
+  return tiles.map((tile) =>
+    tile.visibility.mode === "members"
+      ? {
+          ...tile,
+          visibility: {
+            mode: "members" as const,
+            userIds: tile.visibility.userIds.filter((id) =>
+              memberIds.includes(id),
+            ),
+          },
+        }
+      : tile,
+  );
+}

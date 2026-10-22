@@ -18,7 +18,7 @@ function tile(id: string, body: string): JobTile {
 /** Renders the board with its own tile state, as the builder does. */
 function Board({ initial }: { initial: JobTile[] }) {
   const [tiles, setTiles] = useState(initial);
-  return <TileBoard tiles={tiles} onChange={setTiles} />;
+  return <TileBoard tiles={tiles} people={[]} onChange={setTiles} />;
 }
 
 /** The tile bodies in canvas order. */

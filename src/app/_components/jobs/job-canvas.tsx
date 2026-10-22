@@ -6,6 +6,7 @@ import {
 import type { Dispatch, SetStateAction } from "react";
 import type { JobTile } from "~/lib/job-tiles";
 import CanvasTile from "./canvas-tile";
+import type { JobPerson } from "./tile-settings";
 import { CANVAS_DROP_ID } from "./tile-drop";
 
 /**
@@ -15,11 +16,13 @@ import { CANVAS_DROP_ID } from "./tile-drop";
  */
 export default function JobCanvas({
   tiles,
+  people,
   onChange,
   addingTile,
   insertBefore,
 }: {
   tiles: JobTile[];
+  people: JobPerson[];
   onChange: Dispatch<SetStateAction<JobTile[]>>;
   addingTile: boolean;
   insertBefore: string | null;
@@ -45,6 +48,7 @@ export default function JobCanvas({
                 <CanvasTile
                   tile={tile}
                   position={index + 1}
+                  people={people}
                   // Updates the latest tiles, so edits can't undo a concurrent
                   // move.
                   onChange={(updated) =>
