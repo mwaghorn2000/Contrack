@@ -12,7 +12,7 @@ export default function JobList({
   companyId: string;
   canManage: boolean;
 }) {
-  const jobs = useCompanyJobs();
+  const jobs = useCompanyJobs(companyId);
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4">

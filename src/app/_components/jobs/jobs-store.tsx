@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 import type { JobTile } from "~/lib/job-tiles";
 
 /** A job as the UI holds it until jobs are saved on the server. */
@@ -39,11 +45,16 @@ export const MOCK_JOBS: DraftJob[] = [
   },
 ];
 
-const JobsStoreContext = createContext<DraftJob[] | null>(null);
+type JobsStore = {
+  jobs: (companyId: string) => DraftJob[];
+  addJob: (companyId: string, job: DraftJob) => void;
+};
+
+const JobsStoreContext = createContext<JobsStore | null>(null);
 
 /**
- * Holds jobs in memory while the Jobs UI is built ahead of the backend.
- * Every company starts with `initialJobs`.
+ * Holds jobs in memory, per company, while the Jobs UI is built ahead of the
+ * backend. Companies without saved changes show `initialJobs`.
  */
 export function JobsStoreProvider({
   initialJobs = MOCK_JOBS,
@@ -52,16 +63,40 @@ export function JobsStoreProvider({
   initialJobs?: DraftJob[];
   children: ReactNode;
 }) {
+  const [jobsByCompany, setJobsByCompany] = useState<
+    Record<string, DraftJob[]>
+  >({});
+  const store = useMemo<JobsStore>(
+    () => ({
+      jobs: (companyId) => jobsByCompany[companyId] ?? initialJobs,
+      addJob: (companyId, job) =>
+        setJobsByCompany((current) => ({
+          ...current,
+          [companyId]: [...(current[companyId] ?? initialJobs), job],
+        })),
+    }),
+    [jobsByCompany, initialJobs],
+  );
   return (
-    <JobsStoreContext.Provider value={initialJobs}>
+    <JobsStoreContext.Provider value={store}>
       {children}
     </JobsStoreContext.Provider>
   );
 }
 
-/** Returns the jobs from the nearest JobsStoreProvider. */
-export function useCompanyJobs() {
-  const jobs = useContext(JobsStoreContext);
-  if (!jobs) throw new Error("useCompanyJobs needs a JobsStoreProvider");
-  return jobs;
+/** Returns the nearest JobsStoreProvider's store. */
+function useJobsStore() {
+  const store = useContext(JobsStoreContext);
+  if (!store) throw new Error("Jobs hooks need a JobsStoreProvider");
+  return store;
+}
+
+/** Returns the jobs for a company. */
+export function useCompanyJobs(companyId: string) {
+  return useJobsStore().jobs(companyId);
+}
+
+/** Returns a function that saves a new job to a company. */
+export function useAddJob() {
+  return useJobsStore().addJob;
 }
