@@ -43,8 +43,6 @@ export default function ChannelSettingsModal({
   const { permissions } = conversation;
   const router = useRouter();
   const utils = api.useUtils();
-  const [name, setName] = useState(conversation.name);
-  const [confirmDelete, setConfirmDelete] = useState(false);
   const refresh = () => {
     void utils.channel.getChannel.invalidate({ channelId });
     void utils.channel.listChannels.invalidate();
@@ -73,70 +71,19 @@ export default function ChannelSettingsModal({
     >
       <div className="space-y-8">
         {permissions.canManageChannel && (
-          <section aria-labelledby="channel-details" className="space-y-4">
-            <h3 id="channel-details" className="text-sm font-semibold">
-              Details
-            </h3>
-            <div className="flex items-center gap-3">
-              <ChannelIcon
-                name={conversation.name}
-                imageUrl={conversation.imageUrl}
-              />
-              <ImageUploadButton
-                kind="logo"
-                label={conversation.imageUrl ? "Change icon" : "Upload icon"}
-                hasImage={Boolean(conversation.imageUrl)}
-                onUpload={(file) =>
-                  uploadImage(file, "logo", {
-                    create: (details) =>
-                      createUpload.mutateAsync({ channelId, ...details }),
-                    confirm: (key) => setImage.mutateAsync({ channelId, key }),
-                  })
-                }
-                onRemove={() => setImage.mutateAsync({ channelId, key: null })}
-              />
-            </div>
-            <form
-              className="flex flex-wrap items-end gap-3"
-              onSubmit={(event) => {
-                event.preventDefault();
-                if (name.trim() && name.trim() !== conversation.name)
-                  update.mutate({ channelId, name: name.trim() });
-              }}
-            >
-              <div className="min-w-48 flex-1">
-                <label
-                  htmlFor="settings-name"
-                  className="block text-sm font-medium"
-                >
-                  Name
-                </label>
-                <input
-                  id="settings-name"
-                  required
-                  maxLength={100}
-                  value={name}
-                  onChange={(event) => setName(event.target.value)}
-                  disabled={busy}
-                  className={`mt-1 ${inputClass}`}
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={
-                  busy || !name.trim() || name.trim() === conversation.name
-                }
-                className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 disabled:opacity-50"
-              >
-                {update.isPending ? "Saving…" : "Save"}
-              </button>
-            </form>
-            {update.isError && (
-              <p role="alert" className="text-sm text-red-600">
-                {update.error.message}
-              </p>
-            )}
-          </section>
+          <DetailsSection
+            conversation={conversation}
+            busy={busy}
+            update={update}
+            onUpload={(file) =>
+              uploadImage(file, "logo", {
+                create: (details) =>
+                  createUpload.mutateAsync({ channelId, ...details }),
+                confirm: (key) => setImage.mutateAsync({ channelId, key }),
+              })
+            }
+            onRemoveImage={() => setImage.mutateAsync({ channelId, key: null })}
+          />
         )}
 
         {permissions.canManageMembers && (
@@ -149,52 +96,144 @@ export default function ChannelSettingsModal({
         )}
 
         {permissions.canManageChannel && (
-          <section
-            aria-labelledby="channel-danger"
-            className="rounded-lg border border-red-200 p-4"
-          >
-            <h3
-              id="channel-danger"
-              className="text-sm font-semibold text-red-800"
-            >
-              Delete channel
-            </h3>
-            <p className="mt-1 text-sm text-gray-600">
-              Deletes the channel and all of its messages and images. This can’t
-              be undone.
-            </p>
-            {confirmDelete ? (
-              <div className="mt-3 flex gap-3">
-                <button
-                  type="button"
-                  disabled={busy}
-                  onClick={() => remove.mutate({ channelId })}
-                  className="rounded-md bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-800 disabled:opacity-50"
-                >
-                  {remove.isPending ? "Deleting…" : "Yes, delete it"}
-                </button>
-                <button
-                  type="button"
-                  disabled={busy}
-                  onClick={() => setConfirmDelete(false)}
-                  className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-              </div>
-            ) : (
-              <button
-                type="button"
-                onClick={() => setConfirmDelete(true)}
-                className="mt-3 rounded-md border border-red-300 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-50"
-              >
-                Delete channel
-              </button>
-            )}
-          </section>
+          <DeleteSection
+            busy={busy}
+            deleting={remove.isPending}
+            onDelete={() => remove.mutate({ channelId })}
+          />
         )}
       </div>
     </ChatDialog>
+  );
+}
+
+/** The channel's icon and name, for people who can edit the channel. */
+function DetailsSection({
+  conversation,
+  busy,
+  update,
+  onUpload,
+  onRemoveImage,
+}: {
+  conversation: Conversation;
+  busy: boolean;
+  update: ReturnType<typeof api.channel.updateChannel.useMutation>;
+  onUpload: (file: File) => Promise<unknown>;
+  onRemoveImage: () => Promise<unknown>;
+}) {
+  const channelId = conversation.id;
+  const [name, setName] = useState(conversation.name);
+
+  return (
+    <section aria-labelledby="channel-details" className="space-y-4">
+      <h3 id="channel-details" className="text-sm font-semibold">
+        Details
+      </h3>
+      <div className="flex items-center gap-3">
+        <ChannelIcon
+          name={conversation.name}
+          imageUrl={conversation.imageUrl}
+        />
+        <ImageUploadButton
+          kind="logo"
+          label={conversation.imageUrl ? "Change icon" : "Upload icon"}
+          hasImage={Boolean(conversation.imageUrl)}
+          onUpload={onUpload}
+          onRemove={onRemoveImage}
+        />
+      </div>
+      <form
+        className="flex flex-wrap items-end gap-3"
+        onSubmit={(event) => {
+          event.preventDefault();
+          if (name.trim() && name.trim() !== conversation.name)
+            update.mutate({ channelId, name: name.trim() });
+        }}
+      >
+        <div className="min-w-48 flex-1">
+          <label htmlFor="settings-name" className="block text-sm font-medium">
+            Name
+          </label>
+          <input
+            id="settings-name"
+            required
+            maxLength={100}
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            disabled={busy}
+            className={`mt-1 ${inputClass}`}
+          />
+        </div>
+        <button
+          type="submit"
+          disabled={busy || !name.trim() || name.trim() === conversation.name}
+          className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 disabled:opacity-50"
+        >
+          {update.isPending ? "Saving…" : "Save"}
+        </button>
+      </form>
+      {update.isError && (
+        <p role="alert" className="text-sm text-red-600">
+          {update.error.message}
+        </p>
+      )}
+    </section>
+  );
+}
+
+/** Deletes the channel after asking for confirmation. */
+function DeleteSection({
+  busy,
+  deleting,
+  onDelete,
+}: {
+  busy: boolean;
+  deleting: boolean;
+  onDelete: () => void;
+}) {
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  return (
+    <section
+      aria-labelledby="channel-danger"
+      className="rounded-lg border border-red-200 p-4"
+    >
+      <h3 id="channel-danger" className="text-sm font-semibold text-red-800">
+        Delete channel
+      </h3>
+      <p className="mt-1 text-sm text-gray-600">
+        Deletes the channel and all of its messages and images. This can’t be
+        undone.
+      </p>
+      {confirmDelete ? (
+        <div className="mt-3 flex gap-3">
+          <button
+            type="button"
+            disabled={busy}
+            onClick={onDelete}
+            className="rounded-md bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-800 disabled:opacity-50"
+          >
+            {deleting ? "Deleting…" : "Yes, delete it"}
+          </button>
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => setConfirmDelete(false)}
+            className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50"
+          >
+            Cancel
+          </button>
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setConfirmDelete(true)}
+          className="mt-3 rounded-md border border-red-300 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-50"
+        >
+          Delete channel
+        </button>
+      )}
+    </section>
   );
 }
 
