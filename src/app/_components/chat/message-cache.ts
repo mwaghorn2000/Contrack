@@ -37,14 +37,19 @@ export function useMessageCache(channelId: string) {
     return {
       /** Adds a message to the newest page, ignoring duplicates. */
       add(message: ChatMessage) {
+        // Return early so a duplicate, e.g. the echo of your own message,
+        // doesn't restart a fetch.
+        const data = utils.message.list.getInfiniteData({ channelId });
+        if (
+          data?.pages.some((page) =>
+            page.items.some(({ id }) => id === message.id),
+          )
+        )
+          return;
         updatePages((pages) =>
-          pages.some((page) => page.items.some(({ id }) => id === message.id))
-            ? pages
-            : pages.map((page, index) =>
-                index === 0
-                  ? { ...page, items: [message, ...page.items] }
-                  : page,
-              ),
+          pages.map((page, index) =>
+            index === 0 ? { ...page, items: [message, ...page.items] } : page,
+          ),
         );
       },
       /** Replaces a message that was edited. */
