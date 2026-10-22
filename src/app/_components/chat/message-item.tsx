@@ -242,7 +242,7 @@ export default function MessageItem({
         </div>
       )}
       <div
-        className={`flex max-w-[min(32rem,80%)] min-w-0 flex-col ${own ? "items-end" : "items-start"}`}
+        className={`flex max-w-[min(32rem,80%)] flex-col ${own ? "items-end" : "min-w-0 items-start"}`}
       >
         {!compact && (
           <p className={`mb-1 flex items-baseline gap-2 ${side}`}>
@@ -254,11 +254,13 @@ export default function MessageItem({
             {time}
           </p>
         )}
+        {/* Own messages keep actions before the bubble in reading order. */}
         <div
-          className={`flex max-w-full items-start gap-1 ${own ? "flex-row-reverse" : ""}`}
+          className={`flex max-w-full items-start gap-1 ${own ? "justify-end" : ""}`}
         >
+          {own && actions}
           {bubble}
-          {actions}
+          {!own && actions}
         </div>
         {compact && message.editedAt && mode === "view" && (
           <p className={`mt-0.5 ${side} text-xs text-gray-500`}>(edited)</p>
