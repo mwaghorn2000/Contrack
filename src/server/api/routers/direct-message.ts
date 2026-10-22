@@ -2,6 +2,7 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { Prisma } from "../../../../generated/prisma";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { requireCompanyRole } from "~/server/chat-access";
 import { unreadCounts } from "~/server/chat-unread";
 import { publishConversationsChanged } from "~/server/realtime";
 
@@ -14,14 +15,7 @@ export const directMessageRouter = createTRPCRouter({
     .input(z.object({ companyId: z.string().cuid() }))
     .query(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
-      const membership = await ctx.db.companyMember.findUnique({
-        where: { userId_companyId: { companyId: input.companyId, userId } },
-      });
-      if (!membership)
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Company not found.",
-        });
+      await requireCompanyRole(ctx.db, input.companyId, userId);
       const conversations = await ctx.db.channel.findMany({
         where: {
           companyId: input.companyId,

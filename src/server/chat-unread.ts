@@ -1,4 +1,5 @@
 import type { ChannelKind, Prisma } from "../../generated/prisma";
+import { visibleChannelsWhere } from "~/server/chat-access";
 
 /**
  * Unread messages per conversation: messages from other people posted after
@@ -38,16 +39,15 @@ export async function visibleConversations(
     select: { role: true },
   });
   if (!membership) return [];
-  const isMember = { channelMembers: { some: { userId, removedAt: null } } };
   return db.channel.findMany({
     where: {
       companyId,
       OR: [
+        visibleChannelsWhere(userId, membership.role),
         {
-          kind: "CHANNEL",
-          ...(membership.role === "OWNER" ? {} : isMember),
+          kind: "DIRECT",
+          channelMembers: { some: { userId, removedAt: null } },
         },
-        { kind: "DIRECT", ...isMember },
       ],
     },
     select: { id: true, kind: true },

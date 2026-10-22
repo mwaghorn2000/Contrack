@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server";
-import type { Prisma } from "../../generated/prisma";
+import type { CompanyRole, Prisma } from "../../generated/prisma";
 
 export type ChannelPermissions = {
   canSendMessages: boolean;
@@ -118,4 +118,32 @@ export async function requireConversationAccess(
       message: PERMISSION_MESSAGES[permission],
     });
   return access;
+}
+
+/** The user's role in the company; NOT_FOUND if they aren't a member. */
+export async function requireCompanyRole(
+  db: Prisma.TransactionClient,
+  companyId: string,
+  userId: string,
+) {
+  const membership = await db.companyMember.findUnique({
+    where: { userId_companyId: { companyId, userId } },
+    select: { role: true },
+  });
+  if (!membership)
+    throw new TRPCError({ code: "NOT_FOUND", message: "Company not found." });
+  return membership.role;
+}
+
+/** Filters to the channels (not direct messages) this user can see. */
+export function visibleChannelsWhere(
+  userId: string,
+  role: CompanyRole,
+): Prisma.ChannelWhereInput {
+  return {
+    kind: "CHANNEL",
+    ...(role === "OWNER"
+      ? {}
+      : { channelMembers: { some: { userId, removedAt: null } } }),
+  };
 }

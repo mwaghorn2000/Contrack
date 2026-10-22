@@ -6,7 +6,9 @@ import { imageFileSchema, imageKeySchema } from "~/lib/image-upload";
 import {
   ALL_PERMISSIONS,
   permissionsFor,
+  requireCompanyRole,
   requireConversationAccess,
+  visibleChannelsWhere,
   type ChannelPermissions,
 } from "~/server/chat-access";
 import {
@@ -43,20 +45,6 @@ const permissionsSchema = z.object({
   canManageChannel: z.boolean(),
   canModerateMessages: z.boolean(),
 });
-
-async function requireCompanyRole(
-  db: Prisma.TransactionClient,
-  companyId: string,
-  userId: string,
-) {
-  const membership = await db.companyMember.findUnique({
-    where: { userId_companyId: { companyId, userId } },
-    select: { role: true },
-  });
-  if (!membership)
-    throw new TRPCError({ code: "NOT_FOUND", message: "Company not found." });
-  return membership.role;
-}
 
 async function requireUniqueName(
   db: Prisma.TransactionClient,
@@ -196,10 +184,7 @@ export const channelRouter = createTRPCRouter({
       const channels = await ctx.db.channel.findMany({
         where: {
           companyId: input.companyId,
-          kind: "CHANNEL",
-          ...(isOwner
-            ? {}
-            : { channelMembers: { some: { userId, removedAt: null } } }),
+          ...visibleChannelsWhere(userId, role),
         },
         select: {
           id: true,
