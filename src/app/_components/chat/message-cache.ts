@@ -14,10 +14,11 @@ function useUpdatePages(channelId: string) {
   return useCallback(
     (update: Update) => {
       // A fetch that started before this change would overwrite it with
-      // stale messages, so cancel it and fetch again afterwards.
+      // stale messages. Invalidating after the update cancels that fetch
+      // synchronously (silently, so the update isn't reverted) and starts a
+      // fresh one, so it must run after setInfiniteData, not before.
       const queryKey = getQueryKey(api.message.list, { channelId }, "infinite");
       const stale = queryClient.isFetching({ queryKey }) > 0;
-      if (stale) void utils.message.list.cancel({ channelId });
       utils.message.list.setInfiniteData({ channelId }, (data) =>
         data
           ? {
