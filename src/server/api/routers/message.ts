@@ -46,6 +46,28 @@ async function requireMessage(
   return { row, access, isAuthor: row.authorChannelMember.user.id === userId };
 }
 
+/**
+ * Refuses when the user has posted or edited too many messages recently. A
+ * message posted and edited in the window counts once.
+ */
+async function requireMessageRate(
+  db: Prisma.TransactionClient,
+  userId: string,
+) {
+  const since = new Date(Date.now() - RATE_LIMIT_WINDOW_MS);
+  const recent = await db.message.count({
+    where: {
+      authorChannelMember: { userId },
+      OR: [{ postedAt: { gt: since } }, { editedAt: { gt: since } }],
+    },
+  });
+  if (recent >= MESSAGES_PER_WINDOW)
+    throw new TRPCError({
+      code: "TOO_MANY_REQUESTS",
+      message: "You're sending messages too quickly. Please wait a moment.",
+    });
+}
+
 export const messageRouter = createTRPCRouter({
   /** Newest first. Pass the returned cursor to load older messages. */
   list: protectedProcedure
@@ -107,17 +129,7 @@ export const messageRouter = createTRPCRouter({
         input.channelId,
         "canSendMessages",
       );
-      const recent = await ctx.db.message.count({
-        where: {
-          authorChannelMember: { userId },
-          postedAt: { gt: new Date(Date.now() - RATE_LIMIT_WINDOW_MS) },
-        },
-      });
-      if (recent >= MESSAGES_PER_WINDOW)
-        throw new TRPCError({
-          code: "TOO_MANY_REQUESTS",
-          message: "You're sending messages too quickly. Please wait a moment.",
-        });
+      await requireMessageRate(ctx.db, userId);
       const prepared = await prepareMessage(
         { db: ctx.db, userId, channelId: input.channelId },
         input.body,
@@ -180,6 +192,7 @@ export const messageRouter = createTRPCRouter({
           message: "Enter a message.",
         });
       if (input.content === row.content) return serializeMessage(row);
+      await requireMessageRate(ctx.db, ctx.session.user.id);
       // Match on deletedAt too, so a message deleted since it was loaded
       // isn't brought back.
       const result = await ctx.db.message.updateMany({
