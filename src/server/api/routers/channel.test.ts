@@ -2,6 +2,7 @@ import { beforeAll, afterAll, beforeEach, it, expect, vi } from "vitest";
 import { startTestDatabase, clearTestDatabase } from "~/test/database";
 import { channelRouter } from "./channel";
 import type { PrismaClient } from "../../../../generated/prisma";
+import { deleteObject } from "~/server/storage";
 
 // Only prevent application services from loading. Queries use real PostgreSQL.
 vi.mock("~/server/auth", () => ({ auth: vi.fn() }));
@@ -388,4 +389,18 @@ it("listChannels returns channels in the correct order of posts", async () => {
   // Assuming the channels are returned in order of last message timestamp
   expect(result[0]?.id).toBe(channel1.id);
   expect(result[1]?.id).toBe(channel2.id);
+});
+
+/// Tests for the setImage procedure
+
+it("setImage removes an icon without touching storage when it isn't set up", async () => {
+  const channel = await caller.createChannel({ name: "Icons", companyId });
+  await db.channel.update({
+    where: { id: channel.id },
+    data: { image: `channels/${channel.id}/icon/old.png` },
+  });
+  await expect(
+    caller.setImage({ channelId: channel.id, key: null }),
+  ).resolves.toEqual({ imageUrl: null });
+  expect(deleteObject).not.toHaveBeenCalled();
 });

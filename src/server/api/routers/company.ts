@@ -3,14 +3,14 @@ import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import type { Prisma } from "../../../../generated/prisma";
 import { serializableTransaction } from "~/server/transactions";
-import { imageFileSchema } from "~/lib/image-upload";
+import { imageFileSchema, imageKeySchema } from "~/lib/image-upload";
 import {
+  channelFolder,
   companyFolder,
   companyImageFolder,
   confirmImageUpload,
   createImageUpload,
   deleteReplacedImage,
-  imageKeySchema,
 } from "~/server/image-uploads";
 import { deletePrefix, storageConfigured } from "~/server/storage";
 
@@ -345,6 +345,11 @@ export const companyRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      // Channel files live outside the company folder, so find them first.
+      const channels = await ctx.db.channel.findMany({
+        where: { companyId: input.companyId },
+        select: { id: true },
+      });
       const result = await ctx.db.company.deleteMany({
         where: {
           id: input.companyId,
@@ -366,12 +371,19 @@ export const companyRouter = createTRPCRouter({
       }
 
       if (storageConfigured()) {
-        try {
-          await deletePrefix(companyFolder(input.companyId));
-        } catch (error) {
-          // The company is already deleted; leftover images are harmless.
-          console.error("Failed to delete company images", error);
-        }
+        const folders = [
+          companyFolder(input.companyId),
+          ...channels.map(({ id }) => channelFolder(id)),
+        ];
+        // Each folder is deleted separately, so one failure doesn't leave the
+        // rest behind.
+        const results = await Promise.allSettled(
+          folders.map((folder) => deletePrefix(folder)),
+        );
+        for (const result of results)
+          if (result.status === "rejected")
+            // The company is already deleted; leftover images are harmless.
+            console.error("Failed to delete company images", result.reason);
       }
 
       return { success: true };

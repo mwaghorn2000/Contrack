@@ -1,6 +1,5 @@
 import { randomUUID } from "node:crypto";
 import { TRPCError } from "@trpc/server";
-import { z } from "zod";
 import {
   IMAGE_CONTENT_TYPES,
   IMAGE_KINDS,
@@ -17,12 +16,6 @@ import {
   publicUrl,
   storageConfigured,
 } from "~/server/storage";
-
-// Matches the keys created below; ownership is checked against the folder.
-export const imageKeySchema = z
-  .string()
-  .max(200)
-  .regex(/^[a-z]+\/c[a-z0-9]+\/[a-z]+\/[0-9a-f-]{36}\.(jpg|png|webp|gif)$/);
 
 export function userImageFolder(userId: string) {
   return `users/${userId}/avatar`;
@@ -185,7 +178,7 @@ export async function deleteReplacedKey(
   currentKey: string | null,
 ) {
   if (!previousKey || previousKey === currentKey) return;
-  if (!previousKey.startsWith(`${folder}/`)) return;
+  if (!previousKey.startsWith(`${folder}/`) || !storageConfigured()) return;
   try {
     await deleteObject(previousKey);
   } catch (error) {

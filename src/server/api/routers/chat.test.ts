@@ -602,6 +602,24 @@ describe("messages", () => {
       ).rejects.toMatchObject({ code: "FORBIDDEN" });
     });
 
+    it("rejects a malformed image key as bad input", async () => {
+      const channel = await owner.channel.createChannel({
+        companyId,
+        name: "Photos",
+      });
+      await expect(
+        owner.message.send({
+          channelId: channel.id,
+          body: {
+            type: "IMAGE",
+            key: `channels/${channel.id}/messages/not-a-uuid.png`,
+            width: 10,
+            height: 10,
+          },
+        }),
+      ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+    });
+
     it("an uploaded image can only be sent once", async () => {
       const channel = await owner.channel.createChannel({
         companyId,
@@ -910,6 +928,32 @@ describe("editing and deleting messages", () => {
     ).rejects.toMatchObject({
       code: "NOT_FOUND",
     });
+  });
+
+  it("an edit that races a delete doesn't bring the message back", async () => {
+    const channelId = await channelWithMember();
+    const sent = await member.message.send({ channelId, body: text("Gone") });
+    // Delete the message just after edit has loaded it.
+    const findFirst = db.message.findFirst.bind(db.message);
+    const spy = vi.spyOn(db.message, "findFirst").mockImplementationOnce(((
+      ...args: Parameters<typeof findFirst>
+    ) =>
+      findFirst(...args).then(async (row) => {
+        await db.message.update({
+          where: { id: sent.id },
+          data: { deletedAt: new Date() },
+        });
+        return row;
+      })) as typeof findFirst);
+    vi.mocked(publishToConversation).mockClear();
+    await expect(
+      member.message.edit({ messageId: sent.id, content: "Back" }),
+    ).rejects.toMatchObject({ code: "NOT_FOUND" });
+    spy.mockRestore();
+    expect(
+      await db.message.findUniqueOrThrow({ where: { id: sent.id } }),
+    ).toMatchObject({ content: "Gone", editedAt: null });
+    expect(publishToConversation).not.toHaveBeenCalled();
   });
 
   it("people who can't see the conversation can't find its messages", async () => {

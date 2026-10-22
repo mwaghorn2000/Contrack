@@ -2,7 +2,7 @@ import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { z } from "zod";
 import type { Prisma } from "../../../../generated/prisma";
-import { imageFileSchema } from "~/lib/image-upload";
+import { imageFileSchema, imageKeySchema } from "~/lib/image-upload";
 import {
   requireConversationAccess,
   type ChannelPermissions,
@@ -13,7 +13,6 @@ import {
   confirmPrivateImageUpload,
   createImageUpload,
   deleteReplacedKey,
-  imageKeySchema,
 } from "~/server/image-uploads";
 import { unreadCounts } from "~/server/chat-unread";
 import { signedImageUrl } from "~/server/messages/types";

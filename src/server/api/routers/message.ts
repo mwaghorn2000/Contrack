@@ -180,9 +180,19 @@ export const messageRouter = createTRPCRouter({
           message: "Enter a message.",
         });
       if (input.content === row.content) return serializeMessage(row);
-      const updated = await ctx.db.message.update({
-        where: { id: row.id },
+      // Match on deletedAt too, so a message deleted since it was loaded
+      // isn't brought back.
+      const result = await ctx.db.message.updateMany({
+        where: { id: row.id, deletedAt: null },
         data: { content: input.content, editedAt: new Date() },
+      });
+      if (result.count === 0)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Message not found.",
+        });
+      const updated = await ctx.db.message.findUniqueOrThrow({
+        where: { id: row.id },
         select: messageRowSelect,
       });
       const message = await serializeMessage(updated);
