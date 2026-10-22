@@ -178,7 +178,7 @@ export async function deleteReplacedKey(
   currentKey: string | null,
 ) {
   if (!previousKey || previousKey === currentKey) return;
-  if (!previousKey.startsWith(`${folder}/`)) return;
+  if (!previousKey.startsWith(`${folder}/`) || !storageConfigured()) return;
   try {
     await deleteObject(previousKey);
   } catch (error) {
