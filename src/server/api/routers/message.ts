@@ -47,21 +47,23 @@ async function requireMessage(
 }
 
 /**
- * Refuses when the user has posted or edited too many messages recently. A
- * message posted and edited in the window counts once.
+ * Refuses when the user has posted or edited too many messages recently. Each
+ * send and each edit counts once.
  */
 async function requireMessageRate(
   db: Prisma.TransactionClient,
   userId: string,
 ) {
   const since = new Date(Date.now() - RATE_LIMIT_WINDOW_MS);
-  const recent = await db.message.count({
-    where: {
-      authorChannelMember: { userId },
-      OR: [{ postedAt: { gt: since } }, { editedAt: { gt: since } }],
-    },
-  });
-  if (recent >= MESSAGES_PER_WINDOW)
+  const [sent, edited] = await Promise.all([
+    db.message.count({
+      where: { authorChannelMember: { userId }, postedAt: { gt: since } },
+    }),
+    db.messageEdit.count({
+      where: { editorId: userId, createdAt: { gt: since } },
+    }),
+  ]);
+  if (sent + edited >= MESSAGES_PER_WINDOW)
     throw new TRPCError({
       code: "TOO_MANY_REQUESTS",
       message: "You're sending messages too quickly. Please wait a moment.",
@@ -195,15 +197,21 @@ export const messageRouter = createTRPCRouter({
       await requireMessageRate(ctx.db, ctx.session.user.id);
       // Match on deletedAt too, so a message deleted since it was loaded
       // isn't brought back.
-      const result = await ctx.db.message.updateMany({
-        where: { id: row.id, deletedAt: null },
-        data: { content: input.content, editedAt: new Date() },
-      });
-      if (result.count === 0)
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Message not found.",
+      // The edit is logged with the change, for the rate limit.
+      await ctx.db.$transaction(async (tx) => {
+        const result = await tx.message.updateMany({
+          where: { id: row.id, deletedAt: null },
+          data: { content: input.content, editedAt: new Date() },
         });
+        if (result.count === 0)
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Message not found.",
+          });
+        await tx.messageEdit.create({
+          data: { messageId: row.id, editorId: ctx.session.user.id },
+        });
+      });
       const updated = await ctx.db.message.findUniqueOrThrow({
         where: { id: row.id },
         select: messageRowSelect,
