@@ -1,6 +1,8 @@
 import { act, renderHook } from "@testing-library/react";
 import { expect, test, vi } from "vitest";
+import { getQueryKey } from "@trpc/react-query";
 import { createTestProvider } from "~/test/ui";
+import { api } from "~/trpc/react";
 import { useConversationEvents } from "./use-conversation-events";
 
 // A realtime connection where the conversation's channel is already
@@ -31,5 +33,7 @@ test("refetches on the first subscription success when already subscribed", () =
   act(() => realtime.handlers.get("pusher:subscription_succeeded")?.(null));
 
   expect(invalidate).toHaveBeenCalledTimes(1);
-  expect(JSON.stringify(invalidate.mock.calls[0]?.[0])).toContain("channel-1");
+  expect(invalidate.mock.calls[0]?.[0]).toMatchObject({
+    queryKey: getQueryKey(api.message.list, { channelId: "channel-1" }),
+  });
 });
