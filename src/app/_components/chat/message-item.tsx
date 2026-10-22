@@ -95,7 +95,6 @@ export default function MessageItem({
           onChange={(event) => setDraft(event.target.value)}
           onKeyDown={(event) => {
             if (event.key === "Escape") {
-              setDraft(message.content);
               setMode("view");
             } else if (
               event.key === "Enter" &&
@@ -115,10 +114,7 @@ export default function MessageItem({
           <button
             type="button"
             disabled={busy}
-            onClick={() => {
-              setDraft(message.content);
-              setMode("view");
-            }}
+            onClick={() => setMode("view")}
             className="rounded-md border border-gray-300 bg-white px-3 py-1 font-medium hover:bg-gray-50"
           >
             Cancel
@@ -198,7 +194,7 @@ export default function MessageItem({
     <>
       {mode === "confirm-delete" && (
         <div
-          role="alertdialog"
+          role="group"
           aria-label="Delete this message?"
           className="mt-1 flex flex-wrap items-center gap-2 text-xs"
         >
