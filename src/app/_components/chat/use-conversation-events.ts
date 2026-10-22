@@ -36,7 +36,8 @@ export function useConversationEvents(channelId: string) {
   useEffect(() => {
     if (!realtime) return;
     const name = `private-conversation-${channelId}`;
-    let subscribedBefore = false;
+    // If another listener already subscribed, the next success is a reconnect.
+    let subscribedBefore = realtime.isSubscribed(name);
     const stops = [
       realtime.listen(name, "message", (data) =>
         addMessage(parseMessage(data)),
