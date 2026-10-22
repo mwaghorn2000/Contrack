@@ -1869,6 +1869,26 @@ describe("company images", () => {
     expect(deletePrefix).toHaveBeenCalledTimes(3);
   });
 
+  it("deleteCompany still deletes channel files when another folder fails", async () => {
+    const channel = await db.channel.create({
+      data: { name: "General", companyId },
+    });
+    vi.mocked(deletePrefix).mockImplementation((prefix: string) =>
+      prefix.startsWith("companies/")
+        ? Promise.reject(new Error("offline"))
+        : Promise.resolve(),
+    );
+    const consoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+    await expect(caller.deleteCompany({ companyId })).resolves.toEqual({
+      success: true,
+    });
+    expect(deletePrefix).toHaveBeenCalledWith(`channels/${channel.id}/`);
+    expect(consoleError).toHaveBeenCalledOnce();
+    consoleError.mockRestore();
+  });
+
   it("deleteCompany succeeds when deleting images fails", async () => {
     vi.mocked(deletePrefix).mockRejectedValueOnce(new Error("offline"));
     vi.spyOn(console, "error").mockImplementationOnce(() => undefined);
