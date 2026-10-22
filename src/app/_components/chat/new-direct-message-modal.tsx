@@ -3,8 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api } from "~/trpc/react";
-import MemberAvatar from "../_dashboard-components/_home-components/member-avatar";
 import ChatDialog from "./chat-dialog";
+import PersonLabel from "./person-label";
 
 export default function NewDirectMessageModal({
   companyId,
@@ -63,13 +63,7 @@ export default function NewDirectMessageModal({
                 onClick={() => open.mutate({ companyId, userId: user.id })}
                 className="flex w-full items-center gap-3 rounded-md px-2 py-2 text-left hover:bg-gray-50 disabled:opacity-50"
               >
-                <MemberAvatar name={user.name ?? "Member"} image={user.image} />
-                <span className="min-w-0 flex-1 truncate text-sm font-medium">
-                  {user.name ?? "Unnamed member"}
-                </span>
-                <span className="text-xs text-gray-500 capitalize">
-                  {role.toLowerCase()}
-                </span>
+                <PersonLabel user={user} role={role} bold />
               </button>
             </li>
           ))}

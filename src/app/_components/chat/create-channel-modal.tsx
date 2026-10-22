@@ -3,8 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api } from "~/trpc/react";
-import MemberAvatar from "../_dashboard-components/_home-components/member-avatar";
 import ChatDialog from "./chat-dialog";
+import PersonLabel from "./person-label";
 
 export default function CreateChannelModal({
   companyId,
@@ -102,16 +102,7 @@ export default function CreateChannelModal({
                       }
                       className="size-4"
                     />
-                    <MemberAvatar
-                      name={user.name ?? "Member"}
-                      image={user.image}
-                    />
-                    <span className="min-w-0 flex-1 truncate text-sm">
-                      {user.name ?? "Unnamed member"}
-                    </span>
-                    <span className="text-xs text-gray-500 capitalize">
-                      {role.toLowerCase()}
-                    </span>
+                    <PersonLabel user={user} role={role} />
                   </label>
                 </li>
               ))}

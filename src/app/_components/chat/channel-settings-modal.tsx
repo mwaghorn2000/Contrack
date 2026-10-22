@@ -3,10 +3,10 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api, type RouterOutputs } from "~/trpc/react";
-import MemberAvatar from "../_dashboard-components/_home-components/member-avatar";
 import ImageUploadButton, { uploadImage } from "../uploads/image-upload-button";
 import ChannelIcon from "./channel-icon";
 import ChatDialog from "./chat-dialog";
+import PersonLabel from "./person-label";
 
 type Conversation = RouterOutputs["channel"]["getChannel"];
 type Permissions = Conversation["permissions"];
@@ -242,16 +242,11 @@ function MembersSection({
           return (
             <li key={user.id} className="space-y-2 p-3">
               <div className="flex items-center gap-3">
-                <MemberAvatar name={user.name ?? "Member"} image={user.image} />
-                <span className="min-w-0 flex-1 truncate text-sm font-medium">
-                  {user.name ?? "Unnamed member"}
+                <PersonLabel user={user} role={role} bold>
                   {user.id === currentUserId && (
                     <span className="font-normal text-gray-500"> (you)</span>
                   )}
-                </span>
-                <span className="text-xs text-gray-500 capitalize">
-                  {role.toLowerCase()}
-                </span>
+                </PersonLabel>
                 {!locked && (
                   <button
                     type="button"
@@ -309,13 +304,7 @@ function MembersSection({
           <ul className="divide-y divide-gray-100 border-t border-gray-200">
             {others.map(({ user, role }) => (
               <li key={user.id} className="flex items-center gap-3 p-3">
-                <MemberAvatar name={user.name ?? "Member"} image={user.image} />
-                <span className="min-w-0 flex-1 truncate text-sm">
-                  {user.name ?? "Unnamed member"}
-                </span>
-                <span className="text-xs text-gray-500 capitalize">
-                  {role.toLowerCase()}
-                </span>
+                <PersonLabel user={user} role={role} />
                 <button
                   type="button"
                   disabled={busy}
