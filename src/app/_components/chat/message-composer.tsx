@@ -67,7 +67,7 @@ export default function MessageComposer({
   async function sendImage(file: File) {
     const caption = text.trim();
     setText("");
-    await deliver(
+    const sent = await deliver(
       caption ? `Uploading image: ${caption}` : "Uploading image…",
       () =>
         uploadImage(file, "message", {
@@ -80,6 +80,8 @@ export default function MessageComposer({
             }),
         }),
     );
+    // Give the caption back so it isn't lost.
+    if (!sent) setText((current) => current || caption);
   }
 
   return (

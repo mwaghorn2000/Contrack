@@ -19,6 +19,8 @@ type Realtime = {
    * same channel; it is unsubscribed when the last one stops.
    */
   listen: (channelName: string, event: string, handler: Handler) => () => void;
+  /** Whether a channel is already subscribed, e.g. for another listener. */
+  isSubscribed: (channelName: string) => boolean;
 };
 
 const RealtimeContext = createContext<Realtime | null>(null);
@@ -46,6 +48,8 @@ function createRealtime(pusher: Pusher): Realtime {
         }
       };
     },
+    isSubscribed: (channelName) =>
+      pusher.channel(channelName)?.subscribed ?? false,
   };
 }
 
@@ -57,11 +61,15 @@ export default function RealtimeProvider({
   children: ReactNode;
 }) {
   const utils = api.useUtils();
-  const [pusher] = useState(() => {
+  const [realtime, setRealtime] = useState<Realtime | null>(null);
+
+  // Connect in an effect rather than during render, so Strict Mode's extra
+  // cleanup and re-run ends with a fresh, connected instance.
+  useEffect(() => {
     const key = env.NEXT_PUBLIC_PUSHER_KEY;
     const cluster = env.NEXT_PUBLIC_PUSHER_CLUSTER;
-    if (typeof window === "undefined" || !key || !cluster) return null;
-    return new Pusher(key, {
+    if (!key || !cluster) return;
+    const pusher = new Pusher(key, {
       cluster,
       // Subscriptions are signed by the server only for people allowed to see them.
       channelAuthorization: {
@@ -75,10 +83,12 @@ export default function RealtimeProvider({
         },
       },
     });
-  });
-  const [realtime] = useState(() => (pusher ? createRealtime(pusher) : null));
-
-  useEffect(() => () => pusher?.disconnect(), [pusher]);
+    setRealtime(createRealtime(pusher));
+    return () => {
+      setRealtime(null);
+      pusher.disconnect();
+    };
+  }, [utils]);
 
   // Channel or direct message lists changed, e.g. you were added to a channel.
   useEffect(
