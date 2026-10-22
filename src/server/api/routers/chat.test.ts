@@ -355,6 +355,66 @@ describe("channel management", () => {
     ).resolves.toEqual({ success: true });
   });
 
+  describe("managing someone with more permissions", () => {
+    // The admin creates the channel, so they have every permission in it.
+    async function channelWithManager() {
+      const channel = await admin.channel.createChannel({
+        companyId,
+        name: "Crew",
+        memberIds: [ids.contractor],
+      });
+      await admin.channel.setMember({
+        channelId: channel.id,
+        userId: ids.member,
+        permissions: { ...sendPermission, canManageMembers: true },
+      });
+      return channel.id;
+    }
+
+    it("a manager can't remove them", async () => {
+      const channelId = await channelWithManager();
+      await expect(
+        member.channel.removeMember({ channelId, userId: ids.admin }),
+      ).rejects.toMatchObject({
+        code: "FORBIDDEN",
+        message: "You can't change someone who has permissions you don't.",
+      });
+      await expect(
+        member.channel.removeMember({ channelId, userId: ids.contractor }),
+      ).resolves.toEqual({ success: true });
+    });
+
+    it("a manager can't reduce their permissions", async () => {
+      const channelId = await channelWithManager();
+      await expect(
+        member.channel.setMember({
+          channelId,
+          userId: ids.admin,
+          permissions: sendPermission,
+        }),
+      ).rejects.toMatchObject({ code: "FORBIDDEN" });
+      expect(
+        await db.channelMember.findFirstOrThrow({
+          where: { channelId, userId: ids.admin },
+        }),
+      ).toMatchObject({ canManageChannel: true, removedAt: null });
+    });
+
+    it("the owner still can", async () => {
+      const channelId = await channelWithManager();
+      await expect(
+        owner.channel.setMember({
+          channelId,
+          userId: ids.admin,
+          permissions: sendPermission,
+        }),
+      ).resolves.toEqual({ success: true });
+      await expect(
+        owner.channel.removeMember({ channelId, userId: ids.admin }),
+      ).resolves.toEqual({ success: true });
+    });
+  });
+
   it("only company members can be added to a channel", async () => {
     const channel = await owner.channel.createChannel({
       companyId,
