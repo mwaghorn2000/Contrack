@@ -136,6 +136,7 @@ export const channelRouter = createTRPCRouter({
               ],
             },
           },
+          select: { id: true, name: true, companyId: true },
         });
       });
       await publishConversationsChanged(
