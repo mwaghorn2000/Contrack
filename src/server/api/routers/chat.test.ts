@@ -602,6 +602,24 @@ describe("messages", () => {
       ).rejects.toMatchObject({ code: "FORBIDDEN" });
     });
 
+    it("rejects a malformed image key as bad input", async () => {
+      const channel = await owner.channel.createChannel({
+        companyId,
+        name: "Photos",
+      });
+      await expect(
+        owner.message.send({
+          channelId: channel.id,
+          body: {
+            type: "IMAGE",
+            key: `channels/${channel.id}/messages/not-a-uuid.png`,
+            width: 10,
+            height: 10,
+          },
+        }),
+      ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+    });
+
     it("an uploaded image can only be sent once", async () => {
       const channel = await owner.channel.createChannel({
         companyId,
