@@ -3,11 +3,7 @@ import { describe, expect, test, vi } from "vitest";
 import type { ChatMessage } from "~/lib/chat-message";
 import { createTestProvider, deferred, textMessage } from "~/test/ui";
 import { api, type RouterOutputs } from "~/trpc/react";
-import {
-  useAddMessageToCache,
-  useRemoveMessageFromCache,
-  useReplaceMessageInCache,
-} from "./message-cache";
+import { useMessageCache } from "./message-cache";
 
 type Page = RouterOutputs["message"]["list"];
 type Cache = {
@@ -31,11 +27,7 @@ async function setup(first: ChatMessage[]) {
   });
   const hook = renderHook(
     () => {
-      const cache: Cache = {
-        add: useAddMessageToCache(channelId),
-        replace: useReplaceMessageInCache(channelId),
-        remove: useRemoveMessageFromCache(channelId),
-      };
+      const cache: Cache = useMessageCache(channelId);
       const list = api.message.list.useInfiniteQuery(
         { channelId },
         { getNextPageParam: (last) => last.nextCursor },

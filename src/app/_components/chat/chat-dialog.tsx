@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useId, useRef, type ReactNode } from "react";
 
 /** A modal <dialog>, following create-company-modal.tsx. */
 export default function ChatDialog({
@@ -19,7 +19,7 @@ export default function ChatDialog({
   wide?: boolean;
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const titleId = `${title.replace(/\W+/g, "-").toLowerCase()}-title`;
+  const titleId = useId();
 
   useEffect(() => {
     const dialog = dialogRef.current;

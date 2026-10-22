@@ -7,7 +7,7 @@ import { api } from "~/trpc/react";
 import MemberAvatar from "../_dashboard-components/_home-components/member-avatar";
 import ChannelIcon from "./channel-icon";
 import ChannelSettingsModal from "./channel-settings-modal";
-import { useAddMessageToCache } from "./message-cache";
+import { useMessageCache } from "./message-cache";
 import MessageComposer from "./message-composer";
 import MessageList, { type PendingMessage } from "./message-list";
 import { useConversationEvents } from "./use-conversation-events";
@@ -26,13 +26,12 @@ export default function ConversationView({
   isCompanyOwner: boolean;
 }) {
   const channelId = initialConversation.id;
-  const conversation =
-    api.channel.getChannel.useQuery(
-      { channelId },
-      { initialData: initialConversation },
-    ).data ?? initialConversation;
+  const conversation = api.channel.getChannel.useQuery(
+    { channelId },
+    { initialData: initialConversation },
+  ).data;
   const { live } = useConversationEvents(channelId);
-  const addMessage = useAddMessageToCache(channelId);
+  const messageCache = useMessageCache(channelId);
   const utils = api.useUtils();
   const [pending, setPending] = useState<PendingMessage[]>([]);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -135,7 +134,7 @@ export default function ConversationView({
           placeholder={isDirect ? `Message ${title}` : `Message #${title}`}
           onPending={setPending}
           onSent={(message) => {
-            addMessage(message);
+            messageCache.add(message);
             void utils.channel.listChannels.invalidate();
             void utils.directMessage.list.invalidate();
           }}

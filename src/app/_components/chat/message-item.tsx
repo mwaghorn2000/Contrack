@@ -4,10 +4,7 @@ import { useState } from "react";
 import { MESSAGE_MAX_LENGTH, type ChatMessage } from "~/lib/chat-message";
 import { api } from "~/trpc/react";
 import MemberAvatar from "../_dashboard-components/_home-components/member-avatar";
-import {
-  useRemoveMessageFromCache,
-  useReplaceMessageInCache,
-} from "./message-cache";
+import { useMessageCache } from "./message-cache";
 import MessageContent from "./messages/registry";
 
 const timeFormat = new Intl.DateTimeFormat(undefined, {
@@ -35,17 +32,16 @@ export default function MessageItem({
 }) {
   const [mode, setMode] = useState<"view" | "edit" | "confirm-delete">("view");
   const [draft, setDraft] = useState(message.content);
-  const replaceMessage = useReplaceMessageInCache(message.channelId);
-  const removeMessage = useRemoveMessageFromCache(message.channelId);
+  const messageCache = useMessageCache(message.channelId);
   const edit = api.message.edit.useMutation({
     onSuccess(updated) {
-      replaceMessage(updated);
+      messageCache.replace(updated);
       setMode("view");
     },
   });
   const remove = api.message.delete.useMutation({
     onSuccess() {
-      removeMessage(message.id);
+      messageCache.remove(message.id);
     },
   });
   const error = edit.error ?? remove.error;
@@ -99,7 +95,6 @@ export default function MessageItem({
           onChange={(event) => setDraft(event.target.value)}
           onKeyDown={(event) => {
             if (event.key === "Escape") {
-              setDraft(message.content);
               setMode("view");
             } else if (
               event.key === "Enter" &&
@@ -119,10 +114,7 @@ export default function MessageItem({
           <button
             type="button"
             disabled={busy}
-            onClick={() => {
-              setDraft(message.content);
-              setMode("view");
-            }}
+            onClick={() => setMode("view")}
             className="rounded-md border border-gray-300 bg-white px-3 py-1 font-medium hover:bg-gray-50"
           >
             Cancel
@@ -202,7 +194,7 @@ export default function MessageItem({
     <>
       {mode === "confirm-delete" && (
         <div
-          role="alertdialog"
+          role="group"
           aria-label="Delete this message?"
           className="mt-1 flex flex-wrap items-center gap-2 text-xs"
         >
@@ -236,41 +228,42 @@ export default function MessageItem({
     </>
   );
 
-  if (own)
-    return (
-      <div
-        className={`group flex flex-col items-end px-4 ${compact ? "mt-0.5" : "mt-3"}`}
-      >
-        {!compact && <p className="mb-1 pr-1">{time}</p>}
-        <div className="flex max-w-[min(32rem,80%)] items-start justify-end gap-1">
-          {actions}
-          {bubble}
-        </div>
-        {compact && message.editedAt && mode === "view" && (
-          <p className="mt-0.5 pr-1 text-xs text-gray-500">(edited)</p>
-        )}
-        {footer}
-      </div>
-    );
-
+  // Your own messages mirror other people's: on the right, without an avatar.
+  const side = own ? "pr-1" : "pl-1";
   return (
-    <div className={`group flex gap-2 px-4 ${compact ? "mt-0.5" : "mt-3"}`}>
-      <div className="w-9 shrink-0">
-        {!compact && <MemberAvatar name={name} image={message.author.image} />}
-      </div>
-      <div className="flex max-w-[min(32rem,80%)] min-w-0 flex-col items-start">
+    <div
+      className={`group flex gap-2 px-4 ${own ? "flex-row-reverse" : ""} ${compact ? "mt-0.5" : "mt-3"}`}
+    >
+      {!own && (
+        <div className="w-9 shrink-0">
+          {!compact && (
+            <MemberAvatar name={name} image={message.author.image} />
+          )}
+        </div>
+      )}
+      <div
+        className={`flex max-w-[min(32rem,80%)] flex-col ${own ? "items-end" : "min-w-0 items-start"}`}
+      >
         {!compact && (
-          <p className="mb-1 flex items-baseline gap-2 pl-1">
-            <span className="text-sm font-semibold text-gray-900">{name}</span>
+          <p className={`mb-1 flex items-baseline gap-2 ${side}`}>
+            {!own && (
+              <span className="text-sm font-semibold text-gray-900">
+                {name}
+              </span>
+            )}
             {time}
           </p>
         )}
-        <div className="flex max-w-full items-start gap-1">
+        {/* Own messages keep actions before the bubble in reading order. */}
+        <div
+          className={`flex max-w-full items-start gap-1 ${own ? "justify-end" : ""}`}
+        >
+          {own && actions}
           {bubble}
-          {actions}
+          {!own && actions}
         </div>
         {compact && message.editedAt && mode === "view" && (
-          <p className="mt-0.5 pl-1 text-xs text-gray-500">(edited)</p>
+          <p className={`mt-0.5 ${side} text-xs text-gray-500`}>(edited)</p>
         )}
         {footer}
       </div>

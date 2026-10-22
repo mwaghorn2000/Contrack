@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { api } from "~/trpc/react";
 import MemberAvatar from "../_dashboard-components/_home-components/member-avatar";
 import ChannelIcon from "./channel-icon";
@@ -18,6 +18,14 @@ const rowClass = (active: boolean) =>
       ? "bg-gray-200 font-medium text-gray-900"
       : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
   }`;
+
+type ConversationRow = {
+  id: string;
+  name: string;
+  icon: ReactNode;
+  unreadCount: number;
+  href: string;
+};
 
 export default function ConversationSidebar({
   mode,
@@ -48,9 +56,33 @@ export default function ConversationSidebar({
   const href = (id: string) =>
     `/dashboard/${mode === "channels" ? "chat" : "dms"}/${id}?${new URLSearchParams({ companyId })}`;
   const canAdd = mode === "dms" || canCreateChannels;
-  // The open conversation is marked read, so it never shows a badge.
-  const showUnread = (conversation: { id: string; unreadCount: number }) =>
-    conversation.id !== activeId && conversation.unreadCount > 0;
+  const items: ConversationRow[] | undefined =
+    mode === "channels"
+      ? channels.data?.map((channel) => ({
+          id: channel.id,
+          name: channel.name,
+          icon: (
+            <ChannelIcon
+              name={channel.name}
+              imageUrl={channel.imageUrl}
+              size="sm"
+            />
+          ),
+          unreadCount: channel.unreadCount,
+          href: href(channel.id),
+        }))
+      : directMessages.data?.map((conversation) => ({
+          id: conversation.id,
+          name: conversation.user.name ?? "Unnamed member",
+          icon: (
+            <MemberAvatar
+              name={conversation.user.name ?? "Member"}
+              image={conversation.user.image}
+            />
+          ),
+          unreadCount: conversation.unreadCount,
+          href: href(conversation.id),
+        }));
 
   return (
     <nav
@@ -96,75 +128,18 @@ export default function ConversationSidebar({
               Retry
             </button>
           </div>
+        ) : items?.length ? (
+          <ConversationList items={items} activeId={activeId} />
         ) : mode === "channels" ? (
-          channels.data?.length ? (
-            <ul className="space-y-0.5">
-              {channels.data.map((channel) => (
-                <li key={channel.id}>
-                  <Link
-                    href={href(channel.id)}
-                    aria-current={channel.id === activeId ? "page" : undefined}
-                    className={rowClass(channel.id === activeId)}
-                  >
-                    <ChannelIcon
-                      name={channel.name}
-                      imageUrl={channel.imageUrl}
-                      size="sm"
-                    />
-                    <span
-                      className={`min-w-0 truncate ${showUnread(channel) ? "font-semibold text-gray-900" : ""}`}
-                    >
-                      {channel.name}
-                    </span>
-                    <UnreadBadge
-                      count={showUnread(channel) ? channel.unreadCount : 0}
-                      label="unread messages"
-                    />
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <EmptyList
-              text={
-                canCreateChannels
-                  ? "No channels yet."
-                  : "You haven’t been added to any channels yet."
-              }
-              action={canCreateChannels ? "Create a channel" : null}
-              onAction={() => setDialog(true)}
-            />
-          )
-        ) : directMessages.data?.length ? (
-          <ul className="space-y-0.5">
-            {directMessages.data.map((conversation) => (
-              <li key={conversation.id}>
-                <Link
-                  href={href(conversation.id)}
-                  aria-current={
-                    conversation.id === activeId ? "page" : undefined
-                  }
-                  className={rowClass(conversation.id === activeId)}
-                >
-                  <MemberAvatar
-                    name={conversation.user.name ?? "Member"}
-                    image={conversation.user.image}
-                  />
-                  <span
-                    className={`min-w-0 truncate ${showUnread(conversation) ? "font-semibold text-gray-900" : ""}`}
-                  >
-                    {conversation.user.name ?? "Unnamed member"}
-                  </span>
-                  <UnreadBadge
-                    count={
-                      showUnread(conversation) ? conversation.unreadCount : 0
-                    }
-                    label="unread messages"
-                  />
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <EmptyList
+            text={
+              canCreateChannels
+                ? "No channels yet."
+                : "You haven’t been added to any channels yet."
+            }
+            action={canCreateChannels ? "Create a channel" : null}
+            onAction={() => setDialog(true)}
+          />
         ) : (
           <EmptyList
             text="No conversations yet."
@@ -188,6 +163,44 @@ export default function ConversationSidebar({
           />
         ))}
     </nav>
+  );
+}
+
+/** Links to each conversation, highlighting the open one and showing unread counts. */
+function ConversationList({
+  items,
+  activeId,
+}: {
+  items: ConversationRow[];
+  activeId: string | null;
+}) {
+  return (
+    <ul className="space-y-0.5">
+      {items.map((item) => {
+        // The open conversation is marked read, so it never shows a badge.
+        const unread = item.id !== activeId && item.unreadCount > 0;
+        return (
+          <li key={item.id}>
+            <Link
+              href={item.href}
+              aria-current={item.id === activeId ? "page" : undefined}
+              className={rowClass(item.id === activeId)}
+            >
+              {item.icon}
+              <span
+                className={`min-w-0 truncate ${unread ? "font-semibold text-gray-900" : ""}`}
+              >
+                {item.name}
+              </span>
+              <UnreadBadge
+                count={unread ? item.unreadCount : 0}
+                label="unread messages"
+              />
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
   );
 }
 
