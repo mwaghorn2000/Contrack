@@ -48,3 +48,15 @@ test("only admins see the New job link", () => {
   );
   expect(screen.queryByRole("link", { name: "New job" })).toBeNull();
 });
+
+test("each card links to its job", () => {
+  render(
+    <JobsStoreProvider>
+      <JobList companyId="company-1" canManage={false} />
+    </JobsStoreProvider>,
+  );
+
+  expect(
+    screen.getByRole("link", { name: /Roof inspection/ }).getAttribute("href"),
+  ).toBe("/dashboard/jobs/mock-roof?companyId=company-1");
+});
