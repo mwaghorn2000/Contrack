@@ -413,6 +413,43 @@ describe("channel management", () => {
         owner.channel.removeMember({ channelId, userId: ids.admin }),
       ).resolves.toEqual({ success: true });
     });
+
+    it("someone no longer in the channel can't be removed but can be re-added", async () => {
+      const channelId = await channelWithManager();
+      await admin.channel.removeMember({ channelId, userId: ids.contractor });
+      await expect(
+        member.channel.removeMember({ channelId, userId: ids.contractor }),
+      ).rejects.toMatchObject({
+        code: "NOT_FOUND",
+        message: "This person is not in the channel.",
+      });
+      await expect(
+        member.channel.setMember({
+          channelId,
+          userId: ids.contractor,
+          permissions: sendPermission,
+        }),
+      ).resolves.toEqual({ success: true });
+      expect(
+        await db.channelMember.findFirstOrThrow({
+          where: { channelId, userId: ids.contractor },
+        }),
+      ).toMatchObject({ canSendMessages: true, removedAt: null });
+    });
+
+    it("someone outside the company can't be removed or added", async () => {
+      const channelId = await channelWithManager();
+      await expect(
+        member.channel.removeMember({ channelId, userId: ids.outsider }),
+      ).rejects.toMatchObject({ code: "NOT_FOUND" });
+      await expect(
+        member.channel.setMember({
+          channelId,
+          userId: ids.outsider,
+          permissions: sendPermission,
+        }),
+      ).rejects.toMatchObject({ code: "NOT_FOUND" });
+    });
   });
 
   it("only company members can be added to a channel", async () => {
