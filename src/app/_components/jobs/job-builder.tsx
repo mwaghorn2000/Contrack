@@ -8,26 +8,38 @@ import { keepJobMembers, type JobTile } from "~/lib/job-tiles";
 import { IMAGE_CONTENT_TYPES } from "~/lib/image-upload";
 import { api } from "~/trpc/react";
 import JobMembers from "./job-members";
-import { useAddJob } from "./jobs-store";
+import { useSaveJob, type DraftJob } from "./jobs-store";
 import TileBoard from "./tile-board";
 
 const inputClass =
   "mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus-visible:outline-2 focus-visible:outline-gray-900";
 
-/** Creates a job: its details and photo on top, tile palette beside the canvas. */
-export default function JobBuilder({ companyId }: { companyId: string }) {
+/**
+ * Creates a job, or edits `job` when given: its details and photo on top, tile
+ * palette beside the canvas.
+ */
+export default function JobBuilder({
+  companyId,
+  job,
+}: {
+  companyId: string;
+  job?: DraftJob;
+}) {
   const router = useRouter();
-  const addJob = useAddJob();
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
-  const [memberIds, setMemberIds] = useState<string[]>([]);
-  const [tiles, setTiles] = useState<JobTile[]>([]);
+  const saveJob = useSaveJob();
+  const [name, setName] = useState(job?.name ?? "");
+  const [description, setDescription] = useState(job?.description ?? "");
+  const [photoUrl, setPhotoUrl] = useState(job?.photoUrl ?? null);
+  const [memberIds, setMemberIds] = useState(job?.memberIds ?? []);
+  const [tiles, setTiles] = useState<JobTile[]>(job?.tiles ?? []);
   const companyMembers = api.invitation.members.useQuery({ companyId });
   const people = (companyMembers.data ?? [])
     .filter(({ user }) => memberIds.includes(user.id))
     .map(({ user }) => user);
-  const listHref = `/dashboard/jobs?${new URLSearchParams({ companyId })}`;
+  const query = new URLSearchParams({ companyId });
+  const cancelHref = job
+    ? `/dashboard/jobs/${job.id}?${query}`
+    : `/dashboard/jobs?${query}`;
 
   return (
     <form
@@ -35,8 +47,8 @@ export default function JobBuilder({ companyId }: { companyId: string }) {
       onSubmit={(event) => {
         event.preventDefault();
         if (!name.trim()) return;
-        const id = crypto.randomUUID();
-        addJob(companyId, {
+        const id = job?.id ?? crypto.randomUUID();
+        saveJob(companyId, {
           id,
           name: name.trim(),
           description: description.trim(),
@@ -44,16 +56,16 @@ export default function JobBuilder({ companyId }: { companyId: string }) {
           memberIds,
           tiles,
         });
-        router.push(
-          `/dashboard/jobs/${id}?${new URLSearchParams({ companyId })}`,
-        );
+        router.push(`/dashboard/jobs/${id}?${query}`);
       }}
     >
       <div className="flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold text-gray-900">New job</h1>
+        <h1 className="text-2xl font-semibold text-gray-900">
+          {job ? "Edit job" : "New job"}
+        </h1>
         <div className="flex gap-3">
           <Link
-            href={listHref}
+            href={cancelHref}
             className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50"
           >
             Cancel
@@ -91,7 +103,9 @@ export default function JobBuilder({ companyId }: { companyId: string }) {
               if (!file) return;
               // A local preview only; photos are uploaded once jobs are saved
               // on the server. A cancelled draft's preview is left to the page.
-              if (photoUrl) URL.revokeObjectURL(photoUrl);
+              // The saved job's own photo stays, in case the edit is cancelled.
+              if (photoUrl && photoUrl !== job?.photoUrl)
+                URL.revokeObjectURL(photoUrl);
               setPhotoUrl(URL.createObjectURL(file));
             }}
           />

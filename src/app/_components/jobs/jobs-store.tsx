@@ -47,7 +47,7 @@ export const MOCK_JOBS: DraftJob[] = [
 
 type JobsStore = {
   jobs: (companyId: string) => DraftJob[];
-  addJob: (companyId: string, job: DraftJob) => void;
+  saveJob: (companyId: string, job: DraftJob) => void;
 };
 
 const JobsStoreContext = createContext<JobsStore | null>(null);
@@ -69,11 +69,16 @@ export function JobsStoreProvider({
   const store = useMemo<JobsStore>(
     () => ({
       jobs: (companyId) => jobsByCompany[companyId] ?? initialJobs,
-      addJob: (companyId, job) =>
-        setJobsByCompany((current) => ({
-          ...current,
-          [companyId]: [...(current[companyId] ?? initialJobs), job],
-        })),
+      saveJob: (companyId, job) =>
+        setJobsByCompany((current) => {
+          const jobs = current[companyId] ?? initialJobs;
+          return {
+            ...current,
+            [companyId]: jobs.some(({ id }) => id === job.id)
+              ? jobs.map((saved) => (saved.id === job.id ? job : saved))
+              : [...jobs, job],
+          };
+        }),
     }),
     [jobsByCompany, initialJobs],
   );
@@ -101,7 +106,7 @@ export function useJob(companyId: string, jobId: string) {
   return useCompanyJobs(companyId).find((job) => job.id === jobId);
 }
 
-/** Returns a function that saves a new job to a company. */
-export function useAddJob() {
-  return useJobsStore().addJob;
+/** Returns a function that adds a job to a company, or replaces it by id. */
+export function useSaveJob() {
+  return useJobsStore().saveJob;
 }
