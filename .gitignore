@@ -47,3 +47,6 @@ yarn-error.log*
 
 # Vitest reports and artifacts
 .vitest/
+
+# Claude Code agent worktrees
+.claude/worktrees/
