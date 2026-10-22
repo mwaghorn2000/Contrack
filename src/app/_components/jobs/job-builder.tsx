@@ -6,10 +6,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { JobTile } from "~/lib/job-tiles";
 import { IMAGE_CONTENT_TYPES } from "~/lib/image-upload";
-import JobCanvas from "./job-canvas";
 import { useAddJob } from "./jobs-store";
-import TilePalette from "./tile-palette";
-import { createTile } from "./tiles/registry";
+import TileBoard from "./tile-board";
 
 const inputClass =
   "mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus-visible:outline-2 focus-visible:outline-gray-900";
@@ -122,14 +120,7 @@ export default function JobBuilder({ companyId }: { companyId: string }) {
           </div>
         </div>
       </div>
-      <div className="grid gap-6 md:grid-cols-[14rem_minmax(0,1fr)]">
-        <TilePalette
-          onAdd={(type) =>
-            setTiles((current) => [...current, createTile(type)])
-          }
-        />
-        <JobCanvas tiles={tiles} onChange={setTiles} />
-      </div>
+      <TileBoard tiles={tiles} onChange={setTiles} />
     </form>
   );
 }
