@@ -934,6 +934,35 @@ describe("editing and deleting messages", () => {
     });
   });
 
+  it("edits share the limit on how quickly someone can post", async () => {
+    const channelId = await channelWithMember();
+    const author = await db.channelMember.findFirstOrThrow({
+      where: { channelId, userId: ids.member },
+    });
+    // Posted long ago, so only the edits count towards the limit.
+    const postedAt = new Date("2026-01-01T00:00:00Z");
+    await db.message.createMany({
+      data: Array.from({ length: MESSAGES_PER_WINDOW + 1 }, (_, index) => ({
+        content: `Old ${index}`,
+        channelId,
+        authorChannelMemberId: author.id,
+        postedAt,
+      })),
+    });
+    const messages = await db.message.findMany({
+      where: { channelId },
+      orderBy: { content: "asc" },
+    });
+    for (const message of messages.slice(0, MESSAGES_PER_WINDOW))
+      await member.message.edit({ messageId: message.id, content: "Edited" });
+    await expect(
+      member.message.edit({ messageId: messages.at(-1)!.id, content: "More" }),
+    ).rejects.toMatchObject({ code: "TOO_MANY_REQUESTS" });
+    await expect(
+      member.message.send({ channelId, body: text("New") }),
+    ).rejects.toMatchObject({ code: "TOO_MANY_REQUESTS" });
+  });
+
   it("an edit that races a delete doesn't bring the message back", async () => {
     const channelId = await channelWithMember();
     const sent = await member.message.send({ channelId, body: text("Gone") });
