@@ -454,6 +454,25 @@ describe("direct messages", () => {
     ).toBe(first.id);
   });
 
+  it("repeated simultaneous opens leave one conversation with both members", async () => {
+    const results = await Promise.all(
+      Array.from({ length: 3 }, () => [
+        member.dm.open({ companyId, userId: ids.contractor }),
+        contractor.dm.open({ companyId, userId: ids.member }),
+      ]).flat(),
+    );
+    expect(new Set(results.map(({ id }) => id)).size).toBe(1);
+    expect(
+      await db.channelMember.findMany({
+        where: { channelId: results[0]!.id, removedAt: null },
+        select: { userId: true },
+        orderBy: { userId: "asc" },
+      }),
+    ).toEqual(
+      [ids.member, ids.contractor].sort().map((userId) => ({ userId })),
+    );
+  });
+
   it("both people can message each other and see the conversation in their list", async () => {
     const { id } = await member.dm.open({ companyId, userId: ids.contractor });
     await member.message.send({ channelId: id, body: text("Hey") });
