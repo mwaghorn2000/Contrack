@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { JobTile } from "~/lib/job-tiles";
 import { IMAGE_CONTENT_TYPES } from "~/lib/image-upload";
+import JobMembers from "./job-members";
 import { useAddJob } from "./jobs-store";
 import TileBoard from "./tile-board";
 
@@ -19,6 +20,7 @@ export default function JobBuilder({ companyId }: { companyId: string }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [memberIds, setMemberIds] = useState<string[]>([]);
   const [tiles, setTiles] = useState<JobTile[]>([]);
   const listHref = `/dashboard/jobs?${new URLSearchParams({ companyId })}`;
 
@@ -33,7 +35,7 @@ export default function JobBuilder({ companyId }: { companyId: string }) {
           name: name.trim(),
           description: description.trim(),
           photoUrl,
-          memberIds: [],
+          memberIds,
           tiles,
         });
         router.push(listHref);
@@ -120,6 +122,11 @@ export default function JobBuilder({ companyId }: { companyId: string }) {
           </div>
         </div>
       </div>
+      <JobMembers
+        companyId={companyId}
+        memberIds={memberIds}
+        onChange={setMemberIds}
+      />
       <TileBoard tiles={tiles} onChange={setTiles} />
     </form>
   );
