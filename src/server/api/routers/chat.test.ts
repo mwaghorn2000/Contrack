@@ -785,6 +785,36 @@ describe("unread messages", () => {
     return channels.find(({ id }) => id === channelId)?.unreadCount;
   }
 
+  it("the last message time ignores deleted messages but includes your own", async () => {
+    const channelId = await channelWithMember();
+    const first = await member.message.send({ channelId, body: text("Mine") });
+    const latest = await owner.message.send({ channelId, body: text("Gone") });
+    await owner.message.delete({ messageId: latest.id });
+    const dm = await member.dm.open({ companyId, userId: ids.contractor });
+    const reply = await member.message.send({
+      channelId: dm.id,
+      body: text("Hi"),
+    });
+    const deletedReply = await contractor.message.send({
+      channelId: dm.id,
+      body: text("Oops"),
+    });
+    await contractor.message.delete({ messageId: deletedReply.id });
+
+    const channel = (await member.channel.listChannels({ companyId })).find(
+      ({ id }) => id === channelId,
+    );
+    expect(channel?.lastMessageAt).toEqual(first.postedAt);
+    const [conversation] = await member.dm.list({ companyId });
+    expect(conversation?.lastMessageAt).toEqual(reply.postedAt);
+
+    await member.message.delete({ messageId: first.id });
+    const emptied = (await member.channel.listChannels({ companyId })).find(
+      ({ id }) => id === channelId,
+    );
+    expect(emptied?.lastMessageAt).toBeNull();
+  });
+
   it("counts other people's messages but not your own", async () => {
     const channelId = await channelWithMember();
     await owner.message.send({ channelId, body: text("One") });
