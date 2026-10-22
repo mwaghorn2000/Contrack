@@ -17,8 +17,7 @@ const ids = (list: JobTile[]) => list.map((t) => t.id);
 
 test("a palette tile dropped on a tile goes before it", () => {
   const result = dropTile(tiles, { newType: "text" }, "b");
-  expect(result).toHaveLength(4);
-  expect(ids(result).filter((id) => id.length === 1)).toEqual(["a", "b", "c"]);
+  expect(ids(result)).toEqual(["a", expect.any(String), "b", "c"]);
   expect(result[1]).toMatchObject({ type: "text", config: { body: "" } });
 });
 

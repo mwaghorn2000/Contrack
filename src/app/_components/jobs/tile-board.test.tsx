@@ -83,3 +83,37 @@ test("a tile can be moved down with the keyboard", async () => {
 
   expect(bodies()).toEqual(["Second", "First"]);
 });
+
+test("drag instructions keep the same id on every render", () => {
+  // The server and browser must agree on this id, or hydration fails.
+  const describedBy = () =>
+    screen
+      .getByRole("button", { name: "Move Text tile 1" })
+      .getAttribute("aria-describedby");
+  const first = render(<Board initial={[tile("a", "First")]} />);
+  const id = describedBy();
+  first.unmount();
+  render(<Board initial={[tile("a", "First")]} />);
+
+  expect(describedBy()).toBe(id);
+});
+
+test("removing a tile moves focus to the next tile, or the one before", async () => {
+  const user = userEvent.setup();
+  render(
+    <Board
+      initial={[tile("a", "First"), tile("b", "Second"), tile("c", "Third")]}
+    />,
+  );
+
+  await user.click(screen.getByRole("button", { name: "Remove Text tile 2" }));
+  // The third tile is now the second.
+  expect(document.activeElement).toBe(
+    screen.getByRole("button", { name: "Move Text tile 2" }),
+  );
+
+  await user.click(screen.getByRole("button", { name: "Remove Text tile 2" }));
+  expect(document.activeElement).toBe(
+    screen.getByRole("button", { name: "Move Text tile 1" }),
+  );
+});
