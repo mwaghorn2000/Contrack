@@ -1109,6 +1109,20 @@ describe("editing and deleting messages", () => {
     ).rejects.toMatchObject({ code: "TOO_MANY_REQUESTS" });
   });
 
+  it("editing one message over and over is rate limited", async () => {
+    const channelId = await channelWithMember();
+    const sent = await member.message.send({ channelId, body: text("Draft") });
+    // The send counts too, so this edit fills the limit.
+    for (let index = 1; index < MESSAGES_PER_WINDOW; index += 1)
+      await member.message.edit({
+        messageId: sent.id,
+        content: `Draft ${index}`,
+      });
+    await expect(
+      member.message.edit({ messageId: sent.id, content: "One more" }),
+    ).rejects.toMatchObject({ code: "TOO_MANY_REQUESTS" });
+  });
+
   it("an edit that races a delete doesn't bring the message back", async () => {
     const channelId = await channelWithMember();
     const sent = await member.message.send({ channelId, body: text("Gone") });
