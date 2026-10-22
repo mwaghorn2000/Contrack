@@ -448,35 +448,44 @@ export const channelRouter = createTRPCRouter({
     .input(channelIdSchema.extend({ userId: z.string().cuid() }))
     .mutation(async ({ ctx, input }) => {
       const actorId = ctx.session.user.id;
-      const { channel, isOwner, permissions } = await requireConversationAccess(
-        ctx.db,
-        actorId,
-        input.channelId,
-        "canManageMembers",
-      );
-      requireChannelKind(channel.kind);
-      if (!isOwner && input.userId === actorId)
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "You can't remove yourself from a channel.",
+      // One transaction, so the target's permissions can't change between
+      // the check and the removal.
+      await serializableTransaction(ctx.db, async (tx) => {
+        const { channel, isOwner, permissions } =
+          await requireConversationAccess(
+            tx,
+            actorId,
+            input.channelId,
+            "canManageMembers",
+          );
+        requireChannelKind(channel.kind);
+        if (!isOwner && input.userId === actorId)
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "You can't remove yourself from a channel.",
+          });
+        if (!isOwner)
+          await requireCanManageMember(
+            tx,
+            channel.id,
+            permissions,
+            input.userId,
+          );
+        // Keep the membership row so the person's past messages keep their author.
+        const result = await tx.channelMember.updateMany({
+          where: {
+            channelId: channel.id,
+            userId: input.userId,
+            removedAt: null,
+          },
+          data: { removedAt: new Date() },
         });
-      if (!isOwner)
-        await requireCanManageMember(
-          ctx.db,
-          channel.id,
-          permissions,
-          input.userId,
-        );
-      // Keep the membership row so the person's past messages keep their author.
-      const result = await ctx.db.channelMember.updateMany({
-        where: { channelId: channel.id, userId: input.userId, removedAt: null },
-        data: { removedAt: new Date() },
+        if (result.count === 0)
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "This person is not in the channel.",
+          });
       });
-      if (result.count === 0)
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "This person is not in the channel.",
-        });
       await publishConversationsChanged([input.userId]);
       return { success: true };
     }),
