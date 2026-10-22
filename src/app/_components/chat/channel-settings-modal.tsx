@@ -1,5 +1,6 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api, type RouterOutputs } from "~/trpc/react";
@@ -249,13 +250,38 @@ function MembersSection({
   ownPermissions: Permissions;
 }) {
   const utils = api.useUtils();
-  const members = api.channel.listMembers.useQuery({ channelId });
-  const onSuccess = () =>
-    void utils.channel.listMembers.invalidate({ channelId });
-  const setMember = api.channel.setMember.useMutation({ onSuccess });
-  const removeMember = api.channel.removeMember.useMutation({ onSuccess });
+  const input = { channelId };
+  const members = api.channel.listMembers.useQuery(input);
+  const queryClient = useQueryClient();
+  // Member changes share a scope so the server receives them one at a time, in click order.
+  const scope = { id: `channel-members-${channelId}` };
+  const refetchWhenDone = () => {
+    // Refetching while another change is queued would undo its optimistic update.
+    const pending = queryClient.isMutating({
+      predicate: (mutation) => mutation.options.scope?.id === scope.id,
+    });
+    if (pending <= 1) void utils.channel.listMembers.invalidate(input);
+  };
+  const setMember = api.channel.setMember.useMutation({
+    scope,
+    // Show the new permissions straight away; a failed save is corrected by the refetch.
+    async onMutate({ userId, permissions }) {
+      await utils.channel.listMembers.cancel(input);
+      utils.channel.listMembers.setData(input, (rows) =>
+        rows?.map((row) =>
+          row.user.id === userId ? { ...row, permissions } : row,
+        ),
+      );
+    },
+    onSettled: refetchWhenDone,
+  });
+  const removeMember = api.channel.removeMember.useMutation({
+    scope,
+    onSettled: refetchWhenDone,
+  });
   const error = setMember.error ?? removeMember.error;
-  const busy = setMember.isPending || removeMember.isPending;
+  // Saving permissions leaves the checkboxes enabled; only a removal locks the list.
+  const busy = removeMember.isPending;
   const inChannel = (members.data ?? []).filter((row) => row.permissions);
   const others = (members.data ?? []).filter((row) => !row.permissions);
 
