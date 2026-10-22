@@ -228,41 +228,40 @@ export default function MessageItem({
     </>
   );
 
-  if (own)
-    return (
-      <div
-        className={`group flex flex-col items-end px-4 ${compact ? "mt-0.5" : "mt-3"}`}
-      >
-        {!compact && <p className="mb-1 pr-1">{time}</p>}
-        <div className="flex max-w-[min(32rem,80%)] items-start justify-end gap-1">
-          {actions}
-          {bubble}
-        </div>
-        {compact && message.editedAt && mode === "view" && (
-          <p className="mt-0.5 pr-1 text-xs text-gray-500">(edited)</p>
-        )}
-        {footer}
-      </div>
-    );
-
+  // Your own messages mirror other people's: on the right, without an avatar.
+  const side = own ? "pr-1" : "pl-1";
   return (
-    <div className={`group flex gap-2 px-4 ${compact ? "mt-0.5" : "mt-3"}`}>
-      <div className="w-9 shrink-0">
-        {!compact && <MemberAvatar name={name} image={message.author.image} />}
-      </div>
-      <div className="flex max-w-[min(32rem,80%)] min-w-0 flex-col items-start">
+    <div
+      className={`group flex gap-2 px-4 ${own ? "flex-row-reverse" : ""} ${compact ? "mt-0.5" : "mt-3"}`}
+    >
+      {!own && (
+        <div className="w-9 shrink-0">
+          {!compact && (
+            <MemberAvatar name={name} image={message.author.image} />
+          )}
+        </div>
+      )}
+      <div
+        className={`flex max-w-[min(32rem,80%)] min-w-0 flex-col ${own ? "items-end" : "items-start"}`}
+      >
         {!compact && (
-          <p className="mb-1 flex items-baseline gap-2 pl-1">
-            <span className="text-sm font-semibold text-gray-900">{name}</span>
+          <p className={`mb-1 flex items-baseline gap-2 ${side}`}>
+            {!own && (
+              <span className="text-sm font-semibold text-gray-900">
+                {name}
+              </span>
+            )}
             {time}
           </p>
         )}
-        <div className="flex max-w-full items-start gap-1">
+        <div
+          className={`flex max-w-full items-start gap-1 ${own ? "flex-row-reverse" : ""}`}
+        >
           {bubble}
           {actions}
         </div>
         {compact && message.editedAt && mode === "view" && (
-          <p className="mt-0.5 pl-1 text-xs text-gray-500">(edited)</p>
+          <p className={`mt-0.5 ${side} text-xs text-gray-500`}>(edited)</p>
         )}
         {footer}
       </div>
