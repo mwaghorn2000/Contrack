@@ -162,14 +162,7 @@ export async function deleteReplacedImage(
   currentUrl: string | null,
 ) {
   if (!previousUrl || previousUrl === currentUrl) return;
-  const key = keyFromPublicUrl(previousUrl);
-  if (!key?.startsWith(`${folder}/`)) return;
-  try {
-    await deleteObject(key);
-  } catch (error) {
-    // The new image is already saved; an orphaned file is harmless.
-    console.error("Failed to delete replaced image", error);
-  }
+  await deleteReplacedKey(folder, keyFromPublicUrl(previousUrl), null);
 }
 
 export async function signedImageUrl(key: string | null) {
@@ -187,6 +180,7 @@ export async function deleteReplacedKey(
   try {
     await deleteObject(previousKey);
   } catch (error) {
+    // The new image is already saved; an orphaned file is harmless.
     console.error("Failed to delete replaced image", error);
   }
 }
