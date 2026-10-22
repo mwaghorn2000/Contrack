@@ -59,7 +59,7 @@ export default function ChannelSettingsModal({
       );
     },
   });
-  const busy = update.isPending || remove.isPending;
+  const busy = update.isPending || setImage.isPending || remove.isPending;
 
   return (
     <ChatDialog
