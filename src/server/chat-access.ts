@@ -15,12 +15,30 @@ const NO_PERMISSIONS: ChannelPermissions = {
   canModerateMessages: false,
 };
 
-const ALL_PERMISSIONS: ChannelPermissions = {
+export const ALL_PERMISSIONS: ChannelPermissions = {
   canSendMessages: true,
   canManageMembers: true,
   canManageChannel: true,
   canModerateMessages: true,
 };
+
+/**
+ * Everything for the company owner; otherwise the flags on the user's channel
+ * membership, or nothing without one.
+ */
+export function permissionsFor(
+  isOwner: boolean,
+  member: ChannelPermissions | null | undefined,
+): ChannelPermissions {
+  if (isOwner) return { ...ALL_PERMISSIONS };
+  if (!member) return { ...NO_PERMISSIONS };
+  return {
+    canSendMessages: member.canSendMessages,
+    canManageMembers: member.canManageMembers,
+    canManageChannel: member.canManageChannel,
+    canModerateMessages: member.canModerateMessages,
+  };
+}
 
 /**
  * What a user can do in a channel or direct message.
@@ -70,16 +88,7 @@ export async function getConversationAccess(
   const member = channelMembers[0] ?? null;
   const isOwner = companyRole === "OWNER" && channel.kind === "CHANNEL";
   if (!isOwner && !member) return null;
-  const permissions: ChannelPermissions = isOwner
-    ? ALL_PERMISSIONS
-    : member
-      ? {
-          canSendMessages: member.canSendMessages,
-          canManageMembers: member.canManageMembers,
-          canManageChannel: member.canManageChannel,
-          canModerateMessages: member.canModerateMessages,
-        }
-      : NO_PERMISSIONS;
+  const permissions = permissionsFor(isOwner, member);
   return { channel: details, companyRole, isOwner, member, permissions };
 }
 

@@ -4,6 +4,8 @@ import { z } from "zod";
 import type { Prisma } from "../../../../generated/prisma";
 import { imageFileSchema, imageKeySchema } from "~/lib/image-upload";
 import {
+  ALL_PERMISSIONS,
+  permissionsFor,
   requireConversationAccess,
   type ChannelPermissions,
 } from "~/server/chat-access";
@@ -138,13 +140,7 @@ export const channelRouter = createTRPCRouter({
             companyId: input.companyId,
             channelMembers: {
               create: [
-                {
-                  userId,
-                  canSendMessages: true,
-                  canManageMembers: true,
-                  canManageChannel: true,
-                  canModerateMessages: true,
-                },
+                { userId, ...ALL_PERMISSIONS },
                 ...memberIds.map((id) => ({
                   userId: id,
                   canSendMessages: true,
@@ -235,20 +231,10 @@ export const channelRouter = createTRPCRouter({
       );
       const summaries = await Promise.all(
         channels.map(async (channel) => {
-          const member = channel.channelMembers[0];
-          const permissions: ChannelPermissions = isOwner
-            ? {
-                canSendMessages: true,
-                canManageMembers: true,
-                canManageChannel: true,
-                canModerateMessages: true,
-              }
-            : {
-                canSendMessages: member?.canSendMessages ?? false,
-                canManageMembers: member?.canManageMembers ?? false,
-                canManageChannel: member?.canManageChannel ?? false,
-                canModerateMessages: member?.canModerateMessages ?? false,
-              };
+          const permissions = permissionsFor(
+            isOwner,
+            channel.channelMembers[0],
+          );
           return {
             id: channel.id,
             name: channel.name,

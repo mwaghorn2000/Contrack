@@ -5,6 +5,7 @@ import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { imageFileSchema } from "~/lib/image-upload";
 import { messageTextSchema, sendMessageBodySchema } from "~/lib/chat-message";
 import {
+  ALL_PERMISSIONS,
   getConversationAccess,
   requireConversationAccess,
 } from "~/server/chat-access";
@@ -127,14 +128,7 @@ export const messageRouter = createTRPCRouter({
         (
           await ctx.db.channelMember.upsert({
             where: { channelId_userId: { channelId: input.channelId, userId } },
-            create: {
-              channelId: input.channelId,
-              userId,
-              canSendMessages: true,
-              canManageMembers: true,
-              canManageChannel: true,
-              canModerateMessages: true,
-            },
+            create: { channelId: input.channelId, userId, ...ALL_PERMISSIONS },
             update: { removedAt: null },
             select: { id: true },
           })
