@@ -5,6 +5,7 @@ import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { requireCompanyRole } from "~/server/chat-access";
 import { unreadCounts } from "~/server/chat-unread";
 import { publishConversationsChanged } from "~/server/realtime";
+import { serializableTransaction } from "~/server/transactions";
 
 function directKey(companyId: string, userIds: [string, string]) {
   return [companyId, ...[...userIds].sort()].join(":");
@@ -87,49 +88,59 @@ export const directMessageRouter = createTRPCRouter({
           message: "That person is not in this company.",
         });
       const key = directKey(input.companyId, [userId, input.userId]);
-      let channel = await ctx.db.channel.findUnique({
-        where: { directKey: key },
-        select: { id: true },
-      });
-      let created = false;
-      if (!channel) {
-        try {
-          channel = await ctx.db.channel.create({
-            data: {
-              kind: "DIRECT",
-              name: "",
-              companyId: input.companyId,
-              directKey: key,
-            },
-            select: { id: true },
-          });
-          created = true;
-        } catch (error) {
-          // Both people opened the conversation at the same time.
-          if (
-            !(error instanceof Prisma.PrismaClientKnownRequestError) ||
-            error.code !== "P2002"
-          )
-            throw error;
-          channel = await ctx.db.channel.findUniqueOrThrow({
+      const findOrCreate = () =>
+        serializableTransaction(ctx.db, async (tx) => {
+          const existing = await tx.channel.findUnique({
             where: { directKey: key },
             select: { id: true },
           });
-        }
-      }
-      // Restores access for someone who left the company and rejoined.
-      for (const memberId of [userId, input.userId])
-        await ctx.db.channelMember.upsert({
-          where: {
-            channelId_userId: { channelId: channel.id, userId: memberId },
-          },
-          create: {
-            channelId: channel.id,
-            userId: memberId,
-            canSendMessages: true,
-          },
-          update: { removedAt: null, canSendMessages: true },
+          const channel =
+            existing ??
+            (await tx.channel.create({
+              data: {
+                kind: "DIRECT",
+                name: "",
+                companyId: input.companyId,
+                directKey: key,
+              },
+              select: { id: true },
+            }));
+          // Adds both people, and restores access for someone who left the
+          // company and rejoined. Rows that are already right aren't written,
+          // so opening an existing conversation doesn't conflict with others.
+          const memberIds = [userId, input.userId];
+          await tx.channelMember.createMany({
+            data: memberIds.map((memberId) => ({
+              channelId: channel.id,
+              userId: memberId,
+              canSendMessages: true,
+            })),
+            skipDuplicates: true,
+          });
+          await tx.channelMember.updateMany({
+            where: {
+              channelId: channel.id,
+              userId: { in: memberIds },
+              OR: [{ removedAt: { not: null } }, { canSendMessages: false }],
+            },
+            data: { removedAt: null, canSendMessages: true },
+          });
+          return { channel, created: !existing };
         });
+      let result;
+      try {
+        result = await findOrCreate();
+      } catch (error) {
+        // Both people opened the conversation at the same time. The failed
+        // transaction was rolled back, and a second try finds the other one.
+        if (
+          !(error instanceof Prisma.PrismaClientKnownRequestError) ||
+          error.code !== "P2002"
+        )
+          throw error;
+        result = await findOrCreate();
+      }
+      const { channel, created } = result;
       if (created) await publishConversationsChanged([input.userId]);
       return { id: channel.id };
     }),
