@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { imageKeySchema } from "~/lib/image-upload";
 
 /**
  * Message types shared by the server and the chat UI. To add a type: add it to
@@ -31,7 +32,7 @@ export const sendMessageBodySchema = z.discriminatedUnion("type", [
   }),
   z.object({
     type: z.literal("IMAGE"),
-    key: z.string().max(200),
+    key: imageKeySchema,
     width: dimensionSchema,
     height: dimensionSchema,
     caption: messageTextSchema.default(""),

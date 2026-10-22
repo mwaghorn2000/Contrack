@@ -3,7 +3,7 @@ import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import type { Prisma } from "../../../../generated/prisma";
 import { serializableTransaction } from "~/server/transactions";
-import { imageFileSchema } from "~/lib/image-upload";
+import { imageFileSchema, imageKeySchema } from "~/lib/image-upload";
 import {
   channelFolder,
   companyFolder,
@@ -11,7 +11,6 @@ import {
   confirmImageUpload,
   createImageUpload,
   deleteReplacedImage,
-  imageKeySchema,
 } from "~/server/image-uploads";
 import { deletePrefix, storageConfigured } from "~/server/storage";
 

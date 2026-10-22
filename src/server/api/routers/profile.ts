@@ -1,12 +1,11 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { imageFileSchema } from "~/lib/image-upload";
+import { imageFileSchema, imageKeySchema } from "~/lib/image-upload";
 import { updateProfileSchema } from "~/lib/profile-validation";
 import {
   confirmImageUpload,
   createImageUpload,
   deleteReplacedImage,
-  imageKeySchema,
   userImageFolder,
 } from "~/server/image-uploads";
 import { createTRPCRouter, protectedProcedure } from "../trpc";

@@ -19,6 +19,12 @@ export const IMAGE_KINDS = {
 
 export type ImageKind = keyof typeof IMAGE_KINDS;
 
+// Matches the keys the server creates; ownership is checked against the folder.
+export const imageKeySchema = z
+  .string()
+  .max(200)
+  .regex(/^[a-z]+\/c[a-z0-9]+\/[a-z]+\/[0-9a-f-]{36}\.(jpg|png|webp|gif)$/);
+
 export const imageFileSchema = z.object({
   contentType: z.enum(
     Object.keys(IMAGE_CONTENT_TYPES) as [

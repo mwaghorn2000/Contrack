@@ -4,7 +4,6 @@ import type { ChatMessage, SendMessageBody } from "~/lib/chat-message";
 import {
   channelImageFolder,
   confirmPrivateImageUpload,
-  imageKeySchema,
 } from "~/server/image-uploads";
 import {
   deleteObject,
@@ -85,7 +84,7 @@ const handlers: { [T in MessageType]: MessageHandler<T> } = {
         userId,
         channelImageFolder(channelId, "messages"),
         "message",
-        imageKeySchema.parse(body.key),
+        body.key,
       );
       return {
         content: body.caption,
