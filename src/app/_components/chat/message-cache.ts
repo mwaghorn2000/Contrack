@@ -1,5 +1,7 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
+import { getQueryKey } from "@trpc/react-query";
 import { useCallback } from "react";
 import type { ChatMessage } from "~/lib/chat-message";
 import { api } from "~/trpc/react";
@@ -8,8 +10,14 @@ type Update = (items: ChatMessage[], pageIndex: number) => ChatMessage[];
 
 function useUpdatePages(channelId: string) {
   const utils = api.useUtils();
+  const queryClient = useQueryClient();
   return useCallback(
-    (update: Update) =>
+    (update: Update) => {
+      // A fetch that started before this change would overwrite it with
+      // stale messages, so cancel it and fetch again afterwards.
+      const queryKey = getQueryKey(api.message.list, { channelId }, "infinite");
+      const stale = queryClient.isFetching({ queryKey }) > 0;
+      if (stale) void utils.message.list.cancel({ channelId });
       utils.message.list.setInfiniteData({ channelId }, (data) =>
         data
           ? {
@@ -20,8 +28,10 @@ function useUpdatePages(channelId: string) {
               })),
             }
           : data,
-      ),
-    [utils, channelId],
+      );
+      if (stale) void utils.message.list.invalidate({ channelId });
+    },
+    [utils, queryClient, channelId],
   );
 }
 
