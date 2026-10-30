@@ -141,3 +141,16 @@ test("owners and admins get an Edit link", async () => {
     (await screen.findByRole("link", { name: "Edit" })).getAttribute("href"),
   ).toBe("/dashboard/jobs/job-1/edit?companyId=company-1");
 });
+
+test("says the job is loading", () => {
+  renderView({ userId: "user-1", isManager: true });
+  expect(screen.getByText("Loading job…")).toBeTruthy();
+});
+
+test("says when a saved job's photo couldn't be uploaded", async () => {
+  renderView({ userId: "user-1", isManager: true }, "job-1", true, true);
+
+  expect((await screen.findByRole("alert")).textContent).toBe(
+    "Job saved, but the photo couldn’t be uploaded. Edit the job to try again.",
+  );
+});

@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
-import { createTestProvider } from "~/test/ui";
+import { createTestProvider, deferred } from "~/test/ui";
 import EditJob from "./edit-job";
 
 const push = vi.fn();
@@ -119,4 +119,24 @@ test("picking a new photo keeps the saved job's photo", async () => {
   expect(
     screen.getByRole("img", { name: "Job photo" }).getAttribute("src"),
   ).toBe("blob:new");
+});
+
+test("a saved edit refreshes the job before opening it", async () => {
+  const user = userEvent.setup();
+  const refetched = deferred<typeof job>();
+  let loads = 0;
+  const { Wrapper } = createTestProvider((path) => {
+    if (path === "job.getJob") return ++loads === 1 ? job : refetched.promise;
+    if (path === "invitation.members") return [];
+    return { id: job.id };
+  });
+  render(<EditJob companyId="company-1" jobId="job-roof" />, {
+    wrapper: Wrapper,
+  });
+  await user.click(await screen.findByRole("button", { name: "Save job" }));
+
+  await vi.waitFor(() => expect(loads).toBe(2));
+  expect(push).not.toHaveBeenCalled();
+  refetched.resolve({ ...job, title: "Saved" });
+  await vi.waitFor(() => expect(push).toHaveBeenCalledOnce());
 });

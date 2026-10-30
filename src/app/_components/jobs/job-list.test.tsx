@@ -56,6 +56,17 @@ test("shows an empty state when the company has no jobs", async () => {
   expect(screen.queryAllByRole("article")).toHaveLength(0);
 });
 
+test("says when jobs are loading or couldn't be loaded", async () => {
+  const { unmount } = renderList(true, () => new Promise(() => undefined));
+  expect(screen.getByText("Loading jobs…")).toBeTruthy();
+  unmount();
+
+  renderList(true, () => {
+    throw new Error("offline");
+  });
+  expect(await screen.findByText("Couldn’t load jobs.")).toBeTruthy();
+});
+
 test("only admins see the New job link", async () => {
   const { unmount } = renderList(true);
   expect(
