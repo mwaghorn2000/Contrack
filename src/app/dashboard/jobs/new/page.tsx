@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { api } from "~/trpc/server";
 import JobBuilder from "~/app/_components/jobs/job-builder";
 import { isManagerRole } from "~/lib/company-roles";
+import { authSession } from "~/server/auth";
 import { withCompanyAccess } from "~/server/company-access";
 
 /** Shows the job builder to company owners and admins; others go to the list. */
@@ -10,7 +11,11 @@ export default async function NewJobPage({
 }: {
   searchParams: Promise<{ companyId?: string }>;
 }) {
-  const { companyId } = await searchParams;
+  const [{ companyId }, session] = await Promise.all([
+    searchParams,
+    authSession(),
+  ]);
+  if (!session?.user) redirect("/login");
   if (!companyId) return <p>Select a company to create a job.</p>;
   const company = await withCompanyAccess(companyId, () =>
     api.company.getCompany({ companyId }),
@@ -18,5 +23,5 @@ export default async function NewJobPage({
   const role = company.members[0]?.role;
   if (!isManagerRole(role))
     redirect(`/dashboard/jobs?${new URLSearchParams({ companyId })}`);
-  return <JobBuilder companyId={companyId} />;
+  return <JobBuilder companyId={companyId} creatorId={session.user.id} />;
 }
