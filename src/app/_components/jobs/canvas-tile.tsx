@@ -1,10 +1,9 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useState } from "react";
-import type { JobTile } from "~/lib/job-tiles";
 import type { DragSource } from "./tile-drop";
 import TileSettings, { visibilityLabel, type JobPerson } from "./tile-settings";
-import { definitionFor } from "./tiles/registry";
+import { definitionFor, type JobTile } from "./tiles/registry";
 
 const iconButtonClass =
   "rounded px-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-2 focus-visible:outline-gray-900";

@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 import { expect, test } from "vitest";
-import type { JobTile } from "~/lib/job-tiles";
+import type { JobTile } from "./tiles/registry";
 import TileBoard from "./tile-board";
 import type { JobPerson } from "./tile-settings";
 

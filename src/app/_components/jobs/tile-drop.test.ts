@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import type { JobTile } from "~/lib/job-tiles";
+import type { JobTile } from "./tiles/registry";
 import { CANVAS_DROP_ID, dropTile } from "./tile-drop";
 
 /** A Text tile with a readable id. */

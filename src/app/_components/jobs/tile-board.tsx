@@ -14,12 +14,16 @@ import {
 } from "@dnd-kit/core";
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { useState, type Dispatch, type SetStateAction } from "react";
-import type { JobTile, TileType } from "~/lib/job-tiles";
 import JobCanvas from "./job-canvas";
 import TilePalette from "./tile-palette";
 import type { JobPerson } from "./tile-settings";
 import { CANVAS_DROP_ID, dropTile, type DragSource } from "./tile-drop";
-import { createTile, tileTypes } from "./tiles/registry";
+import {
+  createTile,
+  tileTypes,
+  type JobTile,
+  type TileType,
+} from "./tiles/registry";
 
 /** Reads what a drag is carrying from the data its draggable registered. */
 function sourceOf(active: Active) {

@@ -7,7 +7,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { JobTile } from "~/lib/job-tiles";
+import type { JobTile } from "./tiles/registry";
 
 /** A job as the UI holds it until jobs are saved on the server. */
 export type DraftJob = {
