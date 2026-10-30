@@ -1,5 +1,6 @@
 import type { ComponentType } from "react";
 import { z } from "zod";
+import type { AnswersProps } from "./define-tile";
 import { contactsTile } from "./contacts";
 import { textTile } from "./text";
 
@@ -40,6 +41,8 @@ type DefinitionOf<T extends JobTile> = {
     onChange: (config: T["config"]) => void;
   }>;
   View: ComponentType<{ config: T["config"] }>;
+  // Answer data is unknown here: the server only sends answers that fit.
+  answers?: { Answers: ComponentType<AnswersProps<T["config"], unknown>> };
 };
 
 /**

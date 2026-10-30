@@ -1,6 +1,12 @@
 import { TRPCError } from "@trpc/server";
+import type { z } from "zod";
 import type { Prisma } from "../../generated/prisma";
-import { tileSchema } from "~/app/_components/jobs/tiles/registry";
+import {
+  TILES,
+  tileSchema,
+  tileTypes,
+  type TileType,
+} from "~/app/_components/jobs/tiles/registry";
 import { isManagerRole } from "~/lib/company-roles";
 import { canSeeTile } from "~/lib/job-tiles";
 import { requireJobAccess } from "~/server/job-access";
@@ -75,4 +81,27 @@ export async function requireVisibleTile(
   if (!parsed.success || !canSeeTile(parsed.data, { userId, isManager }))
     throw notFound;
   return { tile: parsed.data, job, isManager };
+}
+
+/** A tile type's answer rules, loosely typed for the server's generic code. */
+export type AnswerRules = {
+  schema: z.ZodTypeAny;
+  check?: (answer: {
+    config: unknown;
+    data: unknown;
+    userId: string;
+    others: { authorId: string | null; data: unknown }[];
+  }) => string | null;
+};
+
+/** How a tile type's answers are checked, or null when it takes none. */
+export function answerRules(type: TileType): AnswerRules | null {
+  // Each tile's rules are typed for its own config; the server only passes
+  // them values it has already parsed with that same tile's schemas.
+  return (tileTypes[type].answers as AnswerRules | undefined) ?? null;
+}
+
+/** The tile types that take answers. */
+export function answerableTypes(): string[] {
+  return TILES.filter((tile) => tile.answers).map(({ type }) => type);
 }
