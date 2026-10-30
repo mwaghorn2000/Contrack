@@ -1,5 +1,6 @@
 import type { ComponentType } from "react";
 import { z } from "zod";
+import { contactsTile } from "./contacts";
 import { textTile } from "./text";
 
 /**
@@ -7,7 +8,7 @@ import { textTile } from "./text";
  * `index.ts`, components in `ui.tsx`) plus one entry here; the palette, canvas,
  * job view and server validation all read from this list.
  */
-export const TILES = [textTile] as const;
+export const TILES = [textTile, contactsTile] as const;
 
 type Tiles = typeof TILES;
 

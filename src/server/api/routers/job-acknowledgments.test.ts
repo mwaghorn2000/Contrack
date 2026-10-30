@@ -203,7 +203,7 @@ it("editing a tile's text clears its acknowledgments", async () => {
     description: "",
     memberIds: [admin.id, worker.id, colleague.id],
     tiles: (await savedTiles()).map((saved) =>
-      saved.id === tiles.open
+      saved.id === tiles.open && saved.type === "text"
         ? { ...saved, config: { body: "Wear a harness and a helmet" } }
         : saved,
     ),
