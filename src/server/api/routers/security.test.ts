@@ -17,6 +17,12 @@ import { securityToken } from "~/server/auth/security-token";
 
 vi.mock("~/server/auth", () => ({ auth: vi.fn() }));
 vi.mock("~/server/db", () => ({ db: {} }));
+// profileRouter reaches storage, which is server-only; no test here uploads.
+vi.mock("~/server/storage", () => ({
+  storageConfigured: () => false,
+  deleteObject: vi.fn(),
+  deletePrefix: vi.fn(),
+}));
 vi.mock("~/env", () => ({
   env: { AUTH_SECRET: "test-only-secret-not-used-outside-disposable-database" },
 }));
