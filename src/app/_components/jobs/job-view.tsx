@@ -24,7 +24,11 @@ export default function JobView({
   viewer: { userId: string; isManager: boolean };
   photoFailed?: boolean;
 }) {
-  const fetched = api.job.getJob.useQuery({ jobId });
+  // Polled, so edits and lost access show up without a reload.
+  const fetched = api.job.getJob.useQuery(
+    { jobId },
+    { refetchInterval: 7_500 },
+  );
   const members = api.invitation.members.useQuery({ companyId });
   const [previewId, setPreviewId] = useState("");
   const query = new URLSearchParams({ companyId });

@@ -12,7 +12,11 @@ export default function JobList({
   companyId: string;
   canManage: boolean;
 }) {
-  const jobs = api.job.listCompanyJobs.useQuery({ companyId });
+  // Polled, so jobs added or taken away by someone else show up.
+  const jobs = api.job.listCompanyJobs.useQuery(
+    { companyId },
+    { refetchInterval: 7_500 },
+  );
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4">

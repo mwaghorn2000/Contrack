@@ -177,6 +177,8 @@ export default function CompanyPeople({
                   utils.invitation.members.invalidate({ companyId }),
                   utils.invitation.list.invalidate({ companyId }),
                   utils.company.invalidate(),
+                  // Roles and removals change who can see which jobs.
+                  utils.job.invalidate(),
                 ]);
               }}
             />
