@@ -293,6 +293,16 @@ exports.Prisma.JobTileAnswerScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.JobTileFileScalarFieldEnum = {
+  id: 'id',
+  answerId: 'answerId',
+  key: 'key',
+  name: 'name',
+  contentType: 'contentType',
+  size: 'size',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.JobTileAcknowledgmentScalarFieldEnum = {
   tileId: 'tileId',
   userId: 'userId',
@@ -402,6 +412,7 @@ exports.Prisma.ModelName = {
   JobMember: 'JobMember',
   JobTile: 'JobTile',
   JobTileAnswer: 'JobTileAnswer',
+  JobTileFile: 'JobTileFile',
   JobTileAcknowledgment: 'JobTileAcknowledgment',
   CompanyPost: 'CompanyPost',
   CompanyPostAcknowledgment: 'CompanyPostAcknowledgment',
