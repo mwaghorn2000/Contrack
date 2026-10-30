@@ -116,13 +116,20 @@ export const jobRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const jobs = await ctx.db.job.findMany({
         where: visibleJobsWhere(ctx.session.user.id, input.companyId),
-        select: { id: true, title: true, description: true, photo: true },
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          photo: true,
+          _count: { select: { members: { where: { removedAt: null } } } },
+        },
         orderBy: [{ createdAt: "asc" }, { id: "asc" }],
       });
       return Promise.all(
-        jobs.map(async ({ photo, ...job }) => ({
+        jobs.map(async ({ photo, _count, ...job }) => ({
           ...job,
           photoUrl: await signedImageUrl(photo),
+          memberCount: _count.members,
         })),
       );
     }),
