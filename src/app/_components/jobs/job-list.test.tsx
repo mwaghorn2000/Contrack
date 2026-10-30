@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import { expect, test } from "vitest";
+import { expect, test, vi } from "vitest";
 import { createTestProvider, type Handler } from "~/test/ui";
 import JobList from "./job-list";
 
@@ -87,4 +87,22 @@ test("each card links to its job", async () => {
       "href",
     ),
   ).toBe("/dashboard/jobs/job-roof?companyId=company-1");
+});
+
+test("keeps checking for changes while the list is open", async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true });
+  try {
+    let loads = 0;
+    renderList(false, () =>
+      ++loads === 1 ? jobs : [{ ...jobs[0]!, title: "Roof repair" }],
+    );
+    expect(await screen.findByText("Roof inspection")).toBeTruthy();
+
+    await vi.advanceTimersByTimeAsync(7_500);
+
+    expect(await screen.findByText("Roof repair")).toBeTruthy();
+    expect(screen.queryByText("Kitchen fit-out")).toBeNull();
+  } finally {
+    vi.useRealTimers();
+  }
 });

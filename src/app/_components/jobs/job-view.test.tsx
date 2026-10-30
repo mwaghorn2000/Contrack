@@ -1,6 +1,6 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { expect, test } from "vitest";
+import { expect, test, vi } from "vitest";
 import { createTestProvider } from "~/test/ui";
 import JobView from "./job-view";
 
@@ -153,4 +153,34 @@ test("says when a saved job's photo couldn't be uploaded", async () => {
   expect((await screen.findByRole("alert")).textContent).toBe(
     "Job saved, but the photo couldn’t be uploaded. Edit the job to try again.",
   );
+});
+
+test("someone taken off the job loses it while the page is open", async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true });
+  try {
+    let loads = 0;
+    const { Wrapper } = createTestProvider((path) => {
+      if (path !== "job.getJob") return people;
+      if (++loads === 1) return job;
+      throw new Error("Job not found.");
+    });
+    render(
+      <JobView
+        companyId="company-1"
+        jobId="job-1"
+        viewer={{ userId: "user-2", isManager: false }}
+      />,
+      { wrapper: Wrapper },
+    );
+    expect(
+      await screen.findByRole("heading", { name: "Roof inspection" }),
+    ).toBeTruthy();
+
+    await vi.advanceTimersByTimeAsync(7_500);
+
+    expect(await screen.findByText("Job not found.")).toBeTruthy();
+    expect(screen.queryByText("Wear a harness")).toBeNull();
+  } finally {
+    vi.useRealTimers();
+  }
 });
