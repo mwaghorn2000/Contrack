@@ -325,8 +325,15 @@ it("listCompanyJobs lists the company's jobs, oldest first, with photos", async 
       title: "Inspection",
       description: "North side",
       photoUrl: "signed:jobs/cjob/photo/a.jpg",
+      memberCount: 0,
     },
-    { id: second.id, title: "Fit-out", description: null, photoUrl: null },
+    {
+      id: second.id,
+      title: "Fit-out",
+      description: null,
+      photoUrl: null,
+      memberCount: 0,
+    },
   ]);
 });
 
@@ -352,6 +359,28 @@ it("listCompanyJobs shows members and contractors only their current jobs", asyn
     const listed = await worker.caller.listCompanyJobs({ companyId });
     expect(listed.map((job) => job.id)).toEqual([mine.id]);
   }
+});
+
+it("listCompanyJobs counts only the people still on each job", async () => {
+  const [stays, leaves] = await Promise.all([
+    personWithRole("MEMBER"),
+    personWithRole("CONTRACTOR"),
+  ]);
+  await db.job.create({
+    data: {
+      companyId,
+      createdById: userId,
+      title: "Inspection",
+      members: {
+        create: [
+          { userId: stays.id },
+          { userId: leaves.id, removedAt: new Date() },
+        ],
+      },
+    },
+  });
+  const [job] = await caller.listCompanyJobs({ companyId });
+  expect(job?.memberCount).toBe(1);
 });
 
 it("listCompanyJobs returns an empty list when there are no jobs", async () => {
