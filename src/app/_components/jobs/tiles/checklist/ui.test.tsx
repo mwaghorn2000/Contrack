@@ -29,6 +29,7 @@ function tick(
     author,
     data: { itemId },
     note: null,
+    files: [],
     createdAt: new Date("2026-10-30T01:00:00Z"),
     updatedAt: new Date("2026-10-30T01:00:00Z"),
     canEdit: own,
@@ -54,6 +55,7 @@ function renderAnswers(
     onCreate: vi.fn(saved),
     onUpdate: vi.fn(saved),
     onDelete: vi.fn(saved),
+    uploadFile: vi.fn(),
   };
   render(
     <ChecklistTileAnswers

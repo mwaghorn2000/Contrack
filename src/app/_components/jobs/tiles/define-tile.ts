@@ -8,6 +8,14 @@ export type TileAnswer<Data> = {
   author: { id: string; name: string | null; image: string | null } | null;
   data: Data;
   note: string | null;
+  // Photos and PDFs attached to it; `url` is null without file storage.
+  files: {
+    id: string;
+    name: string;
+    contentType: string;
+    size: number;
+    url: string | null;
+  }[];
   createdAt: Date;
   updatedAt: Date;
   canEdit: boolean;
@@ -24,7 +32,13 @@ export type AnswersProps<Config, Data> = {
   // A change is saving. Controls stay focusable but ignore input.
   busy: boolean;
   // Each resolves to whether it saved; failures are shown by the job page.
-  onCreate: (data: Data, note?: string) => Promise<boolean>;
+  onCreate: (
+    data: Data,
+    note?: string,
+    files?: { key: string; name: string }[],
+  ) => Promise<boolean>;
+  // Uploads a photo or PDF for this tile, ready to attach to a new answer.
+  uploadFile: (file: File) => Promise<{ key: string; name: string }>;
   onUpdate: (answerId: string, data: Data, note?: string) => Promise<boolean>;
   onDelete: (answerId: string) => Promise<boolean>;
 };
@@ -54,6 +68,8 @@ export function defineTile<
   View: ComponentType<{ config: z.infer<Config> }>;
   answers?: {
     schema: Answer;
+    // How many photos or PDFs each answer must have; none when left out.
+    files?: { min: number; max: number };
     check?: (answer: {
       config: z.infer<Config>;
       data: z.infer<Answer>;
