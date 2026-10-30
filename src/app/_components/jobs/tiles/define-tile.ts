@@ -25,7 +25,8 @@ export function defineTile<
   return {
     ...tile,
     schema: z.object({
-      id: z.string(),
+      // Made by the client; cuids and UUIDs fit with room to spare.
+      id: z.string().max(64),
       type: z.literal(tile.type),
       visibility: tileVisibilitySchema,
       config: tile.config,

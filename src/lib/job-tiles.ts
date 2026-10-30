@@ -3,7 +3,11 @@ import { z } from "zod";
 /** Who can see a tile: everyone on the job, or only the listed job members. */
 export const tileVisibilitySchema = z.discriminatedUnion("mode", [
   z.object({ mode: z.literal("everyone") }),
-  z.object({ mode: z.literal("members"), userIds: z.array(z.string()) }),
+  // Capped like a job's member list, which every listed person must be on.
+  z.object({
+    mode: z.literal("members"),
+    userIds: z.array(z.string()).max(200),
+  }),
 ]);
 
 export type TileVisibility = z.infer<typeof tileVisibilitySchema>;
