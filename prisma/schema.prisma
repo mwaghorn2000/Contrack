@@ -152,6 +152,7 @@ model User {
     createdJobs         Job[]
     jobMemberships      JobMember[]
     jobTileAcknowledgments JobTileAcknowledgment[]
+    jobTileAnswers         JobTileAnswer[]
     companyPosts        CompanyPost[]
     postAcknowledgments CompanyPostAcknowledgment[]
     sentInvitations CompanyInvitation[]
@@ -305,11 +306,32 @@ model JobTile {
     visibility Json
     // Whether the people who can see it are asked to acknowledge it.
     requiresAcknowledgment Boolean @default(false)
+    // Set when the tile is taken off the job, so its answers are kept.
+    removedAt              DateTime?
 
     job             Job                     @relation(fields: [jobId], references: [id], onDelete: Cascade)
     acknowledgments JobTileAcknowledgment[]
+    answers         JobTileAnswer[]
 
     @@index([jobId, position])
+}
+
+// What someone entered on a tile, e.g. a checklist tick. `data` fits the tile
+// type's answer schema; the author is kept null if their account is deleted.
+model JobTileAnswer {
+    id        String   @id @default(cuid())
+    tileId    String
+    authorId  String?
+    data      Json
+    note      String?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    tile   JobTile @relation(fields: [tileId], references: [id], onDelete: Cascade)
+    author User?   @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+    @@index([tileId, createdAt])
+    @@index([authorId])
 }
 
 model JobTileAcknowledgment {
