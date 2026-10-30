@@ -1,12 +1,16 @@
 import { TRPCError } from "@trpc/server";
 import type { Prisma } from "../../generated/prisma";
-import type { JobTile } from "~/app/_components/jobs/tiles/registry";
+import {
+  tileSchema,
+  type JobTile,
+} from "~/app/_components/jobs/tiles/registry";
 import { keepJobMembers } from "~/lib/job-tiles";
 
 /**
  * Makes a job's members and tiles match what the builder saved. People taken
  * off the job keep a removed row, as history. A tile keeps its id only when it
  * already belongs to this job, so a client can't take over another job's tile.
+ * Saved tiles that no longer fit their type are left alone.
  */
 export async function saveJobContents(
   tx: Prisma.TransactionClient,
@@ -39,9 +43,16 @@ export async function saveJobContents(
 
   const existing = await tx.jobTile.findMany({
     where: { jobId: job.id },
-    select: { id: true },
+    select: { id: true, type: true, config: true, visibility: true },
   });
-  const unclaimed = new Set(existing.map((tile) => tile.id));
+  // Only tiles the builder could have been shown can be kept or deleted.
+  // getJob hides unreadable ones, so leaving them out would otherwise
+  // delete them on every save.
+  const unclaimed = new Set(
+    existing
+      .filter((tile) => tileSchema.safeParse(tile).success)
+      .map((tile) => tile.id),
+  );
   const saved = keepJobMembers(tiles, userIds).map((tile) => ({
     ...tile,
     // A repeated id only updates the first tile; the rest become new tiles.

@@ -81,11 +81,17 @@ export const jobRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND", message: "Job not found." });
 
       const memberIds = job.members.map((member) => member.userId);
+      // A tile saved under a since-removed type or an older config is skipped,
+      // so changing a tile type can't break every job that uses it. Saving
+      // the job leaves it in place (see saveJobContents).
+      const saved = job.tiles.flatMap((tile) => {
+        const parsed = tileSchema.safeParse(tile);
+        if (parsed.success) return [parsed.data];
+        console.error(`Skipped job tile ${tile.id}`, parsed.error.issues);
+        return [];
+      });
       // Visibility lists can still name people since taken off the job.
-      const tiles = keepJobMembers(
-        tileSchema.array().parse(job.tiles),
-        memberIds,
-      )
+      const tiles = keepJobMembers(saved, memberIds)
         .filter((tile) => canSeeTile(tile, { userId, isManager }))
         // Others' names stay hidden: members only learn a tile is shared with them.
         .map((tile) =>
