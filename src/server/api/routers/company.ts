@@ -241,6 +241,15 @@ export const companyRouter = createTRPCRouter({
           },
           data: { removedAt: new Date() },
         });
+        // Likewise for this company's jobs, keeping who worked on them.
+        await tx.jobMember.updateMany({
+          where: {
+            userId: input.userId,
+            job: { companyId: input.companyId },
+            removedAt: null,
+          },
+          data: { removedAt: new Date() },
+        });
         // Old invitations must not allow the removed person to rejoin.
         await tx.companyInvitation.updateMany({
           where: {
