@@ -437,3 +437,86 @@ it("createJob rejects a stale session after its user is deleted", async () => {
   ).rejects.toMatchObject({ code: "UNAUTHORIZED" });
   expect(await db.job.count()).toBe(0);
 });
+
+it("deleting a job deletes its members and tiles", async () => {
+  const worker = await db.user.create({
+    data: { name: "Worker", email: "worker@example.com" },
+  });
+  const job = await db.job.create({
+    data: {
+      companyId,
+      createdById: userId,
+      title: "Inspection",
+      members: { create: { userId: worker.id } },
+      tiles: {
+        create: {
+          type: "text",
+          position: 0,
+          config: { body: "Wear a harness." },
+          visibility: { mode: "members", userIds: [worker.id] },
+        },
+      },
+    },
+    select: { id: true, photo: true, members: true, tiles: true },
+  });
+  expect(job.photo).toBeNull();
+  expect(job.members).toEqual([
+    expect.objectContaining({ userId: worker.id, removedAt: null }),
+  ]);
+  expect(job.tiles[0]).toMatchObject({
+    config: { body: "Wear a harness." },
+    visibility: { mode: "members", userIds: [worker.id] },
+  });
+
+  const other = await db.job.create({
+    data: {
+      companyId,
+      createdById: userId,
+      title: "Fit-out",
+      members: { create: { userId: worker.id } },
+      tiles: {
+        create: {
+          type: "text",
+          position: 0,
+          config: { body: "Bring a level." },
+          visibility: { mode: "everyone" },
+        },
+      },
+    },
+  });
+
+  await db.job.delete({ where: { id: job.id } });
+  expect(await db.jobMember.findMany({ select: { jobId: true } })).toEqual([
+    { jobId: other.id },
+  ]);
+  expect(await db.jobTile.findMany({ select: { jobId: true } })).toEqual([
+    { jobId: other.id },
+  ]);
+});
+
+it("someone can be on a job only once", async () => {
+  const job = await db.job.create({
+    data: { companyId, createdById: userId, title: "Inspection" },
+  });
+  await db.jobMember.create({ data: { jobId: job.id, userId } });
+  await expect(
+    db.jobMember.create({ data: { jobId: job.id, userId } }),
+  ).rejects.toMatchObject({ code: "P2002" });
+});
+
+it("deleting a user removes them from their jobs", async () => {
+  const worker = await db.user.create({
+    data: { name: "Worker", email: "worker@example.com" },
+  });
+  await db.job.create({
+    data: {
+      companyId,
+      createdById: userId,
+      title: "Inspection",
+      members: { create: { userId: worker.id } },
+    },
+  });
+  await db.user.delete({ where: { id: worker.id } });
+  expect(await db.jobMember.count()).toBe(0);
+  expect(await db.job.count()).toBe(1);
+});
