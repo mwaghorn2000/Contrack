@@ -5,13 +5,15 @@ import { tileSchema } from "~/app/_components/jobs/tiles/registry";
 import { canSeeTile, keepJobMembers } from "~/lib/job-tiles";
 import { signedImageUrl } from "~/server/image-uploads";
 import { requireJobAccess, visibleJobsWhere } from "~/server/job-access";
+import { saveJobContents } from "~/server/jobs";
+import { serializableTransaction } from "~/server/transactions";
 
 const getJobSchema = z.object({
   jobId: z.string().cuid(),
 });
 
-const createJobScheme = z.object({
-  companyId: z.string().cuid(),
+// What the job builder saves, whether creating or editing a job.
+const jobFieldsSchema = z.object({
   title: z
     .string()
     .trim()
@@ -22,6 +24,19 @@ const createJobScheme = z.object({
     .trim()
     .max(500, "Description must be less than 500 characters")
     .optional(),
+  memberIds: z.array(z.string().cuid()).max(200),
+  tiles: tileSchema.array().max(50),
+});
+
+// A new job can start empty; an update must send both, so it can't wipe them.
+const createJobScheme = jobFieldsSchema.extend({
+  companyId: z.string().cuid(),
+  memberIds: jobFieldsSchema.shape.memberIds.default([]),
+  tiles: jobFieldsSchema.shape.tiles.default([]),
+});
+
+const updateJobSchema = jobFieldsSchema.extend({
+  jobId: z.string().cuid(),
 });
 
 export const jobRouter = createTRPCRouter({
@@ -122,17 +137,45 @@ export const jobRouter = createTRPCRouter({
         });
       }
 
-      const job = await ctx.db.job.create({
-        data: {
-          title: input.title,
-          description: input.description,
-          companyId: company.id,
-          createdById: ctx.session.user.id,
-        },
+      const job = await serializableTransaction(ctx.db, async (tx) => {
+        const created = await tx.job.create({
+          data: {
+            title: input.title,
+            description: input.description,
+            companyId: company.id,
+            createdById: ctx.session.user.id,
+          },
+        });
+        await saveJobContents(tx, created, input.memberIds, input.tiles);
+        return created;
       });
 
-      return job;
+      return { id: job.id };
     }),
+
+  // Replaces a job's details, members and tiles with what the builder saved.
+  updateJob: protectedProcedure
+    .input(updateJobSchema)
+    .mutation(({ ctx, input }) =>
+      serializableTransaction(ctx.db, async (tx) => {
+        const { job, isManager } = await requireJobAccess(
+          tx,
+          ctx.session.user.id,
+          input.jobId,
+        );
+        if (!isManager)
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "Only owners and admins can edit jobs.",
+          });
+        await tx.job.update({
+          where: { id: job.id },
+          data: { title: input.title, description: input.description },
+        });
+        await saveJobContents(tx, job, input.memberIds, input.tiles);
+        return { id: job.id };
+      }),
+    ),
   deleteJob: protectedProcedure
     .input(
       z.object({
