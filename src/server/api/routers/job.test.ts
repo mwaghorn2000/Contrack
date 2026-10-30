@@ -1288,3 +1288,76 @@ it("jobs work without photo storage set up", async () => {
   expect(deleteObject).not.toHaveBeenCalled();
   expect(deletePrefix).not.toHaveBeenCalled();
 });
+
+it("getJob skips saved tiles that no longer fit their type", async () => {
+  const job = await db.job.create({
+    data: {
+      companyId,
+      createdById: userId,
+      title: "Inspection",
+      tiles: {
+        create: [
+          textTile(0, "Kept"),
+          // A tile type since removed, and a config from an older schema.
+          { ...textTile(1, "Gone"), type: "retired" },
+          { ...textTile(2, "Old"), config: { text: "Old" } },
+        ],
+      },
+    },
+  });
+
+  const consoleError = vi
+    .spyOn(console, "error")
+    .mockImplementation(() => undefined);
+
+  const { tiles } = await caller.getJob({ jobId: job.id });
+  expect(tiles.map((tile) => tile.config)).toEqual([{ body: "Kept" }]);
+  // Logged, so a broken tile change doesn't go unnoticed.
+  const skipped = consoleError.mock.calls.filter(([message]) =>
+    String(message).startsWith("Skipped job tile"),
+  );
+  expect(skipped).toHaveLength(2);
+  consoleError.mockRestore();
+});
+
+it("updateJob keeps saved tiles it can't read", async () => {
+  const job = await db.job.create({
+    data: {
+      companyId,
+      createdById: userId,
+      title: "Inspection",
+      tiles: {
+        create: [
+          textTile(0, "Shown"),
+          { ...textTile(1, "Gone"), type: "retired" },
+          { ...textTile(2, "Old"), config: { text: "Old" } },
+        ],
+      },
+    },
+  });
+  vi.spyOn(console, "error").mockImplementation(() => undefined);
+  const { tiles } = await caller.getJob({ jobId: job.id });
+
+  // Only renaming: the builder sends back the one tile it was shown.
+  await caller.updateJob({
+    jobId: job.id,
+    title: "Renamed",
+    description: "",
+    memberIds: [],
+    tiles,
+  });
+
+  const rows = await db.jobTile.findMany({
+    where: { jobId: job.id },
+    select: { type: true, config: true },
+  });
+  expect(rows).toEqual(
+    expect.arrayContaining([
+      { type: "text", config: { body: "Shown" } },
+      { type: "retired", config: { body: "Gone" } },
+      { type: "text", config: { text: "Old" } },
+    ]),
+  );
+  expect(rows).toHaveLength(3);
+  vi.mocked(console.error).mockRestore();
+});
