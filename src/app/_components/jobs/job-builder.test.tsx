@@ -26,14 +26,19 @@ const people = [
  * Renders the builder for a new job. Requests other than the people list go
  * to `save`, and every request is recorded in the returned list.
  */
-function renderBuilder(save: Handler = () => ({ id: "job-new" })) {
+function renderBuilder(
+  save: Handler = () => ({ id: "job-new" }),
+  creatorId?: string,
+) {
   const requests: [string, unknown][] = [];
   const { Wrapper } = createTestProvider((path, input) => {
     if (path === "invitation.members") return people;
     requests.push([path, input]);
     return save(path, input);
   });
-  render(<JobBuilder companyId="company-1" />, { wrapper: Wrapper });
+  render(<JobBuilder companyId="company-1" creatorId={creatorId} />, {
+    wrapper: Wrapper,
+  });
   return requests;
 }
 
@@ -76,6 +81,33 @@ test("saving a job with Text tiles creates it and opens it", async () => {
       },
     ],
   ]);
+});
+
+test("a new job starts with its creator on it", async () => {
+  const user = userEvent.setup();
+  const requests = renderBuilder(undefined, "user-1");
+
+  expect(await screen.findByRole("checkbox", { name: /Ada/ })).toHaveProperty(
+    "checked",
+    true,
+  );
+  await user.type(screen.getByLabelText("Name"), "Roof inspection");
+  await user.click(screen.getByRole("button", { name: "Save job" }));
+
+  await vi.waitFor(() => expect(requests).toHaveLength(1));
+  expect(requests[0]?.[1]).toMatchObject({ memberIds: ["user-1"] });
+});
+
+test("the creator can take themselves off a new job", async () => {
+  const user = userEvent.setup();
+  const requests = renderBuilder(undefined, "user-1");
+
+  await user.click(await screen.findByRole("checkbox", { name: /Ada/ }));
+  await user.type(screen.getByLabelText("Name"), "Roof inspection");
+  await user.click(screen.getByRole("button", { name: "Save job" }));
+
+  await vi.waitFor(() => expect(requests).toHaveLength(1));
+  expect(requests[0]?.[1]).toMatchObject({ memberIds: [] });
 });
 
 test("taking someone off the job removes them from tile visibility", async () => {
