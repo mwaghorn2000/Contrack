@@ -218,3 +218,162 @@ test("a failed refresh keeps the job on screen", async () => {
     vi.useRealTimers();
   }
 });
+
+/**
+ * Renders the job for a viewer with the given acknowledgment status per
+ * tile, recording requests other than loading the job and its people.
+ */
+function renderAcknowledgments(
+  viewer: { userId: string; isManager: boolean },
+  acknowledgments: Record<string, unknown>,
+  answer: (path: string) => unknown = () => ({ acknowledged: true }),
+) {
+  const requests: [string, unknown][] = [];
+  const { Wrapper } = createTestProvider((path, input) => {
+    if (path === "job.getJob") return { ...job, acknowledgments };
+    if (path === "invitation.members") return people;
+    requests.push([path, input]);
+    return answer(path);
+  });
+  render(<JobView companyId="company-1" jobId="job-1" viewer={viewer} />, {
+    wrapper: Wrapper,
+  });
+  return requests;
+}
+
+test("someone asked to acknowledge a tile can acknowledge it", async () => {
+  const user = userEvent.setup();
+  const requests = renderAcknowledgments(
+    { userId: "user-2", isManager: false },
+    { open: { needed: true, acknowledged: false, summary: null } },
+  );
+
+  const [open] = await screen.findAllByRole("region", { name: "Text" });
+  const button = within(open!).getByRole("button", { name: "Acknowledge" });
+  expect(button.getAttribute("aria-pressed")).toBe("false");
+  await user.click(button);
+
+  expect(requests).toEqual([
+    ["job.setTileAcknowledgment", { tileId: "open", acknowledged: true }],
+  ]);
+});
+
+test("an acknowledged tile can be taken back", async () => {
+  const user = userEvent.setup();
+  const requests = renderAcknowledgments(
+    { userId: "user-2", isManager: false },
+    { open: { needed: true, acknowledged: true, summary: null } },
+  );
+
+  const button = await screen.findByRole("button", { name: "Acknowledged" });
+  expect(button.getAttribute("aria-pressed")).toBe("true");
+  await user.click(button);
+
+  expect(requests).toEqual([
+    ["job.setTileAcknowledgment", { tileId: "open", acknowledged: false }],
+  ]);
+});
+
+test("previewing as someone hides your own acknowledgment controls", async () => {
+  const user = userEvent.setup();
+  renderAcknowledgments(
+    { userId: "user-1", isManager: true },
+    {
+      open: {
+        needed: true,
+        acknowledged: false,
+        summary: { acknowledged: 0, total: 3 },
+      },
+    },
+  );
+  expect(
+    await screen.findByRole("button", { name: "Acknowledge" }),
+  ).toBeTruthy();
+
+  await user.selectOptions(screen.getByLabelText("Preview as"), "user-2");
+
+  expect(screen.queryByRole("button", { name: /cknowledg/ })).toBeNull();
+});
+
+test("shows the choice while it saves, and says when it fails", async () => {
+  const user = userEvent.setup();
+  let fail!: (error: Error) => void;
+  const saving = new Promise<never>((_, reject) => (fail = reject));
+  renderAcknowledgments(
+    { userId: "user-2", isManager: false },
+    { open: { needed: true, acknowledged: false, summary: null } },
+    () => saving,
+  );
+
+  await user.click(await screen.findByRole("button", { name: "Acknowledge" }));
+  const button = screen.getByRole("button", { name: "Acknowledged" });
+  expect(button.getAttribute("aria-pressed")).toBe("true");
+  expect(button).toHaveProperty("disabled", true);
+
+  fail(new Error("Internal details"));
+  expect((await screen.findByRole("alert")).textContent).toBe(
+    "Could not update your acknowledgment. Please try again.",
+  );
+});
+
+test("owners and admins see how many have acknowledged, and who", async () => {
+  const user = userEvent.setup();
+  const requests = renderAcknowledgments(
+    { userId: "user-1", isManager: true },
+    {
+      open: {
+        needed: false,
+        acknowledged: false,
+        summary: { acknowledged: 1, total: 2 },
+      },
+    },
+    () => [
+      {
+        user: people[1]!.user,
+        acknowledgedAt: new Date("2026-10-30T01:00:00Z"),
+      },
+      { user: people[2]!.user, acknowledgedAt: null },
+    ],
+  );
+
+  const toggle = await screen.findByRole("button", {
+    name: "1 of 2 acknowledged",
+  });
+  expect(toggle.getAttribute("aria-expanded")).toBe("false");
+  await user.click(toggle);
+
+  expect(toggle.getAttribute("aria-expanded")).toBe("true");
+  expect(await screen.findByText("Acknowledged: Jaxon")).toBeTruthy();
+  expect(screen.getByText("Waiting on: Kim")).toBeTruthy();
+  expect(requests).toEqual([
+    ["job.getTileAcknowledgments", { tileId: "open" }],
+  ]);
+});
+
+test("the list of who has acknowledged keeps up to date while open", async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true });
+  try {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    const requests = renderAcknowledgments(
+      { userId: "user-1", isManager: true },
+      {
+        open: {
+          needed: false,
+          acknowledged: false,
+          summary: { acknowledged: 0, total: 1 },
+        },
+      },
+      () => [{ user: people[1]!.user, acknowledgedAt: null }],
+    );
+    await user.click(
+      await screen.findByRole("button", { name: "0 of 1 acknowledged" }),
+    );
+    await screen.findByText("Waiting on: Jaxon");
+
+    await vi.advanceTimersByTimeAsync(7_500);
+
+    await vi.waitFor(() => expect(requests).toHaveLength(2));
+  } finally {
+    vi.useRealTimers();
+  }
+});

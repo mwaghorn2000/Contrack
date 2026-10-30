@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 import { expect, test } from "vitest";
@@ -77,4 +77,27 @@ test("limiting a tile asks for people when the job has none", async () => {
   expect(
     screen.getByText("Company owners and admins can always see every tile."),
   ).toBeTruthy();
+});
+
+test("a tile can ask the people who see it to acknowledge it", async () => {
+  const user = userEvent.setup();
+  render(<Board people={[{ id: "user-1", name: "Ada" }]} />);
+  expect(screen.queryByText("Needs acknowledgment")).toBeNull();
+
+  await user.click(
+    screen.getByRole("button", { name: "Settings for Text tile 1" }),
+  );
+  const ask = screen.getByRole("checkbox", {
+    name: "Ask people who can see it to acknowledge it",
+  });
+  await user.click(ask);
+
+  expect(ask).toHaveProperty("checked", true);
+  expect(screen.getByText("Needs acknowledgment")).toBeTruthy();
+  // Not part of the visibility choices, for screen readers.
+  expect(
+    within(
+      screen.getByRole("group", { name: "Who can see this tile" }),
+    ).queryByRole("checkbox", { name: /acknowledge/ }),
+  ).toBeNull();
 });
