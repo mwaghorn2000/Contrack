@@ -94,6 +94,11 @@ export type JobMember = $Result.DefaultSelection<Prisma.$JobMemberPayload>
  */
 export type JobTile = $Result.DefaultSelection<Prisma.$JobTilePayload>
 /**
+ * Model JobTileAcknowledgment
+ * 
+ */
+export type JobTileAcknowledgment = $Result.DefaultSelection<Prisma.$JobTileAcknowledgmentPayload>
+/**
  * Model CompanyPost
  * 
  */
@@ -439,6 +444,16 @@ export class PrismaClient<
     * ```
     */
   get jobTile(): Prisma.JobTileDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.jobTileAcknowledgment`: Exposes CRUD operations for the **JobTileAcknowledgment** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more JobTileAcknowledgments
+    * const jobTileAcknowledgments = await prisma.jobTileAcknowledgment.findMany()
+    * ```
+    */
+  get jobTileAcknowledgment(): Prisma.JobTileAcknowledgmentDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.companyPost`: Exposes CRUD operations for the **CompanyPost** model.
@@ -946,6 +961,7 @@ export namespace Prisma {
     Job: 'Job',
     JobMember: 'JobMember',
     JobTile: 'JobTile',
+    JobTileAcknowledgment: 'JobTileAcknowledgment',
     CompanyPost: 'CompanyPost',
     CompanyPostAcknowledgment: 'CompanyPostAcknowledgment',
     VerificationToken: 'VerificationToken',
@@ -969,7 +985,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "account" | "session" | "company" | "companyMember" | "channel" | "channelMember" | "user" | "channelRead" | "imageUpload" | "companyInvitation" | "emailVerificationCode" | "message" | "messageEdit" | "job" | "jobMember" | "jobTile" | "companyPost" | "companyPostAcknowledgment" | "verificationToken" | "twoFactor" | "twoFactorChallenge"
+      modelProps: "account" | "session" | "company" | "companyMember" | "channel" | "channelMember" | "user" | "channelRead" | "imageUpload" | "companyInvitation" | "emailVerificationCode" | "message" | "messageEdit" | "job" | "jobMember" | "jobTile" | "jobTileAcknowledgment" | "companyPost" | "companyPostAcknowledgment" | "verificationToken" | "twoFactor" | "twoFactorChallenge"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2157,6 +2173,80 @@ export namespace Prisma {
           }
         }
       }
+      JobTileAcknowledgment: {
+        payload: Prisma.$JobTileAcknowledgmentPayload<ExtArgs>
+        fields: Prisma.JobTileAcknowledgmentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.JobTileAcknowledgmentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTileAcknowledgmentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.JobTileAcknowledgmentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTileAcknowledgmentPayload>
+          }
+          findFirst: {
+            args: Prisma.JobTileAcknowledgmentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTileAcknowledgmentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.JobTileAcknowledgmentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTileAcknowledgmentPayload>
+          }
+          findMany: {
+            args: Prisma.JobTileAcknowledgmentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTileAcknowledgmentPayload>[]
+          }
+          create: {
+            args: Prisma.JobTileAcknowledgmentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTileAcknowledgmentPayload>
+          }
+          createMany: {
+            args: Prisma.JobTileAcknowledgmentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.JobTileAcknowledgmentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTileAcknowledgmentPayload>[]
+          }
+          delete: {
+            args: Prisma.JobTileAcknowledgmentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTileAcknowledgmentPayload>
+          }
+          update: {
+            args: Prisma.JobTileAcknowledgmentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTileAcknowledgmentPayload>
+          }
+          deleteMany: {
+            args: Prisma.JobTileAcknowledgmentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.JobTileAcknowledgmentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.JobTileAcknowledgmentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTileAcknowledgmentPayload>[]
+          }
+          upsert: {
+            args: Prisma.JobTileAcknowledgmentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTileAcknowledgmentPayload>
+          }
+          aggregate: {
+            args: Prisma.JobTileAcknowledgmentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateJobTileAcknowledgment>
+          }
+          groupBy: {
+            args: Prisma.JobTileAcknowledgmentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<JobTileAcknowledgmentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.JobTileAcknowledgmentCountArgs<ExtArgs>
+            result: $Utils.Optional<JobTileAcknowledgmentCountAggregateOutputType> | number
+          }
+        }
+      }
       CompanyPost: {
         payload: Prisma.$CompanyPostPayload<ExtArgs>
         fields: Prisma.CompanyPostFieldRefs
@@ -2639,6 +2729,7 @@ export namespace Prisma {
     job?: JobOmit
     jobMember?: JobMemberOmit
     jobTile?: JobTileOmit
+    jobTileAcknowledgment?: JobTileAcknowledgmentOmit
     companyPost?: CompanyPostOmit
     companyPostAcknowledgment?: CompanyPostAcknowledgmentOmit
     verificationToken?: VerificationTokenOmit
@@ -2878,6 +2969,7 @@ export namespace Prisma {
     channelMemberships: number
     createdJobs: number
     jobMemberships: number
+    jobTileAcknowledgments: number
     companyPosts: number
     postAcknowledgments: number
     sentInvitations: number
@@ -2894,6 +2986,7 @@ export namespace Prisma {
     channelMemberships?: boolean | UserCountOutputTypeCountChannelMembershipsArgs
     createdJobs?: boolean | UserCountOutputTypeCountCreatedJobsArgs
     jobMemberships?: boolean | UserCountOutputTypeCountJobMembershipsArgs
+    jobTileAcknowledgments?: boolean | UserCountOutputTypeCountJobTileAcknowledgmentsArgs
     companyPosts?: boolean | UserCountOutputTypeCountCompanyPostsArgs
     postAcknowledgments?: boolean | UserCountOutputTypeCountPostAcknowledgmentsArgs
     sentInvitations?: boolean | UserCountOutputTypeCountSentInvitationsArgs
@@ -2960,6 +3053,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountJobMembershipsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: JobMemberWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountJobTileAcknowledgmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JobTileAcknowledgmentWhereInput
   }
 
   /**
@@ -3073,6 +3173,37 @@ export namespace Prisma {
    */
   export type JobCountOutputTypeCountTilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: JobTileWhereInput
+  }
+
+
+  /**
+   * Count Type JobTileCountOutputType
+   */
+
+  export type JobTileCountOutputType = {
+    acknowledgments: number
+  }
+
+  export type JobTileCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    acknowledgments?: boolean | JobTileCountOutputTypeCountAcknowledgmentsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * JobTileCountOutputType without action
+   */
+  export type JobTileCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTileCountOutputType
+     */
+    select?: JobTileCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * JobTileCountOutputType without action
+   */
+  export type JobTileCountOutputTypeCountAcknowledgmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JobTileAcknowledgmentWhereInput
   }
 
 
@@ -10218,6 +10349,7 @@ export namespace Prisma {
     channelMemberships?: boolean | User$channelMembershipsArgs<ExtArgs>
     createdJobs?: boolean | User$createdJobsArgs<ExtArgs>
     jobMemberships?: boolean | User$jobMembershipsArgs<ExtArgs>
+    jobTileAcknowledgments?: boolean | User$jobTileAcknowledgmentsArgs<ExtArgs>
     companyPosts?: boolean | User$companyPostsArgs<ExtArgs>
     postAcknowledgments?: boolean | User$postAcknowledgmentsArgs<ExtArgs>
     sentInvitations?: boolean | User$sentInvitationsArgs<ExtArgs>
@@ -10271,6 +10403,7 @@ export namespace Prisma {
     channelMemberships?: boolean | User$channelMembershipsArgs<ExtArgs>
     createdJobs?: boolean | User$createdJobsArgs<ExtArgs>
     jobMemberships?: boolean | User$jobMembershipsArgs<ExtArgs>
+    jobTileAcknowledgments?: boolean | User$jobTileAcknowledgmentsArgs<ExtArgs>
     companyPosts?: boolean | User$companyPostsArgs<ExtArgs>
     postAcknowledgments?: boolean | User$postAcknowledgmentsArgs<ExtArgs>
     sentInvitations?: boolean | User$sentInvitationsArgs<ExtArgs>
@@ -10294,6 +10427,7 @@ export namespace Prisma {
       channelMemberships: Prisma.$ChannelMemberPayload<ExtArgs>[]
       createdJobs: Prisma.$JobPayload<ExtArgs>[]
       jobMemberships: Prisma.$JobMemberPayload<ExtArgs>[]
+      jobTileAcknowledgments: Prisma.$JobTileAcknowledgmentPayload<ExtArgs>[]
       companyPosts: Prisma.$CompanyPostPayload<ExtArgs>[]
       postAcknowledgments: Prisma.$CompanyPostAcknowledgmentPayload<ExtArgs>[]
       sentInvitations: Prisma.$CompanyInvitationPayload<ExtArgs>[]
@@ -10713,6 +10847,7 @@ export namespace Prisma {
     channelMemberships<T extends User$channelMembershipsArgs<ExtArgs> = {}>(args?: Subset<T, User$channelMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     createdJobs<T extends User$createdJobsArgs<ExtArgs> = {}>(args?: Subset<T, User$createdJobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     jobMemberships<T extends User$jobMembershipsArgs<ExtArgs> = {}>(args?: Subset<T, User$jobMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    jobTileAcknowledgments<T extends User$jobTileAcknowledgmentsArgs<ExtArgs> = {}>(args?: Subset<T, User$jobTileAcknowledgmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobTileAcknowledgmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     companyPosts<T extends User$companyPostsArgs<ExtArgs> = {}>(args?: Subset<T, User$companyPostsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyPostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     postAcknowledgments<T extends User$postAcknowledgmentsArgs<ExtArgs> = {}>(args?: Subset<T, User$postAcknowledgmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyPostAcknowledgmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     sentInvitations<T extends User$sentInvitationsArgs<ExtArgs> = {}>(args?: Subset<T, User$sentInvitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyInvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -11347,6 +11482,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: JobMemberScalarFieldEnum | JobMemberScalarFieldEnum[]
+  }
+
+  /**
+   * User.jobTileAcknowledgments
+   */
+  export type User$jobTileAcknowledgmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTileAcknowledgment
+     */
+    select?: JobTileAcknowledgmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTileAcknowledgment
+     */
+    omit?: JobTileAcknowledgmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTileAcknowledgmentInclude<ExtArgs> | null
+    where?: JobTileAcknowledgmentWhereInput
+    orderBy?: JobTileAcknowledgmentOrderByWithRelationInput | JobTileAcknowledgmentOrderByWithRelationInput[]
+    cursor?: JobTileAcknowledgmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JobTileAcknowledgmentScalarFieldEnum | JobTileAcknowledgmentScalarFieldEnum[]
   }
 
   /**
@@ -20284,6 +20443,7 @@ export namespace Prisma {
     jobId: string | null
     type: string | null
     position: number | null
+    requiresAcknowledgment: boolean | null
   }
 
   export type JobTileMaxAggregateOutputType = {
@@ -20291,6 +20451,7 @@ export namespace Prisma {
     jobId: string | null
     type: string | null
     position: number | null
+    requiresAcknowledgment: boolean | null
   }
 
   export type JobTileCountAggregateOutputType = {
@@ -20300,6 +20461,7 @@ export namespace Prisma {
     position: number
     config: number
     visibility: number
+    requiresAcknowledgment: number
     _all: number
   }
 
@@ -20317,6 +20479,7 @@ export namespace Prisma {
     jobId?: true
     type?: true
     position?: true
+    requiresAcknowledgment?: true
   }
 
   export type JobTileMaxAggregateInputType = {
@@ -20324,6 +20487,7 @@ export namespace Prisma {
     jobId?: true
     type?: true
     position?: true
+    requiresAcknowledgment?: true
   }
 
   export type JobTileCountAggregateInputType = {
@@ -20333,6 +20497,7 @@ export namespace Prisma {
     position?: true
     config?: true
     visibility?: true
+    requiresAcknowledgment?: true
     _all?: true
   }
 
@@ -20429,6 +20594,7 @@ export namespace Prisma {
     position: number
     config: JsonValue
     visibility: JsonValue
+    requiresAcknowledgment: boolean
     _count: JobTileCountAggregateOutputType | null
     _avg: JobTileAvgAggregateOutputType | null
     _sum: JobTileSumAggregateOutputType | null
@@ -20457,7 +20623,10 @@ export namespace Prisma {
     position?: boolean
     config?: boolean
     visibility?: boolean
+    requiresAcknowledgment?: boolean
     job?: boolean | JobDefaultArgs<ExtArgs>
+    acknowledgments?: boolean | JobTile$acknowledgmentsArgs<ExtArgs>
+    _count?: boolean | JobTileCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["jobTile"]>
 
   export type JobTileSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -20467,6 +20636,7 @@ export namespace Prisma {
     position?: boolean
     config?: boolean
     visibility?: boolean
+    requiresAcknowledgment?: boolean
     job?: boolean | JobDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["jobTile"]>
 
@@ -20477,6 +20647,7 @@ export namespace Prisma {
     position?: boolean
     config?: boolean
     visibility?: boolean
+    requiresAcknowledgment?: boolean
     job?: boolean | JobDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["jobTile"]>
 
@@ -20487,11 +20658,14 @@ export namespace Prisma {
     position?: boolean
     config?: boolean
     visibility?: boolean
+    requiresAcknowledgment?: boolean
   }
 
-  export type JobTileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "type" | "position" | "config" | "visibility", ExtArgs["result"]["jobTile"]>
+  export type JobTileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "type" | "position" | "config" | "visibility" | "requiresAcknowledgment", ExtArgs["result"]["jobTile"]>
   export type JobTileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobDefaultArgs<ExtArgs>
+    acknowledgments?: boolean | JobTile$acknowledgmentsArgs<ExtArgs>
+    _count?: boolean | JobTileCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type JobTileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobDefaultArgs<ExtArgs>
@@ -20504,6 +20678,7 @@ export namespace Prisma {
     name: "JobTile"
     objects: {
       job: Prisma.$JobPayload<ExtArgs>
+      acknowledgments: Prisma.$JobTileAcknowledgmentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -20512,6 +20687,7 @@ export namespace Prisma {
       position: number
       config: Prisma.JsonValue
       visibility: Prisma.JsonValue
+      requiresAcknowledgment: boolean
     }, ExtArgs["result"]["jobTile"]>
     composites: {}
   }
@@ -20907,6 +21083,7 @@ export namespace Prisma {
   export interface Prisma__JobTileClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     job<T extends JobDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobDefaultArgs<ExtArgs>>): Prisma__JobClient<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    acknowledgments<T extends JobTile$acknowledgmentsArgs<ExtArgs> = {}>(args?: Subset<T, JobTile$acknowledgmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobTileAcknowledgmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -20942,6 +21119,7 @@ export namespace Prisma {
     readonly position: FieldRef<"JobTile", 'Int'>
     readonly config: FieldRef<"JobTile", 'Json'>
     readonly visibility: FieldRef<"JobTile", 'Json'>
+    readonly requiresAcknowledgment: FieldRef<"JobTile", 'Boolean'>
   }
     
 
@@ -21338,6 +21516,30 @@ export namespace Prisma {
   }
 
   /**
+   * JobTile.acknowledgments
+   */
+  export type JobTile$acknowledgmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTileAcknowledgment
+     */
+    select?: JobTileAcknowledgmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTileAcknowledgment
+     */
+    omit?: JobTileAcknowledgmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTileAcknowledgmentInclude<ExtArgs> | null
+    where?: JobTileAcknowledgmentWhereInput
+    orderBy?: JobTileAcknowledgmentOrderByWithRelationInput | JobTileAcknowledgmentOrderByWithRelationInput[]
+    cursor?: JobTileAcknowledgmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JobTileAcknowledgmentScalarFieldEnum | JobTileAcknowledgmentScalarFieldEnum[]
+  }
+
+  /**
    * JobTile without action
    */
   export type JobTileDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -21353,6 +21555,1046 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: JobTileInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model JobTileAcknowledgment
+   */
+
+  export type AggregateJobTileAcknowledgment = {
+    _count: JobTileAcknowledgmentCountAggregateOutputType | null
+    _min: JobTileAcknowledgmentMinAggregateOutputType | null
+    _max: JobTileAcknowledgmentMaxAggregateOutputType | null
+  }
+
+  export type JobTileAcknowledgmentMinAggregateOutputType = {
+    tileId: string | null
+    userId: string | null
+    createdAt: Date | null
+  }
+
+  export type JobTileAcknowledgmentMaxAggregateOutputType = {
+    tileId: string | null
+    userId: string | null
+    createdAt: Date | null
+  }
+
+  export type JobTileAcknowledgmentCountAggregateOutputType = {
+    tileId: number
+    userId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type JobTileAcknowledgmentMinAggregateInputType = {
+    tileId?: true
+    userId?: true
+    createdAt?: true
+  }
+
+  export type JobTileAcknowledgmentMaxAggregateInputType = {
+    tileId?: true
+    userId?: true
+    createdAt?: true
+  }
+
+  export type JobTileAcknowledgmentCountAggregateInputType = {
+    tileId?: true
+    userId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type JobTileAcknowledgmentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which JobTileAcknowledgment to aggregate.
+     */
+    where?: JobTileAcknowledgmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JobTileAcknowledgments to fetch.
+     */
+    orderBy?: JobTileAcknowledgmentOrderByWithRelationInput | JobTileAcknowledgmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: JobTileAcknowledgmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JobTileAcknowledgments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JobTileAcknowledgments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned JobTileAcknowledgments
+    **/
+    _count?: true | JobTileAcknowledgmentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: JobTileAcknowledgmentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: JobTileAcknowledgmentMaxAggregateInputType
+  }
+
+  export type GetJobTileAcknowledgmentAggregateType<T extends JobTileAcknowledgmentAggregateArgs> = {
+        [P in keyof T & keyof AggregateJobTileAcknowledgment]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateJobTileAcknowledgment[P]>
+      : GetScalarType<T[P], AggregateJobTileAcknowledgment[P]>
+  }
+
+
+
+
+  export type JobTileAcknowledgmentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JobTileAcknowledgmentWhereInput
+    orderBy?: JobTileAcknowledgmentOrderByWithAggregationInput | JobTileAcknowledgmentOrderByWithAggregationInput[]
+    by: JobTileAcknowledgmentScalarFieldEnum[] | JobTileAcknowledgmentScalarFieldEnum
+    having?: JobTileAcknowledgmentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: JobTileAcknowledgmentCountAggregateInputType | true
+    _min?: JobTileAcknowledgmentMinAggregateInputType
+    _max?: JobTileAcknowledgmentMaxAggregateInputType
+  }
+
+  export type JobTileAcknowledgmentGroupByOutputType = {
+    tileId: string
+    userId: string
+    createdAt: Date
+    _count: JobTileAcknowledgmentCountAggregateOutputType | null
+    _min: JobTileAcknowledgmentMinAggregateOutputType | null
+    _max: JobTileAcknowledgmentMaxAggregateOutputType | null
+  }
+
+  type GetJobTileAcknowledgmentGroupByPayload<T extends JobTileAcknowledgmentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<JobTileAcknowledgmentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof JobTileAcknowledgmentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], JobTileAcknowledgmentGroupByOutputType[P]>
+            : GetScalarType<T[P], JobTileAcknowledgmentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type JobTileAcknowledgmentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    tileId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    tile?: boolean | JobTileDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["jobTileAcknowledgment"]>
+
+  export type JobTileAcknowledgmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    tileId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    tile?: boolean | JobTileDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["jobTileAcknowledgment"]>
+
+  export type JobTileAcknowledgmentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    tileId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    tile?: boolean | JobTileDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["jobTileAcknowledgment"]>
+
+  export type JobTileAcknowledgmentSelectScalar = {
+    tileId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+  }
+
+  export type JobTileAcknowledgmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"tileId" | "userId" | "createdAt", ExtArgs["result"]["jobTileAcknowledgment"]>
+  export type JobTileAcknowledgmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tile?: boolean | JobTileDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type JobTileAcknowledgmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tile?: boolean | JobTileDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type JobTileAcknowledgmentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tile?: boolean | JobTileDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $JobTileAcknowledgmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "JobTileAcknowledgment"
+    objects: {
+      tile: Prisma.$JobTilePayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      tileId: string
+      userId: string
+      createdAt: Date
+    }, ExtArgs["result"]["jobTileAcknowledgment"]>
+    composites: {}
+  }
+
+  type JobTileAcknowledgmentGetPayload<S extends boolean | null | undefined | JobTileAcknowledgmentDefaultArgs> = $Result.GetResult<Prisma.$JobTileAcknowledgmentPayload, S>
+
+  type JobTileAcknowledgmentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<JobTileAcknowledgmentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: JobTileAcknowledgmentCountAggregateInputType | true
+    }
+
+  export interface JobTileAcknowledgmentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['JobTileAcknowledgment'], meta: { name: 'JobTileAcknowledgment' } }
+    /**
+     * Find zero or one JobTileAcknowledgment that matches the filter.
+     * @param {JobTileAcknowledgmentFindUniqueArgs} args - Arguments to find a JobTileAcknowledgment
+     * @example
+     * // Get one JobTileAcknowledgment
+     * const jobTileAcknowledgment = await prisma.jobTileAcknowledgment.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends JobTileAcknowledgmentFindUniqueArgs>(args: SelectSubset<T, JobTileAcknowledgmentFindUniqueArgs<ExtArgs>>): Prisma__JobTileAcknowledgmentClient<$Result.GetResult<Prisma.$JobTileAcknowledgmentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one JobTileAcknowledgment that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {JobTileAcknowledgmentFindUniqueOrThrowArgs} args - Arguments to find a JobTileAcknowledgment
+     * @example
+     * // Get one JobTileAcknowledgment
+     * const jobTileAcknowledgment = await prisma.jobTileAcknowledgment.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends JobTileAcknowledgmentFindUniqueOrThrowArgs>(args: SelectSubset<T, JobTileAcknowledgmentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__JobTileAcknowledgmentClient<$Result.GetResult<Prisma.$JobTileAcknowledgmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first JobTileAcknowledgment that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobTileAcknowledgmentFindFirstArgs} args - Arguments to find a JobTileAcknowledgment
+     * @example
+     * // Get one JobTileAcknowledgment
+     * const jobTileAcknowledgment = await prisma.jobTileAcknowledgment.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends JobTileAcknowledgmentFindFirstArgs>(args?: SelectSubset<T, JobTileAcknowledgmentFindFirstArgs<ExtArgs>>): Prisma__JobTileAcknowledgmentClient<$Result.GetResult<Prisma.$JobTileAcknowledgmentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first JobTileAcknowledgment that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobTileAcknowledgmentFindFirstOrThrowArgs} args - Arguments to find a JobTileAcknowledgment
+     * @example
+     * // Get one JobTileAcknowledgment
+     * const jobTileAcknowledgment = await prisma.jobTileAcknowledgment.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends JobTileAcknowledgmentFindFirstOrThrowArgs>(args?: SelectSubset<T, JobTileAcknowledgmentFindFirstOrThrowArgs<ExtArgs>>): Prisma__JobTileAcknowledgmentClient<$Result.GetResult<Prisma.$JobTileAcknowledgmentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more JobTileAcknowledgments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobTileAcknowledgmentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all JobTileAcknowledgments
+     * const jobTileAcknowledgments = await prisma.jobTileAcknowledgment.findMany()
+     * 
+     * // Get first 10 JobTileAcknowledgments
+     * const jobTileAcknowledgments = await prisma.jobTileAcknowledgment.findMany({ take: 10 })
+     * 
+     * // Only select the `tileId`
+     * const jobTileAcknowledgmentWithTileIdOnly = await prisma.jobTileAcknowledgment.findMany({ select: { tileId: true } })
+     * 
+     */
+    findMany<T extends JobTileAcknowledgmentFindManyArgs>(args?: SelectSubset<T, JobTileAcknowledgmentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobTileAcknowledgmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a JobTileAcknowledgment.
+     * @param {JobTileAcknowledgmentCreateArgs} args - Arguments to create a JobTileAcknowledgment.
+     * @example
+     * // Create one JobTileAcknowledgment
+     * const JobTileAcknowledgment = await prisma.jobTileAcknowledgment.create({
+     *   data: {
+     *     // ... data to create a JobTileAcknowledgment
+     *   }
+     * })
+     * 
+     */
+    create<T extends JobTileAcknowledgmentCreateArgs>(args: SelectSubset<T, JobTileAcknowledgmentCreateArgs<ExtArgs>>): Prisma__JobTileAcknowledgmentClient<$Result.GetResult<Prisma.$JobTileAcknowledgmentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many JobTileAcknowledgments.
+     * @param {JobTileAcknowledgmentCreateManyArgs} args - Arguments to create many JobTileAcknowledgments.
+     * @example
+     * // Create many JobTileAcknowledgments
+     * const jobTileAcknowledgment = await prisma.jobTileAcknowledgment.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends JobTileAcknowledgmentCreateManyArgs>(args?: SelectSubset<T, JobTileAcknowledgmentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many JobTileAcknowledgments and returns the data saved in the database.
+     * @param {JobTileAcknowledgmentCreateManyAndReturnArgs} args - Arguments to create many JobTileAcknowledgments.
+     * @example
+     * // Create many JobTileAcknowledgments
+     * const jobTileAcknowledgment = await prisma.jobTileAcknowledgment.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many JobTileAcknowledgments and only return the `tileId`
+     * const jobTileAcknowledgmentWithTileIdOnly = await prisma.jobTileAcknowledgment.createManyAndReturn({
+     *   select: { tileId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends JobTileAcknowledgmentCreateManyAndReturnArgs>(args?: SelectSubset<T, JobTileAcknowledgmentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobTileAcknowledgmentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a JobTileAcknowledgment.
+     * @param {JobTileAcknowledgmentDeleteArgs} args - Arguments to delete one JobTileAcknowledgment.
+     * @example
+     * // Delete one JobTileAcknowledgment
+     * const JobTileAcknowledgment = await prisma.jobTileAcknowledgment.delete({
+     *   where: {
+     *     // ... filter to delete one JobTileAcknowledgment
+     *   }
+     * })
+     * 
+     */
+    delete<T extends JobTileAcknowledgmentDeleteArgs>(args: SelectSubset<T, JobTileAcknowledgmentDeleteArgs<ExtArgs>>): Prisma__JobTileAcknowledgmentClient<$Result.GetResult<Prisma.$JobTileAcknowledgmentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one JobTileAcknowledgment.
+     * @param {JobTileAcknowledgmentUpdateArgs} args - Arguments to update one JobTileAcknowledgment.
+     * @example
+     * // Update one JobTileAcknowledgment
+     * const jobTileAcknowledgment = await prisma.jobTileAcknowledgment.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends JobTileAcknowledgmentUpdateArgs>(args: SelectSubset<T, JobTileAcknowledgmentUpdateArgs<ExtArgs>>): Prisma__JobTileAcknowledgmentClient<$Result.GetResult<Prisma.$JobTileAcknowledgmentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more JobTileAcknowledgments.
+     * @param {JobTileAcknowledgmentDeleteManyArgs} args - Arguments to filter JobTileAcknowledgments to delete.
+     * @example
+     * // Delete a few JobTileAcknowledgments
+     * const { count } = await prisma.jobTileAcknowledgment.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends JobTileAcknowledgmentDeleteManyArgs>(args?: SelectSubset<T, JobTileAcknowledgmentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more JobTileAcknowledgments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobTileAcknowledgmentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many JobTileAcknowledgments
+     * const jobTileAcknowledgment = await prisma.jobTileAcknowledgment.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends JobTileAcknowledgmentUpdateManyArgs>(args: SelectSubset<T, JobTileAcknowledgmentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more JobTileAcknowledgments and returns the data updated in the database.
+     * @param {JobTileAcknowledgmentUpdateManyAndReturnArgs} args - Arguments to update many JobTileAcknowledgments.
+     * @example
+     * // Update many JobTileAcknowledgments
+     * const jobTileAcknowledgment = await prisma.jobTileAcknowledgment.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more JobTileAcknowledgments and only return the `tileId`
+     * const jobTileAcknowledgmentWithTileIdOnly = await prisma.jobTileAcknowledgment.updateManyAndReturn({
+     *   select: { tileId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends JobTileAcknowledgmentUpdateManyAndReturnArgs>(args: SelectSubset<T, JobTileAcknowledgmentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobTileAcknowledgmentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one JobTileAcknowledgment.
+     * @param {JobTileAcknowledgmentUpsertArgs} args - Arguments to update or create a JobTileAcknowledgment.
+     * @example
+     * // Update or create a JobTileAcknowledgment
+     * const jobTileAcknowledgment = await prisma.jobTileAcknowledgment.upsert({
+     *   create: {
+     *     // ... data to create a JobTileAcknowledgment
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the JobTileAcknowledgment we want to update
+     *   }
+     * })
+     */
+    upsert<T extends JobTileAcknowledgmentUpsertArgs>(args: SelectSubset<T, JobTileAcknowledgmentUpsertArgs<ExtArgs>>): Prisma__JobTileAcknowledgmentClient<$Result.GetResult<Prisma.$JobTileAcknowledgmentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of JobTileAcknowledgments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobTileAcknowledgmentCountArgs} args - Arguments to filter JobTileAcknowledgments to count.
+     * @example
+     * // Count the number of JobTileAcknowledgments
+     * const count = await prisma.jobTileAcknowledgment.count({
+     *   where: {
+     *     // ... the filter for the JobTileAcknowledgments we want to count
+     *   }
+     * })
+    **/
+    count<T extends JobTileAcknowledgmentCountArgs>(
+      args?: Subset<T, JobTileAcknowledgmentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], JobTileAcknowledgmentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a JobTileAcknowledgment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobTileAcknowledgmentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends JobTileAcknowledgmentAggregateArgs>(args: Subset<T, JobTileAcknowledgmentAggregateArgs>): Prisma.PrismaPromise<GetJobTileAcknowledgmentAggregateType<T>>
+
+    /**
+     * Group by JobTileAcknowledgment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobTileAcknowledgmentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends JobTileAcknowledgmentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: JobTileAcknowledgmentGroupByArgs['orderBy'] }
+        : { orderBy?: JobTileAcknowledgmentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, JobTileAcknowledgmentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetJobTileAcknowledgmentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the JobTileAcknowledgment model
+   */
+  readonly fields: JobTileAcknowledgmentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for JobTileAcknowledgment.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__JobTileAcknowledgmentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    tile<T extends JobTileDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobTileDefaultArgs<ExtArgs>>): Prisma__JobTileClient<$Result.GetResult<Prisma.$JobTilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the JobTileAcknowledgment model
+   */
+  interface JobTileAcknowledgmentFieldRefs {
+    readonly tileId: FieldRef<"JobTileAcknowledgment", 'String'>
+    readonly userId: FieldRef<"JobTileAcknowledgment", 'String'>
+    readonly createdAt: FieldRef<"JobTileAcknowledgment", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * JobTileAcknowledgment findUnique
+   */
+  export type JobTileAcknowledgmentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTileAcknowledgment
+     */
+    select?: JobTileAcknowledgmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTileAcknowledgment
+     */
+    omit?: JobTileAcknowledgmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTileAcknowledgmentInclude<ExtArgs> | null
+    /**
+     * Filter, which JobTileAcknowledgment to fetch.
+     */
+    where: JobTileAcknowledgmentWhereUniqueInput
+  }
+
+  /**
+   * JobTileAcknowledgment findUniqueOrThrow
+   */
+  export type JobTileAcknowledgmentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTileAcknowledgment
+     */
+    select?: JobTileAcknowledgmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTileAcknowledgment
+     */
+    omit?: JobTileAcknowledgmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTileAcknowledgmentInclude<ExtArgs> | null
+    /**
+     * Filter, which JobTileAcknowledgment to fetch.
+     */
+    where: JobTileAcknowledgmentWhereUniqueInput
+  }
+
+  /**
+   * JobTileAcknowledgment findFirst
+   */
+  export type JobTileAcknowledgmentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTileAcknowledgment
+     */
+    select?: JobTileAcknowledgmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTileAcknowledgment
+     */
+    omit?: JobTileAcknowledgmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTileAcknowledgmentInclude<ExtArgs> | null
+    /**
+     * Filter, which JobTileAcknowledgment to fetch.
+     */
+    where?: JobTileAcknowledgmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JobTileAcknowledgments to fetch.
+     */
+    orderBy?: JobTileAcknowledgmentOrderByWithRelationInput | JobTileAcknowledgmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for JobTileAcknowledgments.
+     */
+    cursor?: JobTileAcknowledgmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JobTileAcknowledgments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JobTileAcknowledgments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobTileAcknowledgments.
+     */
+    distinct?: JobTileAcknowledgmentScalarFieldEnum | JobTileAcknowledgmentScalarFieldEnum[]
+  }
+
+  /**
+   * JobTileAcknowledgment findFirstOrThrow
+   */
+  export type JobTileAcknowledgmentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTileAcknowledgment
+     */
+    select?: JobTileAcknowledgmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTileAcknowledgment
+     */
+    omit?: JobTileAcknowledgmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTileAcknowledgmentInclude<ExtArgs> | null
+    /**
+     * Filter, which JobTileAcknowledgment to fetch.
+     */
+    where?: JobTileAcknowledgmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JobTileAcknowledgments to fetch.
+     */
+    orderBy?: JobTileAcknowledgmentOrderByWithRelationInput | JobTileAcknowledgmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for JobTileAcknowledgments.
+     */
+    cursor?: JobTileAcknowledgmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JobTileAcknowledgments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JobTileAcknowledgments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobTileAcknowledgments.
+     */
+    distinct?: JobTileAcknowledgmentScalarFieldEnum | JobTileAcknowledgmentScalarFieldEnum[]
+  }
+
+  /**
+   * JobTileAcknowledgment findMany
+   */
+  export type JobTileAcknowledgmentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTileAcknowledgment
+     */
+    select?: JobTileAcknowledgmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTileAcknowledgment
+     */
+    omit?: JobTileAcknowledgmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTileAcknowledgmentInclude<ExtArgs> | null
+    /**
+     * Filter, which JobTileAcknowledgments to fetch.
+     */
+    where?: JobTileAcknowledgmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JobTileAcknowledgments to fetch.
+     */
+    orderBy?: JobTileAcknowledgmentOrderByWithRelationInput | JobTileAcknowledgmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing JobTileAcknowledgments.
+     */
+    cursor?: JobTileAcknowledgmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JobTileAcknowledgments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JobTileAcknowledgments.
+     */
+    skip?: number
+    distinct?: JobTileAcknowledgmentScalarFieldEnum | JobTileAcknowledgmentScalarFieldEnum[]
+  }
+
+  /**
+   * JobTileAcknowledgment create
+   */
+  export type JobTileAcknowledgmentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTileAcknowledgment
+     */
+    select?: JobTileAcknowledgmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTileAcknowledgment
+     */
+    omit?: JobTileAcknowledgmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTileAcknowledgmentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a JobTileAcknowledgment.
+     */
+    data: XOR<JobTileAcknowledgmentCreateInput, JobTileAcknowledgmentUncheckedCreateInput>
+  }
+
+  /**
+   * JobTileAcknowledgment createMany
+   */
+  export type JobTileAcknowledgmentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many JobTileAcknowledgments.
+     */
+    data: JobTileAcknowledgmentCreateManyInput | JobTileAcknowledgmentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * JobTileAcknowledgment createManyAndReturn
+   */
+  export type JobTileAcknowledgmentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTileAcknowledgment
+     */
+    select?: JobTileAcknowledgmentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTileAcknowledgment
+     */
+    omit?: JobTileAcknowledgmentOmit<ExtArgs> | null
+    /**
+     * The data used to create many JobTileAcknowledgments.
+     */
+    data: JobTileAcknowledgmentCreateManyInput | JobTileAcknowledgmentCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTileAcknowledgmentIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * JobTileAcknowledgment update
+   */
+  export type JobTileAcknowledgmentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTileAcknowledgment
+     */
+    select?: JobTileAcknowledgmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTileAcknowledgment
+     */
+    omit?: JobTileAcknowledgmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTileAcknowledgmentInclude<ExtArgs> | null
+    /**
+     * The data needed to update a JobTileAcknowledgment.
+     */
+    data: XOR<JobTileAcknowledgmentUpdateInput, JobTileAcknowledgmentUncheckedUpdateInput>
+    /**
+     * Choose, which JobTileAcknowledgment to update.
+     */
+    where: JobTileAcknowledgmentWhereUniqueInput
+  }
+
+  /**
+   * JobTileAcknowledgment updateMany
+   */
+  export type JobTileAcknowledgmentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update JobTileAcknowledgments.
+     */
+    data: XOR<JobTileAcknowledgmentUpdateManyMutationInput, JobTileAcknowledgmentUncheckedUpdateManyInput>
+    /**
+     * Filter which JobTileAcknowledgments to update
+     */
+    where?: JobTileAcknowledgmentWhereInput
+    /**
+     * Limit how many JobTileAcknowledgments to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * JobTileAcknowledgment updateManyAndReturn
+   */
+  export type JobTileAcknowledgmentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTileAcknowledgment
+     */
+    select?: JobTileAcknowledgmentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTileAcknowledgment
+     */
+    omit?: JobTileAcknowledgmentOmit<ExtArgs> | null
+    /**
+     * The data used to update JobTileAcknowledgments.
+     */
+    data: XOR<JobTileAcknowledgmentUpdateManyMutationInput, JobTileAcknowledgmentUncheckedUpdateManyInput>
+    /**
+     * Filter which JobTileAcknowledgments to update
+     */
+    where?: JobTileAcknowledgmentWhereInput
+    /**
+     * Limit how many JobTileAcknowledgments to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTileAcknowledgmentIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * JobTileAcknowledgment upsert
+   */
+  export type JobTileAcknowledgmentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTileAcknowledgment
+     */
+    select?: JobTileAcknowledgmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTileAcknowledgment
+     */
+    omit?: JobTileAcknowledgmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTileAcknowledgmentInclude<ExtArgs> | null
+    /**
+     * The filter to search for the JobTileAcknowledgment to update in case it exists.
+     */
+    where: JobTileAcknowledgmentWhereUniqueInput
+    /**
+     * In case the JobTileAcknowledgment found by the `where` argument doesn't exist, create a new JobTileAcknowledgment with this data.
+     */
+    create: XOR<JobTileAcknowledgmentCreateInput, JobTileAcknowledgmentUncheckedCreateInput>
+    /**
+     * In case the JobTileAcknowledgment was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<JobTileAcknowledgmentUpdateInput, JobTileAcknowledgmentUncheckedUpdateInput>
+  }
+
+  /**
+   * JobTileAcknowledgment delete
+   */
+  export type JobTileAcknowledgmentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTileAcknowledgment
+     */
+    select?: JobTileAcknowledgmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTileAcknowledgment
+     */
+    omit?: JobTileAcknowledgmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTileAcknowledgmentInclude<ExtArgs> | null
+    /**
+     * Filter which JobTileAcknowledgment to delete.
+     */
+    where: JobTileAcknowledgmentWhereUniqueInput
+  }
+
+  /**
+   * JobTileAcknowledgment deleteMany
+   */
+  export type JobTileAcknowledgmentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which JobTileAcknowledgments to delete
+     */
+    where?: JobTileAcknowledgmentWhereInput
+    /**
+     * Limit how many JobTileAcknowledgments to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * JobTileAcknowledgment without action
+   */
+  export type JobTileAcknowledgmentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTileAcknowledgment
+     */
+    select?: JobTileAcknowledgmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTileAcknowledgment
+     */
+    omit?: JobTileAcknowledgmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTileAcknowledgmentInclude<ExtArgs> | null
   }
 
 
@@ -26884,10 +28126,20 @@ export namespace Prisma {
     type: 'type',
     position: 'position',
     config: 'config',
-    visibility: 'visibility'
+    visibility: 'visibility',
+    requiresAcknowledgment: 'requiresAcknowledgment'
   };
 
   export type JobTileScalarFieldEnum = (typeof JobTileScalarFieldEnum)[keyof typeof JobTileScalarFieldEnum]
+
+
+  export const JobTileAcknowledgmentScalarFieldEnum: {
+    tileId: 'tileId',
+    userId: 'userId',
+    createdAt: 'createdAt'
+  };
+
+  export type JobTileAcknowledgmentScalarFieldEnum = (typeof JobTileAcknowledgmentScalarFieldEnum)[keyof typeof JobTileAcknowledgmentScalarFieldEnum]
 
 
   export const CompanyPostScalarFieldEnum: {
@@ -27596,6 +28848,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberListRelationFilter
     createdJobs?: JobListRelationFilter
     jobMemberships?: JobMemberListRelationFilter
+    jobTileAcknowledgments?: JobTileAcknowledgmentListRelationFilter
     companyPosts?: CompanyPostListRelationFilter
     postAcknowledgments?: CompanyPostAcknowledgmentListRelationFilter
     sentInvitations?: CompanyInvitationListRelationFilter
@@ -27622,6 +28875,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberOrderByRelationAggregateInput
     createdJobs?: JobOrderByRelationAggregateInput
     jobMemberships?: JobMemberOrderByRelationAggregateInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentOrderByRelationAggregateInput
     companyPosts?: CompanyPostOrderByRelationAggregateInput
     postAcknowledgments?: CompanyPostAcknowledgmentOrderByRelationAggregateInput
     sentInvitations?: CompanyInvitationOrderByRelationAggregateInput
@@ -27651,6 +28905,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberListRelationFilter
     createdJobs?: JobListRelationFilter
     jobMemberships?: JobMemberListRelationFilter
+    jobTileAcknowledgments?: JobTileAcknowledgmentListRelationFilter
     companyPosts?: CompanyPostListRelationFilter
     postAcknowledgments?: CompanyPostAcknowledgmentListRelationFilter
     sentInvitations?: CompanyInvitationListRelationFilter
@@ -28215,7 +29470,9 @@ export namespace Prisma {
     position?: IntFilter<"JobTile"> | number
     config?: JsonFilter<"JobTile">
     visibility?: JsonFilter<"JobTile">
+    requiresAcknowledgment?: BoolFilter<"JobTile"> | boolean
     job?: XOR<JobScalarRelationFilter, JobWhereInput>
+    acknowledgments?: JobTileAcknowledgmentListRelationFilter
   }
 
   export type JobTileOrderByWithRelationInput = {
@@ -28225,7 +29482,9 @@ export namespace Prisma {
     position?: SortOrder
     config?: SortOrder
     visibility?: SortOrder
+    requiresAcknowledgment?: SortOrder
     job?: JobOrderByWithRelationInput
+    acknowledgments?: JobTileAcknowledgmentOrderByRelationAggregateInput
   }
 
   export type JobTileWhereUniqueInput = Prisma.AtLeast<{
@@ -28238,7 +29497,9 @@ export namespace Prisma {
     position?: IntFilter<"JobTile"> | number
     config?: JsonFilter<"JobTile">
     visibility?: JsonFilter<"JobTile">
+    requiresAcknowledgment?: BoolFilter<"JobTile"> | boolean
     job?: XOR<JobScalarRelationFilter, JobWhereInput>
+    acknowledgments?: JobTileAcknowledgmentListRelationFilter
   }, "id">
 
   export type JobTileOrderByWithAggregationInput = {
@@ -28248,6 +29509,7 @@ export namespace Prisma {
     position?: SortOrder
     config?: SortOrder
     visibility?: SortOrder
+    requiresAcknowledgment?: SortOrder
     _count?: JobTileCountOrderByAggregateInput
     _avg?: JobTileAvgOrderByAggregateInput
     _max?: JobTileMaxOrderByAggregateInput
@@ -28265,6 +29527,56 @@ export namespace Prisma {
     position?: IntWithAggregatesFilter<"JobTile"> | number
     config?: JsonWithAggregatesFilter<"JobTile">
     visibility?: JsonWithAggregatesFilter<"JobTile">
+    requiresAcknowledgment?: BoolWithAggregatesFilter<"JobTile"> | boolean
+  }
+
+  export type JobTileAcknowledgmentWhereInput = {
+    AND?: JobTileAcknowledgmentWhereInput | JobTileAcknowledgmentWhereInput[]
+    OR?: JobTileAcknowledgmentWhereInput[]
+    NOT?: JobTileAcknowledgmentWhereInput | JobTileAcknowledgmentWhereInput[]
+    tileId?: StringFilter<"JobTileAcknowledgment"> | string
+    userId?: StringFilter<"JobTileAcknowledgment"> | string
+    createdAt?: DateTimeFilter<"JobTileAcknowledgment"> | Date | string
+    tile?: XOR<JobTileScalarRelationFilter, JobTileWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type JobTileAcknowledgmentOrderByWithRelationInput = {
+    tileId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    tile?: JobTileOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type JobTileAcknowledgmentWhereUniqueInput = Prisma.AtLeast<{
+    tileId_userId?: JobTileAcknowledgmentTileIdUserIdCompoundUniqueInput
+    AND?: JobTileAcknowledgmentWhereInput | JobTileAcknowledgmentWhereInput[]
+    OR?: JobTileAcknowledgmentWhereInput[]
+    NOT?: JobTileAcknowledgmentWhereInput | JobTileAcknowledgmentWhereInput[]
+    tileId?: StringFilter<"JobTileAcknowledgment"> | string
+    userId?: StringFilter<"JobTileAcknowledgment"> | string
+    createdAt?: DateTimeFilter<"JobTileAcknowledgment"> | Date | string
+    tile?: XOR<JobTileScalarRelationFilter, JobTileWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "tileId_userId">
+
+  export type JobTileAcknowledgmentOrderByWithAggregationInput = {
+    tileId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    _count?: JobTileAcknowledgmentCountOrderByAggregateInput
+    _max?: JobTileAcknowledgmentMaxOrderByAggregateInput
+    _min?: JobTileAcknowledgmentMinOrderByAggregateInput
+  }
+
+  export type JobTileAcknowledgmentScalarWhereWithAggregatesInput = {
+    AND?: JobTileAcknowledgmentScalarWhereWithAggregatesInput | JobTileAcknowledgmentScalarWhereWithAggregatesInput[]
+    OR?: JobTileAcknowledgmentScalarWhereWithAggregatesInput[]
+    NOT?: JobTileAcknowledgmentScalarWhereWithAggregatesInput | JobTileAcknowledgmentScalarWhereWithAggregatesInput[]
+    tileId?: StringWithAggregatesFilter<"JobTileAcknowledgment"> | string
+    userId?: StringWithAggregatesFilter<"JobTileAcknowledgment"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"JobTileAcknowledgment"> | Date | string
   }
 
   export type CompanyPostWhereInput = {
@@ -29056,6 +30368,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     jobMemberships?: JobMemberCreateNestedManyWithoutUserInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentCreateNestedManyWithoutUserInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
@@ -29082,6 +30395,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     jobMemberships?: JobMemberUncheckedCreateNestedManyWithoutUserInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
@@ -29108,6 +30422,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     jobMemberships?: JobMemberUpdateManyWithoutUserNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUpdateManyWithoutUserNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
@@ -29134,6 +30449,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     jobMemberships?: JobMemberUncheckedUpdateManyWithoutUserNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -29690,7 +31006,9 @@ export namespace Prisma {
     position: number
     config: JsonNullValueInput | InputJsonValue
     visibility: JsonNullValueInput | InputJsonValue
+    requiresAcknowledgment?: boolean
     job: JobCreateNestedOneWithoutTilesInput
+    acknowledgments?: JobTileAcknowledgmentCreateNestedManyWithoutTileInput
   }
 
   export type JobTileUncheckedCreateInput = {
@@ -29700,6 +31018,8 @@ export namespace Prisma {
     position: number
     config: JsonNullValueInput | InputJsonValue
     visibility: JsonNullValueInput | InputJsonValue
+    requiresAcknowledgment?: boolean
+    acknowledgments?: JobTileAcknowledgmentUncheckedCreateNestedManyWithoutTileInput
   }
 
   export type JobTileUpdateInput = {
@@ -29708,7 +31028,9 @@ export namespace Prisma {
     position?: IntFieldUpdateOperationsInput | number
     config?: JsonNullValueInput | InputJsonValue
     visibility?: JsonNullValueInput | InputJsonValue
+    requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
     job?: JobUpdateOneRequiredWithoutTilesNestedInput
+    acknowledgments?: JobTileAcknowledgmentUpdateManyWithoutTileNestedInput
   }
 
   export type JobTileUncheckedUpdateInput = {
@@ -29718,6 +31040,8 @@ export namespace Prisma {
     position?: IntFieldUpdateOperationsInput | number
     config?: JsonNullValueInput | InputJsonValue
     visibility?: JsonNullValueInput | InputJsonValue
+    requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
+    acknowledgments?: JobTileAcknowledgmentUncheckedUpdateManyWithoutTileNestedInput
   }
 
   export type JobTileCreateManyInput = {
@@ -29727,6 +31051,7 @@ export namespace Prisma {
     position: number
     config: JsonNullValueInput | InputJsonValue
     visibility: JsonNullValueInput | InputJsonValue
+    requiresAcknowledgment?: boolean
   }
 
   export type JobTileUpdateManyMutationInput = {
@@ -29735,6 +31060,7 @@ export namespace Prisma {
     position?: IntFieldUpdateOperationsInput | number
     config?: JsonNullValueInput | InputJsonValue
     visibility?: JsonNullValueInput | InputJsonValue
+    requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type JobTileUncheckedUpdateManyInput = {
@@ -29744,6 +31070,47 @@ export namespace Prisma {
     position?: IntFieldUpdateOperationsInput | number
     config?: JsonNullValueInput | InputJsonValue
     visibility?: JsonNullValueInput | InputJsonValue
+    requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type JobTileAcknowledgmentCreateInput = {
+    createdAt?: Date | string
+    tile: JobTileCreateNestedOneWithoutAcknowledgmentsInput
+    user: UserCreateNestedOneWithoutJobTileAcknowledgmentsInput
+  }
+
+  export type JobTileAcknowledgmentUncheckedCreateInput = {
+    tileId: string
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type JobTileAcknowledgmentUpdateInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tile?: JobTileUpdateOneRequiredWithoutAcknowledgmentsNestedInput
+    user?: UserUpdateOneRequiredWithoutJobTileAcknowledgmentsNestedInput
+  }
+
+  export type JobTileAcknowledgmentUncheckedUpdateInput = {
+    tileId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobTileAcknowledgmentCreateManyInput = {
+    tileId: string
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type JobTileAcknowledgmentUpdateManyMutationInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobTileAcknowledgmentUncheckedUpdateManyInput = {
+    tileId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CompanyPostCreateInput = {
@@ -30580,6 +31947,12 @@ export namespace Prisma {
     none?: JobMemberWhereInput
   }
 
+  export type JobTileAcknowledgmentListRelationFilter = {
+    every?: JobTileAcknowledgmentWhereInput
+    some?: JobTileAcknowledgmentWhereInput
+    none?: JobTileAcknowledgmentWhereInput
+  }
+
   export type CompanyPostAcknowledgmentListRelationFilter = {
     every?: CompanyPostAcknowledgmentWhereInput
     some?: CompanyPostAcknowledgmentWhereInput
@@ -30611,6 +31984,10 @@ export namespace Prisma {
   }
 
   export type JobMemberOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type JobTileAcknowledgmentOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -31039,6 +32416,7 @@ export namespace Prisma {
     position?: SortOrder
     config?: SortOrder
     visibility?: SortOrder
+    requiresAcknowledgment?: SortOrder
   }
 
   export type JobTileAvgOrderByAggregateInput = {
@@ -31050,6 +32428,7 @@ export namespace Prisma {
     jobId?: SortOrder
     type?: SortOrder
     position?: SortOrder
+    requiresAcknowledgment?: SortOrder
   }
 
   export type JobTileMinOrderByAggregateInput = {
@@ -31057,6 +32436,7 @@ export namespace Prisma {
     jobId?: SortOrder
     type?: SortOrder
     position?: SortOrder
+    requiresAcknowledgment?: SortOrder
   }
 
   export type JobTileSumOrderByAggregateInput = {
@@ -31087,6 +32467,34 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedJsonFilter<$PrismaModel>
     _max?: NestedJsonFilter<$PrismaModel>
+  }
+
+  export type JobTileScalarRelationFilter = {
+    is?: JobTileWhereInput
+    isNot?: JobTileWhereInput
+  }
+
+  export type JobTileAcknowledgmentTileIdUserIdCompoundUniqueInput = {
+    tileId: string
+    userId: string
+  }
+
+  export type JobTileAcknowledgmentCountOrderByAggregateInput = {
+    tileId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type JobTileAcknowledgmentMaxOrderByAggregateInput = {
+    tileId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type JobTileAcknowledgmentMinOrderByAggregateInput = {
+    tileId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type UserNullableScalarRelationFilter = {
@@ -31815,6 +33223,13 @@ export namespace Prisma {
     connect?: JobMemberWhereUniqueInput | JobMemberWhereUniqueInput[]
   }
 
+  export type JobTileAcknowledgmentCreateNestedManyWithoutUserInput = {
+    create?: XOR<JobTileAcknowledgmentCreateWithoutUserInput, JobTileAcknowledgmentUncheckedCreateWithoutUserInput> | JobTileAcknowledgmentCreateWithoutUserInput[] | JobTileAcknowledgmentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: JobTileAcknowledgmentCreateOrConnectWithoutUserInput | JobTileAcknowledgmentCreateOrConnectWithoutUserInput[]
+    createMany?: JobTileAcknowledgmentCreateManyUserInputEnvelope
+    connect?: JobTileAcknowledgmentWhereUniqueInput | JobTileAcknowledgmentWhereUniqueInput[]
+  }
+
   export type CompanyPostCreateNestedManyWithoutAuthorInput = {
     create?: XOR<CompanyPostCreateWithoutAuthorInput, CompanyPostUncheckedCreateWithoutAuthorInput> | CompanyPostCreateWithoutAuthorInput[] | CompanyPostUncheckedCreateWithoutAuthorInput[]
     connectOrCreate?: CompanyPostCreateOrConnectWithoutAuthorInput | CompanyPostCreateOrConnectWithoutAuthorInput[]
@@ -31916,6 +33331,13 @@ export namespace Prisma {
     connectOrCreate?: JobMemberCreateOrConnectWithoutUserInput | JobMemberCreateOrConnectWithoutUserInput[]
     createMany?: JobMemberCreateManyUserInputEnvelope
     connect?: JobMemberWhereUniqueInput | JobMemberWhereUniqueInput[]
+  }
+
+  export type JobTileAcknowledgmentUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<JobTileAcknowledgmentCreateWithoutUserInput, JobTileAcknowledgmentUncheckedCreateWithoutUserInput> | JobTileAcknowledgmentCreateWithoutUserInput[] | JobTileAcknowledgmentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: JobTileAcknowledgmentCreateOrConnectWithoutUserInput | JobTileAcknowledgmentCreateOrConnectWithoutUserInput[]
+    createMany?: JobTileAcknowledgmentCreateManyUserInputEnvelope
+    connect?: JobTileAcknowledgmentWhereUniqueInput | JobTileAcknowledgmentWhereUniqueInput[]
   }
 
   export type CompanyPostUncheckedCreateNestedManyWithoutAuthorInput = {
@@ -32084,6 +33506,20 @@ export namespace Prisma {
     update?: JobMemberUpdateWithWhereUniqueWithoutUserInput | JobMemberUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: JobMemberUpdateManyWithWhereWithoutUserInput | JobMemberUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: JobMemberScalarWhereInput | JobMemberScalarWhereInput[]
+  }
+
+  export type JobTileAcknowledgmentUpdateManyWithoutUserNestedInput = {
+    create?: XOR<JobTileAcknowledgmentCreateWithoutUserInput, JobTileAcknowledgmentUncheckedCreateWithoutUserInput> | JobTileAcknowledgmentCreateWithoutUserInput[] | JobTileAcknowledgmentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: JobTileAcknowledgmentCreateOrConnectWithoutUserInput | JobTileAcknowledgmentCreateOrConnectWithoutUserInput[]
+    upsert?: JobTileAcknowledgmentUpsertWithWhereUniqueWithoutUserInput | JobTileAcknowledgmentUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: JobTileAcknowledgmentCreateManyUserInputEnvelope
+    set?: JobTileAcknowledgmentWhereUniqueInput | JobTileAcknowledgmentWhereUniqueInput[]
+    disconnect?: JobTileAcknowledgmentWhereUniqueInput | JobTileAcknowledgmentWhereUniqueInput[]
+    delete?: JobTileAcknowledgmentWhereUniqueInput | JobTileAcknowledgmentWhereUniqueInput[]
+    connect?: JobTileAcknowledgmentWhereUniqueInput | JobTileAcknowledgmentWhereUniqueInput[]
+    update?: JobTileAcknowledgmentUpdateWithWhereUniqueWithoutUserInput | JobTileAcknowledgmentUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: JobTileAcknowledgmentUpdateManyWithWhereWithoutUserInput | JobTileAcknowledgmentUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: JobTileAcknowledgmentScalarWhereInput | JobTileAcknowledgmentScalarWhereInput[]
   }
 
   export type CompanyPostUpdateManyWithoutAuthorNestedInput = {
@@ -32286,6 +33722,20 @@ export namespace Prisma {
     update?: JobMemberUpdateWithWhereUniqueWithoutUserInput | JobMemberUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: JobMemberUpdateManyWithWhereWithoutUserInput | JobMemberUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: JobMemberScalarWhereInput | JobMemberScalarWhereInput[]
+  }
+
+  export type JobTileAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<JobTileAcknowledgmentCreateWithoutUserInput, JobTileAcknowledgmentUncheckedCreateWithoutUserInput> | JobTileAcknowledgmentCreateWithoutUserInput[] | JobTileAcknowledgmentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: JobTileAcknowledgmentCreateOrConnectWithoutUserInput | JobTileAcknowledgmentCreateOrConnectWithoutUserInput[]
+    upsert?: JobTileAcknowledgmentUpsertWithWhereUniqueWithoutUserInput | JobTileAcknowledgmentUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: JobTileAcknowledgmentCreateManyUserInputEnvelope
+    set?: JobTileAcknowledgmentWhereUniqueInput | JobTileAcknowledgmentWhereUniqueInput[]
+    disconnect?: JobTileAcknowledgmentWhereUniqueInput | JobTileAcknowledgmentWhereUniqueInput[]
+    delete?: JobTileAcknowledgmentWhereUniqueInput | JobTileAcknowledgmentWhereUniqueInput[]
+    connect?: JobTileAcknowledgmentWhereUniqueInput | JobTileAcknowledgmentWhereUniqueInput[]
+    update?: JobTileAcknowledgmentUpdateWithWhereUniqueWithoutUserInput | JobTileAcknowledgmentUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: JobTileAcknowledgmentUpdateManyWithWhereWithoutUserInput | JobTileAcknowledgmentUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: JobTileAcknowledgmentScalarWhereInput | JobTileAcknowledgmentScalarWhereInput[]
   }
 
   export type CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput = {
@@ -32704,12 +34154,82 @@ export namespace Prisma {
     connect?: JobWhereUniqueInput
   }
 
+  export type JobTileAcknowledgmentCreateNestedManyWithoutTileInput = {
+    create?: XOR<JobTileAcknowledgmentCreateWithoutTileInput, JobTileAcknowledgmentUncheckedCreateWithoutTileInput> | JobTileAcknowledgmentCreateWithoutTileInput[] | JobTileAcknowledgmentUncheckedCreateWithoutTileInput[]
+    connectOrCreate?: JobTileAcknowledgmentCreateOrConnectWithoutTileInput | JobTileAcknowledgmentCreateOrConnectWithoutTileInput[]
+    createMany?: JobTileAcknowledgmentCreateManyTileInputEnvelope
+    connect?: JobTileAcknowledgmentWhereUniqueInput | JobTileAcknowledgmentWhereUniqueInput[]
+  }
+
+  export type JobTileAcknowledgmentUncheckedCreateNestedManyWithoutTileInput = {
+    create?: XOR<JobTileAcknowledgmentCreateWithoutTileInput, JobTileAcknowledgmentUncheckedCreateWithoutTileInput> | JobTileAcknowledgmentCreateWithoutTileInput[] | JobTileAcknowledgmentUncheckedCreateWithoutTileInput[]
+    connectOrCreate?: JobTileAcknowledgmentCreateOrConnectWithoutTileInput | JobTileAcknowledgmentCreateOrConnectWithoutTileInput[]
+    createMany?: JobTileAcknowledgmentCreateManyTileInputEnvelope
+    connect?: JobTileAcknowledgmentWhereUniqueInput | JobTileAcknowledgmentWhereUniqueInput[]
+  }
+
   export type JobUpdateOneRequiredWithoutTilesNestedInput = {
     create?: XOR<JobCreateWithoutTilesInput, JobUncheckedCreateWithoutTilesInput>
     connectOrCreate?: JobCreateOrConnectWithoutTilesInput
     upsert?: JobUpsertWithoutTilesInput
     connect?: JobWhereUniqueInput
     update?: XOR<XOR<JobUpdateToOneWithWhereWithoutTilesInput, JobUpdateWithoutTilesInput>, JobUncheckedUpdateWithoutTilesInput>
+  }
+
+  export type JobTileAcknowledgmentUpdateManyWithoutTileNestedInput = {
+    create?: XOR<JobTileAcknowledgmentCreateWithoutTileInput, JobTileAcknowledgmentUncheckedCreateWithoutTileInput> | JobTileAcknowledgmentCreateWithoutTileInput[] | JobTileAcknowledgmentUncheckedCreateWithoutTileInput[]
+    connectOrCreate?: JobTileAcknowledgmentCreateOrConnectWithoutTileInput | JobTileAcknowledgmentCreateOrConnectWithoutTileInput[]
+    upsert?: JobTileAcknowledgmentUpsertWithWhereUniqueWithoutTileInput | JobTileAcknowledgmentUpsertWithWhereUniqueWithoutTileInput[]
+    createMany?: JobTileAcknowledgmentCreateManyTileInputEnvelope
+    set?: JobTileAcknowledgmentWhereUniqueInput | JobTileAcknowledgmentWhereUniqueInput[]
+    disconnect?: JobTileAcknowledgmentWhereUniqueInput | JobTileAcknowledgmentWhereUniqueInput[]
+    delete?: JobTileAcknowledgmentWhereUniqueInput | JobTileAcknowledgmentWhereUniqueInput[]
+    connect?: JobTileAcknowledgmentWhereUniqueInput | JobTileAcknowledgmentWhereUniqueInput[]
+    update?: JobTileAcknowledgmentUpdateWithWhereUniqueWithoutTileInput | JobTileAcknowledgmentUpdateWithWhereUniqueWithoutTileInput[]
+    updateMany?: JobTileAcknowledgmentUpdateManyWithWhereWithoutTileInput | JobTileAcknowledgmentUpdateManyWithWhereWithoutTileInput[]
+    deleteMany?: JobTileAcknowledgmentScalarWhereInput | JobTileAcknowledgmentScalarWhereInput[]
+  }
+
+  export type JobTileAcknowledgmentUncheckedUpdateManyWithoutTileNestedInput = {
+    create?: XOR<JobTileAcknowledgmentCreateWithoutTileInput, JobTileAcknowledgmentUncheckedCreateWithoutTileInput> | JobTileAcknowledgmentCreateWithoutTileInput[] | JobTileAcknowledgmentUncheckedCreateWithoutTileInput[]
+    connectOrCreate?: JobTileAcknowledgmentCreateOrConnectWithoutTileInput | JobTileAcknowledgmentCreateOrConnectWithoutTileInput[]
+    upsert?: JobTileAcknowledgmentUpsertWithWhereUniqueWithoutTileInput | JobTileAcknowledgmentUpsertWithWhereUniqueWithoutTileInput[]
+    createMany?: JobTileAcknowledgmentCreateManyTileInputEnvelope
+    set?: JobTileAcknowledgmentWhereUniqueInput | JobTileAcknowledgmentWhereUniqueInput[]
+    disconnect?: JobTileAcknowledgmentWhereUniqueInput | JobTileAcknowledgmentWhereUniqueInput[]
+    delete?: JobTileAcknowledgmentWhereUniqueInput | JobTileAcknowledgmentWhereUniqueInput[]
+    connect?: JobTileAcknowledgmentWhereUniqueInput | JobTileAcknowledgmentWhereUniqueInput[]
+    update?: JobTileAcknowledgmentUpdateWithWhereUniqueWithoutTileInput | JobTileAcknowledgmentUpdateWithWhereUniqueWithoutTileInput[]
+    updateMany?: JobTileAcknowledgmentUpdateManyWithWhereWithoutTileInput | JobTileAcknowledgmentUpdateManyWithWhereWithoutTileInput[]
+    deleteMany?: JobTileAcknowledgmentScalarWhereInput | JobTileAcknowledgmentScalarWhereInput[]
+  }
+
+  export type JobTileCreateNestedOneWithoutAcknowledgmentsInput = {
+    create?: XOR<JobTileCreateWithoutAcknowledgmentsInput, JobTileUncheckedCreateWithoutAcknowledgmentsInput>
+    connectOrCreate?: JobTileCreateOrConnectWithoutAcknowledgmentsInput
+    connect?: JobTileWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutJobTileAcknowledgmentsInput = {
+    create?: XOR<UserCreateWithoutJobTileAcknowledgmentsInput, UserUncheckedCreateWithoutJobTileAcknowledgmentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutJobTileAcknowledgmentsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type JobTileUpdateOneRequiredWithoutAcknowledgmentsNestedInput = {
+    create?: XOR<JobTileCreateWithoutAcknowledgmentsInput, JobTileUncheckedCreateWithoutAcknowledgmentsInput>
+    connectOrCreate?: JobTileCreateOrConnectWithoutAcknowledgmentsInput
+    upsert?: JobTileUpsertWithoutAcknowledgmentsInput
+    connect?: JobTileWhereUniqueInput
+    update?: XOR<XOR<JobTileUpdateToOneWithWhereWithoutAcknowledgmentsInput, JobTileUpdateWithoutAcknowledgmentsInput>, JobTileUncheckedUpdateWithoutAcknowledgmentsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutJobTileAcknowledgmentsNestedInput = {
+    create?: XOR<UserCreateWithoutJobTileAcknowledgmentsInput, UserUncheckedCreateWithoutJobTileAcknowledgmentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutJobTileAcknowledgmentsInput
+    upsert?: UserUpsertWithoutJobTileAcknowledgmentsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutJobTileAcknowledgmentsInput, UserUpdateWithoutJobTileAcknowledgmentsInput>, UserUncheckedUpdateWithoutJobTileAcknowledgmentsInput>
   }
 
   export type CompanyCreateNestedOneWithoutPostsInput = {
@@ -33164,6 +34684,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     jobMemberships?: JobMemberCreateNestedManyWithoutUserInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentCreateNestedManyWithoutUserInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
@@ -33189,6 +34710,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     jobMemberships?: JobMemberUncheckedCreateNestedManyWithoutUserInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
@@ -33230,6 +34752,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     jobMemberships?: JobMemberUpdateManyWithoutUserNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUpdateManyWithoutUserNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
@@ -33255,6 +34778,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     jobMemberships?: JobMemberUncheckedUpdateManyWithoutUserNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -33280,6 +34804,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     jobMemberships?: JobMemberCreateNestedManyWithoutUserInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentCreateNestedManyWithoutUserInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
@@ -33305,6 +34830,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     jobMemberships?: JobMemberUncheckedCreateNestedManyWithoutUserInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
@@ -33346,6 +34872,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     jobMemberships?: JobMemberUpdateManyWithoutUserNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUpdateManyWithoutUserNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
@@ -33371,6 +34898,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     jobMemberships?: JobMemberUncheckedUpdateManyWithoutUserNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -33699,6 +35227,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     jobMemberships?: JobMemberCreateNestedManyWithoutUserInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentCreateNestedManyWithoutUserInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
@@ -33724,6 +35253,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     jobMemberships?: JobMemberUncheckedCreateNestedManyWithoutUserInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
@@ -33804,6 +35334,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     jobMemberships?: JobMemberUpdateManyWithoutUserNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUpdateManyWithoutUserNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
@@ -33829,6 +35360,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     jobMemberships?: JobMemberUncheckedUpdateManyWithoutUserNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -34192,6 +35724,7 @@ export namespace Prisma {
     companyMemberships?: CompanyMemberCreateNestedManyWithoutUserInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     jobMemberships?: JobMemberCreateNestedManyWithoutUserInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentCreateNestedManyWithoutUserInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
@@ -34217,6 +35750,7 @@ export namespace Prisma {
     companyMemberships?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     jobMemberships?: JobMemberUncheckedCreateNestedManyWithoutUserInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
@@ -34330,6 +35864,7 @@ export namespace Prisma {
     companyMemberships?: CompanyMemberUpdateManyWithoutUserNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     jobMemberships?: JobMemberUpdateManyWithoutUserNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUpdateManyWithoutUserNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
@@ -34355,6 +35890,7 @@ export namespace Prisma {
     companyMemberships?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     jobMemberships?: JobMemberUncheckedUpdateManyWithoutUserNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -34614,6 +36150,26 @@ export namespace Prisma {
 
   export type JobMemberCreateManyUserInputEnvelope = {
     data: JobMemberCreateManyUserInput | JobMemberCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type JobTileAcknowledgmentCreateWithoutUserInput = {
+    createdAt?: Date | string
+    tile: JobTileCreateNestedOneWithoutAcknowledgmentsInput
+  }
+
+  export type JobTileAcknowledgmentUncheckedCreateWithoutUserInput = {
+    tileId: string
+    createdAt?: Date | string
+  }
+
+  export type JobTileAcknowledgmentCreateOrConnectWithoutUserInput = {
+    where: JobTileAcknowledgmentWhereUniqueInput
+    create: XOR<JobTileAcknowledgmentCreateWithoutUserInput, JobTileAcknowledgmentUncheckedCreateWithoutUserInput>
+  }
+
+  export type JobTileAcknowledgmentCreateManyUserInputEnvelope = {
+    data: JobTileAcknowledgmentCreateManyUserInput | JobTileAcknowledgmentCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -34983,6 +36539,31 @@ export namespace Prisma {
     removedAt?: DateTimeNullableFilter<"JobMember"> | Date | string | null
   }
 
+  export type JobTileAcknowledgmentUpsertWithWhereUniqueWithoutUserInput = {
+    where: JobTileAcknowledgmentWhereUniqueInput
+    update: XOR<JobTileAcknowledgmentUpdateWithoutUserInput, JobTileAcknowledgmentUncheckedUpdateWithoutUserInput>
+    create: XOR<JobTileAcknowledgmentCreateWithoutUserInput, JobTileAcknowledgmentUncheckedCreateWithoutUserInput>
+  }
+
+  export type JobTileAcknowledgmentUpdateWithWhereUniqueWithoutUserInput = {
+    where: JobTileAcknowledgmentWhereUniqueInput
+    data: XOR<JobTileAcknowledgmentUpdateWithoutUserInput, JobTileAcknowledgmentUncheckedUpdateWithoutUserInput>
+  }
+
+  export type JobTileAcknowledgmentUpdateManyWithWhereWithoutUserInput = {
+    where: JobTileAcknowledgmentScalarWhereInput
+    data: XOR<JobTileAcknowledgmentUpdateManyMutationInput, JobTileAcknowledgmentUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type JobTileAcknowledgmentScalarWhereInput = {
+    AND?: JobTileAcknowledgmentScalarWhereInput | JobTileAcknowledgmentScalarWhereInput[]
+    OR?: JobTileAcknowledgmentScalarWhereInput[]
+    NOT?: JobTileAcknowledgmentScalarWhereInput | JobTileAcknowledgmentScalarWhereInput[]
+    tileId?: StringFilter<"JobTileAcknowledgment"> | string
+    userId?: StringFilter<"JobTileAcknowledgment"> | string
+    createdAt?: DateTimeFilter<"JobTileAcknowledgment"> | Date | string
+  }
+
   export type CompanyPostUpsertWithWhereUniqueWithoutAuthorInput = {
     where: CompanyPostWhereUniqueInput
     update: XOR<CompanyPostUpdateWithoutAuthorInput, CompanyPostUncheckedUpdateWithoutAuthorInput>
@@ -35158,6 +36739,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     jobMemberships?: JobMemberCreateNestedManyWithoutUserInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentCreateNestedManyWithoutUserInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
@@ -35183,6 +36765,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     jobMemberships?: JobMemberUncheckedCreateNestedManyWithoutUserInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
@@ -35261,6 +36844,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     jobMemberships?: JobMemberUpdateManyWithoutUserNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUpdateManyWithoutUserNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
@@ -35286,6 +36870,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     jobMemberships?: JobMemberUncheckedUpdateManyWithoutUserNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -35311,6 +36896,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     jobMemberships?: JobMemberCreateNestedManyWithoutUserInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentCreateNestedManyWithoutUserInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
@@ -35336,6 +36922,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     jobMemberships?: JobMemberUncheckedCreateNestedManyWithoutUserInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
@@ -35377,6 +36964,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     jobMemberships?: JobMemberUpdateManyWithoutUserNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUpdateManyWithoutUserNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
@@ -35402,6 +36990,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     jobMemberships?: JobMemberUncheckedUpdateManyWithoutUserNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -35466,6 +37055,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     jobMemberships?: JobMemberCreateNestedManyWithoutUserInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentCreateNestedManyWithoutUserInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
     imageUploads?: ImageUploadCreateNestedManyWithoutUserInput
@@ -35491,6 +37081,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     jobMemberships?: JobMemberUncheckedCreateNestedManyWithoutUserInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     imageUploads?: ImageUploadUncheckedCreateNestedManyWithoutUserInput
@@ -35577,6 +37168,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     jobMemberships?: JobMemberUpdateManyWithoutUserNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUpdateManyWithoutUserNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
     imageUploads?: ImageUploadUpdateManyWithoutUserNestedInput
@@ -35602,6 +37194,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     jobMemberships?: JobMemberUncheckedUpdateManyWithoutUserNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     imageUploads?: ImageUploadUncheckedUpdateManyWithoutUserNestedInput
@@ -35626,6 +37219,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     jobMemberships?: JobMemberCreateNestedManyWithoutUserInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentCreateNestedManyWithoutUserInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
@@ -35651,6 +37245,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     jobMemberships?: JobMemberUncheckedCreateNestedManyWithoutUserInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
@@ -35692,6 +37287,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     jobMemberships?: JobMemberUpdateManyWithoutUserNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUpdateManyWithoutUserNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
@@ -35717,6 +37313,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     jobMemberships?: JobMemberUncheckedUpdateManyWithoutUserNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -35944,6 +37541,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     jobMemberships?: JobMemberCreateNestedManyWithoutUserInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentCreateNestedManyWithoutUserInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
@@ -35969,6 +37567,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     jobMemberships?: JobMemberUncheckedCreateNestedManyWithoutUserInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
@@ -36047,6 +37646,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     jobMemberships?: JobMemberUpdateManyWithoutUserNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUpdateManyWithoutUserNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
@@ -36072,6 +37672,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     jobMemberships?: JobMemberUncheckedUpdateManyWithoutUserNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -36135,6 +37736,7 @@ export namespace Prisma {
     companyMemberships?: CompanyMemberCreateNestedManyWithoutUserInput
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
     jobMemberships?: JobMemberCreateNestedManyWithoutUserInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentCreateNestedManyWithoutUserInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
@@ -36160,6 +37762,7 @@ export namespace Prisma {
     companyMemberships?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
     jobMemberships?: JobMemberUncheckedCreateNestedManyWithoutUserInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
@@ -36201,6 +37804,8 @@ export namespace Prisma {
     position: number
     config: JsonNullValueInput | InputJsonValue
     visibility: JsonNullValueInput | InputJsonValue
+    requiresAcknowledgment?: boolean
+    acknowledgments?: JobTileAcknowledgmentCreateNestedManyWithoutTileInput
   }
 
   export type JobTileUncheckedCreateWithoutJobInput = {
@@ -36209,6 +37814,8 @@ export namespace Prisma {
     position: number
     config: JsonNullValueInput | InputJsonValue
     visibility: JsonNullValueInput | InputJsonValue
+    requiresAcknowledgment?: boolean
+    acknowledgments?: JobTileAcknowledgmentUncheckedCreateNestedManyWithoutTileInput
   }
 
   export type JobTileCreateOrConnectWithoutJobInput = {
@@ -36294,6 +37901,7 @@ export namespace Prisma {
     companyMemberships?: CompanyMemberUpdateManyWithoutUserNestedInput
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
     jobMemberships?: JobMemberUpdateManyWithoutUserNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUpdateManyWithoutUserNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
@@ -36319,6 +37927,7 @@ export namespace Prisma {
     companyMemberships?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
     jobMemberships?: JobMemberUncheckedUpdateManyWithoutUserNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -36369,6 +37978,7 @@ export namespace Prisma {
     position?: IntFilter<"JobTile"> | number
     config?: JsonFilter<"JobTile">
     visibility?: JsonFilter<"JobTile">
+    requiresAcknowledgment?: BoolFilter<"JobTile"> | boolean
   }
 
   export type JobCreateWithoutMembersInput = {
@@ -36417,6 +38027,7 @@ export namespace Prisma {
     companyMemberships?: CompanyMemberCreateNestedManyWithoutUserInput
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentCreateNestedManyWithoutUserInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
@@ -36442,6 +38053,7 @@ export namespace Prisma {
     companyMemberships?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
@@ -36518,6 +38130,7 @@ export namespace Prisma {
     companyMemberships?: CompanyMemberUpdateManyWithoutUserNestedInput
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUpdateManyWithoutUserNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
@@ -36543,6 +38156,7 @@ export namespace Prisma {
     companyMemberships?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -36580,6 +38194,26 @@ export namespace Prisma {
     create: XOR<JobCreateWithoutTilesInput, JobUncheckedCreateWithoutTilesInput>
   }
 
+  export type JobTileAcknowledgmentCreateWithoutTileInput = {
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutJobTileAcknowledgmentsInput
+  }
+
+  export type JobTileAcknowledgmentUncheckedCreateWithoutTileInput = {
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type JobTileAcknowledgmentCreateOrConnectWithoutTileInput = {
+    where: JobTileAcknowledgmentWhereUniqueInput
+    create: XOR<JobTileAcknowledgmentCreateWithoutTileInput, JobTileAcknowledgmentUncheckedCreateWithoutTileInput>
+  }
+
+  export type JobTileAcknowledgmentCreateManyTileInputEnvelope = {
+    data: JobTileAcknowledgmentCreateManyTileInput | JobTileAcknowledgmentCreateManyTileInput[]
+    skipDuplicates?: boolean
+  }
+
   export type JobUpsertWithoutTilesInput = {
     update: XOR<JobUpdateWithoutTilesInput, JobUncheckedUpdateWithoutTilesInput>
     create: XOR<JobCreateWithoutTilesInput, JobUncheckedCreateWithoutTilesInput>
@@ -36613,6 +38247,198 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     members?: JobMemberUncheckedUpdateManyWithoutJobNestedInput
+  }
+
+  export type JobTileAcknowledgmentUpsertWithWhereUniqueWithoutTileInput = {
+    where: JobTileAcknowledgmentWhereUniqueInput
+    update: XOR<JobTileAcknowledgmentUpdateWithoutTileInput, JobTileAcknowledgmentUncheckedUpdateWithoutTileInput>
+    create: XOR<JobTileAcknowledgmentCreateWithoutTileInput, JobTileAcknowledgmentUncheckedCreateWithoutTileInput>
+  }
+
+  export type JobTileAcknowledgmentUpdateWithWhereUniqueWithoutTileInput = {
+    where: JobTileAcknowledgmentWhereUniqueInput
+    data: XOR<JobTileAcknowledgmentUpdateWithoutTileInput, JobTileAcknowledgmentUncheckedUpdateWithoutTileInput>
+  }
+
+  export type JobTileAcknowledgmentUpdateManyWithWhereWithoutTileInput = {
+    where: JobTileAcknowledgmentScalarWhereInput
+    data: XOR<JobTileAcknowledgmentUpdateManyMutationInput, JobTileAcknowledgmentUncheckedUpdateManyWithoutTileInput>
+  }
+
+  export type JobTileCreateWithoutAcknowledgmentsInput = {
+    id?: string
+    type: string
+    position: number
+    config: JsonNullValueInput | InputJsonValue
+    visibility: JsonNullValueInput | InputJsonValue
+    requiresAcknowledgment?: boolean
+    job: JobCreateNestedOneWithoutTilesInput
+  }
+
+  export type JobTileUncheckedCreateWithoutAcknowledgmentsInput = {
+    id?: string
+    jobId: string
+    type: string
+    position: number
+    config: JsonNullValueInput | InputJsonValue
+    visibility: JsonNullValueInput | InputJsonValue
+    requiresAcknowledgment?: boolean
+  }
+
+  export type JobTileCreateOrConnectWithoutAcknowledgmentsInput = {
+    where: JobTileWhereUniqueInput
+    create: XOR<JobTileCreateWithoutAcknowledgmentsInput, JobTileUncheckedCreateWithoutAcknowledgmentsInput>
+  }
+
+  export type UserCreateWithoutJobTileAcknowledgmentsInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    sessionVersion?: number
+    image?: string | null
+    description?: string | null
+    emailVerificationCode?: EmailVerificationCodeCreateNestedOneWithoutUserInput
+    twoFactor?: TwoFactorCreateNestedOneWithoutUserInput
+    twoFactorChallenges?: TwoFactorChallengeCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    companyMemberships?: CompanyMemberCreateNestedManyWithoutUserInput
+    channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
+    createdJobs?: JobCreateNestedManyWithoutCreatedByInput
+    jobMemberships?: JobMemberCreateNestedManyWithoutUserInput
+    companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
+    postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
+    sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
+    imageUploads?: ImageUploadCreateNestedManyWithoutUserInput
+    channelReads?: ChannelReadCreateNestedManyWithoutUserInput
+    messageEdits?: MessageEditCreateNestedManyWithoutEditorInput
+  }
+
+  export type UserUncheckedCreateWithoutJobTileAcknowledgmentsInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    sessionVersion?: number
+    image?: string | null
+    description?: string | null
+    emailVerificationCode?: EmailVerificationCodeUncheckedCreateNestedOneWithoutUserInput
+    twoFactor?: TwoFactorUncheckedCreateNestedOneWithoutUserInput
+    twoFactorChallenges?: TwoFactorChallengeUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    companyMemberships?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
+    channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
+    createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
+    jobMemberships?: JobMemberUncheckedCreateNestedManyWithoutUserInput
+    companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
+    sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
+    imageUploads?: ImageUploadUncheckedCreateNestedManyWithoutUserInput
+    channelReads?: ChannelReadUncheckedCreateNestedManyWithoutUserInput
+    messageEdits?: MessageEditUncheckedCreateNestedManyWithoutEditorInput
+  }
+
+  export type UserCreateOrConnectWithoutJobTileAcknowledgmentsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutJobTileAcknowledgmentsInput, UserUncheckedCreateWithoutJobTileAcknowledgmentsInput>
+  }
+
+  export type JobTileUpsertWithoutAcknowledgmentsInput = {
+    update: XOR<JobTileUpdateWithoutAcknowledgmentsInput, JobTileUncheckedUpdateWithoutAcknowledgmentsInput>
+    create: XOR<JobTileCreateWithoutAcknowledgmentsInput, JobTileUncheckedCreateWithoutAcknowledgmentsInput>
+    where?: JobTileWhereInput
+  }
+
+  export type JobTileUpdateToOneWithWhereWithoutAcknowledgmentsInput = {
+    where?: JobTileWhereInput
+    data: XOR<JobTileUpdateWithoutAcknowledgmentsInput, JobTileUncheckedUpdateWithoutAcknowledgmentsInput>
+  }
+
+  export type JobTileUpdateWithoutAcknowledgmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    position?: IntFieldUpdateOperationsInput | number
+    config?: JsonNullValueInput | InputJsonValue
+    visibility?: JsonNullValueInput | InputJsonValue
+    requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
+    job?: JobUpdateOneRequiredWithoutTilesNestedInput
+  }
+
+  export type JobTileUncheckedUpdateWithoutAcknowledgmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    position?: IntFieldUpdateOperationsInput | number
+    config?: JsonNullValueInput | InputJsonValue
+    visibility?: JsonNullValueInput | InputJsonValue
+    requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type UserUpsertWithoutJobTileAcknowledgmentsInput = {
+    update: XOR<UserUpdateWithoutJobTileAcknowledgmentsInput, UserUncheckedUpdateWithoutJobTileAcknowledgmentsInput>
+    create: XOR<UserCreateWithoutJobTileAcknowledgmentsInput, UserUncheckedCreateWithoutJobTileAcknowledgmentsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutJobTileAcknowledgmentsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutJobTileAcknowledgmentsInput, UserUncheckedUpdateWithoutJobTileAcknowledgmentsInput>
+  }
+
+  export type UserUpdateWithoutJobTileAcknowledgmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionVersion?: IntFieldUpdateOperationsInput | number
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerificationCode?: EmailVerificationCodeUpdateOneWithoutUserNestedInput
+    twoFactor?: TwoFactorUpdateOneWithoutUserNestedInput
+    twoFactorChallenges?: TwoFactorChallengeUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    companyMemberships?: CompanyMemberUpdateManyWithoutUserNestedInput
+    channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
+    createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
+    jobMemberships?: JobMemberUpdateManyWithoutUserNestedInput
+    companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
+    sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
+    imageUploads?: ImageUploadUpdateManyWithoutUserNestedInput
+    channelReads?: ChannelReadUpdateManyWithoutUserNestedInput
+    messageEdits?: MessageEditUpdateManyWithoutEditorNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutJobTileAcknowledgmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionVersion?: IntFieldUpdateOperationsInput | number
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerificationCode?: EmailVerificationCodeUncheckedUpdateOneWithoutUserNestedInput
+    twoFactor?: TwoFactorUncheckedUpdateOneWithoutUserNestedInput
+    twoFactorChallenges?: TwoFactorChallengeUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    companyMemberships?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
+    channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
+    createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
+    jobMemberships?: JobMemberUncheckedUpdateManyWithoutUserNestedInput
+    companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
+    postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
+    sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
+    imageUploads?: ImageUploadUncheckedUpdateManyWithoutUserNestedInput
+    channelReads?: ChannelReadUncheckedUpdateManyWithoutUserNestedInput
+    messageEdits?: MessageEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type CompanyCreateWithoutPostsInput = {
@@ -36672,6 +38498,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     jobMemberships?: JobMemberCreateNestedManyWithoutUserInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentCreateNestedManyWithoutUserInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
     imageUploads?: ImageUploadCreateNestedManyWithoutUserInput
@@ -36697,6 +38524,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     jobMemberships?: JobMemberUncheckedCreateNestedManyWithoutUserInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
     imageUploads?: ImageUploadUncheckedCreateNestedManyWithoutUserInput
@@ -36803,6 +38631,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     jobMemberships?: JobMemberUpdateManyWithoutUserNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUpdateManyWithoutUserNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
     imageUploads?: ImageUploadUpdateManyWithoutUserNestedInput
@@ -36828,6 +38657,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     jobMemberships?: JobMemberUncheckedUpdateManyWithoutUserNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
     imageUploads?: ImageUploadUncheckedUpdateManyWithoutUserNestedInput
@@ -36894,6 +38724,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     jobMemberships?: JobMemberCreateNestedManyWithoutUserInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentCreateNestedManyWithoutUserInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
     imageUploads?: ImageUploadCreateNestedManyWithoutUserInput
@@ -36919,6 +38750,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     jobMemberships?: JobMemberUncheckedCreateNestedManyWithoutUserInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
     imageUploads?: ImageUploadUncheckedCreateNestedManyWithoutUserInput
@@ -36991,6 +38823,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     jobMemberships?: JobMemberUpdateManyWithoutUserNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUpdateManyWithoutUserNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
     imageUploads?: ImageUploadUpdateManyWithoutUserNestedInput
@@ -37016,6 +38849,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     jobMemberships?: JobMemberUncheckedUpdateManyWithoutUserNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
     imageUploads?: ImageUploadUncheckedUpdateManyWithoutUserNestedInput
@@ -37040,6 +38874,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     jobMemberships?: JobMemberCreateNestedManyWithoutUserInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentCreateNestedManyWithoutUserInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
@@ -37065,6 +38900,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     jobMemberships?: JobMemberUncheckedCreateNestedManyWithoutUserInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
@@ -37106,6 +38942,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     jobMemberships?: JobMemberUpdateManyWithoutUserNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUpdateManyWithoutUserNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
@@ -37131,6 +38968,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     jobMemberships?: JobMemberUncheckedUpdateManyWithoutUserNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -37156,6 +38994,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberCreateNestedManyWithoutUserInput
     createdJobs?: JobCreateNestedManyWithoutCreatedByInput
     jobMemberships?: JobMemberCreateNestedManyWithoutUserInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentCreateNestedManyWithoutUserInput
     companyPosts?: CompanyPostCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationCreateNestedManyWithoutCreatedByInput
@@ -37181,6 +39020,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedCreateNestedManyWithoutUserInput
     createdJobs?: JobUncheckedCreateNestedManyWithoutCreatedByInput
     jobMemberships?: JobMemberUncheckedCreateNestedManyWithoutUserInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     companyPosts?: CompanyPostUncheckedCreateNestedManyWithoutAuthorInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: CompanyInvitationUncheckedCreateNestedManyWithoutCreatedByInput
@@ -37222,6 +39062,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUpdateManyWithoutUserNestedInput
     createdJobs?: JobUpdateManyWithoutCreatedByNestedInput
     jobMemberships?: JobMemberUpdateManyWithoutUserNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUpdateManyWithoutUserNestedInput
     companyPosts?: CompanyPostUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUpdateManyWithoutCreatedByNestedInput
@@ -37247,6 +39088,7 @@ export namespace Prisma {
     channelMemberships?: ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
     createdJobs?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
     jobMemberships?: JobMemberUncheckedUpdateManyWithoutUserNestedInput
+    jobTileAcknowledgments?: JobTileAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     companyPosts?: CompanyPostUncheckedUpdateManyWithoutAuthorNestedInput
     postAcknowledgments?: CompanyPostAcknowledgmentUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: CompanyInvitationUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -37677,6 +39519,11 @@ export namespace Prisma {
     removedAt?: Date | string | null
   }
 
+  export type JobTileAcknowledgmentCreateManyUserInput = {
+    tileId: string
+    createdAt?: Date | string
+  }
+
   export type CompanyPostCreateManyAuthorInput = {
     id?: string
     title?: string
@@ -37904,6 +39751,21 @@ export namespace Prisma {
     removedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type JobTileAcknowledgmentUpdateWithoutUserInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tile?: JobTileUpdateOneRequiredWithoutAcknowledgmentsNestedInput
+  }
+
+  export type JobTileAcknowledgmentUncheckedUpdateWithoutUserInput = {
+    tileId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobTileAcknowledgmentUncheckedUpdateManyWithoutUserInput = {
+    tileId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type CompanyPostUpdateWithoutAuthorInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
@@ -38074,6 +39936,7 @@ export namespace Prisma {
     position: number
     config: JsonNullValueInput | InputJsonValue
     visibility: JsonNullValueInput | InputJsonValue
+    requiresAcknowledgment?: boolean
   }
 
   export type JobMemberUpdateWithoutJobInput = {
@@ -38100,6 +39963,8 @@ export namespace Prisma {
     position?: IntFieldUpdateOperationsInput | number
     config?: JsonNullValueInput | InputJsonValue
     visibility?: JsonNullValueInput | InputJsonValue
+    requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
+    acknowledgments?: JobTileAcknowledgmentUpdateManyWithoutTileNestedInput
   }
 
   export type JobTileUncheckedUpdateWithoutJobInput = {
@@ -38108,6 +39973,8 @@ export namespace Prisma {
     position?: IntFieldUpdateOperationsInput | number
     config?: JsonNullValueInput | InputJsonValue
     visibility?: JsonNullValueInput | InputJsonValue
+    requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
+    acknowledgments?: JobTileAcknowledgmentUncheckedUpdateManyWithoutTileNestedInput
   }
 
   export type JobTileUncheckedUpdateManyWithoutJobInput = {
@@ -38116,6 +39983,27 @@ export namespace Prisma {
     position?: IntFieldUpdateOperationsInput | number
     config?: JsonNullValueInput | InputJsonValue
     visibility?: JsonNullValueInput | InputJsonValue
+    requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type JobTileAcknowledgmentCreateManyTileInput = {
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type JobTileAcknowledgmentUpdateWithoutTileInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutJobTileAcknowledgmentsNestedInput
+  }
+
+  export type JobTileAcknowledgmentUncheckedUpdateWithoutTileInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobTileAcknowledgmentUncheckedUpdateManyWithoutTileInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CompanyPostAcknowledgmentCreateManyPostInput = {

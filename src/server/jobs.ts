@@ -1,3 +1,4 @@
+import { isDeepStrictEqual } from "node:util";
 import { TRPCError } from "@trpc/server";
 import type { Prisma } from "../../generated/prisma";
 import {
@@ -10,7 +11,8 @@ import { keepJobMembers } from "~/lib/job-tiles";
  * Makes a job's members and tiles match what the builder saved. People taken
  * off the job keep a removed row, as history. A tile keeps its id only when it
  * already belongs to this job, so a client can't take over another job's tile.
- * Saved tiles that no longer fit their type are left alone.
+ * Saved tiles that no longer fit their type are left alone. Changing a tile's
+ * content clears its acknowledgments, so people confirm the new version.
  */
 export async function saveJobContents(
   tx: Prisma.TransactionClient,
@@ -43,7 +45,13 @@ export async function saveJobContents(
 
   const existing = await tx.jobTile.findMany({
     where: { jobId: job.id },
-    select: { id: true, type: true, config: true, visibility: true },
+    select: {
+      id: true,
+      type: true,
+      config: true,
+      visibility: true,
+      requiresAcknowledgment: true,
+    },
   });
   // Only tiles the builder could have been shown can be kept or deleted.
   // getJob hides unreadable ones, so leaving them out would otherwise
@@ -60,12 +68,28 @@ export async function saveJobContents(
   }));
   await tx.jobTile.deleteMany({ where: { id: { in: [...unclaimed] } } });
   const rows = saved.map(
-    ({ id, keep, type, config, visibility }, position) => ({
+    (
+      { id, keep, type, config, visibility, requiresAcknowledgment },
+      position,
+    ) => ({
       id,
       keep,
-      data: { type, config, visibility, position },
+      data: { type, config, visibility, requiresAcknowledgment, position },
     }),
   );
+  // Both sides go through JSON, so undefined fields and key order don't
+  // count as an edit.
+  const asJson = (value: unknown): unknown => JSON.parse(JSON.stringify(value));
+  const before = new Map(existing.map((tile) => [tile.id, tile.config]));
+  const edited = rows.filter(
+    (row) =>
+      row.keep &&
+      !isDeepStrictEqual(asJson(before.get(row.id)), asJson(row.data.config)),
+  );
+  if (edited.length > 0)
+    await tx.jobTileAcknowledgment.deleteMany({
+      where: { tileId: { in: edited.map((row) => row.id) } },
+    });
   // New tiles go in one query; kept tiles each need their own update.
   await tx.jobTile.createMany({
     data: rows

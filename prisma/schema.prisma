@@ -151,6 +151,7 @@ model User {
     channelMemberships  ChannelMember[]
     createdJobs         Job[]
     jobMemberships      JobMember[]
+    jobTileAcknowledgments JobTileAcknowledgment[]
     companyPosts        CompanyPost[]
     postAcknowledgments CompanyPostAcknowledgment[]
     sentInvitations CompanyInvitation[]
@@ -302,10 +303,25 @@ model JobTile {
     position   Int
     config     Json
     visibility Json
+    // Whether the people who can see it are asked to acknowledge it.
+    requiresAcknowledgment Boolean @default(false)
 
-    job        Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+    job             Job                     @relation(fields: [jobId], references: [id], onDelete: Cascade)
+    acknowledgments JobTileAcknowledgment[]
 
     @@index([jobId, position])
+}
+
+model JobTileAcknowledgment {
+    tileId    String
+    userId    String
+    createdAt DateTime @default(now())
+
+    tile JobTile @relation(fields: [tileId], references: [id], onDelete: Cascade)
+    user User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@id([tileId, userId])
+    @@index([userId])
 }
 
 model CompanyPost {

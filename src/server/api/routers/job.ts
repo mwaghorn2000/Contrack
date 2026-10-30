@@ -2,7 +2,7 @@ import z from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import { tileSchema } from "~/app/_components/jobs/tiles/registry";
-import { canSeeTile, keepJobMembers } from "~/lib/job-tiles";
+import { canSeeTile, keepJobMembers, tileAudience } from "~/lib/job-tiles";
 import { imageFileSchema, imageKeySchema } from "~/lib/image-upload";
 import {
   confirmPrivateImageUpload,
@@ -17,6 +17,11 @@ import {
   requireJobManager,
   visibleJobsWhere,
 } from "~/server/job-access";
+import {
+  acknowledgmentStatus,
+  jobPeople,
+  requireVisibleTile,
+} from "~/server/job-acknowledgments";
 import { deletePrefix, storageConfigured } from "~/server/storage";
 import { saveJobContents } from "~/server/jobs";
 import { serializableTransaction } from "~/server/transactions";
@@ -52,13 +57,19 @@ const updateJobSchema = jobFieldsSchema.extend({
   jobId: z.string().cuid(),
 });
 
+const tileIdSchema = z.object({ tileId: z.string().cuid() });
+
 export const jobRouter = createTRPCRouter({
   // Owners and admins get every tile; others only the tiles they can see.
   getJob: protectedProcedure
     .input(getJobSchema)
     .query(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
-      const { isManager } = await requireJobAccess(ctx.db, userId, input.jobId);
+      const { job: access, isManager } = await requireJobAccess(
+        ctx.db,
+        userId,
+        input.jobId,
+      );
       const job = await ctx.db.job.findUnique({
         where: { id: input.jobId },
         select: {
@@ -72,7 +83,13 @@ export const jobRouter = createTRPCRouter({
             orderBy: { createdAt: "asc" },
           },
           tiles: {
-            select: { id: true, type: true, config: true, visibility: true },
+            select: {
+              id: true,
+              type: true,
+              config: true,
+              visibility: true,
+              requiresAcknowledgment: true,
+            },
             orderBy: [{ position: "asc" }, { id: "asc" }],
           },
         },
@@ -91,17 +108,25 @@ export const jobRouter = createTRPCRouter({
         return [];
       });
       // Visibility lists can still name people since taken off the job.
-      const tiles = keepJobMembers(saved, memberIds)
-        .filter((tile) => canSeeTile(tile, { userId, isManager }))
-        // Others' names stay hidden: members only learn a tile is shared with them.
-        .map((tile) =>
-          isManager || tile.visibility.mode === "everyone"
-            ? tile
-            : {
-                ...tile,
-                visibility: { mode: "members" as const, userIds: [userId] },
-              },
-        );
+      const visible = keepJobMembers(saved, memberIds).filter((tile) =>
+        canSeeTile(tile, { userId, isManager }),
+      );
+      // Worked out before names are hidden below, which would change who's asked.
+      const acknowledgments = await acknowledgmentStatus(
+        ctx.db,
+        access,
+        visible,
+        { userId, isManager },
+      );
+      // Others' names stay hidden: members only learn a tile is shared with them.
+      const tiles = visible.map((tile) =>
+        isManager || tile.visibility.mode === "everyone"
+          ? tile
+          : {
+              ...tile,
+              visibility: { mode: "members" as const, userIds: [userId] },
+            },
+      );
       return {
         id: job.id,
         title: job.title,
@@ -109,6 +134,7 @@ export const jobRouter = createTRPCRouter({
         photoUrl: await signedImageUrl(job.photo),
         memberIds,
         tiles,
+        acknowledgments,
       };
     }),
 
@@ -281,5 +307,76 @@ export const jobRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND", message: "Job not found." });
       await deleteReplacedKey(folder, current.photo, key);
       return { photoUrl: await signedImageUrl(key) };
+    }),
+
+  // Acknowledges a tile, or takes it back, for someone the tile asks.
+  setTileAcknowledgment: protectedProcedure
+    .input(tileIdSchema.extend({ acknowledged: z.boolean() }))
+    .mutation(({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+      // In one transaction with the checks, so a save that edits the tile and
+      // clears its acknowledgments can't slip in between.
+      return serializableTransaction(ctx.db, async (tx) => {
+        const { tile, job } = await requireVisibleTile(
+          tx,
+          userId,
+          input.tileId,
+        );
+        const asked =
+          tile.requiresAcknowledgment &&
+          tileAudience(tile, await jobPeople(tx, job)).some(
+            (person) => person.userId === userId,
+          );
+        if (!asked)
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "You aren't asked to acknowledge this tile.",
+          });
+        const where = { tileId: tile.id, userId };
+        if (input.acknowledged)
+          // skipDuplicates makes acknowledging twice harmless.
+          await tx.jobTileAcknowledgment.createMany({
+            data: where,
+            skipDuplicates: true,
+          });
+        else await tx.jobTileAcknowledgment.deleteMany({ where });
+        return { acknowledged: input.acknowledged };
+      });
+    }),
+
+  // Everyone a tile asks to acknowledge it, and when they did, for managers.
+  getTileAcknowledgments: protectedProcedure
+    .input(tileIdSchema)
+    .query(async ({ ctx, input }) => {
+      const { tile, job, isManager } = await requireVisibleTile(
+        ctx.db,
+        ctx.session.user.id,
+        input.tileId,
+      );
+      if (!isManager)
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Only owners and admins can see who has acknowledged.",
+        });
+      if (!tile.requiresAcknowledgment)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "This tile doesn't ask for acknowledgment.",
+        });
+      const audience = tileAudience(tile, await jobPeople(ctx.db, job));
+      const rows = await ctx.db.jobTileAcknowledgment.findMany({
+        where: {
+          tileId: tile.id,
+          userId: { in: audience.map(({ userId }) => userId) },
+        },
+        select: { userId: true, createdAt: true },
+      });
+      const acknowledgedAt = new Map(
+        rows.map((row) => [row.userId, row.createdAt]),
+      );
+      return audience.map(({ user }) => ({
+        user,
+        acknowledgedAt: acknowledgedAt.get(user.id) ?? null,
+      }));
     }),
 });

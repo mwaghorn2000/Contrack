@@ -65,11 +65,16 @@ export default function CanvasTile<T extends JobTile>({
           <span className="sr-only">Visible to: </span>
           {visibilityLabel(tile.visibility)}
         </span>
+        {tile.requiresAcknowledgment && (
+          <span className="rounded-full bg-amber-50 px-2 py-0.5 text-xs font-normal text-amber-800">
+            Needs acknowledgment
+          </span>
+        )}
         <button
           type="button"
           onClick={() => setSettingsOpen((open) => !open)}
           aria-expanded={settingsOpen}
-          aria-label={`Visibility of ${name}`}
+          aria-label={`Settings for ${name}`}
           className={iconButtonClass}
         >
           {/* A gear drawn as text, not a colour emoji. */}
@@ -98,8 +103,12 @@ export default function CanvasTile<T extends JobTile>({
         <TileSettings
           tileId={tile.id}
           visibility={tile.visibility}
+          requiresAcknowledgment={tile.requiresAcknowledgment}
           people={people}
           onChange={(visibility) => onChange({ ...tile, visibility })}
+          onAcknowledgmentChange={(requiresAcknowledgment) =>
+            onChange({ ...tile, requiresAcknowledgment })
+          }
         />
       )}
       <div className="p-3">

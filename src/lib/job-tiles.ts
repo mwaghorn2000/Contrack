@@ -47,3 +47,14 @@ export function keepJobMembers<T extends { visibility: TileVisibility }>(
       : tile,
   );
 }
+
+/**
+ * The people asked to acknowledge a tile: those given (the job's current
+ * members) who can see it.
+ */
+export function tileAudience<P extends { userId: string; isManager: boolean }>(
+  tile: { visibility: TileVisibility },
+  people: P[],
+) {
+  return people.filter((person) => canSeeTile(tile, person));
+}

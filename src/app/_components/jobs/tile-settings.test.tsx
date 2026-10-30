@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 import { expect, test } from "vitest";
@@ -13,6 +13,7 @@ function Board({ people }: { people: JobPerson[] }) {
       id: "tile-1",
       type: "text",
       visibility: { mode: "everyone" },
+      requiresAcknowledgment: false,
       config: { body: "" },
     },
   ]);
@@ -32,7 +33,7 @@ test("a tile can be limited to chosen job members", async () => {
   expect(screen.getByText("Everyone")).toBeTruthy();
 
   const settings = screen.getByRole("button", {
-    name: "Visibility of Text tile 1",
+    name: "Settings for Text tile 1",
   });
   await user.click(settings);
   expect(settings.getAttribute("aria-expanded")).toBe("true");
@@ -47,7 +48,9 @@ test("a tile can be limited to chosen job members", async () => {
 
   await user.click(screen.getByRole("radio", { name: "Everyone on the job" }));
   expect(screen.getByText("Everyone")).toBeTruthy();
-  expect(screen.queryByRole("checkbox")).toBeNull();
+  expect(
+    screen.queryByRole("group", { name: "Members who can see this tile" }),
+  ).toBeNull();
   // Limiting it again starts from nobody rather than the old list.
   await user.click(
     screen.getByRole("radio", { name: "Only selected members" }),
@@ -64,7 +67,7 @@ test("limiting a tile asks for people when the job has none", async () => {
   render(<Board people={[]} />);
 
   await user.click(
-    screen.getByRole("button", { name: "Visibility of Text tile 1" }),
+    screen.getByRole("button", { name: "Settings for Text tile 1" }),
   );
   await user.click(
     screen.getByRole("radio", { name: "Only selected members" }),
@@ -74,4 +77,27 @@ test("limiting a tile asks for people when the job has none", async () => {
   expect(
     screen.getByText("Company owners and admins can always see every tile."),
   ).toBeTruthy();
+});
+
+test("a tile can ask the people who see it to acknowledge it", async () => {
+  const user = userEvent.setup();
+  render(<Board people={[{ id: "user-1", name: "Ada" }]} />);
+  expect(screen.queryByText("Needs acknowledgment")).toBeNull();
+
+  await user.click(
+    screen.getByRole("button", { name: "Settings for Text tile 1" }),
+  );
+  const ask = screen.getByRole("checkbox", {
+    name: "Ask people who can see it to acknowledge it",
+  });
+  await user.click(ask);
+
+  expect(ask).toHaveProperty("checked", true);
+  expect(screen.getByText("Needs acknowledgment")).toBeTruthy();
+  // Not part of the visibility choices, for screen readers.
+  expect(
+    within(
+      screen.getByRole("group", { name: "Who can see this tile" }),
+    ).queryByRole("checkbox", { name: /acknowledge/ }),
+  ).toBeNull();
 });

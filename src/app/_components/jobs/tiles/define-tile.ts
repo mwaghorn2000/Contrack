@@ -29,6 +29,8 @@ export function defineTile<
       id: z.string().max(64),
       type: z.literal(tile.type),
       visibility: tileVisibilitySchema,
+      // Defaults so tiles saved before acknowledgments existed still parse.
+      requiresAcknowledgment: z.boolean().default(false),
       config: tile.config,
     }),
   };

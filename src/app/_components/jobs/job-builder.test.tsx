@@ -83,6 +83,31 @@ test("saving a job with Text tiles creates it and opens it", async () => {
   ]);
 });
 
+test("saving sends whether each tile asks for acknowledgment", async () => {
+  const user = userEvent.setup();
+  const requests = renderBuilder();
+
+  await user.type(screen.getByLabelText("Name"), "Roof inspection");
+  await user.click(screen.getByRole("button", { name: "Add Text tile" }));
+  await user.click(screen.getByRole("button", { name: "Add Text tile" }));
+  await user.click(
+    screen.getByRole("button", { name: "Settings for Text tile 1" }),
+  );
+  await user.click(
+    screen.getByRole("checkbox", {
+      name: "Ask people who can see it to acknowledge it",
+    }),
+  );
+  await user.click(screen.getByRole("button", { name: "Save job" }));
+
+  await vi.waitFor(() => expect(requests).toHaveLength(1));
+  expect(
+    (
+      requests[0]?.[1] as { tiles: { requiresAcknowledgment: boolean }[] }
+    ).tiles.map((tile) => tile.requiresAcknowledgment),
+  ).toEqual([true, false]);
+});
+
 test("a new job starts with its creator on it", async () => {
   const user = userEvent.setup();
   const requests = renderBuilder(undefined, "user-1");
@@ -118,7 +143,7 @@ test("taking someone off the job removes them from tile visibility", async () =>
   await user.click(jaxon);
   await user.click(screen.getByRole("button", { name: "Add Text tile" }));
   await user.click(
-    screen.getByRole("button", { name: "Visibility of Text tile 1" }),
+    screen.getByRole("button", { name: "Settings for Text tile 1" }),
   );
   await user.click(
     screen.getByRole("radio", { name: "Only selected members" }),

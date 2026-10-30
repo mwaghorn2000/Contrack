@@ -5,6 +5,7 @@ const textTile = {
   id: "tile-1",
   type: "text",
   visibility: { mode: "everyone" },
+  requiresAcknowledgment: false,
   config: { body: "Wear a harness." },
 };
 

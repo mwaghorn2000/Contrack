@@ -136,7 +136,9 @@ it("getJob returns a job's details, members and tiles in order", async () => {
       type,
       config,
       visibility,
+      requiresAcknowledgment: false,
     })),
+    acknowledgments: {},
   });
 });
 

@@ -8,6 +8,7 @@ function tile(id: string): JobTile {
     id,
     type: "text",
     visibility: { mode: "everyone" },
+    requiresAcknowledgment: false,
     config: { body: id },
   };
 }
