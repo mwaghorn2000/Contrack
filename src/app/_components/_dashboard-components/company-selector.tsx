@@ -90,10 +90,11 @@ export default function CompanySelector() {
   function selectCompany(id: string) {
     dropdownRef.current?.removeAttribute("open");
     triggerRef.current?.focus();
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("companyId", id);
+    // Back to the home screen: the current page (e.g. a job) may belong to
+    // the previous company.
+    const params = new URLSearchParams({ companyId: id });
     startTransition(() => {
-      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+      router.replace(`/dashboard?${params.toString()}`, { scroll: false });
     });
   }
 
