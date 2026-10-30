@@ -23,6 +23,8 @@ const answerFields = {
   note: z.string().trim().max(2000).optional(),
 };
 
+const answerIdSchema = z.object({ answerId: z.string().cuid() });
+
 /** A note as saved: an empty or missing one is stored as no note. */
 function emptyToNull(note: string | undefined) {
   return note?.length ? note : null;
@@ -73,6 +75,34 @@ async function checkedAnswer(
   });
   if (message) throw new TRPCError({ code: "BAD_REQUEST", message });
   return parsed.data as Prisma.InputJsonValue;
+}
+
+/**
+ * Finds an answer on a tile the user can see, with the tile and whether they
+ * manage the job. Anything else is NOT_FOUND, with one message for all cases.
+ */
+async function requireVisibleAnswer(
+  tx: Prisma.TransactionClient,
+  userId: string,
+  answerId: string,
+) {
+  const notFound = new TRPCError({
+    code: "NOT_FOUND",
+    message: "Answer not found.",
+  });
+  const answer = await tx.jobTileAnswer.findUnique({
+    where: { id: answerId },
+    select: { id: true, tileId: true, authorId: true },
+  });
+  if (!answer) throw notFound;
+  const { tile, isManager } = await requireVisibleTile(
+    tx,
+    userId,
+    answer.tileId,
+  ).catch(() => {
+    throw notFound;
+  });
+  return { answer, tile, isManager };
 }
 
 export const jobTileRouter = createTRPCRouter({
@@ -169,5 +199,63 @@ export const jobTileRouter = createTRPCRouter({
           select: { id: true },
         });
       });
+    }),
+
+  // Changes an answer's data and note, for its author only.
+  updateAnswer: protectedProcedure
+    .input(answerIdSchema.extend(answerFields))
+    .mutation(({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+      return serializableTransaction(ctx.db, async (tx) => {
+        const { answer, tile } = await requireVisibleAnswer(
+          tx,
+          userId,
+          input.answerId,
+        );
+        if (answer.authorId !== userId)
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "You can only change your own answers.",
+          });
+        const rules = requireAnswerRules(tile);
+        const data = await checkedAnswer(
+          tx,
+          tile,
+          rules,
+          input.data,
+          userId,
+          answer.id,
+        );
+        await tx.jobTileAnswer.update({
+          where: { id: answer.id },
+          // Leaving the note out keeps it; sending "" clears it.
+          data: {
+            data,
+            ...(input.note === undefined
+              ? {}
+              : { note: emptyToNull(input.note) }),
+          },
+        });
+        return { id: answer.id };
+      });
+    }),
+
+  // Deletes an answer, for its author or a company owner or admin.
+  deleteAnswer: protectedProcedure
+    .input(answerIdSchema)
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+      const { answer, isManager } = await requireVisibleAnswer(
+        ctx.db,
+        userId,
+        input.answerId,
+      );
+      if (answer.authorId !== userId && !isManager)
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You can only delete your own answers.",
+        });
+      await ctx.db.jobTileAnswer.deleteMany({ where: { id: answer.id } });
+      return { id: answer.id };
     }),
 });
