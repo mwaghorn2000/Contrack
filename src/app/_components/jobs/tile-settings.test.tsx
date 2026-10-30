@@ -14,6 +14,7 @@ function Board({ people }: { people: JobPerson[] }) {
       type: "text",
       visibility: { mode: "everyone" },
       requiresAcknowledgment: false,
+      description: "",
       config: { body: "" },
     },
   ]);

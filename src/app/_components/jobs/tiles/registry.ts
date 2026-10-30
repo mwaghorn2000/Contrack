@@ -61,6 +61,7 @@ export function createTile<K extends TileType>(type: K) {
     type,
     visibility: { mode: "everyone" },
     requiresAcknowledgment: false,
+    description: "",
     config: tileTypes[type].defaultConfig(),
   } as unknown as Extract<JobTile, { type: K }>;
 }

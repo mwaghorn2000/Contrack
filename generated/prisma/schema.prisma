@@ -307,6 +307,8 @@ model JobTile {
   requiresAcknowledgment Boolean   @default(false)
   // Set when the tile is taken off the job, so its answers are kept.
   removedAt              DateTime?
+  // Shown above the tile, whatever its type.
+  description            String    @default("")
 
   job             Job                     @relation(fields: [jobId], references: [id], onDelete: Cascade)
   acknowledgments JobTileAcknowledgment[]

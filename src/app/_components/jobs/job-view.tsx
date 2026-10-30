@@ -183,6 +183,11 @@ export default function JobView({
                     <span aria-hidden="true">{icon}</span>
                     {label}
                   </h2>
+                  {tile.description && (
+                    <p className="mb-3 text-sm whitespace-pre-wrap text-gray-600">
+                      {tile.description}
+                    </p>
+                  )}
                   {answers ? (
                     // Answers can't be given while previewing as someone.
                     <TileAnswers

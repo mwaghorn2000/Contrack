@@ -111,7 +111,21 @@ export default function CanvasTile<T extends JobTile>({
           }
         />
       )}
-      <div className="p-3">
+      <div className="space-y-3 p-3">
+        <label className="block text-sm">
+          <span className="font-medium">Description</span>{" "}
+          <span className="text-gray-500">(optional)</span>
+          <textarea
+            rows={2}
+            maxLength={500}
+            value={tile.description}
+            onChange={(event) =>
+              onChange({ ...tile, description: event.target.value })
+            }
+            placeholder="Shown above the tile on the job page"
+            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus-visible:outline-2 focus-visible:outline-gray-900"
+          />
+        </label>
         <Editor
           config={tile.config}
           onChange={(config) => onChange({ ...tile, config })}

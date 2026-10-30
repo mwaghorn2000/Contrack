@@ -73,6 +73,8 @@ export function defineTile<
       visibility: tileVisibilitySchema,
       // Defaults so tiles saved before acknowledgments existed still parse.
       requiresAcknowledgment: z.boolean().default(false),
+      // Shown above the tile; every tile type can have one.
+      description: z.string().trim().max(500).default(""),
       config: tile.config,
     }),
   };

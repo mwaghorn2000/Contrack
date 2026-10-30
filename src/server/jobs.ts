@@ -52,6 +52,7 @@ export async function saveJobContents(
       config: true,
       visibility: true,
       requiresAcknowledgment: true,
+      description: true,
     },
   });
   // Only tiles the builder could have been shown can be kept or deleted.
@@ -76,22 +77,39 @@ export async function saveJobContents(
   });
   const rows = saved.map(
     (
-      { id, keep, type, config, visibility, requiresAcknowledgment },
+      {
+        id,
+        keep,
+        type,
+        config,
+        visibility,
+        requiresAcknowledgment,
+        description,
+      },
       position,
     ) => ({
       id,
       keep,
-      data: { type, config, visibility, requiresAcknowledgment, position },
+      data: {
+        type,
+        config,
+        visibility,
+        requiresAcknowledgment,
+        description,
+        position,
+      },
     }),
   );
   // Both sides go through JSON, so undefined fields and key order don't
   // count as an edit.
   const asJson = (value: unknown): unknown => JSON.parse(JSON.stringify(value));
-  const before = new Map(existing.map((tile) => [tile.id, tile.config]));
+  // The description is content too, so changing it counts as an edit.
+  const content = (tile: { config: unknown; description: string }) =>
+    asJson({ config: tile.config, description: tile.description });
+  const before = new Map(existing.map((tile) => [tile.id, content(tile)]));
   const edited = rows.filter(
     (row) =>
-      row.keep &&
-      !isDeepStrictEqual(asJson(before.get(row.id)), asJson(row.data.config)),
+      row.keep && !isDeepStrictEqual(before.get(row.id), content(row.data)),
   );
   if (edited.length > 0)
     await tx.jobTileAcknowledgment.deleteMany({
