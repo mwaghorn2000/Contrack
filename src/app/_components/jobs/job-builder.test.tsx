@@ -86,7 +86,7 @@ test("taking someone off the job removes them from tile visibility", async () =>
   await user.click(jaxon);
   await user.click(screen.getByRole("button", { name: "Add Text tile" }));
   await user.click(
-    screen.getByRole("button", { name: "Visibility of Text tile 1" }),
+    screen.getByRole("button", { name: "Settings for Text tile 1" }),
   );
   await user.click(
     screen.getByRole("radio", { name: "Only selected members" }),

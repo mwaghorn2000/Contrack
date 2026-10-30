@@ -6,6 +6,7 @@ import { useState } from "react";
 import { isManagerRole } from "~/lib/company-roles";
 import { canSeeTile } from "~/lib/job-tiles";
 import { api } from "~/trpc/react";
+import TileAcknowledgment from "./tile-acknowledgment";
 import { definitionFor } from "./tiles/registry";
 
 /**
@@ -154,6 +155,7 @@ export default function JobView({
         <ol className="space-y-3">
           {tiles.map((tile) => {
             const { label, icon, View } = definitionFor(tile);
+            const status = job.acknowledgments[tile.id];
             return (
               <li key={tile.id}>
                 <section
@@ -165,6 +167,14 @@ export default function JobView({
                     {label}
                   </h2>
                   <View config={tile.config} />
+                  {/* Statuses are the viewer's own, so hidden in a preview. */}
+                  {!previewed && status && (
+                    <TileAcknowledgment
+                      jobId={job.id}
+                      tileId={tile.id}
+                      status={status}
+                    />
+                  )}
                 </section>
               </li>
             );

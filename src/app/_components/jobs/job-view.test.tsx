@@ -24,6 +24,7 @@ const job = {
       config: { body: "Gate code 1234" },
     },
   ],
+  acknowledgments: {},
 };
 
 const people = [

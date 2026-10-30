@@ -33,7 +33,7 @@ test("a tile can be limited to chosen job members", async () => {
   expect(screen.getByText("Everyone")).toBeTruthy();
 
   const settings = screen.getByRole("button", {
-    name: "Visibility of Text tile 1",
+    name: "Settings for Text tile 1",
   });
   await user.click(settings);
   expect(settings.getAttribute("aria-expanded")).toBe("true");
@@ -48,7 +48,9 @@ test("a tile can be limited to chosen job members", async () => {
 
   await user.click(screen.getByRole("radio", { name: "Everyone on the job" }));
   expect(screen.getByText("Everyone")).toBeTruthy();
-  expect(screen.queryByRole("checkbox")).toBeNull();
+  expect(
+    screen.queryByRole("group", { name: "Members who can see this tile" }),
+  ).toBeNull();
   // Limiting it again starts from nobody rather than the old list.
   await user.click(
     screen.getByRole("radio", { name: "Only selected members" }),
@@ -65,7 +67,7 @@ test("limiting a tile asks for people when the job has none", async () => {
   render(<Board people={[]} />);
 
   await user.click(
-    screen.getByRole("button", { name: "Visibility of Text tile 1" }),
+    screen.getByRole("button", { name: "Settings for Text tile 1" }),
   );
   await user.click(
     screen.getByRole("radio", { name: "Only selected members" }),
