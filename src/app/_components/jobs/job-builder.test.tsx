@@ -135,6 +135,28 @@ test("the creator can take themselves off a new job", async () => {
   expect(requests[0]?.[1]).toMatchObject({ memberIds: [] });
 });
 
+test("the palette offers a Location & contacts tile", async () => {
+  const user = userEvent.setup();
+  const requests = renderBuilder();
+
+  await user.type(screen.getByLabelText("Name"), "Roof inspection");
+  await user.click(
+    screen.getByRole("button", { name: "Add Location & contacts tile" }),
+  );
+  await user.type(screen.getByLabelText("Address"), "1 George St");
+  await user.click(screen.getByRole("button", { name: "Save job" }));
+
+  await vi.waitFor(() => expect(requests).toHaveLength(1));
+  expect(requests[0]?.[1]).toMatchObject({
+    tiles: [
+      {
+        type: "contacts",
+        config: { address: "1 George St", notes: "", contacts: [] },
+      },
+    ],
+  });
+});
+
 test("taking someone off the job removes them from tile visibility", async () => {
   const user = userEvent.setup();
   renderBuilder();
