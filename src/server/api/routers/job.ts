@@ -1,6 +1,10 @@
 import z from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
+import { tileSchema } from "~/app/_components/jobs/tiles/registry";
+import { canSeeTile, keepJobMembers } from "~/lib/job-tiles";
+import { signedImageUrl } from "~/server/image-uploads";
+import { requireJobAccess, visibleJobsWhere } from "~/server/job-access";
 
 const getJobSchema = z.object({
   jobId: z.string().cuid(),
@@ -21,32 +25,60 @@ const createJobScheme = z.object({
 });
 
 export const jobRouter = createTRPCRouter({
+  // Owners and admins get every tile; others only the tiles they can see.
   getJob: protectedProcedure
     .input(getJobSchema)
     .query(async ({ ctx, input }) => {
-      const job = await ctx.db.job.findFirst({
-        where: {
-          id: input.jobId,
-          company: {
-            members: {
-              some: {
-                userId: ctx.session.user.id,
-              },
-            },
+      const userId = ctx.session.user.id;
+      const { isManager } = await requireJobAccess(ctx.db, userId, input.jobId);
+      const job = await ctx.db.job.findUnique({
+        where: { id: input.jobId },
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          photo: true,
+          members: {
+            where: { removedAt: null },
+            select: { userId: true },
+            orderBy: { createdAt: "asc" },
+          },
+          tiles: {
+            select: { id: true, type: true, config: true, visibility: true },
+            orderBy: [{ position: "asc" }, { id: "asc" }],
           },
         },
       });
+      if (!job)
+        throw new TRPCError({ code: "NOT_FOUND", message: "Job not found." });
 
-      if (!job) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Job not found",
-        });
-      }
-
-      return job;
+      const memberIds = job.members.map((member) => member.userId);
+      // Visibility lists can still name people since taken off the job.
+      const tiles = keepJobMembers(
+        tileSchema.array().parse(job.tiles),
+        memberIds,
+      )
+        .filter((tile) => canSeeTile(tile, { userId, isManager }))
+        // Others' names stay hidden: members only learn a tile is shared with them.
+        .map((tile) =>
+          isManager || tile.visibility.mode === "everyone"
+            ? tile
+            : {
+                ...tile,
+                visibility: { mode: "members" as const, userIds: [userId] },
+              },
+        );
+      return {
+        id: job.id,
+        title: job.title,
+        description: job.description,
+        photoUrl: await signedImageUrl(job.photo),
+        memberIds,
+        tiles,
+      };
     }),
 
+  // Lists the jobs in a company this user can see, oldest first.
   listCompanyJobs: protectedProcedure
     .input(
       z.object({
@@ -54,18 +86,17 @@ export const jobRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      return await ctx.db.job.findMany({
-        where: {
-          companyId: input.companyId,
-          company: {
-            members: {
-              some: {
-                userId: ctx.session.user.id,
-              },
-            },
-          },
-        },
+      const jobs = await ctx.db.job.findMany({
+        where: visibleJobsWhere(ctx.session.user.id, input.companyId),
+        select: { id: true, title: true, description: true, photo: true },
+        orderBy: [{ createdAt: "asc" }, { id: "asc" }],
       });
+      return Promise.all(
+        jobs.map(async ({ photo, ...job }) => ({
+          ...job,
+          photoUrl: await signedImageUrl(photo),
+        })),
+      );
     }),
 
   createJob: protectedProcedure
