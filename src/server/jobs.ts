@@ -11,6 +11,7 @@ import { keepJobMembers } from "~/lib/job-tiles";
  * Makes a job's members and tiles match what the builder saved. People taken
  * off the job keep a removed row, as history. A tile keeps its id only when it
  * already belongs to this job, so a client can't take over another job's tile.
+ * Tiles taken off the job are hidden, not deleted, so their answers are kept.
  * Saved tiles that no longer fit their type are left alone. Changing a tile's
  * content clears its acknowledgments, so people confirm the new version.
  */
@@ -44,7 +45,7 @@ export async function saveJobContents(
   });
 
   const existing = await tx.jobTile.findMany({
-    where: { jobId: job.id },
+    where: { jobId: job.id, removedAt: null },
     select: {
       id: true,
       type: true,
@@ -61,12 +62,18 @@ export async function saveJobContents(
       .filter((tile) => tileSchema.safeParse(tile).success)
       .map((tile) => tile.id),
   );
+  const typeOf = new Map(existing.map((tile) => [tile.id, tile.type]));
   const saved = keepJobMembers(tiles, userIds).map((tile) => ({
     ...tile,
     // A repeated id only updates the first tile; the rest become new tiles.
-    keep: unclaimed.delete(tile.id),
+    // So does one sent back as another type, so old answers stay apart.
+    keep: typeOf.get(tile.id) === tile.type && unclaimed.delete(tile.id),
   }));
-  await tx.jobTile.deleteMany({ where: { id: { in: [...unclaimed] } } });
+  // Taken off rather than deleted, so their answers are kept for export.
+  await tx.jobTile.updateMany({
+    where: { id: { in: [...unclaimed] } },
+    data: { removedAt: new Date() },
+  });
   const rows = saved.map(
     (
       { id, keep, type, config, visibility, requiresAcknowledgment },

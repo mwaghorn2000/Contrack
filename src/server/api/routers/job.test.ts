@@ -818,10 +818,10 @@ function draftTile(
   return { id, type: "text" as const, visibility, config: { body } };
 }
 
-/** The job's stored tiles, in order, without their ids. */
+/** The job's stored tiles still on it, in order, without their ids. */
 async function storedTiles(jobId: string) {
   return db.jobTile.findMany({
-    where: { jobId },
+    where: { jobId, removedAt: null },
     orderBy: { position: "asc" },
     select: { position: true, config: true, visibility: true },
   });
@@ -926,7 +926,7 @@ it("updateJob saves details and keeps, adds, reorders and removes tiles", async 
     description: "South side",
   });
   const tiles = await db.jobTile.findMany({
-    where: { jobId: job.id },
+    where: { jobId: job.id, removedAt: null },
     orderBy: { position: "asc" },
   });
   expect(tiles.map((tile) => tile.config)).toEqual([
@@ -935,9 +935,10 @@ it("updateJob saves details and keeps, adds, reorders and removes tiles", async 
   ]);
   expect(tiles[1]?.id).toBe(job.keptId);
   expect(tiles[0]?.id).not.toBe("new");
+  // Taken off the job, but kept for its answers.
   expect(
-    await db.jobTile.findUnique({ where: { id: job.droppedId } }),
-  ).toBeNull();
+    (await db.jobTile.findUnique({ where: { id: job.droppedId } }))?.removedAt,
+  ).toBeInstanceOf(Date);
 });
 
 it("updateJob takes people off the job and can add them back", async () => {

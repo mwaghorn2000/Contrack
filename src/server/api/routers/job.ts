@@ -17,11 +17,8 @@ import {
   requireJobManager,
   visibleJobsWhere,
 } from "~/server/job-access";
-import {
-  acknowledgmentStatus,
-  jobPeople,
-  requireVisibleTile,
-} from "~/server/job-acknowledgments";
+import { acknowledgmentStatus } from "~/server/job-acknowledgments";
+import { jobPeople, requireVisibleTile } from "~/server/job-tiles";
 import { deletePrefix, storageConfigured } from "~/server/storage";
 import { saveJobContents } from "~/server/jobs";
 import { serializableTransaction } from "~/server/transactions";
@@ -83,6 +80,7 @@ export const jobRouter = createTRPCRouter({
             orderBy: { createdAt: "asc" },
           },
           tiles: {
+            where: { removedAt: null },
             select: {
               id: true,
               type: true,
