@@ -151,12 +151,15 @@ it("lists every job for managers and only current jobs for others", async () => 
       await db.job.findMany({
         where: visibleJobsWhere(userId, companyId),
         select: { id: true },
-        orderBy: { createdAt: "asc" },
       })
-    ).map(({ id }) => id);
+    )
+      .map(({ id }) => id)
+      // Sorted here: both jobs can be created in the same millisecond.
+      .sort();
+  const both = [jobId, other.id].sort();
 
-  expect(await listed(ownerId)).toEqual([jobId, other.id]);
-  expect(await listed(adminId)).toEqual([jobId, other.id]);
+  expect(await listed(ownerId)).toEqual(both);
+  expect(await listed(adminId)).toEqual(both);
   expect(await listed(memberId)).toEqual([jobId]);
   expect(await listed(contractorId)).toEqual([]);
 });
