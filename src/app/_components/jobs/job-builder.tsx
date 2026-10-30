@@ -18,13 +18,16 @@ const inputClass =
 /**
  * Creates a job, or edits `job` when given: its details and photo on top, tile
  * palette beside the canvas. A chosen photo is uploaded once the job is saved.
+ * A new job starts with `creatorId` on it.
  */
 export default function JobBuilder({
   companyId,
   job,
+  creatorId,
 }: {
   companyId: string;
   job?: RouterOutputs["job"]["getJob"];
+  creatorId?: string;
 }) {
   const router = useRouter();
   const utils = api.useUtils();
@@ -40,7 +43,9 @@ export default function JobBuilder({
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoUrl, setPhotoUrl] = useState(job?.photoUrl ?? null);
   const [photoError, setPhotoError] = useState("");
-  const [memberIds, setMemberIds] = useState(job?.memberIds ?? []);
+  const [memberIds, setMemberIds] = useState(
+    job?.memberIds ?? (creatorId ? [creatorId] : []),
+  );
   const [tiles, setTiles] = useState<JobTile[]>(job?.tiles ?? []);
   const companyMembers = api.invitation.members.useQuery({ companyId });
   const people = (companyMembers.data ?? [])
