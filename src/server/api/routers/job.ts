@@ -3,8 +3,21 @@ import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import { tileSchema } from "~/app/_components/jobs/tiles/registry";
 import { canSeeTile, keepJobMembers } from "~/lib/job-tiles";
-import { signedImageUrl } from "~/server/image-uploads";
-import { requireJobAccess, visibleJobsWhere } from "~/server/job-access";
+import { imageFileSchema, imageKeySchema } from "~/lib/image-upload";
+import {
+  confirmPrivateImageUpload,
+  createImageUpload,
+  deleteReplacedKey,
+  jobFolder,
+  jobPhotoFolder,
+  signedImageUrl,
+} from "~/server/image-uploads";
+import {
+  requireJobAccess,
+  requireJobManager,
+  visibleJobsWhere,
+} from "~/server/job-access";
+import { deletePrefix, storageConfigured } from "~/server/storage";
 import { saveJobContents } from "~/server/jobs";
 import { serializableTransaction } from "~/server/transactions";
 
@@ -158,16 +171,11 @@ export const jobRouter = createTRPCRouter({
     .input(updateJobSchema)
     .mutation(({ ctx, input }) =>
       serializableTransaction(ctx.db, async (tx) => {
-        const { job, isManager } = await requireJobAccess(
+        const job = await requireJobManager(
           tx,
           ctx.session.user.id,
           input.jobId,
         );
-        if (!isManager)
-          throw new TRPCError({
-            code: "FORBIDDEN",
-            message: "Only owners and admins can edit jobs.",
-          });
         await tx.job.update({
           where: { id: job.id },
           data: { title: input.title, description: input.description },
@@ -204,6 +212,61 @@ export const jobRouter = createTRPCRouter({
         });
       }
 
+      if (storageConfigured()) {
+        try {
+          await deletePrefix(jobFolder(input.jobId));
+        } catch (error) {
+          // The job is already deleted; leftover files are harmless.
+          console.error("Failed to delete job files", error);
+        }
+      }
+
       return { success: true };
+    }),
+
+  // Signs an upload for a job photo; setPhoto then confirms and saves it.
+  createPhotoUpload: protectedProcedure
+    .input(getJobSchema.merge(imageFileSchema))
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+      const job = await requireJobManager(ctx.db, userId, input.jobId);
+      return createImageUpload(
+        ctx.db,
+        userId,
+        jobPhotoFolder(job.id),
+        "banner",
+        input,
+      );
+    }),
+
+  // Saves a confirmed upload as the job's photo, or removes it with null.
+  setPhoto: protectedProcedure
+    .input(getJobSchema.extend({ key: imageKeySchema.nullable() }))
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+      const job = await requireJobManager(ctx.db, userId, input.jobId);
+      const folder = jobPhotoFolder(job.id);
+      const key = input.key
+        ? await confirmPrivateImageUpload(
+            ctx.db,
+            userId,
+            folder,
+            "banner",
+            input.key,
+          )
+        : null;
+      const current = await ctx.db.job.findUnique({
+        where: { id: job.id },
+        select: { photo: true },
+      });
+      // The job may have been deleted while the upload was being checked.
+      const { count } = await ctx.db.job.updateMany({
+        where: { id: job.id },
+        data: { photo: key },
+      });
+      if (!current || count === 0)
+        throw new TRPCError({ code: "NOT_FOUND", message: "Job not found." });
+      await deleteReplacedKey(folder, current.photo, key);
+      return { photoUrl: await signedImageUrl(key) };
     }),
 });

@@ -34,6 +34,24 @@ export async function requireJobAccess(
 }
 
 /**
+ * Like requireJobAccess, but only for company owners and admins: people on
+ * the job can see it, so they get FORBIDDEN rather than NOT_FOUND.
+ */
+export async function requireJobManager(
+  db: Prisma.TransactionClient,
+  userId: string,
+  jobId: string,
+) {
+  const { job, isManager } = await requireJobAccess(db, userId, jobId);
+  if (!isManager)
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "Only owners and admins can change jobs.",
+    });
+  return job;
+}
+
+/**
  * Filters to the company's jobs this user can see. Roles are checked in the
  * query itself, so the filter is safe without any other company check.
  */
