@@ -1,3 +1,19 @@
-export default function JobsPage() {
-  return <h1 className="text-2xl font-semibold text-gray-900">Jobs</h1>;
+import { api } from "~/trpc/server";
+import JobList from "~/app/_components/jobs/job-list";
+import { isManagerRole } from "~/lib/company-roles";
+import { withCompanyAccess } from "~/server/company-access";
+
+/** Loads the viewer's role in the selected company and shows its jobs. */
+export default async function JobsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ companyId?: string }>;
+}) {
+  const { companyId } = await searchParams;
+  if (!companyId) return <p>Select a company to see its jobs.</p>;
+  const company = await withCompanyAccess(companyId, () =>
+    api.company.getCompany({ companyId }),
+  );
+  const role = company.members[0]?.role;
+  return <JobList companyId={companyId} canManage={isManagerRole(role)} />;
 }
