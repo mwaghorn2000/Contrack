@@ -52,6 +52,19 @@ export function createTestProvider(handler: Handler) {
   return { Wrapper, queryClient };
 }
 
+/** A NOT_FOUND error as the server sends it, for handlers to throw. */
+export function notFoundError(message: string) {
+  return new TRPCClientError<AppRouter>(message, {
+    result: {
+      error: {
+        message,
+        code: -32004,
+        data: { code: "NOT_FOUND", httpStatus: 404, zodError: null },
+      },
+    },
+  });
+}
+
 /** A text message for tests. */
 export function textMessage(
   id: string,

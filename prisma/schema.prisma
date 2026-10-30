@@ -150,6 +150,7 @@ model User {
     companyMemberships  CompanyMember[]
     channelMemberships  ChannelMember[]
     createdJobs         Job[]
+    jobMemberships      JobMember[]
     companyPosts        CompanyPost[]
     postAcknowledgments CompanyPostAcknowledgment[]
     sentInvitations CompanyInvitation[]
@@ -270,8 +271,41 @@ model Job {
     companyId   String
     createdById String
 
+    // Private storage key; reads use signed URLs.
+    photo       String?
+
     company     Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
     createdBy   User        @relation(fields: [createdById], references: [id])
+    members     JobMember[]
+    tiles       JobTile[]
+}
+
+model JobMember {
+    jobId     String
+    userId    String
+    createdAt DateTime @default(now())
+    // Set when the person leaves the company, keeping who worked on the job.
+    removedAt DateTime?
+
+    job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@id([jobId, userId])
+    @@index([userId])
+}
+
+// config and visibility hold the tile's fields from ~/lib/job-tiles, by type.
+model JobTile {
+    id         String   @id @default(cuid())
+    jobId      String
+    type       String
+    position   Int
+    config     Json
+    visibility Json
+
+    job        Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+    @@index([jobId, position])
 }
 
 model CompanyPost {

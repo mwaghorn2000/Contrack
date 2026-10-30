@@ -2,7 +2,7 @@ import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 import { afterEach, expect, test, vi } from "vitest";
-import type { JobTile } from "~/lib/job-tiles";
+import type { JobTile } from "./tiles/registry";
 import TileBoard from "./tile-board";
 
 /** A Text tile holding `body`. */

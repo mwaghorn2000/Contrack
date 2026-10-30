@@ -1,4 +1,11 @@
-type TextConfig = { body: string };
+// Tile UIs are client components, so the server can import a tile's
+// definition (for its schema) without loading React hooks.
+"use client";
+
+import type { z } from "zod";
+import type { textConfig } from ".";
+
+type TextConfig = z.infer<typeof textConfig>;
 
 /** Lets the job's author write the text shown in a Text tile. */
 export function TextTileEditor({

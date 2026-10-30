@@ -1,6 +1,5 @@
 import { arrayMove } from "@dnd-kit/sortable";
-import type { JobTile, TileType } from "~/lib/job-tiles";
-import { createTile } from "./tiles/registry";
+import { createTile, type JobTile, type TileType } from "./tiles/registry";
 
 /** The droppable area behind the canvas tiles, for dropping after the last one. */
 export const CANVAS_DROP_ID = "job-canvas";

@@ -1,5 +1,5 @@
 import { useDraggable } from "@dnd-kit/core";
-import type { TileType } from "~/lib/job-tiles";
+import type { TileType } from "./tiles/registry";
 import type { DragSource } from "./tile-drop";
 import { tileTypes } from "./tiles/registry";
 

@@ -92,6 +92,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 ### Tests
 - Router tests live in a `*.test.ts` beside the router, or in a shared file for a feature (`chat.test.ts` covers `message.ts`, `direct-message.ts`, and `realtime.ts`). New procedures need tests for the happy path, unauthenticated users, users without permission, and invalid input.
 - Bug fixes include a test that fails without the fix.
+- Write tests first. Run them and show me the failures, then write the code until they pass. Commit the code (`feat:`/`fix:`) and then the tests (`test:`), so every commit passes.
 
 #### UI tests
 - Component and hook tests live in a `*.test.tsx` beside the component. The `.tsx` extension puts them in vitest's `ui` project, which runs in jsdom with React's development build; `.test.ts` files run in the `server` project in node.

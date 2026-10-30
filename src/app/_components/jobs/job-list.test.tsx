@@ -1,62 +1,128 @@
 import { render, screen } from "@testing-library/react";
-import { expect, test } from "vitest";
+import { expect, test, vi } from "vitest";
+import { createTestProvider, type Handler } from "~/test/ui";
 import JobList from "./job-list";
-import { JobsStoreProvider, MOCK_JOBS } from "./jobs-store";
 
-test("shows a card for each job with its counts", () => {
-  render(
-    <JobsStoreProvider>
-      <JobList companyId="company-1" canManage />
-    </JobsStoreProvider>,
-  );
+const jobs = [
+  {
+    id: "job-roof",
+    title: "Roof inspection",
+    description: "Check flashing and gutters on the north side.\nBook a lift.",
+    photoUrl: null,
+    memberCount: 2,
+  },
+  {
+    id: "job-fitout",
+    title: "Kitchen fit-out",
+    description: null,
+    photoUrl: null,
+    memberCount: 1,
+  },
+];
 
-  expect(screen.getAllByRole("article")).toHaveLength(MOCK_JOBS.length);
+/** Renders the list, answering requests with `handler`. */
+function renderList(canManage: boolean, handler: Handler = () => jobs) {
+  const { Wrapper } = createTestProvider(handler);
+  return render(<JobList companyId="company-1" canManage={canManage} />, {
+    wrapper: Wrapper,
+  });
+}
+
+test("shows a card for each job with its member count", async () => {
+  const requests: unknown[] = [];
+  renderList(true, (path, input) => {
+    requests.push([path, input]);
+    return jobs;
+  });
+
+  expect(await screen.findAllByRole("article")).toHaveLength(2);
+  expect(requests).toEqual([
+    ["job.listCompanyJobs", { companyId: "company-1" }],
+  ]);
   expect(screen.getByText("Roof inspection")).toBeTruthy();
   // Only the first line of the description is shown.
   expect(
     screen.getByText("Check flashing and gutters on the north side."),
   ).toBeTruthy();
   expect(screen.queryByText(/Book a lift/)).toBeNull();
-  expect(screen.getByText("0 members · 1 tile")).toBeTruthy();
+  expect(screen.getByText("2 members")).toBeTruthy();
+  expect(screen.getByText("1 member")).toBeTruthy();
 });
 
-test("shows an empty state when the company has no jobs", () => {
-  render(
-    <JobsStoreProvider initialJobs={[]}>
-      <JobList companyId="company-1" canManage />
-    </JobsStoreProvider>,
-  );
+test("shows an empty state when the company has no jobs", async () => {
+  renderList(true, () => []);
 
-  expect(screen.getByText("No jobs yet.")).toBeTruthy();
+  expect(await screen.findByText("No jobs yet.")).toBeTruthy();
   expect(screen.queryAllByRole("article")).toHaveLength(0);
 });
 
-test("only admins see the New job link", () => {
-  const { rerender } = render(
-    <JobsStoreProvider>
-      <JobList companyId="company-1" canManage />
-    </JobsStoreProvider>,
-  );
+test("says when jobs are loading or couldn't be loaded", async () => {
+  const { unmount } = renderList(true, () => new Promise(() => undefined));
+  expect(screen.getByText("Loading jobs…")).toBeTruthy();
+  unmount();
+
+  renderList(true, () => {
+    throw new Error("offline");
+  });
+  expect(await screen.findByText("Couldn’t load jobs.")).toBeTruthy();
+});
+
+test("only admins see the New job link", async () => {
+  const { unmount } = renderList(true);
   expect(
     screen.getByRole("link", { name: "New job" }).getAttribute("href"),
   ).toBe("/dashboard/jobs/new?companyId=company-1");
+  unmount();
 
-  rerender(
-    <JobsStoreProvider>
-      <JobList companyId="company-1" canManage={false} />
-    </JobsStoreProvider>,
-  );
+  renderList(false);
+  await screen.findAllByRole("article");
   expect(screen.queryByRole("link", { name: "New job" })).toBeNull();
 });
 
-test("each card links to its job", () => {
-  render(
-    <JobsStoreProvider>
-      <JobList companyId="company-1" canManage={false} />
-    </JobsStoreProvider>,
-  );
+test("each card links to its job", async () => {
+  renderList(false);
 
   expect(
-    screen.getByRole("link", { name: /Roof inspection/ }).getAttribute("href"),
-  ).toBe("/dashboard/jobs/mock-roof?companyId=company-1");
+    (await screen.findByRole("link", { name: /Roof inspection/ })).getAttribute(
+      "href",
+    ),
+  ).toBe("/dashboard/jobs/job-roof?companyId=company-1");
+});
+
+test("keeps checking for changes while the list is open", async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true });
+  try {
+    let loads = 0;
+    renderList(false, () =>
+      ++loads === 1 ? jobs : [{ ...jobs[0]!, title: "Roof repair" }],
+    );
+    expect(await screen.findByText("Roof inspection")).toBeTruthy();
+
+    await vi.advanceTimersByTimeAsync(7_500);
+
+    expect(await screen.findByText("Roof repair")).toBeTruthy();
+    expect(screen.queryByText("Kitchen fit-out")).toBeNull();
+  } finally {
+    vi.useRealTimers();
+  }
+});
+
+test("a failed refresh keeps the jobs on screen", async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true });
+  try {
+    let loads = 0;
+    renderList(false, () => {
+      if (++loads === 1) return jobs;
+      throw new Error("Failed to fetch");
+    });
+    expect(await screen.findAllByRole("article")).toHaveLength(2);
+
+    await vi.advanceTimersByTimeAsync(7_500);
+
+    await vi.waitFor(() => expect(loads).toBe(2));
+    expect(screen.getAllByRole("article")).toHaveLength(2);
+    expect(screen.queryByText("Couldn’t load jobs.")).toBeNull();
+  } finally {
+    vi.useRealTimers();
+  }
 });

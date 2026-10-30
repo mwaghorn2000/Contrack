@@ -3,21 +3,12 @@ import { z } from "zod";
 /** Who can see a tile: everyone on the job, or only the listed job members. */
 export const tileVisibilitySchema = z.discriminatedUnion("mode", [
   z.object({ mode: z.literal("everyone") }),
-  z.object({ mode: z.literal("members"), userIds: z.array(z.string()) }),
+  // Capped like a job's member list, which every listed person must be on.
+  z.object({
+    mode: z.literal("members"),
+    userIds: z.array(z.string()).max(200),
+  }),
 ]);
-
-const textTileSchema = z.object({
-  id: z.string(),
-  type: z.literal("text"),
-  visibility: tileVisibilitySchema,
-  config: z.object({ body: z.string().max(5000) }),
-});
-
-/** Every tile type a job template can hold. New tile types join this union. */
-export const tileSchema = z.discriminatedUnion("type", [textTileSchema]);
-
-export type JobTile = z.infer<typeof tileSchema>;
-export type TileType = JobTile["type"];
 
 export type TileVisibility = z.infer<typeof tileVisibilitySchema>;
 
@@ -26,7 +17,7 @@ export type TileVisibility = z.infer<typeof tileVisibilitySchema>;
  * as they see every channel; others need it open to everyone or to be listed.
  */
 export function canSeeTile(
-  tile: JobTile,
+  tile: { visibility: TileVisibility },
   viewer: { userId: string; isManager: boolean },
 ) {
   const { visibility } = tile;
@@ -38,10 +29,10 @@ export function canSeeTile(
 }
 
 /** Drops people who are no longer on the job from every tile's visibility. */
-export function keepJobMembers(
-  tiles: JobTile[],
+export function keepJobMembers<T extends { visibility: TileVisibility }>(
+  tiles: T[],
   memberIds: string[],
-): JobTile[] {
+): T[] {
   return tiles.map((tile) =>
     tile.visibility.mode === "members"
       ? {

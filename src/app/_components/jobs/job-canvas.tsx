@@ -4,7 +4,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import type { Dispatch, SetStateAction } from "react";
-import type { JobTile } from "~/lib/job-tiles";
+import type { JobTile } from "./tiles/registry";
 import CanvasTile from "./canvas-tile";
 import type { JobPerson } from "./tile-settings";
 import { CANVAS_DROP_ID } from "./tile-drop";

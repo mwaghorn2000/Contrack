@@ -42,6 +42,15 @@ export function channelFolder(channelId: string) {
   return `channels/${channelId}/`;
 }
 
+// Job photos are private too, so only people who can see the job get a link.
+export function jobPhotoFolder(jobId: string) {
+  return `jobs/${jobId}/photo`;
+}
+
+export function jobFolder(jobId: string) {
+  return `jobs/${jobId}/`;
+}
+
 function requireStorage() {
   if (!storageConfigured())
     throw new TRPCError({

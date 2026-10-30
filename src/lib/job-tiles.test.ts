@@ -1,9 +1,9 @@
 import { expect, test } from "vitest";
-import { canSeeTile, keepJobMembers, type JobTile } from "./job-tiles";
+import { canSeeTile, keepJobMembers, type TileVisibility } from "./job-tiles";
 
-/** A Text tile with the given visibility. */
-function tile(visibility: JobTile["visibility"]): JobTile {
-  return { id: "tile-1", type: "text", visibility, config: { body: "" } };
+/** A tile with the given visibility. */
+function tile(visibility: TileVisibility) {
+  return { id: "tile-1", visibility };
 }
 
 const member = { userId: "user-1", isManager: false };

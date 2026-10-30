@@ -260,7 +260,24 @@ exports.Prisma.JobScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   companyId: 'companyId',
-  createdById: 'createdById'
+  createdById: 'createdById',
+  photo: 'photo'
+};
+
+exports.Prisma.JobMemberScalarFieldEnum = {
+  jobId: 'jobId',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  removedAt: 'removedAt'
+};
+
+exports.Prisma.JobTileScalarFieldEnum = {
+  id: 'id',
+  jobId: 'jobId',
+  type: 'type',
+  position: 'position',
+  config: 'config',
+  visibility: 'visibility'
 };
 
 exports.Prisma.CompanyPostScalarFieldEnum = {
@@ -312,6 +329,10 @@ exports.Prisma.NullableJsonNullValueInput = {
   JsonNull: Prisma.JsonNull
 };
 
+exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
+};
+
 exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -359,6 +380,8 @@ exports.Prisma.ModelName = {
   Message: 'Message',
   MessageEdit: 'MessageEdit',
   Job: 'Job',
+  JobMember: 'JobMember',
+  JobTile: 'JobTile',
   CompanyPost: 'CompanyPost',
   CompanyPostAcknowledgment: 'CompanyPostAcknowledgment',
   VerificationToken: 'VerificationToken',

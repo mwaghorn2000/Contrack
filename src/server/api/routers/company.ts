@@ -11,6 +11,7 @@ import {
   confirmImageUpload,
   createImageUpload,
   deleteReplacedImage,
+  jobFolder,
 } from "~/server/image-uploads";
 import { deletePrefix, storageConfigured } from "~/server/storage";
 
@@ -241,6 +242,15 @@ export const companyRouter = createTRPCRouter({
           },
           data: { removedAt: new Date() },
         });
+        // Likewise for this company's jobs, keeping who worked on them.
+        await tx.jobMember.updateMany({
+          where: {
+            userId: input.userId,
+            job: { companyId: input.companyId },
+            removedAt: null,
+          },
+          data: { removedAt: new Date() },
+        });
         // Old invitations must not allow the removed person to rejoin.
         await tx.companyInvitation.updateMany({
           where: {
@@ -344,11 +354,17 @@ export const companyRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      // Channel files live outside the company folder, so find them first.
-      const channels = await ctx.db.channel.findMany({
-        where: { companyId: input.companyId },
-        select: { id: true },
-      });
+      // Channel and job files live outside the company folder, so find them first.
+      const [channels, jobs] = await Promise.all([
+        ctx.db.channel.findMany({
+          where: { companyId: input.companyId },
+          select: { id: true },
+        }),
+        ctx.db.job.findMany({
+          where: { companyId: input.companyId },
+          select: { id: true },
+        }),
+      ]);
       const result = await ctx.db.company.deleteMany({
         where: {
           id: input.companyId,
@@ -373,6 +389,7 @@ export const companyRouter = createTRPCRouter({
         const folders = [
           companyFolder(input.companyId),
           ...channels.map(({ id }) => channelFolder(id)),
+          ...jobs.map(({ id }) => jobFolder(id)),
         ];
         // Each folder is deleted separately, so one failure doesn't leave the
         // rest behind.
