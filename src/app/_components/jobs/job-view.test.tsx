@@ -377,3 +377,120 @@ test("the list of who has acknowledged keeps up to date while open", async () =>
     vi.useRealTimers();
   }
 });
+
+test("tiles that take answers show them and save new ones", async () => {
+  const user = userEvent.setup();
+  const requests: [string, unknown][] = [];
+  const checklistJob = {
+    ...job,
+    tiles: [
+      {
+        id: "list",
+        type: "checklist" as const,
+        visibility: { mode: "everyone" as const },
+        requiresAcknowledgment: false,
+        config: {
+          mode: "shared" as const,
+          items: [{ id: "a", text: "Isolate power" }],
+        },
+      },
+    ],
+  };
+  const { Wrapper } = createTestProvider((path, input) => {
+    if (path === "job.getJob") return checklistJob;
+    if (path === "invitation.members") return people;
+    if (path === "jobTile.listAnswers") return {};
+    requests.push([path, input]);
+    throw new Error("That item is already ticked.");
+  });
+  render(
+    <JobView
+      companyId="company-1"
+      jobId="job-1"
+      viewer={{ userId: "user-2", isManager: false }}
+    />,
+    { wrapper: Wrapper },
+  );
+
+  await user.click(
+    await screen.findByRole("checkbox", { name: "Isolate power" }),
+  );
+
+  expect(requests).toEqual([
+    ["jobTile.createAnswer", { tileId: "list", data: { itemId: "a" } }],
+  ]);
+  expect((await screen.findByRole("alert")).textContent).toBe(
+    "That item is already ticked.",
+  );
+});
+
+const eachJob = {
+  ...job,
+  tiles: [
+    {
+      id: "each",
+      type: "checklist" as const,
+      visibility: { mode: "everyone" as const },
+      requiresAcknowledgment: false,
+      config: {
+        mode: "each" as const,
+        items: [{ id: "a", text: "Isolate power" }],
+      },
+    },
+  ],
+};
+
+/** Renders a job with an each-person checklist that Jaxon has ticked. */
+function renderEachChecklist(answers: () => unknown) {
+  const { Wrapper } = createTestProvider((path) => {
+    if (path === "job.getJob") return eachJob;
+    if (path === "invitation.members") return people;
+    if (path === "jobTile.listAnswers") return answers();
+    return {};
+  });
+  render(
+    <JobView
+      companyId="company-1"
+      jobId="job-1"
+      viewer={{ userId: "user-1", isManager: true }}
+    />,
+    { wrapper: Wrapper },
+  );
+}
+
+test("previewing as someone shows their own ticks", async () => {
+  const user = userEvent.setup();
+  renderEachChecklist(() => ({
+    each: [
+      {
+        id: "t1",
+        author: people[1]!.user,
+        data: { itemId: "a" },
+        note: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        canEdit: false,
+        canDelete: true,
+      },
+    ],
+  }));
+  const box = await screen.findByRole("checkbox", { name: "Isolate power" });
+  await vi.waitFor(() => expect(box).toHaveProperty("disabled", false));
+  // Ada (the viewer) hasn't ticked her own copy.
+  expect(box).toHaveProperty("checked", false);
+
+  await user.selectOptions(screen.getByLabelText("Preview as"), "user-2");
+
+  expect(
+    screen.getByRole("checkbox", { name: "Isolate power" }),
+  ).toHaveProperty("checked", true);
+});
+
+test("says when answers couldn't be loaded", async () => {
+  renderEachChecklist(() => {
+    throw new Error("offline");
+  });
+  expect((await screen.findByRole("alert")).textContent).toBe(
+    "Could not load answers.",
+  );
+});

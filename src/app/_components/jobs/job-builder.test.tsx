@@ -157,6 +157,15 @@ test("the palette offers a Location & contacts tile", async () => {
   });
 });
 
+test("the palette offers a Checklist tile", async () => {
+  const user = userEvent.setup();
+  renderBuilder();
+
+  await user.click(screen.getByRole("button", { name: "Add Checklist tile" }));
+
+  expect(screen.getByRole("region", { name: "Checklist tile 1" })).toBeTruthy();
+});
+
 test("taking someone off the job removes them from tile visibility", async () => {
   const user = userEvent.setup();
   renderBuilder();

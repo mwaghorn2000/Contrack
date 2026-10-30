@@ -6,6 +6,7 @@ import { useState } from "react";
 import { isManagerRole } from "~/lib/company-roles";
 import { canSeeTile } from "~/lib/job-tiles";
 import { api } from "~/trpc/react";
+import TileAnswers from "./answers/tile-answers";
 import TileAcknowledgment from "./tile-acknowledgment";
 import { definitionFor } from "./tiles/registry";
 
@@ -36,6 +37,17 @@ export default function JobView({
     },
   );
   const members = api.invitation.members.useQuery({ companyId });
+  // Every tile's answers in one request, polled like the job.
+  const tileAnswers = api.jobTile.listAnswers.useQuery(
+    { jobId },
+    {
+      refetchInterval: 7_500,
+      // Only jobs with a tile that takes answers need them.
+      enabled: !!fetched.data?.tiles.some(
+        (tile) => definitionFor(tile).answers,
+      ),
+    },
+  );
   const [previewId, setPreviewId] = useState("");
   const query = new URLSearchParams({ companyId });
   const listHref = `/dashboard/jobs?${query}`;
@@ -147,6 +159,11 @@ export default function JobView({
           </p>
         </div>
       </header>
+      {tileAnswers.isError && !tileAnswers.data && (
+        <p role="alert" className="text-sm text-red-700">
+          Could not load answers.
+        </p>
+      )}
       {tiles.length === 0 ? (
         <p className="rounded-lg border border-dashed border-gray-300 p-8 text-center text-sm text-gray-500">
           Nothing to show on this job yet.
@@ -154,7 +171,7 @@ export default function JobView({
       ) : (
         <ol className="space-y-3">
           {tiles.map((tile) => {
-            const { label, icon, View } = definitionFor(tile);
+            const { label, icon, View, answers } = definitionFor(tile);
             const status = job.acknowledgments[tile.id];
             return (
               <li key={tile.id}>
@@ -166,7 +183,21 @@ export default function JobView({
                     <span aria-hidden="true">{icon}</span>
                     {label}
                   </h2>
-                  <View config={tile.config} />
+                  {answers ? (
+                    // Answers can't be given while previewing as someone.
+                    <TileAnswers
+                      jobId={job.id}
+                      tileId={tile.id}
+                      config={tile.config}
+                      answers={tileAnswers.data?.[tile.id] ?? []}
+                      // Shows the previewed person's own answers, read-only.
+                      viewer={shownTo}
+                      readOnly={!!previewed || !tileAnswers.data}
+                      Answers={answers.Answers}
+                    />
+                  ) : (
+                    <View config={tile.config} />
+                  )}
                   {/* Statuses are the viewer's own, so hidden in a preview. */}
                   {!previewed && status && (
                     <TileAcknowledgment

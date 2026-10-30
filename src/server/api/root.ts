@@ -2,6 +2,7 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 import { authRouter } from "./routers/auth";
 import { companyRouter } from "./routers/company";
 import { jobRouter } from "./routers/job";
+import { jobTileRouter } from "./routers/job-tile";
 import { invitationRouter } from "./routers/invitation";
 import { profileRouter } from "./routers/profile";
 import { securityRouter } from "./routers/security";
@@ -19,6 +20,7 @@ export const appRouter = createTRPCRouter({
   auth: authRouter,
   company: companyRouter,
   job: jobRouter,
+  jobTile: jobTileRouter,
   invitation: invitationRouter,
   profile: profileRouter,
   security: securityRouter,
