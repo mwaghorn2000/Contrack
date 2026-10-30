@@ -6,7 +6,6 @@ import { useState } from "react";
 import { isManagerRole } from "~/lib/company-roles";
 import { canSeeTile } from "~/lib/job-tiles";
 import { api } from "~/trpc/react";
-import { useJob } from "./jobs-store";
 import { definitionFor } from "./tiles/registry";
 
 /**
@@ -18,21 +17,25 @@ export default function JobView({
   companyId,
   jobId,
   viewer,
+  photoFailed = false,
 }: {
   companyId: string;
   jobId: string;
   viewer: { userId: string; isManager: boolean };
+  photoFailed?: boolean;
 }) {
-  const job = useJob(companyId, jobId);
+  const fetched = api.job.getJob.useQuery({ jobId });
   const members = api.invitation.members.useQuery({ companyId });
   const [previewId, setPreviewId] = useState("");
   const query = new URLSearchParams({ companyId });
   const listHref = `/dashboard/jobs?${query}`;
 
-  if (!job) {
+  if (fetched.isPending)
+    return <p className="text-sm text-gray-500">Loading job…</p>;
+  if (fetched.isError) {
     return (
       <div className="space-y-3">
-        <p className="text-sm text-gray-600">Job not found.</p>
+        <p className="text-sm text-gray-600">{fetched.error.message}</p>
         <Link href={listHref} className="text-sm underline">
           Back to jobs
         </Link>
@@ -40,6 +43,7 @@ export default function JobView({
     );
   }
 
+  const job = fetched.data;
   const people = (members.data ?? []).filter(({ user }) =>
     job.memberIds.includes(user.id),
   );
@@ -85,6 +89,15 @@ export default function JobView({
           </div>
         )}
       </div>
+      {photoFailed && (
+        <p
+          role="alert"
+          className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-800"
+        >
+          Job saved, but the photo couldn’t be uploaded. Edit the job to try
+          again.
+        </p>
+      )}
       {previewed && (
         <p
           role="status"
@@ -107,7 +120,7 @@ export default function JobView({
         )}
         <div className="min-w-0 space-y-2">
           <h1 className="text-2xl font-semibold break-words text-gray-900">
-            {job.name}
+            {job.title}
           </h1>
           {job.description && (
             <p className="text-sm whitespace-pre-wrap text-gray-700">

@@ -11,9 +11,9 @@ export default async function JobPage({
   searchParams,
 }: {
   params: Promise<{ jobId: string }>;
-  searchParams: Promise<{ companyId?: string }>;
+  searchParams: Promise<{ companyId?: string; photo?: string }>;
 }) {
-  const [{ jobId }, { companyId }, session] = await Promise.all([
+  const [{ jobId }, { companyId, photo }, session] = await Promise.all([
     params,
     searchParams,
     authSession(),
@@ -32,6 +32,7 @@ export default async function JobPage({
         userId: session.user.id,
         isManager: isManagerRole(role),
       }}
+      photoFailed={photo === "failed"}
     />
   );
 }

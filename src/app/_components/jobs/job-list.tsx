@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { api } from "~/trpc/react";
 import JobCard from "./job-card";
-import { useCompanyJobs } from "./jobs-store";
 
 /** The Jobs tab: a grid of the company's jobs, with "New job" for admins. */
 export default function JobList({
@@ -12,7 +12,7 @@ export default function JobList({
   companyId: string;
   canManage: boolean;
 }) {
-  const jobs = useCompanyJobs(companyId);
+  const jobs = api.job.listCompanyJobs.useQuery({ companyId });
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4">
@@ -26,13 +26,17 @@ export default function JobList({
           </Link>
         )}
       </div>
-      {jobs.length === 0 ? (
+      {jobs.isPending ? (
+        <p className="text-sm text-gray-500">Loading jobs…</p>
+      ) : jobs.isError ? (
+        <p className="text-sm text-gray-600">Couldn’t load jobs.</p>
+      ) : jobs.data.length === 0 ? (
         <p className="rounded-lg border border-dashed border-gray-300 p-8 text-center text-sm text-gray-500">
           No jobs yet.
         </p>
       ) : (
         <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {jobs.map((job) => (
+          {jobs.data.map((job) => (
             <li key={job.id}>
               <Link
                 href={`/dashboard/jobs/${job.id}?${new URLSearchParams({ companyId })}`}
