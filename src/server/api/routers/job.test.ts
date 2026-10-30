@@ -1320,6 +1320,29 @@ it("getJob skips saved tiles that no longer fit their type", async () => {
   consoleError.mockRestore();
 });
 
+it("createJob rejects a tile id over 64 characters", async () => {
+  await expect(
+    caller.createJob({
+      companyId,
+      title: "Inspection",
+      tiles: [draftTile("x".repeat(65), "Body")],
+    }),
+  ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+  expect(await db.job.count()).toBe(0);
+});
+
+it("createJob rejects a tile shared with more than 200 people", async () => {
+  const userIds = Array.from({ length: 201 }, (_, i) => `user-${i}`);
+  await expect(
+    caller.createJob({
+      companyId,
+      title: "Inspection",
+      tiles: [draftTile("tile-1", "Body", { mode: "members", userIds })],
+    }),
+  ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+  expect(await db.job.count()).toBe(0);
+});
+
 it("updateJob keeps saved tiles it can't read", async () => {
   const job = await db.job.create({
     data: {
