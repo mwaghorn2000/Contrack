@@ -13,6 +13,7 @@ function Board({ people }: { people: JobPerson[] }) {
       id: "tile-1",
       type: "text",
       visibility: { mode: "everyone" },
+      requiresAcknowledgment: false,
       config: { body: "" },
     },
   ]);

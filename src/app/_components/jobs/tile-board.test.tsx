@@ -11,6 +11,7 @@ function tile(id: string, body: string): JobTile {
     id,
     type: "text",
     visibility: { mode: "everyone" },
+    requiresAcknowledgment: false,
     config: { body },
   };
 }

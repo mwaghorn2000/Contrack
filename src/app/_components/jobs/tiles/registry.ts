@@ -55,6 +55,7 @@ export function createTile<K extends TileType>(type: K) {
     id: crypto.randomUUID(),
     type,
     visibility: { mode: "everyone" },
+    requiresAcknowledgment: false,
     config: tileTypes[type].defaultConfig(),
   } as unknown as Extract<JobTile, { type: K }>;
 }
