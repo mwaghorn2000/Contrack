@@ -459,12 +459,16 @@ it("createJob rejects a inaccessible company", async () => {
 
 it("createJob accepts a one-character title", async () => {
   const job = await caller.createJob({ companyId, title: "J" });
-  expect(await db.job.findUnique({ where: { id: job.id } })).toEqual(job);
+  expect(await db.job.findUnique({ where: { id: job.id } })).toMatchObject({
+    title: "J",
+  });
 });
 
 it("createJob accepts a 99-character title", async () => {
   const job = await caller.createJob({ companyId, title: "J".repeat(99) });
-  expect(await db.job.findUnique({ where: { id: job.id } })).toEqual(job);
+  expect(await db.job.findUnique({ where: { id: job.id } })).toMatchObject({
+    title: "J".repeat(99),
+  });
 });
 
 it("createJob accepts a 500-character description", async () => {
@@ -473,7 +477,9 @@ it("createJob accepts a 500-character description", async () => {
     title: "Job",
     description: "D".repeat(500),
   });
-  expect(await db.job.findUnique({ where: { id: job.id } })).toEqual(job);
+  expect(await db.job.findUnique({ where: { id: job.id } })).toMatchObject({
+    description: "D".repeat(500),
+  });
 });
 
 it("createJob accepts a empty description", async () => {
@@ -482,12 +488,16 @@ it("createJob accepts a empty description", async () => {
     title: "Job",
     description: "",
   });
-  expect(await db.job.findUnique({ where: { id: job.id } })).toEqual(job);
+  expect(await db.job.findUnique({ where: { id: job.id } })).toMatchObject({
+    description: "",
+  });
 });
 
 it("createJob accepts an omitted description", async () => {
   const job = await caller.createJob({ companyId, title: "Job" });
-  expect(job.description).toBeNull();
+  expect(await db.job.findUnique({ where: { id: job.id } })).toMatchObject({
+    description: null,
+  });
 });
 
 it("createJob rejects a empty title", async () => {
@@ -744,4 +754,300 @@ it("deleting a user removes them from their jobs", async () => {
   await db.user.delete({ where: { id: worker.id } });
   expect(await db.jobMember.count()).toBe(0);
   expect(await db.job.count()).toBe(1);
+});
+
+/** A Text tile as the builder sends it, with a client-made id. */
+function draftTile(
+  id: string,
+  body: string,
+  visibility: { mode: "everyone" } | { mode: "members"; userIds: string[] } = {
+    mode: "everyone",
+  },
+) {
+  return { id, type: "text" as const, visibility, config: { body } };
+}
+
+/** The job's stored tiles, in order, without their ids. */
+async function storedTiles(jobId: string) {
+  return db.jobTile.findMany({
+    where: { jobId },
+    orderBy: { position: "asc" },
+    select: { position: true, config: true, visibility: true },
+  });
+}
+
+/** The job's member rows, as userId → whether they are still on it. */
+async function storedMembers(jobId: string) {
+  const rows = await db.jobMember.findMany({ where: { jobId } });
+  return Object.fromEntries(
+    rows.map((row) => [row.userId, row.removedAt === null]),
+  );
+}
+
+it("createJob saves members and tiles in order, with new tile ids", async () => {
+  const worker = await personWithRole("CONTRACTOR");
+  const { id } = await caller.createJob({
+    companyId,
+    title: "Inspection",
+    memberIds: [worker.id],
+    tiles: [
+      draftTile("client-1", "First"),
+      draftTile("client-2", "Second", {
+        mode: "members",
+        userIds: [worker.id, userId],
+      }),
+    ],
+  });
+  expect(await storedMembers(id)).toEqual({ [worker.id]: true });
+  // Visibility keeps only people on the job; the owner isn't on it.
+  expect(await storedTiles(id)).toEqual([
+    {
+      position: 0,
+      config: { body: "First" },
+      visibility: { mode: "everyone" },
+    },
+    {
+      position: 1,
+      config: { body: "Second" },
+      visibility: { mode: "members", userIds: [worker.id] },
+    },
+  ]);
+  const ids = (await db.jobTile.findMany({ select: { id: true } })).map(
+    (tile) => tile.id,
+  );
+  expect(ids).not.toContain("client-1");
+  expect(ids).not.toContain("client-2");
+});
+
+it("createJob rejects members from outside the company without saving", async () => {
+  const outsider = await db.user.create({
+    data: { name: "Outsider", email: "outsider@example.com" },
+  });
+  await expect(
+    caller.createJob({ companyId, title: "Job", memberIds: [outsider.id] }),
+  ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+  expect(await db.job.count()).toBe(0);
+});
+
+it("createJob rejects invalid tiles", async () => {
+  for (const tile of [
+    { ...draftTile("t", "x"), type: "audit" },
+    draftTile("t", "x".repeat(5001)),
+  ])
+    await expect(
+      caller.createJob({
+        companyId,
+        title: "Job",
+        tiles: [tile as ReturnType<typeof draftTile>],
+      }),
+    ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+  expect(await db.job.count()).toBe(0);
+});
+
+/** Creates a job with two members and two tiles, returning their ids. */
+async function seededJob() {
+  const first = await personWithRole("MEMBER");
+  const second = await personWithRole("MEMBER");
+  const { id } = await caller.createJob({
+    companyId,
+    title: "Inspection",
+    memberIds: [first.id, second.id],
+    tiles: [draftTile("a", "Keep"), draftTile("b", "Drop")],
+  });
+  const [kept, dropped] = await db.jobTile.findMany({
+    where: { jobId: id },
+    orderBy: { position: "asc" },
+  });
+  return { id, first, second, keptId: kept!.id, droppedId: dropped!.id };
+}
+
+it("updateJob saves details and keeps, adds, reorders and removes tiles", async () => {
+  const job = await seededJob();
+  await caller.updateJob({
+    jobId: job.id,
+    title: " Re-inspection ",
+    description: " South side ",
+    memberIds: [job.first.id, job.second.id],
+    tiles: [draftTile("new", "Added"), draftTile(job.keptId, "Kept, edited")],
+  });
+  expect(await db.job.findUnique({ where: { id: job.id } })).toMatchObject({
+    title: "Re-inspection",
+    description: "South side",
+  });
+  const tiles = await db.jobTile.findMany({
+    where: { jobId: job.id },
+    orderBy: { position: "asc" },
+  });
+  expect(tiles.map((tile) => tile.config)).toEqual([
+    { body: "Added" },
+    { body: "Kept, edited" },
+  ]);
+  expect(tiles[1]?.id).toBe(job.keptId);
+  expect(tiles[0]?.id).not.toBe("new");
+  expect(
+    await db.jobTile.findUnique({ where: { id: job.droppedId } }),
+  ).toBeNull();
+});
+
+it("updateJob takes people off the job and can add them back", async () => {
+  const job = await seededJob();
+  const save = (memberIds: string[]) =>
+    caller.updateJob({
+      jobId: job.id,
+      title: "Inspection",
+      memberIds,
+      tiles: [],
+    });
+  await save([job.first.id]);
+  expect(await storedMembers(job.id)).toEqual({
+    [job.first.id]: true,
+    [job.second.id]: false,
+  });
+  await save([job.second.id]);
+  expect(await storedMembers(job.id)).toEqual({
+    [job.first.id]: false,
+    [job.second.id]: true,
+  });
+});
+
+it("updateJob won't take over another job's tile", async () => {
+  const job = await seededJob();
+  const other = await db.job.create({
+    data: {
+      companyId,
+      createdById: userId,
+      title: "Other",
+      tiles: {
+        create: {
+          type: "text",
+          position: 0,
+          config: { body: "Theirs" },
+          visibility: { mode: "everyone" },
+        },
+      },
+    },
+    include: { tiles: true },
+  });
+  const theirs = other.tiles[0]!.id;
+  await caller.updateJob({
+    jobId: job.id,
+    title: "Inspection",
+    memberIds: [],
+    tiles: [draftTile(theirs, "Mine now?")],
+  });
+  expect(await db.jobTile.findUnique({ where: { id: theirs } })).toMatchObject({
+    jobId: other.id,
+    config: { body: "Theirs" },
+  });
+  expect(await storedTiles(job.id)).toEqual([
+    {
+      position: 0,
+      config: { body: "Mine now?" },
+      visibility: { mode: "everyone" },
+    },
+  ]);
+});
+
+it("updateJob lets admins save", async () => {
+  const job = await seededJob();
+  const admin = await personWithRole("ADMIN");
+  await admin.caller.updateJob({
+    jobId: job.id,
+    title: "By admin",
+    memberIds: [],
+    tiles: [],
+  });
+  expect(await db.job.findUnique({ where: { id: job.id } })).toMatchObject({
+    title: "By admin",
+  });
+});
+
+it("updateJob stops members on the job and hides it from others", async () => {
+  const job = await seededJob();
+  const update = { jobId: job.id, title: "Changed", memberIds: [], tiles: [] };
+  await expect(job.first.caller.updateJob(update)).rejects.toMatchObject({
+    code: "FORBIDDEN",
+  });
+  const bystander = await personWithRole("MEMBER");
+  await expect(bystander.caller.updateJob(update)).rejects.toMatchObject({
+    code: "NOT_FOUND",
+  });
+  expect(await db.job.findUnique({ where: { id: job.id } })).toMatchObject({
+    title: "Inspection",
+  });
+});
+
+it("updateJob rejects members from outside the company without saving", async () => {
+  const job = await seededJob();
+  const outsider = await db.user.create({
+    data: { name: "Outsider", email: "outsider@example.com" },
+  });
+  await expect(
+    caller.updateJob({
+      jobId: job.id,
+      title: "Changed",
+      memberIds: [outsider.id],
+      tiles: [],
+    }),
+  ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+  expect(await db.job.findUnique({ where: { id: job.id } })).toMatchObject({
+    title: "Inspection",
+  });
+  expect(await db.jobTile.count({ where: { jobId: job.id } })).toBe(2);
+});
+
+it("updateJob rejects unauthenticated requests and invalid input", async () => {
+  const anonymous = jobRouter.createCaller({
+    db,
+    session: null,
+    headers: new Headers(),
+  });
+  const update = { jobId: missingId, title: "Job", memberIds: [], tiles: [] };
+  await expect(anonymous.updateJob(update)).rejects.toMatchObject({
+    code: "UNAUTHORIZED",
+  });
+  for (const bad of [
+    { ...update, jobId: "invalid" },
+    { ...update, title: "  " },
+  ])
+    await expect(caller.updateJob(bad)).rejects.toMatchObject({
+      code: "BAD_REQUEST",
+    });
+  await expect(caller.updateJob(update)).rejects.toMatchObject({
+    code: "NOT_FOUND",
+  });
+});
+
+it("createJob returns only the new job's id", async () => {
+  const job = await caller.createJob({ companyId, title: "Inspection" });
+  expect(Object.keys(job)).toEqual(["id"]);
+});
+
+it("updateJob needs members and tiles, so a partial save can't wipe them", async () => {
+  const job = await seededJob();
+  await expect(
+    caller.updateJob({ jobId: job.id, title: "Changed" } as Parameters<
+      typeof caller.updateJob
+    >[0]),
+  ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+  expect(await db.jobTile.count({ where: { jobId: job.id } })).toBe(2);
+  expect(Object.values(await storedMembers(job.id))).toEqual([true, true]);
+});
+
+it("saving repeated tile and member ids keeps every tile and one row each", async () => {
+  const job = await seededJob();
+  await caller.updateJob({
+    jobId: job.id,
+    title: "Inspection",
+    memberIds: [job.first.id, job.first.id],
+    tiles: [draftTile(job.keptId, "One"), draftTile(job.keptId, "Two")],
+  });
+  expect((await storedTiles(job.id)).map((tile) => tile.config)).toEqual([
+    { body: "One" },
+    { body: "Two" },
+  ]);
+  expect(await storedMembers(job.id)).toEqual({
+    [job.first.id]: true,
+    [job.second.id]: false,
+  });
 });
