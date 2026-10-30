@@ -7,7 +7,7 @@ import { useRef, useState } from "react";
 import { uploadImage } from "~/app/_components/uploads/image-upload-button";
 import { keepJobMembers } from "~/lib/job-tiles";
 import type { JobTile } from "./tiles/registry";
-import { IMAGE_CONTENT_TYPES } from "~/lib/image-upload";
+import { IMAGE_CONTENT_TYPES, imageSelectionError } from "~/lib/image-upload";
 import { api, type RouterOutputs } from "~/trpc/react";
 import JobMembers from "./job-members";
 import TileBoard from "./tile-board";
@@ -39,6 +39,7 @@ export default function JobBuilder({
   const [description, setDescription] = useState(job?.description ?? "");
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoUrl, setPhotoUrl] = useState(job?.photoUrl ?? null);
+  const [photoError, setPhotoError] = useState("");
   const [memberIds, setMemberIds] = useState(job?.memberIds ?? []);
   const [tiles, setTiles] = useState<JobTile[]>(job?.tiles ?? []);
   const companyMembers = api.invitation.members.useQuery({ companyId });
@@ -123,6 +124,14 @@ export default function JobBuilder({
           {(createJob.error ?? updateJob.error)?.message}
         </p>
       )}
+      {photoError && (
+        <p
+          role="alert"
+          className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-800"
+        >
+          {photoError}
+        </p>
+      )}
       <div className="flex flex-col gap-4 rounded-lg border border-gray-200 bg-white p-4 sm:flex-row">
         <label className="flex size-28 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-md border border-dashed border-gray-300 text-xs text-gray-500 focus-within:outline-2 focus-within:outline-gray-900">
           {photoUrl ? (
@@ -144,7 +153,13 @@ export default function JobBuilder({
             className="sr-only"
             onChange={(event) => {
               const file = event.target.files?.[0];
+              // Cleared, so picking the same file again still fires onChange.
+              event.target.value = "";
               if (!file) return;
+              // Checked now rather than after the job saves, when it's too late.
+              const fileError = imageSelectionError("banner", file);
+              setPhotoError(fileError ?? "");
+              if (fileError) return;
               // A local preview until the job is saved. A cancelled draft's
               // preview is left to the page. The saved job's own photo stays,
               // in case the edit is cancelled.
