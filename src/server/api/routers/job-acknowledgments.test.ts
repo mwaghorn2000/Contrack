@@ -213,6 +213,32 @@ it("editing a tile's text clears its acknowledgments", async () => {
   expect(await acknowledgedBy(tiles.limited)).toEqual([worker.id]);
 });
 
+it("editing a tile's description clears its acknowledgments too", async () => {
+  await worker.caller.setTileAcknowledgment({
+    tileId: tiles.open,
+    acknowledged: true,
+  });
+
+  await owner.caller.updateJob({
+    jobId,
+    title: "Roof",
+    description: "",
+    memberIds: [admin.id, worker.id, colleague.id],
+    tiles: (await savedTiles()).map((saved) =>
+      saved.id === tiles.open
+        ? { ...saved, description: "Now with a helmet" }
+        : saved,
+    ),
+  });
+
+  expect(await acknowledgedBy(tiles.open)).toEqual([]);
+  expect(
+    (await owner.caller.getJob({ jobId })).tiles.find(
+      ({ id }) => id === tiles.open,
+    )?.description,
+  ).toBe("Now with a helmet");
+});
+
 it("moving a tile or changing who sees it keeps its acknowledgments", async () => {
   await worker.caller.setTileAcknowledgment({
     tileId: tiles.open,

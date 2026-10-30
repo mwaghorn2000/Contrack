@@ -166,6 +166,26 @@ test("the palette offers a Checklist tile", async () => {
   expect(screen.getByRole("region", { name: "Checklist tile 1" })).toBeTruthy();
 });
 
+test("any tile can have a description", async () => {
+  const user = userEvent.setup();
+  const requests = renderBuilder();
+
+  await user.type(screen.getByLabelText("Name"), "Roof inspection");
+  await user.click(screen.getByRole("button", { name: "Add Checklist tile" }));
+  await user.type(
+    within(
+      screen.getByRole("region", { name: "Checklist tile 1" }),
+    ).getByLabelText(/^Description/),
+    "Before going on the roof",
+  );
+  await user.click(screen.getByRole("button", { name: "Save job" }));
+
+  await vi.waitFor(() => expect(requests).toHaveLength(1));
+  expect(requests[0]?.[1]).toMatchObject({
+    tiles: [{ type: "checklist", description: "Before going on the roof" }],
+  });
+});
+
 test("taking someone off the job removes them from tile visibility", async () => {
   const user = userEvent.setup();
   renderBuilder();
