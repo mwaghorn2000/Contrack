@@ -1915,6 +1915,17 @@ describe("company images", () => {
     expect(deletePrefix).toHaveBeenCalledTimes(3);
   });
 
+  it("deleteCompany deletes the photos of its jobs", async () => {
+    const jobs = await Promise.all(
+      ["Roof", "Fit-out"].map((title) =>
+        db.job.create({ data: { companyId, createdById: userId, title } }),
+      ),
+    );
+    await caller.deleteCompany({ companyId });
+    for (const { id } of jobs)
+      expect(deletePrefix).toHaveBeenCalledWith(`jobs/${id}/`);
+  });
+
   it("deleteCompany still deletes channel files when another folder fails", async () => {
     const channel = await db.channel.create({
       data: { name: "General", companyId },
