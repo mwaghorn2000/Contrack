@@ -1,7 +1,7 @@
-import { act, render, screen } from "@testing-library/react";
+import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
-import { createTestProvider, deferred } from "~/test/ui";
+import { createTestProvider, deferred, notFoundError } from "~/test/ui";
 import EditJob from "./edit-job";
 
 const push = vi.fn();
@@ -166,4 +166,90 @@ test("a failed refresh while editing keeps the unsaved changes", async () => {
   expect(loads).toBe(2);
   expect(screen.getByLabelText("Name")).toHaveProperty("value", "Roof repair");
   expect(screen.queryByText("Failed to fetch")).toBeNull();
+});
+
+test("deleting a job asks first, then deletes it and goes back to the list", async () => {
+  const user = userEvent.setup();
+  const requests = renderEdit("job-roof");
+
+  await user.click(await screen.findByRole("button", { name: "Delete job" }));
+  const confirm = screen.getByRole("group", {
+    name: "Confirm deleting this job",
+  });
+  expect(requests).toEqual([]);
+  await user.click(within(confirm).getByRole("button", { name: "Delete" }));
+
+  await vi.waitFor(() =>
+    expect(push).toHaveBeenCalledWith("/dashboard/jobs?companyId=company-1"),
+  );
+  expect(requests).toEqual([["job.deleteJob", { jobId: "job-roof" }]]);
+});
+
+test("deleting a job can be cancelled, keeping keyboard focus in place", async () => {
+  const user = userEvent.setup();
+  const requests = renderEdit("job-roof");
+
+  await user.click(await screen.findByRole("button", { name: "Delete job" }));
+  const cancel = within(
+    screen.getByRole("group", { name: "Confirm deleting this job" }),
+  ).getByRole("button", { name: "Cancel" });
+  // Focus moves into the confirmation rather than being lost.
+  expect(document.activeElement).toBe(cancel);
+  await user.click(cancel);
+
+  expect(
+    screen.queryByRole("group", { name: "Confirm deleting this job" }),
+  ).toBeNull();
+  expect(document.activeElement).toBe(
+    screen.getByRole("button", { name: "Delete job" }),
+  );
+  expect(requests).toEqual([]);
+});
+
+test("a failed delete says why and stays on the page", async () => {
+  const user = userEvent.setup();
+  const { Wrapper } = createTestProvider((path) => {
+    if (path === "job.getJob") return job;
+    if (path === "invitation.members") return [];
+    throw notFoundError(
+      "Job not found or you don't have permission to delete jobs.",
+    );
+  });
+  render(<EditJob companyId="company-1" jobId="job-roof" />, {
+    wrapper: Wrapper,
+  });
+
+  await user.click(await screen.findByRole("button", { name: "Delete job" }));
+  await user.click(
+    within(
+      screen.getByRole("group", { name: "Confirm deleting this job" }),
+    ).getByRole("button", { name: "Delete" }),
+  );
+
+  expect((await screen.findByRole("alert")).textContent).toBe(
+    "Job not found or you don't have permission to delete jobs.",
+  );
+  expect(push).not.toHaveBeenCalled();
+});
+
+test("a job that's gone while editing says so instead of showing it", async () => {
+  let loads = 0;
+  const { Wrapper, queryClient } = createTestProvider((path) => {
+    if (path === "invitation.members") return [];
+    if (++loads === 1) return job;
+    throw notFoundError("Job not found.");
+  });
+  render(<EditJob companyId="company-1" jobId="job-roof" />, {
+    wrapper: Wrapper,
+  });
+  await screen.findByLabelText("Name");
+
+  // As when coming back to a job that has since been deleted.
+  await act(async () => {
+    await queryClient.refetchQueries();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  });
+
+  expect(screen.getByText("Job not found.")).toBeTruthy();
+  expect(screen.queryByLabelText("Name")).toBeNull();
 });
