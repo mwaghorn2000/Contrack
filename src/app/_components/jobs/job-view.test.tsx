@@ -184,3 +184,36 @@ test("someone taken off the job loses it while the page is open", async () => {
     vi.useRealTimers();
   }
 });
+
+test("a failed refresh keeps the job on screen", async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true });
+  try {
+    let loads = 0;
+    const { Wrapper } = createTestProvider((path) => {
+      if (path !== "job.getJob") return people;
+      if (++loads === 1) return job;
+      throw new Error("Failed to fetch");
+    });
+    render(
+      <JobView
+        companyId="company-1"
+        jobId="job-1"
+        viewer={{ userId: "user-2", isManager: false }}
+      />,
+      { wrapper: Wrapper },
+    );
+    expect(
+      await screen.findByRole("heading", { name: "Roof inspection" }),
+    ).toBeTruthy();
+
+    await vi.advanceTimersByTimeAsync(7_500);
+
+    await vi.waitFor(() => expect(loads).toBe(2));
+    expect(
+      screen.getByRole("heading", { name: "Roof inspection" }),
+    ).toBeTruthy();
+    expect(screen.queryByText("Failed to fetch")).toBeNull();
+  } finally {
+    vi.useRealTimers();
+  }
+});

@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { createTestProvider, deferred } from "~/test/ui";
@@ -139,4 +139,31 @@ test("a saved edit refreshes the job before opening it", async () => {
   expect(push).not.toHaveBeenCalled();
   refetched.resolve({ ...job, title: "Saved" });
   await vi.waitFor(() => expect(push).toHaveBeenCalledOnce());
+});
+
+test("a failed refresh while editing keeps the unsaved changes", async () => {
+  const user = userEvent.setup();
+  let loads = 0;
+  const { Wrapper, queryClient } = createTestProvider((path) => {
+    if (path === "invitation.members") return [];
+    if (++loads === 1) return job;
+    throw new Error("Failed to fetch");
+  });
+  render(<EditJob companyId="company-1" jobId="job-roof" />, {
+    wrapper: Wrapper,
+  });
+  const name = await screen.findByLabelText("Name");
+  await user.clear(name);
+  await user.type(name, "Roof repair");
+
+  // As when the tab regains focus after the job has gone stale.
+  await act(async () => {
+    await queryClient.refetchQueries();
+    // React Query tells components about the result on the next tick.
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  });
+
+  expect(loads).toBe(2);
+  expect(screen.getByLabelText("Name")).toHaveProperty("value", "Roof repair");
+  expect(screen.queryByText("Failed to fetch")).toBeNull();
 });

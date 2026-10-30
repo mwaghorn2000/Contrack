@@ -106,3 +106,23 @@ test("keeps checking for changes while the list is open", async () => {
     vi.useRealTimers();
   }
 });
+
+test("a failed refresh keeps the jobs on screen", async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true });
+  try {
+    let loads = 0;
+    renderList(false, () => {
+      if (++loads === 1) return jobs;
+      throw new Error("Failed to fetch");
+    });
+    expect(await screen.findAllByRole("article")).toHaveLength(2);
+
+    await vi.advanceTimersByTimeAsync(7_500);
+
+    await vi.waitFor(() => expect(loads).toBe(2));
+    expect(screen.getAllByRole("article")).toHaveLength(2);
+    expect(screen.queryByText("Couldn’t load jobs.")).toBeNull();
+  } finally {
+    vi.useRealTimers();
+  }
+});
