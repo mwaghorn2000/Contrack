@@ -186,6 +186,19 @@ test("any tile can have a description", async () => {
   });
 });
 
+test("the palette offers a Measurement tile", async () => {
+  const user = userEvent.setup();
+  renderBuilder();
+
+  await user.click(
+    screen.getByRole("button", { name: "Add Measurement tile" }),
+  );
+
+  expect(
+    screen.getByRole("region", { name: "Measurement tile 1" }),
+  ).toBeTruthy();
+});
+
 test("taking someone off the job removes them from tile visibility", async () => {
   const user = userEvent.setup();
   renderBuilder();
