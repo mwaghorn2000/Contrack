@@ -1,5 +1,11 @@
 import { beforeAll, afterAll, beforeEach, it, expect, vi } from "vitest";
 import { startTestDatabase, clearTestDatabase } from "~/test/database";
+import {
+  deleteObject,
+  deletePrefix,
+  getObjectInfo,
+  storageConfigured,
+} from "~/server/storage";
 import { jobRouter } from "./job";
 import type {
   CompanyRole,
@@ -11,8 +17,14 @@ import type {
 vi.mock("~/server/auth", () => ({ auth: vi.fn() }));
 vi.mock("~/server/db", () => ({ db: {} }));
 vi.mock("~/server/storage", () => ({
-  storageConfigured: () => true,
+  UPLOAD_CACHE_CONTROL: "public, max-age=31536000, immutable",
+  storageConfigured: vi.fn(() => true),
   signedReadUrl: (key: string) => Promise.resolve(`signed:${key}`),
+  createUploadUrl: (key: string) =>
+    Promise.resolve(`https://upload.example.com/${key}`),
+  getObjectInfo: vi.fn(),
+  deleteObject: vi.fn(),
+  deletePrefix: vi.fn(),
 }));
 
 let database: Awaited<ReturnType<typeof startTestDatabase>> | undefined;
@@ -28,6 +40,14 @@ beforeAll(async () => {
 }, 120_000);
 
 beforeEach(async () => {
+  vi.mocked(getObjectInfo).mockReset();
+  vi.mocked(getObjectInfo).mockResolvedValue({
+    size: 1024,
+    contentType: "image/png",
+  });
+  vi.mocked(deleteObject).mockReset();
+  vi.mocked(deletePrefix).mockReset();
+  vi.mocked(storageConfigured).mockReturnValue(true);
   await clearTestDatabase(db);
   const user = await db.user.create({
     data: { name: "Test User", email: "owner@example.com" },
@@ -1050,4 +1070,192 @@ it("saving repeated tile and member ids keeps every tile and one row each", asyn
     [job.first.id]: true,
     [job.second.id]: false,
   });
+});
+
+/** Requests a PNG photo upload for a job and returns its key. */
+async function uploadedPhoto(jobId: string, as = caller) {
+  const upload = await as.createPhotoUpload({
+    jobId,
+    contentType: "image/png",
+    size: 1024,
+  });
+  return upload.key;
+}
+
+/** Creates an empty job and returns its id. */
+async function emptyJob() {
+  const job = await db.job.create({
+    data: { companyId, createdById: userId, title: "Inspection" },
+  });
+  return job.id;
+}
+
+it("createPhotoUpload returns a signed upload in the job's photo folder", async () => {
+  const jobId = await emptyJob();
+  const upload = await caller.createPhotoUpload({
+    jobId,
+    contentType: "image/png",
+    size: 1024,
+  });
+  expect(upload.key).toMatch(
+    new RegExp(`^jobs/${jobId}/photo/[0-9a-f-]{36}\\.png$`),
+  );
+  expect(upload.uploadUrl).toBe(`https://upload.example.com/${upload.key}`);
+});
+
+it("createPhotoUpload allows photos up to 10 MB of an image type", async () => {
+  const jobId = await emptyJob();
+  const request = (contentType: string, size: number) =>
+    caller.createPhotoUpload({
+      jobId,
+      contentType: contentType as "image/png",
+      size,
+    });
+  await expect(request("image/jpeg", 10 * 1024 * 1024)).resolves.toHaveProperty(
+    "key",
+  );
+  await expect(
+    request("image/jpeg", 10 * 1024 * 1024 + 1),
+  ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+  await expect(request("image/svg+xml", 1024)).rejects.toMatchObject({
+    code: "BAD_REQUEST",
+  });
+});
+
+it("setPhoto saves the photo, shows it signed and deletes the one it replaced", async () => {
+  const jobId = await emptyJob();
+  const first = await uploadedPhoto(jobId);
+  expect(await caller.setPhoto({ jobId, key: first })).toEqual({
+    photoUrl: `signed:${first}`,
+  });
+  const second = await uploadedPhoto(jobId);
+  await caller.setPhoto({ jobId, key: second });
+  expect((await caller.getJob({ jobId })).photoUrl).toBe(`signed:${second}`);
+  expect(deleteObject).toHaveBeenCalledExactlyOnceWith(first);
+});
+
+it("setPhoto removes the photo and deletes it", async () => {
+  const jobId = await emptyJob();
+  const key = await uploadedPhoto(jobId);
+  await caller.setPhoto({ jobId, key });
+  expect(await caller.setPhoto({ jobId, key: null })).toEqual({
+    photoUrl: null,
+  });
+  expect(await db.job.findUnique({ where: { id: jobId } })).toMatchObject({
+    photo: null,
+  });
+  expect(deleteObject).toHaveBeenCalledExactlyOnceWith(key);
+});
+
+it("setPhoto rejects a photo uploaded for another job", async () => {
+  const jobId = await emptyJob();
+  const otherKey = await uploadedPhoto(await emptyJob());
+  await expect(caller.setPhoto({ jobId, key: otherKey })).rejects.toMatchObject(
+    { code: "FORBIDDEN" },
+  );
+  expect(await db.job.findUnique({ where: { id: jobId } })).toMatchObject({
+    photo: null,
+  });
+});
+
+it("setPhoto rejects an upload requested by another admin, and reuse", async () => {
+  const jobId = await emptyJob();
+  const admin = await personWithRole("ADMIN");
+  const theirs = await uploadedPhoto(jobId, admin.caller);
+  await expect(caller.setPhoto({ jobId, key: theirs })).rejects.toMatchObject({
+    code: "NOT_FOUND",
+  });
+  const mine = await uploadedPhoto(jobId);
+  await caller.setPhoto({ jobId, key: mine });
+  await expect(caller.setPhoto({ jobId, key: mine })).rejects.toMatchObject({
+    code: "NOT_FOUND",
+  });
+});
+
+it("job photos can be changed by admins but not by members", async () => {
+  const jobId = await emptyJob();
+  const admin = await personWithRole("ADMIN");
+  const key = await uploadedPhoto(jobId, admin.caller);
+  await admin.caller.setPhoto({ jobId, key });
+
+  const onJob = await personWithRole("MEMBER");
+  await db.jobMember.create({ data: { jobId, userId: onJob.id } });
+  const bystander = await personWithRole("CONTRACTOR");
+  for (const [person, code] of [
+    [onJob, "FORBIDDEN"],
+    [bystander, "NOT_FOUND"],
+  ] as const) {
+    await expect(uploadedPhoto(jobId, person.caller)).rejects.toMatchObject({
+      code,
+    });
+    await expect(
+      person.caller.setPhoto({ jobId, key: null }),
+    ).rejects.toMatchObject({ code });
+  }
+  expect(await db.job.findUnique({ where: { id: jobId } })).toMatchObject({
+    photo: key,
+  });
+});
+
+it("job photo uploads reject unauthenticated requests and invalid input", async () => {
+  const anonymous = jobRouter.createCaller({
+    db,
+    session: null,
+    headers: new Headers(),
+  });
+  const jobId = await emptyJob();
+  await expect(uploadedPhoto(jobId, anonymous)).rejects.toMatchObject({
+    code: "UNAUTHORIZED",
+  });
+  await expect(anonymous.setPhoto({ jobId, key: null })).rejects.toMatchObject({
+    code: "UNAUTHORIZED",
+  });
+  await expect(uploadedPhoto("invalid")).rejects.toMatchObject({
+    code: "BAD_REQUEST",
+  });
+  await expect(
+    caller.setPhoto({ jobId, key: "users/elsewhere.png" }),
+  ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+});
+
+it("deleteJob deletes the job's files, and still succeeds when that fails", async () => {
+  const jobId = await emptyJob();
+  await caller.deleteJob({ jobId });
+  expect(deletePrefix).toHaveBeenCalledExactlyOnceWith(`jobs/${jobId}/`);
+
+  const otherId = await emptyJob();
+  vi.mocked(deletePrefix).mockRejectedValueOnce(new Error("offline"));
+  vi.spyOn(console, "error").mockImplementationOnce(() => undefined);
+  await expect(caller.deleteJob({ jobId: otherId })).resolves.toEqual({
+    success: true,
+  });
+  expect(await db.job.count()).toBe(0);
+});
+
+it("setPhoto reports a job deleted mid-save as not found", async () => {
+  const jobId = await emptyJob();
+  const key = await uploadedPhoto(jobId);
+  vi.mocked(getObjectInfo).mockImplementationOnce(async () => {
+    await db.job.delete({ where: { id: jobId } });
+    return { size: 1024, contentType: "image/png" };
+  });
+  await expect(caller.setPhoto({ jobId, key })).rejects.toMatchObject({
+    code: "NOT_FOUND",
+  });
+});
+
+it("jobs work without photo storage set up", async () => {
+  const jobId = await emptyJob();
+  await db.job.update({
+    where: { id: jobId },
+    data: { photo: `jobs/${jobId}/photo/a.png` },
+  });
+  vi.mocked(storageConfigured).mockReturnValue(false);
+  expect((await caller.getJob({ jobId })).photoUrl).toBeNull();
+  expect(await caller.setPhoto({ jobId, key: null })).toEqual({
+    photoUrl: null,
+  });
+  await caller.deleteJob({ jobId });
+  expect(deleteObject).not.toHaveBeenCalled();
+  expect(deletePrefix).not.toHaveBeenCalled();
 });
