@@ -1333,6 +1333,52 @@ describe("company member management", () => {
     expect(await db.job.findUnique({ where: { id: job.id } })).not.toBeNull();
   });
 
+  it("takes a removed member off this company's jobs, keeping the record", async () => {
+    const other = await db.company.create({
+      data: {
+        name: "Other",
+        members: { create: { userId: memberId, role: "MEMBER" } },
+      },
+    });
+    const earlier = new Date("2026-01-01T00:00:00Z");
+    const [job, leftJob, otherJob] = await Promise.all([
+      db.job.create({
+        data: {
+          companyId,
+          createdById: userId,
+          title: "Inspection",
+          members: { create: { userId: memberId } },
+        },
+      }),
+      db.job.create({
+        data: {
+          companyId,
+          createdById: userId,
+          title: "Fit-out",
+          members: { create: { userId: memberId, removedAt: earlier } },
+        },
+      }),
+      db.job.create({
+        data: {
+          companyId: other.id,
+          createdById: userId,
+          title: "Elsewhere",
+          members: { create: { userId: memberId } },
+        },
+      }),
+    ]);
+    await caller.removeMember({ companyId, userId: memberId });
+    const removedAt = async (jobId: string) =>
+      (
+        await db.jobMember.findUniqueOrThrow({
+          where: { jobId_userId: { jobId, userId: memberId } },
+        })
+      ).removedAt;
+    expect(await removedAt(job.id)).toEqual(expect.any(Date));
+    expect(await removedAt(leftJob.id)).toEqual(earlier);
+    expect(await removedAt(otherJob.id)).toBeNull();
+  });
+
   it("lets the owner remove an admin", async () => {
     await db.companyMember.update({
       where: { userId_companyId: { companyId, userId: memberId } },
