@@ -30,10 +30,13 @@ export default function JobList({
           </Link>
         )}
       </div>
-      {jobs.isPending ? (
-        <p className="text-sm text-gray-500">Loading jobs…</p>
-      ) : jobs.isError ? (
-        <p className="text-sm text-gray-600">Couldn’t load jobs.</p>
+      {/* Loaded jobs stay up when a later poll fails. */}
+      {!jobs.data ? (
+        jobs.isError ? (
+          <p className="text-sm text-gray-600">Couldn’t load jobs.</p>
+        ) : (
+          <p className="text-sm text-gray-500">Loading jobs…</p>
+        )
       ) : jobs.data.length === 0 ? (
         <p className="rounded-lg border border-dashed border-gray-300 p-8 text-center text-sm text-gray-500">
           No jobs yet.

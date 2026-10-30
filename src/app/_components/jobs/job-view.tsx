@@ -27,7 +27,12 @@ export default function JobView({
   // Polled, so edits and lost access show up without a reload.
   const fetched = api.job.getJob.useQuery(
     { jobId },
-    { refetchInterval: 7_500 },
+    {
+      refetchInterval: 7_500,
+      // A lost job won't come back, so show it straight away.
+      retry: (failures, error) =>
+        error.data?.code !== "NOT_FOUND" && failures < 3,
+    },
   );
   const members = api.invitation.members.useQuery({ companyId });
   const [previewId, setPreviewId] = useState("");
@@ -36,10 +41,11 @@ export default function JobView({
 
   if (fetched.isPending)
     return <p className="text-sm text-gray-500">Loading job…</p>;
-  if (fetched.isError) {
+  // A failed poll keeps the loaded job up, unless the viewer lost access.
+  if (!fetched.data || fetched.error?.data?.code === "NOT_FOUND") {
     return (
       <div className="space-y-3">
-        <p className="text-sm text-gray-600">{fetched.error.message}</p>
+        <p className="text-sm text-gray-600">{fetched.error?.message}</p>
         <Link href={listHref} className="text-sm underline">
           Back to jobs
         </Link>

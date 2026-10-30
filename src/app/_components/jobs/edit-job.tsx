@@ -13,20 +13,19 @@ export default function EditJob({
   jobId: string;
 }) {
   const job = api.job.getJob.useQuery({ jobId });
+  // Checked first, so a failed background refetch can't wipe unsaved edits.
+  if (job.data) return <JobBuilder companyId={companyId} job={job.data} />;
   if (job.isPending)
     return <p className="text-sm text-gray-500">Loading job…</p>;
-  if (job.isError) {
-    return (
-      <div className="space-y-3">
-        <p className="text-sm text-gray-600">{job.error.message}</p>
-        <Link
-          href={`/dashboard/jobs?${new URLSearchParams({ companyId })}`}
-          className="text-sm underline"
-        >
-          Back to jobs
-        </Link>
-      </div>
-    );
-  }
-  return <JobBuilder companyId={companyId} job={job.data} />;
+  return (
+    <div className="space-y-3">
+      <p className="text-sm text-gray-600">{job.error.message}</p>
+      <Link
+        href={`/dashboard/jobs?${new URLSearchParams({ companyId })}`}
+        className="text-sm underline"
+      >
+        Back to jobs
+      </Link>
+    </div>
+  );
 }

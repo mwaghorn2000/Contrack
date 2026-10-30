@@ -1,7 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expect, test, vi } from "vitest";
-import { createTestProvider } from "~/test/ui";
+import { createTestProvider, notFoundError } from "~/test/ui";
 import JobView from "./job-view";
 
 const job = {
@@ -42,7 +42,7 @@ function renderView(
   const { Wrapper } = createTestProvider((path, input) => {
     if (path === "job.getJob") {
       if ((input as { jobId: string }).jobId !== job.id)
-        throw new Error("Job not found.");
+        throw notFoundError("Job not found.");
       return job;
     }
     // Leaves the members request pending when they shouldn't load.
@@ -162,7 +162,7 @@ test("someone taken off the job loses it while the page is open", async () => {
     const { Wrapper } = createTestProvider((path) => {
       if (path !== "job.getJob") return people;
       if (++loads === 1) return job;
-      throw new Error("Job not found.");
+      throw notFoundError("Job not found.");
     });
     render(
       <JobView
