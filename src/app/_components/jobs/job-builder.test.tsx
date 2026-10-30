@@ -142,6 +142,22 @@ test("choosing a photo shows a preview and releases the old one", async () => {
   expect(revoke).toHaveBeenCalledWith("blob:photo-1");
 });
 
+test("a photo that isn't a supported image is turned away when picked", async () => {
+  // Lets the test pick a file the input's accept list would hide.
+  const user = userEvent.setup({ applyAccept: false });
+  renderBuilder();
+
+  await user.upload(
+    screen.getByLabelText("Job photo", { selector: "input" }),
+    new File(["x"], "notes.txt", { type: "text/plain" }),
+  );
+
+  expect(screen.getByRole("alert").textContent).toBe(
+    "Choose a JPEG, PNG, WebP, or GIF image.",
+  );
+  expect(screen.queryByRole("img", { name: "Job photo" })).toBeNull();
+});
+
 test("clicking Save repeatedly creates the job once", async () => {
   const user = userEvent.setup();
   const created = deferred<{ id: string }>();
