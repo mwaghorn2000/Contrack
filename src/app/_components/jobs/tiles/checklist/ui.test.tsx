@@ -182,18 +182,24 @@ test("a read-only list can't be changed", () => {
   expect(screen.queryByRole("button", { name: /^Add note/ })).toBeNull();
 });
 
-test("while a change saves, ticks are marked busy but keep keyboard focus", async () => {
+test("only the item being saved waits; it keeps keyboard focus", async () => {
   const user = userEvent.setup();
-  const calls = renderAnswers({ mode: "shared", items }, [], { busy: true });
+  const calls = renderAnswers({ mode: "shared", items }, []);
+  // The save never finishes, as on a slow connection.
+  calls.onCreate.mockImplementation(() => new Promise(() => undefined));
 
-  const box = screen.getByRole("checkbox", { name: "Isolate power" });
-  // Still focusable, unlike a disabled checkbox.
-  expect(box).toHaveProperty("disabled", false);
-  expect(box.getAttribute("aria-disabled")).toBe("true");
-  await user.click(box);
+  const first = screen.getByRole("checkbox", { name: "Isolate power" });
+  await user.click(first);
+  // Still focusable, unlike a disabled checkbox, but ignores clicks.
+  expect(first).toHaveProperty("disabled", false);
+  expect(first.getAttribute("aria-disabled")).toBe("true");
+  await user.click(first);
+  expect(calls.onCreate).toHaveBeenCalledTimes(1);
 
-  expect(calls.onCreate).not.toHaveBeenCalled();
-  expect(box).toHaveProperty("checked", false);
+  const second = screen.getByRole("checkbox", { name: "Fit harness" });
+  expect(second.getAttribute("aria-disabled")).toBe("false");
+  await user.click(second);
+  expect(calls.onCreate).toHaveBeenCalledTimes(2);
 });
 
 test("a note that fails to save stays open to try again", async () => {

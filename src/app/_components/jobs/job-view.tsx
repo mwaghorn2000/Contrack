@@ -1,5 +1,6 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -36,12 +37,15 @@ export default function JobView({
         error.data?.code !== "NOT_FOUND" && failures < 3,
     },
   );
+  const queryClient = useQueryClient();
   const members = api.invitation.members.useQuery({ companyId });
   // Every tile's answers in one request, polled like the job.
   const tileAnswers = api.jobTile.listAnswers.useQuery(
     { jobId },
     {
-      refetchInterval: 7_500,
+      // Paused while an answer saves, so a reload can't undo what's shown.
+      refetchInterval: () =>
+        queryClient.isMutating({ mutationKey: [["jobTile"]] }) ? false : 7_500,
       // Only jobs with a tile that takes answers need them.
       enabled: !!fetched.data?.tiles.some(
         (tile) => definitionFor(tile).answers,
@@ -183,6 +187,11 @@ export default function JobView({
                     <span aria-hidden="true">{icon}</span>
                     {label}
                   </h2>
+                  {tile.description && (
+                    <p className="mb-3 text-sm whitespace-pre-wrap text-gray-600">
+                      {tile.description}
+                    </p>
+                  )}
                   {answers ? (
                     // Answers can't be given while previewing as someone.
                     <TileAnswers

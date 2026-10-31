@@ -140,6 +140,20 @@ export function ChecklistTileAnswers({
   onUpdate,
   onDelete,
 }: AnswersProps<ChecklistConfig, z.infer<typeof checklistAnswer>>) {
+  // Items whose tick is saving; only they wait, the rest stay usable.
+  const [saving, setSaving] = useState<ReadonlySet<string>>(new Set());
+  /** Saves a tick or untick, ignoring the item until it's done. */
+  const toggle = (itemId: string, change: () => Promise<boolean>) => {
+    if (saving.has(itemId)) return;
+    setSaving((items) => new Set(items).add(itemId));
+    void change().finally(() =>
+      setSaving((items) => {
+        const left = new Set(items);
+        left.delete(itemId);
+        return left;
+      }),
+    );
+  };
   if (config.items.length === 0)
     return <p className="text-sm text-gray-500">No items yet.</p>;
   // Each-person lists only tick the viewer's own copy.
@@ -163,13 +177,12 @@ export function ChecklistTileAnswers({
                   // Someone else's tick can only be undone by an admin.
                   disabled={readOnly || (tick && !tick.canDelete)}
                   // Not disabled while saving, which would drop focus.
-                  aria-disabled={busy}
-                  onChange={() => {
-                    if (busy) return;
-                    void (tick
-                      ? onDelete(tick.id)
-                      : onCreate({ itemId: item.id }));
-                  }}
+                  aria-disabled={saving.has(item.id)}
+                  onChange={() =>
+                    toggle(item.id, () =>
+                      tick ? onDelete(tick.id) : onCreate({ itemId: item.id }),
+                    )
+                  }
                 />
                 <span>{text}</span>
               </label>

@@ -6,6 +6,7 @@ const textTile = {
   type: "text",
   visibility: { mode: "everyone" },
   requiresAcknowledgment: false,
+  description: "",
   config: { body: "Wear a harness." },
 };
 

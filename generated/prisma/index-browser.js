@@ -279,7 +279,8 @@ exports.Prisma.JobTileScalarFieldEnum = {
   config: 'config',
   visibility: 'visibility',
   requiresAcknowledgment: 'requiresAcknowledgment',
-  removedAt: 'removedAt'
+  removedAt: 'removedAt',
+  description: 'description'
 };
 
 exports.Prisma.JobTileAnswerScalarFieldEnum = {

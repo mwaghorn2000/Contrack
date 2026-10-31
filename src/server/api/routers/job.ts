@@ -87,6 +87,7 @@ export const jobRouter = createTRPCRouter({
               config: true,
               visibility: true,
               requiresAcknowledgment: true,
+              description: true,
             },
             orderBy: [{ position: "asc" }, { id: "asc" }],
           },

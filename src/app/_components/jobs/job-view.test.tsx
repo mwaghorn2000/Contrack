@@ -494,3 +494,111 @@ test("says when answers couldn't be loaded", async () => {
     "Could not load answers.",
   );
 });
+
+const twoItemJob = {
+  ...job,
+  tiles: [
+    {
+      id: "list",
+      type: "checklist" as const,
+      visibility: { mode: "everyone" as const },
+      requiresAcknowledgment: false,
+      description: "Before going on the roof",
+      config: {
+        mode: "shared" as const,
+        items: [
+          { id: "a", text: "Isolate power" },
+          { id: "b", text: "Fit harness" },
+        ],
+      },
+    },
+  ],
+};
+
+/**
+ * Renders a two-item shared checklist. Saves are answered by `save`; after
+ * the first load, answers are answered by `reload` (by default, never), so
+ * only the page's own handling can change what's shown.
+ */
+function renderTwoItems(
+  save: (path: string, input: unknown) => unknown,
+  reload: () => unknown = () => new Promise(() => undefined),
+) {
+  let loads = 0;
+  const { Wrapper } = createTestProvider((path, input) => {
+    if (path === "job.getJob") return twoItemJob;
+    if (path === "invitation.members") return people;
+    if (path === "jobTile.listAnswers")
+      return ++loads === 1 ? { list: [] } : reload();
+    return save(path, input);
+  });
+  render(
+    <JobView
+      companyId="company-1"
+      jobId="job-1"
+      viewer={{ userId: "user-2", isManager: false }}
+    />,
+    { wrapper: Wrapper },
+  );
+}
+
+test("a tick shows straight away, and other items stay usable while it saves", async () => {
+  const user = userEvent.setup();
+  // The save never finishes, as on a slow connection.
+  renderTwoItems(() => new Promise(() => undefined));
+  const first = await screen.findByRole("checkbox", { name: "Isolate power" });
+  await vi.waitFor(() => expect(first).toHaveProperty("disabled", false));
+
+  await user.click(first);
+
+  expect(first).toHaveProperty("checked", true);
+  const second = screen.getByRole("checkbox", { name: "Fit harness" });
+  expect(second.getAttribute("aria-disabled")).not.toBe("true");
+  await user.click(second);
+  expect(second).toHaveProperty("checked", true);
+});
+
+test("a tick that fails to save is undone, saying why", async () => {
+  const user = userEvent.setup();
+  let fail!: (error: Error) => void;
+  renderTwoItems(() => new Promise((_, reject) => (fail = reject)));
+  const first = await screen.findByRole("checkbox", { name: "Isolate power" });
+  await vi.waitFor(() => expect(first).toHaveProperty("disabled", false));
+
+  await user.click(first);
+  expect(first).toHaveProperty("checked", true);
+  fail(new Error("That item is already ticked."));
+
+  expect((await screen.findByRole("alert")).textContent).toBe(
+    "That item is already ticked.",
+  );
+  expect(first).toHaveProperty("checked", false);
+});
+
+test("a saved tick can be unticked before the answers reload", async () => {
+  const user = userEvent.setup();
+  const requests: [string, unknown][] = [];
+  renderTwoItems((path, input) => {
+    requests.push([path, input]);
+    return { id: "csaved000000000000000001" };
+  });
+  const first = await screen.findByRole("checkbox", { name: "Isolate power" });
+  await vi.waitFor(() => expect(first).toHaveProperty("disabled", false));
+
+  await user.click(first);
+  await vi.waitFor(() =>
+    expect(first.getAttribute("aria-disabled")).toBe("false"),
+  );
+  await user.click(first);
+
+  expect(requests).toEqual([
+    ["jobTile.createAnswer", { tileId: "list", data: { itemId: "a" } }],
+    ["jobTile.deleteAnswer", { answerId: "csaved000000000000000001" }],
+  ]);
+  expect(first).toHaveProperty("checked", false);
+});
+
+test("a tile's description shows above it", async () => {
+  renderTwoItems(() => ({}));
+  expect(await screen.findByText("Before going on the roof")).toBeTruthy();
+});

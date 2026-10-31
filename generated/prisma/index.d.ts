@@ -20582,6 +20582,7 @@ export namespace Prisma {
     position: number | null
     requiresAcknowledgment: boolean | null
     removedAt: Date | null
+    description: string | null
   }
 
   export type JobTileMaxAggregateOutputType = {
@@ -20591,6 +20592,7 @@ export namespace Prisma {
     position: number | null
     requiresAcknowledgment: boolean | null
     removedAt: Date | null
+    description: string | null
   }
 
   export type JobTileCountAggregateOutputType = {
@@ -20602,6 +20604,7 @@ export namespace Prisma {
     visibility: number
     requiresAcknowledgment: number
     removedAt: number
+    description: number
     _all: number
   }
 
@@ -20621,6 +20624,7 @@ export namespace Prisma {
     position?: true
     requiresAcknowledgment?: true
     removedAt?: true
+    description?: true
   }
 
   export type JobTileMaxAggregateInputType = {
@@ -20630,6 +20634,7 @@ export namespace Prisma {
     position?: true
     requiresAcknowledgment?: true
     removedAt?: true
+    description?: true
   }
 
   export type JobTileCountAggregateInputType = {
@@ -20641,6 +20646,7 @@ export namespace Prisma {
     visibility?: true
     requiresAcknowledgment?: true
     removedAt?: true
+    description?: true
     _all?: true
   }
 
@@ -20739,6 +20745,7 @@ export namespace Prisma {
     visibility: JsonValue
     requiresAcknowledgment: boolean
     removedAt: Date | null
+    description: string
     _count: JobTileCountAggregateOutputType | null
     _avg: JobTileAvgAggregateOutputType | null
     _sum: JobTileSumAggregateOutputType | null
@@ -20769,6 +20776,7 @@ export namespace Prisma {
     visibility?: boolean
     requiresAcknowledgment?: boolean
     removedAt?: boolean
+    description?: boolean
     job?: boolean | JobDefaultArgs<ExtArgs>
     acknowledgments?: boolean | JobTile$acknowledgmentsArgs<ExtArgs>
     answers?: boolean | JobTile$answersArgs<ExtArgs>
@@ -20784,6 +20792,7 @@ export namespace Prisma {
     visibility?: boolean
     requiresAcknowledgment?: boolean
     removedAt?: boolean
+    description?: boolean
     job?: boolean | JobDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["jobTile"]>
 
@@ -20796,6 +20805,7 @@ export namespace Prisma {
     visibility?: boolean
     requiresAcknowledgment?: boolean
     removedAt?: boolean
+    description?: boolean
     job?: boolean | JobDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["jobTile"]>
 
@@ -20808,9 +20818,10 @@ export namespace Prisma {
     visibility?: boolean
     requiresAcknowledgment?: boolean
     removedAt?: boolean
+    description?: boolean
   }
 
-  export type JobTileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "type" | "position" | "config" | "visibility" | "requiresAcknowledgment" | "removedAt", ExtArgs["result"]["jobTile"]>
+  export type JobTileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "type" | "position" | "config" | "visibility" | "requiresAcknowledgment" | "removedAt" | "description", ExtArgs["result"]["jobTile"]>
   export type JobTileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobDefaultArgs<ExtArgs>
     acknowledgments?: boolean | JobTile$acknowledgmentsArgs<ExtArgs>
@@ -20840,6 +20851,7 @@ export namespace Prisma {
       visibility: Prisma.JsonValue
       requiresAcknowledgment: boolean
       removedAt: Date | null
+      description: string
     }, ExtArgs["result"]["jobTile"]>
     composites: {}
   }
@@ -21274,6 +21286,7 @@ export namespace Prisma {
     readonly visibility: FieldRef<"JobTile", 'Json'>
     readonly requiresAcknowledgment: FieldRef<"JobTile", 'Boolean'>
     readonly removedAt: FieldRef<"JobTile", 'DateTime'>
+    readonly description: FieldRef<"JobTile", 'String'>
   }
     
 
@@ -29413,7 +29426,8 @@ export namespace Prisma {
     config: 'config',
     visibility: 'visibility',
     requiresAcknowledgment: 'requiresAcknowledgment',
-    removedAt: 'removedAt'
+    removedAt: 'removedAt',
+    description: 'description'
   };
 
   export type JobTileScalarFieldEnum = (typeof JobTileScalarFieldEnum)[keyof typeof JobTileScalarFieldEnum]
@@ -30774,6 +30788,7 @@ export namespace Prisma {
     visibility?: JsonFilter<"JobTile">
     requiresAcknowledgment?: BoolFilter<"JobTile"> | boolean
     removedAt?: DateTimeNullableFilter<"JobTile"> | Date | string | null
+    description?: StringFilter<"JobTile"> | string
     job?: XOR<JobScalarRelationFilter, JobWhereInput>
     acknowledgments?: JobTileAcknowledgmentListRelationFilter
     answers?: JobTileAnswerListRelationFilter
@@ -30788,6 +30803,7 @@ export namespace Prisma {
     visibility?: SortOrder
     requiresAcknowledgment?: SortOrder
     removedAt?: SortOrderInput | SortOrder
+    description?: SortOrder
     job?: JobOrderByWithRelationInput
     acknowledgments?: JobTileAcknowledgmentOrderByRelationAggregateInput
     answers?: JobTileAnswerOrderByRelationAggregateInput
@@ -30805,6 +30821,7 @@ export namespace Prisma {
     visibility?: JsonFilter<"JobTile">
     requiresAcknowledgment?: BoolFilter<"JobTile"> | boolean
     removedAt?: DateTimeNullableFilter<"JobTile"> | Date | string | null
+    description?: StringFilter<"JobTile"> | string
     job?: XOR<JobScalarRelationFilter, JobWhereInput>
     acknowledgments?: JobTileAcknowledgmentListRelationFilter
     answers?: JobTileAnswerListRelationFilter
@@ -30819,6 +30836,7 @@ export namespace Prisma {
     visibility?: SortOrder
     requiresAcknowledgment?: SortOrder
     removedAt?: SortOrderInput | SortOrder
+    description?: SortOrder
     _count?: JobTileCountOrderByAggregateInput
     _avg?: JobTileAvgOrderByAggregateInput
     _max?: JobTileMaxOrderByAggregateInput
@@ -30838,6 +30856,7 @@ export namespace Prisma {
     visibility?: JsonWithAggregatesFilter<"JobTile">
     requiresAcknowledgment?: BoolWithAggregatesFilter<"JobTile"> | boolean
     removedAt?: DateTimeNullableWithAggregatesFilter<"JobTile"> | Date | string | null
+    description?: StringWithAggregatesFilter<"JobTile"> | string
   }
 
   export type JobTileAnswerWhereInput = {
@@ -32390,6 +32409,7 @@ export namespace Prisma {
     visibility: JsonNullValueInput | InputJsonValue
     requiresAcknowledgment?: boolean
     removedAt?: Date | string | null
+    description?: string
     job: JobCreateNestedOneWithoutTilesInput
     acknowledgments?: JobTileAcknowledgmentCreateNestedManyWithoutTileInput
     answers?: JobTileAnswerCreateNestedManyWithoutTileInput
@@ -32404,6 +32424,7 @@ export namespace Prisma {
     visibility: JsonNullValueInput | InputJsonValue
     requiresAcknowledgment?: boolean
     removedAt?: Date | string | null
+    description?: string
     acknowledgments?: JobTileAcknowledgmentUncheckedCreateNestedManyWithoutTileInput
     answers?: JobTileAnswerUncheckedCreateNestedManyWithoutTileInput
   }
@@ -32416,6 +32437,7 @@ export namespace Prisma {
     visibility?: JsonNullValueInput | InputJsonValue
     requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
     removedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    description?: StringFieldUpdateOperationsInput | string
     job?: JobUpdateOneRequiredWithoutTilesNestedInput
     acknowledgments?: JobTileAcknowledgmentUpdateManyWithoutTileNestedInput
     answers?: JobTileAnswerUpdateManyWithoutTileNestedInput
@@ -32430,6 +32452,7 @@ export namespace Prisma {
     visibility?: JsonNullValueInput | InputJsonValue
     requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
     removedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    description?: StringFieldUpdateOperationsInput | string
     acknowledgments?: JobTileAcknowledgmentUncheckedUpdateManyWithoutTileNestedInput
     answers?: JobTileAnswerUncheckedUpdateManyWithoutTileNestedInput
   }
@@ -32443,6 +32466,7 @@ export namespace Prisma {
     visibility: JsonNullValueInput | InputJsonValue
     requiresAcknowledgment?: boolean
     removedAt?: Date | string | null
+    description?: string
   }
 
   export type JobTileUpdateManyMutationInput = {
@@ -32453,6 +32477,7 @@ export namespace Prisma {
     visibility?: JsonNullValueInput | InputJsonValue
     requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
     removedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    description?: StringFieldUpdateOperationsInput | string
   }
 
   export type JobTileUncheckedUpdateManyInput = {
@@ -32464,6 +32489,7 @@ export namespace Prisma {
     visibility?: JsonNullValueInput | InputJsonValue
     requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
     removedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    description?: StringFieldUpdateOperationsInput | string
   }
 
   export type JobTileAnswerCreateInput = {
@@ -33889,6 +33915,7 @@ export namespace Prisma {
     visibility?: SortOrder
     requiresAcknowledgment?: SortOrder
     removedAt?: SortOrder
+    description?: SortOrder
   }
 
   export type JobTileAvgOrderByAggregateInput = {
@@ -33902,6 +33929,7 @@ export namespace Prisma {
     position?: SortOrder
     requiresAcknowledgment?: SortOrder
     removedAt?: SortOrder
+    description?: SortOrder
   }
 
   export type JobTileMinOrderByAggregateInput = {
@@ -33911,6 +33939,7 @@ export namespace Prisma {
     position?: SortOrder
     requiresAcknowledgment?: SortOrder
     removedAt?: SortOrder
+    description?: SortOrder
   }
 
   export type JobTileSumOrderByAggregateInput = {
@@ -39517,6 +39546,7 @@ export namespace Prisma {
     visibility: JsonNullValueInput | InputJsonValue
     requiresAcknowledgment?: boolean
     removedAt?: Date | string | null
+    description?: string
     acknowledgments?: JobTileAcknowledgmentCreateNestedManyWithoutTileInput
     answers?: JobTileAnswerCreateNestedManyWithoutTileInput
   }
@@ -39529,6 +39559,7 @@ export namespace Prisma {
     visibility: JsonNullValueInput | InputJsonValue
     requiresAcknowledgment?: boolean
     removedAt?: Date | string | null
+    description?: string
     acknowledgments?: JobTileAcknowledgmentUncheckedCreateNestedManyWithoutTileInput
     answers?: JobTileAnswerUncheckedCreateNestedManyWithoutTileInput
   }
@@ -39697,6 +39728,7 @@ export namespace Prisma {
     visibility?: JsonFilter<"JobTile">
     requiresAcknowledgment?: BoolFilter<"JobTile"> | boolean
     removedAt?: DateTimeNullableFilter<"JobTile"> | Date | string | null
+    description?: StringFilter<"JobTile"> | string
   }
 
   export type JobCreateWithoutMembersInput = {
@@ -40039,6 +40071,7 @@ export namespace Prisma {
     visibility: JsonNullValueInput | InputJsonValue
     requiresAcknowledgment?: boolean
     removedAt?: Date | string | null
+    description?: string
     job: JobCreateNestedOneWithoutTilesInput
     acknowledgments?: JobTileAcknowledgmentCreateNestedManyWithoutTileInput
   }
@@ -40052,6 +40085,7 @@ export namespace Prisma {
     visibility: JsonNullValueInput | InputJsonValue
     requiresAcknowledgment?: boolean
     removedAt?: Date | string | null
+    description?: string
     acknowledgments?: JobTileAcknowledgmentUncheckedCreateNestedManyWithoutTileInput
   }
 
@@ -40138,6 +40172,7 @@ export namespace Prisma {
     visibility?: JsonNullValueInput | InputJsonValue
     requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
     removedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    description?: StringFieldUpdateOperationsInput | string
     job?: JobUpdateOneRequiredWithoutTilesNestedInput
     acknowledgments?: JobTileAcknowledgmentUpdateManyWithoutTileNestedInput
   }
@@ -40151,6 +40186,7 @@ export namespace Prisma {
     visibility?: JsonNullValueInput | InputJsonValue
     requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
     removedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    description?: StringFieldUpdateOperationsInput | string
     acknowledgments?: JobTileAcknowledgmentUncheckedUpdateManyWithoutTileNestedInput
   }
 
@@ -40227,6 +40263,7 @@ export namespace Prisma {
     visibility: JsonNullValueInput | InputJsonValue
     requiresAcknowledgment?: boolean
     removedAt?: Date | string | null
+    description?: string
     job: JobCreateNestedOneWithoutTilesInput
     answers?: JobTileAnswerCreateNestedManyWithoutTileInput
   }
@@ -40240,6 +40277,7 @@ export namespace Prisma {
     visibility: JsonNullValueInput | InputJsonValue
     requiresAcknowledgment?: boolean
     removedAt?: Date | string | null
+    description?: string
     answers?: JobTileAnswerUncheckedCreateNestedManyWithoutTileInput
   }
 
@@ -40326,6 +40364,7 @@ export namespace Prisma {
     visibility?: JsonNullValueInput | InputJsonValue
     requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
     removedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    description?: StringFieldUpdateOperationsInput | string
     job?: JobUpdateOneRequiredWithoutTilesNestedInput
     answers?: JobTileAnswerUpdateManyWithoutTileNestedInput
   }
@@ -40339,6 +40378,7 @@ export namespace Prisma {
     visibility?: JsonNullValueInput | InputJsonValue
     requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
     removedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    description?: StringFieldUpdateOperationsInput | string
     answers?: JobTileAnswerUncheckedUpdateManyWithoutTileNestedInput
   }
 
@@ -41956,6 +41996,7 @@ export namespace Prisma {
     visibility: JsonNullValueInput | InputJsonValue
     requiresAcknowledgment?: boolean
     removedAt?: Date | string | null
+    description?: string
   }
 
   export type JobMemberUpdateWithoutJobInput = {
@@ -41984,6 +42025,7 @@ export namespace Prisma {
     visibility?: JsonNullValueInput | InputJsonValue
     requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
     removedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    description?: StringFieldUpdateOperationsInput | string
     acknowledgments?: JobTileAcknowledgmentUpdateManyWithoutTileNestedInput
     answers?: JobTileAnswerUpdateManyWithoutTileNestedInput
   }
@@ -41996,6 +42038,7 @@ export namespace Prisma {
     visibility?: JsonNullValueInput | InputJsonValue
     requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
     removedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    description?: StringFieldUpdateOperationsInput | string
     acknowledgments?: JobTileAcknowledgmentUncheckedUpdateManyWithoutTileNestedInput
     answers?: JobTileAnswerUncheckedUpdateManyWithoutTileNestedInput
   }
@@ -42008,6 +42051,7 @@ export namespace Prisma {
     visibility?: JsonNullValueInput | InputJsonValue
     requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
     removedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    description?: StringFieldUpdateOperationsInput | string
   }
 
   export type JobTileAcknowledgmentCreateManyTileInput = {

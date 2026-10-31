@@ -3,6 +3,7 @@ import { z } from "zod";
 import type { AnswersProps } from "./define-tile";
 import { checklistTile } from "./checklist";
 import { contactsTile } from "./contacts";
+import { measurementTile } from "./measurement";
 import { textTile } from "./text";
 
 /**
@@ -10,7 +11,12 @@ import { textTile } from "./text";
  * `index.ts`, components in `ui.tsx`) plus one entry here; the palette, canvas,
  * job view and server validation all read from this list.
  */
-export const TILES = [textTile, contactsTile, checklistTile] as const;
+export const TILES = [
+  textTile,
+  contactsTile,
+  checklistTile,
+  measurementTile,
+] as const;
 
 type Tiles = typeof TILES;
 
@@ -61,6 +67,7 @@ export function createTile<K extends TileType>(type: K) {
     type,
     visibility: { mode: "everyone" },
     requiresAcknowledgment: false,
+    description: "",
     config: tileTypes[type].defaultConfig(),
   } as unknown as Extract<JobTile, { type: K }>;
 }

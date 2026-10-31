@@ -9,6 +9,7 @@ function tile(id: string): JobTile {
     type: "text",
     visibility: { mode: "everyone" },
     requiresAcknowledgment: false,
+    description: "",
     config: { body: id },
   };
 }
