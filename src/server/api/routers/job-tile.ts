@@ -39,6 +39,15 @@ function emptyToNull(note: string | undefined) {
   return note?.length ? note : null;
 }
 
+/** BAD_REQUEST when a note is sent to a tile whose answers don't take one. */
+function checkNote(rules: AnswerRules, note: string | undefined) {
+  if (rules.notes === false && note)
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "This tile doesn't take notes.",
+    });
+}
+
 /** The tile's answer rules, or BAD_REQUEST for tiles that take no answers. */
 function requireAnswerRules(tile: JobTile) {
   const rules = answerRules(tile.type);
@@ -260,6 +269,7 @@ export const jobTileRouter = createTRPCRouter({
           input.tileId,
         );
         const rules = requireAnswerRules(tile);
+        checkNote(rules, input.note);
         const data = await checkedAnswer(tx, tile, rules, input.data, userId);
         const files = await claimedFiles(tx, rules, input.files ?? [], {
           userId,
@@ -295,6 +305,7 @@ export const jobTileRouter = createTRPCRouter({
             message: "You can only change your own answers.",
           });
         const rules = requireAnswerRules(tile);
+        checkNote(rules, input.note);
         const data = await checkedAnswer(
           tx,
           tile,

@@ -70,6 +70,8 @@ export function defineTile<
     schema: Answer;
     // How many photos or PDFs each answer must have; none when left out.
     files?: { min: number; max: number };
+    // Whether answers can carry a note; they can when left out.
+    notes?: boolean;
     check?: (answer: {
       config: z.infer<Config>;
       data: z.infer<Answer>;

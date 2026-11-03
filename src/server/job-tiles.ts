@@ -87,6 +87,7 @@ export async function requireVisibleTile(
 export type AnswerRules = {
   schema: z.ZodTypeAny;
   files?: { min: number; max: number };
+  notes?: boolean;
   check?: (answer: {
     config: unknown;
     data: unknown;
