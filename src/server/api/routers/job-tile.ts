@@ -34,6 +34,20 @@ const answerFields = {
 
 const answerIdSchema = z.object({ answerId: z.string().cuid() });
 
+// An upload from createFileUpload, claimed once when its answer is saved.
+const fileInput = z.object({
+  key: attachmentKeySchema,
+  // Long names are shortened rather than refused, after upload.
+  name: z
+    .string()
+    .trim()
+    .min(1)
+    .max(1000)
+    .transform((name) => name.slice(0, 200)),
+  // Which of the tile's file fields it's for, on tiles that have them.
+  fieldId: z.string().min(1).max(64).optional(),
+});
+
 /** A note as saved: an empty or missing one is stored as no note. */
 function emptyToNull(note: string | undefined) {
   return note?.length ? note : null;
@@ -85,6 +99,7 @@ async function checkedAnswer(
     config: tile.config,
     data: parsed.data,
     userId,
+    editing: answerId !== undefined,
     others: others.flatMap(({ authorId, data }) => {
       const other = rules.schema.safeParse(data);
       const value: unknown = other.data;
@@ -95,37 +110,64 @@ async function checkedAnswer(
   return parsed.data as Prisma.InputJsonValue;
 }
 
+/** BAD_REQUEST with a message for the person answering. */
+function badRequest(message: string) {
+  return new TRPCError({ code: "BAD_REQUEST", message });
+}
+
 /**
- * Checks an answer has as many files as its tile takes, then claims each
- * upload (the uploader's own, in this tile's folder, unused) and returns the
- * rows to save with their stored types and sizes.
+ * Checks an answer's files (kept and new) fit its tile: as many as it takes,
+ * and, on tiles with file fields, each under one of them within its limits.
+ */
+function checkFiles(
+  rules: AnswerRules,
+  config: unknown,
+  files: { fieldId?: string | null }[],
+) {
+  if (rules.fileFields) {
+    const fields = rules.fileFields(config);
+    if (files.some((file) => !fields.some(({ id }) => id === file.fieldId)))
+      throw badRequest("Those files don't fit this form's fields.");
+    for (const field of fields) {
+      const count = files.filter((file) => file.fieldId === field.id).length;
+      if (count < field.min)
+        throw badRequest(`Add a file to "${field.label}".`);
+      if (count > field.max)
+        throw badRequest(
+          `Attach at most ${field.max} files to "${field.label}".`,
+        );
+    }
+    return;
+  }
+  if (files.some((file) => file.fieldId))
+    throw badRequest("This tile doesn't sort files into fields.");
+  const limits = rules.files ?? { min: 0, max: 0 };
+  if (files.length > limits.max)
+    throw badRequest(
+      limits.max === 0
+        ? "This tile doesn't take files."
+        : `Attach at most ${limits.max} files.`,
+    );
+  if (files.length < limits.min)
+    throw badRequest("Add at least one photo or file.");
+}
+
+/**
+ * Claims each upload (the uploader's own, in this tile's folder, unused) and
+ * returns the rows to save with their stored types and sizes.
  */
 async function claimedFiles(
   tx: Prisma.TransactionClient,
-  rules: AnswerRules,
-  files: { key: string; name: string }[],
+  files: z.infer<typeof fileInput>[],
   upload: { userId: string; folder: string },
 ) {
-  const limits = rules.files ?? { min: 0, max: 0 };
-  if (files.length > limits.max)
-    throw new TRPCError({
-      code: "BAD_REQUEST",
-      message:
-        limits.max === 0
-          ? "This tile doesn't take files."
-          : `Attach at most ${limits.max} files.`,
-    });
-  if (files.length < limits.min)
-    throw new TRPCError({
-      code: "BAD_REQUEST",
-      message: "Add at least one photo or file.",
-    });
   // Checked together, so a batch of files doesn't hold the transaction open
   // for one storage request after another.
   return Promise.all(
-    files.map(async ({ key, name }) => ({
+    files.map(async ({ key, name, fieldId }) => ({
       key,
       name,
+      fieldId: fieldId ?? null,
       ...(await confirmAttachmentUpload(tx, upload.userId, upload.folder, key)),
     })),
   );
@@ -149,14 +191,14 @@ async function requireVisibleAnswer(
     select: { id: true, tileId: true, authorId: true },
   });
   if (!answer) throw notFound;
-  const { tile, isManager } = await requireVisibleTile(
+  const { tile, job, isManager } = await requireVisibleTile(
     tx,
     userId,
     answer.tileId,
   ).catch(() => {
     throw notFound;
   });
-  return { answer, tile, isManager };
+  return { answer, tile, job, isManager };
 }
 
 export const jobTileRouter = createTRPCRouter({
@@ -191,6 +233,7 @@ export const jobTileRouter = createTRPCRouter({
                 orderBy: { createdAt: "asc" },
                 select: {
                   id: true,
+                  fieldId: true,
                   key: true,
                   name: true,
                   contentType: true,
@@ -241,22 +284,8 @@ export const jobTileRouter = createTRPCRouter({
       z.object({
         tileId: z.string().cuid(),
         ...answerFields,
-        // Uploaded first with createFileUpload; claimed here, once each.
-        files: z
-          .array(
-            z.object({
-              key: attachmentKeySchema,
-              // Long names are shortened rather than refused, after upload.
-              name: z
-                .string()
-                .trim()
-                .min(1)
-                .max(1000)
-                .transform((name) => name.slice(0, 200)),
-            }),
-          )
-          .max(10)
-          .optional(),
+        // A form can have several file fields; tiles set their own limits.
+        files: z.array(fileInput).max(50).optional(),
       }),
     )
     .mutation(({ ctx, input }) => {
@@ -271,7 +300,8 @@ export const jobTileRouter = createTRPCRouter({
         const rules = requireAnswerRules(tile);
         checkNote(rules, input.note);
         const data = await checkedAnswer(tx, tile, rules, input.data, userId);
-        const files = await claimedFiles(tx, rules, input.files ?? [], {
+        checkFiles(rules, tile.config, input.files ?? []);
+        const files = await claimedFiles(tx, input.files ?? [], {
           userId,
           folder: tileFilesFolder(job.id, tile.id),
         });
@@ -288,13 +318,19 @@ export const jobTileRouter = createTRPCRouter({
       });
     }),
 
-  // Changes an answer's data and note, for its author only.
+  // Changes an answer's data and note, and adds or removes its files, for
+  // its author only.
   updateAnswer: protectedProcedure
-    .input(answerIdSchema.extend(answerFields))
-    .mutation(({ ctx, input }) => {
+    .input(
+      answerIdSchema.extend(answerFields).extend({
+        addFiles: z.array(fileInput).max(50).optional(),
+        removeFileIds: z.array(z.string().cuid()).max(50).optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
-      return serializableTransaction(ctx.db, async (tx) => {
-        const { answer, tile } = await requireVisibleAnswer(
+      const removedKeys = await serializableTransaction(ctx.db, async (tx) => {
+        const { answer, tile, job } = await requireVisibleAnswer(
           tx,
           userId,
           input.answerId,
@@ -314,6 +350,29 @@ export const jobTileRouter = createTRPCRouter({
           userId,
           answer.id,
         );
+        const addFiles = input.addFiles ?? [];
+        const removeIds = input.removeFileIds ?? [];
+        const existing = await tx.jobTileFile.findMany({
+          where: { answerId: answer.id },
+          select: { id: true, key: true, fieldId: true },
+        });
+        if (removeIds.some((id) => !existing.some((file) => file.id === id)))
+          throw badRequest("That file isn't on this answer.");
+        // Files are only checked when they change, so an answer saved before
+        // its tile's limits changed can still have its text edited.
+        // Files under a since-deleted form field stay but no longer count.
+        const fieldIds = rules.fileFields?.(tile.config).map(({ id }) => id);
+        const kept = existing.filter(
+          (file) =>
+            !removeIds.includes(file.id) &&
+            (!fieldIds || fieldIds.includes(file.fieldId ?? "")),
+        );
+        if (addFiles.length > 0 || removeIds.length > 0)
+          checkFiles(rules, tile.config, [...kept, ...addFiles]);
+        const added = await claimedFiles(tx, addFiles, {
+          userId,
+          folder: tileFilesFolder(job.id, tile.id),
+        });
         await tx.jobTileAnswer.update({
           where: { id: answer.id },
           // Leaving the note out keeps it; sending "" clears it.
@@ -322,10 +381,17 @@ export const jobTileRouter = createTRPCRouter({
             ...(input.note === undefined
               ? {}
               : { note: emptyToNull(input.note) }),
+            files: { create: added, deleteMany: { id: { in: removeIds } } },
           },
         });
-        return { id: answer.id };
+        return existing
+          .filter((file) => removeIds.includes(file.id))
+          .map(({ key }) => key);
       });
+      // Deleted after saving, as deleteAnswer does; a leftover is harmless.
+      if (storageConfigured())
+        await Promise.allSettled(removedKeys.map((key) => deleteObject(key)));
+      return { id: input.answerId };
     }),
 
   // Deletes an answer, for its author or a company owner or admin.
@@ -369,7 +435,8 @@ export const jobTileRouter = createTRPCRouter({
         userId,
         input.tileId,
       );
-      if (!answerRules(tile.type)?.files)
+      const rules = answerRules(tile.type);
+      if (!rules?.files && !rules?.fileFields)
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "This tile doesn't take files.",

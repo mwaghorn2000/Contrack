@@ -342,6 +342,8 @@ model JobTileAnswer {
 model JobTileFile {
     id          String   @id @default(cuid())
     answerId    String
+    // The Form field it was attached under; null on other tiles.
+    fieldId     String?
     key         String   @unique
     name        String
     contentType String

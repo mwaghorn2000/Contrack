@@ -119,3 +119,29 @@ test("removing a tile moves focus to the next tile, or the one before", async ()
     screen.getByRole("button", { name: "Move Text tile 1" }),
   );
 });
+
+test("a Form tile only offers submitters who can see it", () => {
+  const form: JobTile = {
+    id: "f",
+    type: "form",
+    visibility: { mode: "members", userIds: ["user-2"] },
+    requiresAcknowledgment: false,
+    description: "",
+    config: { fields: [], submitters: [], mode: "one" },
+  };
+  render(
+    <TileBoard
+      tiles={[form]}
+      people={[
+        { id: "user-1", name: "Ada" },
+        { id: "user-2", name: "Jaxon" },
+      ]}
+      onChange={() => undefined}
+    />,
+  );
+
+  const who = within(screen.getByRole("group", { name: "Who must submit" }));
+  expect(
+    who.getAllByRole("checkbox").map((box) => box.parentElement?.textContent),
+  ).toEqual(["Jaxon"]);
+});

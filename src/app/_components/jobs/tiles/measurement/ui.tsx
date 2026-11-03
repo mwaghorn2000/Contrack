@@ -6,6 +6,7 @@ import { useEffect, useRef, useState, type RefObject } from "react";
 import type { z } from "zod";
 import type { measurementAnswer, measurementConfig } from ".";
 import AnswerByline from "../../answers/answer-byline";
+import ConfirmDelete from "../../answers/confirm-delete";
 import type { AnswersProps, TileAnswer } from "../define-tile";
 
 type MeasurementConfig = z.infer<typeof measurementConfig>;
@@ -169,30 +170,13 @@ function MeasurementRow({
         <p className="whitespace-pre-wrap text-gray-700">{measurement.note}</p>
       )}
       {mode === "delete" && (
-        <div
-          role="group"
-          aria-label="Confirm deleting this measurement"
-          className="flex flex-wrap items-center gap-2 rounded-md bg-red-50 px-3 py-2"
-        >
-          <span>Delete this measurement?</span>
-          <button
-            type="button"
-            aria-disabled={busy}
-            onClick={() => void (busy || onDelete())}
-            className="rounded-md bg-red-700 px-3 py-1 text-white aria-disabled:opacity-50"
-          >
-            Delete
-          </button>
-          <button
-            type="button"
-            // Focus starts on the safe choice.
-            autoFocus
-            onClick={() => setMode("view")}
-            className="rounded-md border border-gray-300 bg-white px-3 py-1"
-          >
-            Cancel
-          </button>
-        </div>
+        <ConfirmDelete
+          label="Confirm deleting this measurement"
+          question="Delete this measurement?"
+          busy={busy}
+          onDelete={onDelete}
+          onCancel={() => setMode("view")}
+        />
       )}
     </li>
   );

@@ -253,6 +253,8 @@ it("an answer keeps its files, with their names, types and sizes", async () => {
       files: [
         {
           id: expect.any(String) as string,
+          // Only Form tiles file answers under a field.
+          fieldId: null,
           name: "IMG_0042.png",
           contentType: "image/png",
           size: 2048,
@@ -453,4 +455,216 @@ it("an answer is deleted even when storage fails to delete its files", async () 
   vi.mocked(deleteObject).mockClear();
   await worker.caller.deleteAnswer({ answerId: again });
   expect(deleteObject).not.toHaveBeenCalled();
+});
+
+/** Adds a Photos answer as the worker with the given uploads. */
+async function photoAnswer(keys: string[]) {
+  const { id } = await worker.caller.createAnswer({
+    tileId: tiles.photos,
+    data: {},
+    files: keys.map((key) => ({ key, name: "a.png" })),
+  });
+  return id;
+}
+
+/** The answer's files, as stored, oldest first. */
+function storedFiles(answerId: string) {
+  return db.jobTileFile.findMany({
+    where: { answerId },
+    orderBy: { createdAt: "asc" },
+    select: { id: true, key: true },
+  });
+}
+
+it("files can only name a field on tiles with file fields", async () => {
+  const key = await uploaded(worker);
+  await expect(
+    worker.caller.createAnswer({
+      tileId: tiles.photos,
+      data: {},
+      files: [{ key, name: "a.png", fieldId: "photos" }],
+    }),
+  ).rejects.toMatchObject({
+    code: "BAD_REQUEST",
+    message: "This tile doesn't sort files into fields.",
+  });
+  // An empty field id isn't the same as none.
+  await expect(
+    worker.caller.createAnswer({
+      tileId: tiles.photos,
+      data: {},
+      files: [{ key, name: "a.png", fieldId: "" }],
+    }),
+  ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+  expect(await db.jobTileFile.count()).toBe(0);
+});
+
+it("updateAnswer can add and remove files", async () => {
+  const [first, second, added] = await Promise.all([
+    uploaded(worker),
+    uploaded(worker),
+    uploaded(worker, pdf),
+  ]);
+  const id = await photoAnswer([first, second]);
+  const [old] = await storedFiles(id);
+
+  await worker.caller.updateAnswer({
+    answerId: id,
+    data: {},
+    addFiles: [{ key: added, name: "Plan.pdf" }],
+    removeFileIds: [old!.id],
+  });
+
+  expect((await storedFiles(id)).map(({ key }) => key)).toEqual([
+    second,
+    added,
+  ]);
+  expect(deleteObject).toHaveBeenCalledWith(first);
+  // Leaving them out changes nothing.
+  await worker.caller.updateAnswer({ answerId: id, data: {} });
+  expect(await storedFiles(id)).toHaveLength(2);
+});
+
+it("updateAnswer keeps the tile's file limits", async () => {
+  const key = await uploaded(worker);
+  const id = await photoAnswer([key]);
+  const [only] = await storedFiles(id);
+
+  await expect(
+    worker.caller.updateAnswer({
+      answerId: id,
+      data: {},
+      removeFileIds: [only!.id],
+    }),
+  ).rejects.toMatchObject({
+    code: "BAD_REQUEST",
+    message: "Add at least one photo or file.",
+  });
+  const more = await Promise.all(
+    Array.from({ length: 10 }, () => uploaded(worker)),
+  );
+  await expect(
+    worker.caller.updateAnswer({
+      answerId: id,
+      data: {},
+      addFiles: more.map((added) => ({ key: added, name: "a.png" })),
+    }),
+  ).rejects.toMatchObject({
+    code: "BAD_REQUEST",
+    message: "Attach at most 10 files.",
+  });
+  expect(await storedFiles(id)).toEqual([only]);
+  expect(deleteObject).not.toHaveBeenCalled();
+});
+
+it("updateAnswer only changes the author's own answer's files", async () => {
+  const id = await photoAnswer([await uploaded(worker)]);
+  const otherId = await photoAnswer([await uploaded(worker)]);
+  const [theirs] = await storedFiles(otherId);
+
+  await expect(
+    worker.caller.updateAnswer({
+      answerId: id,
+      data: {},
+      removeFileIds: [theirs!.id],
+    }),
+  ).rejects.toMatchObject({
+    code: "BAD_REQUEST",
+    message: "That file isn't on this answer.",
+  });
+  await expect(
+    colleague.caller.updateAnswer({
+      answerId: id,
+      data: {},
+      addFiles: [{ key: await uploaded(colleague), name: "a.png" }],
+    }),
+  ).rejects.toMatchObject({ code: "FORBIDDEN" });
+  // Someone else's upload can't be added, even to your own answer.
+  await expect(
+    worker.caller.updateAnswer({
+      answerId: id,
+      data: {},
+      addFiles: [{ key: await uploaded(colleague), name: "a.png" }],
+    }),
+  ).rejects.toMatchObject({ code: "NOT_FOUND" });
+  expect(await storedFiles(otherId)).toEqual([theirs]);
+});
+
+it("updateAnswer rejects invalid file ids", async () => {
+  const id = await photoAnswer([await uploaded(worker)]);
+  await expect(
+    worker.caller.updateAnswer({
+      answerId: id,
+      data: {},
+      removeFileIds: ["nope"],
+    }),
+  ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+});
+
+it("a failed update keeps the files it would have removed", async () => {
+  const key = await uploaded(worker);
+  const id = await photoAnswer([key, await uploaded(worker)]);
+  const [first] = await storedFiles(id);
+
+  await expect(
+    worker.caller.updateAnswer({
+      answerId: id,
+      data: {},
+      removeFileIds: [first!.id],
+      // Not the worker's upload, so the whole update fails.
+      addFiles: [{ key: await uploaded(colleague), name: "a.png" }],
+    }),
+  ).rejects.toMatchObject({ code: "NOT_FOUND" });
+  expect(await storedFiles(id)).toHaveLength(2);
+  expect(deleteObject).not.toHaveBeenCalledWith(key);
+});
+
+it("removing the same file twice in one update removes it once", async () => {
+  const key = await uploaded(worker);
+  const id = await photoAnswer([key, await uploaded(worker)]);
+  const [first] = await storedFiles(id);
+
+  await worker.caller.updateAnswer({
+    answerId: id,
+    data: {},
+    removeFileIds: [first!.id, first!.id],
+  });
+  expect(await storedFiles(id)).toHaveLength(1);
+  expect(deleteObject).toHaveBeenCalledTimes(1);
+});
+
+it("files are removed without storage, with nothing to delete from it", async () => {
+  const id = await photoAnswer([
+    await uploaded(worker),
+    await uploaded(worker),
+  ]);
+  const [first] = await storedFiles(id);
+  vi.mocked(storageConfigured).mockReturnValue(false);
+
+  await worker.caller.updateAnswer({
+    answerId: id,
+    data: {},
+    removeFileIds: [first!.id],
+  });
+  expect(await storedFiles(id)).toHaveLength(1);
+  expect(deleteObject).not.toHaveBeenCalled();
+});
+
+it("updateAnswer's files reject unauthenticated requests and bad keys", async () => {
+  const id = await photoAnswer([await uploaded(worker)]);
+  const anonymous = jobTileRouter.createCaller({
+    db,
+    session: null,
+    headers: new Headers(),
+  });
+  await expect(
+    anonymous.updateAnswer({ answerId: id, data: {}, removeFileIds: [] }),
+  ).rejects.toMatchObject({ code: "UNAUTHORIZED" });
+  await expect(
+    worker.caller.updateAnswer({
+      answerId: id,
+      data: {},
+      addFiles: [{ key: `jobs/${jobId}/photo/x.png`, name: "a.png" }],
+    }),
+  ).rejects.toMatchObject({ code: "BAD_REQUEST" });
 });
