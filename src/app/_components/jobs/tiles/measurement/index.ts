@@ -10,12 +10,21 @@ import {
 // label each measurement themselves.
 export const measurementConfig = z.object({});
 
-// One measurement, e.g. "North wall gap: 12.5 mm". The unit may be blank,
-// e.g. for a count; the answer's note says where or how it was taken.
+// One measurement, e.g. "Window A32" with "Width: 1200 mm" and "Height:
+// 900 mm". A unit may be blank, e.g. for a count; the answer's note says
+// where or how it was taken.
 export const measurementAnswer = z.object({
   label: z.string().trim().min(1).max(100),
-  value: z.number().finite(),
-  unit: z.string().trim().max(20),
+  values: z
+    .array(
+      z.object({
+        label: z.string().trim().min(1).max(100),
+        value: z.number().finite(),
+        unit: z.string().trim().max(20),
+      }),
+    )
+    .min(1)
+    .max(20),
 });
 
 /** Labelled measurements people take on the job, each with its unit. */
