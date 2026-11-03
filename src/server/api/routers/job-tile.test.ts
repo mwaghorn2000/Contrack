@@ -295,6 +295,7 @@ it("listAnswers shows everyone who can see a tile all of its answers", async () 
       author: { id: worker.id, name: worker.name, image: null },
       data: { itemId: "a" },
       note: null,
+      files: [],
       createdAt: expect.any(Date) as Date,
       updatedAt: expect.any(Date) as Date,
       canEdit: false,

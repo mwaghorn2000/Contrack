@@ -15,6 +15,8 @@ export const IMAGE_KINDS = {
   logo: { maxBytes: 5 * 1024 * 1024, maxDimension: 512 },
   banner: { maxBytes: 10 * 1024 * 1024, maxDimension: 2400 },
   message: { maxBytes: 10 * 1024 * 1024, maxDimension: 2000 },
+  // Photos attached on job tiles, kept large enough to read detail.
+  attachment: { maxBytes: 20 * 1024 * 1024, maxDimension: 2400 },
 } as const;
 
 export type ImageKind = keyof typeof IMAGE_KINDS;

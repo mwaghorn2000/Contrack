@@ -328,11 +328,28 @@ model JobTileAnswer {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  tile   JobTile @relation(fields: [tileId], references: [id], onDelete: Cascade)
-  author User?   @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  tile   JobTile       @relation(fields: [tileId], references: [id], onDelete: Cascade)
+  author User?         @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  files  JobTileFile[]
 
   @@index([tileId, createdAt])
   @@index([authorId])
+}
+
+// A photo or PDF attached to an answer, stored privately under its tile's
+// folder. Its object is deleted with the answer, or with the whole job.
+model JobTileFile {
+  id          String   @id @default(cuid())
+  answerId    String
+  key         String   @unique
+  name        String
+  contentType String
+  size        Int
+  createdAt   DateTime @default(now())
+
+  answer JobTileAnswer @relation(fields: [answerId], references: [id], onDelete: Cascade)
+
+  @@index([answerId])
 }
 
 model JobTileAcknowledgment {

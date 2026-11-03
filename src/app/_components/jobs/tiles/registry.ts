@@ -4,6 +4,7 @@ import type { AnswersProps } from "./define-tile";
 import { checklistTile } from "./checklist";
 import { contactsTile } from "./contacts";
 import { measurementTile } from "./measurement";
+import { photosTile } from "./photos";
 import { textTile } from "./text";
 
 /**
@@ -16,6 +17,7 @@ export const TILES = [
   contactsTile,
   checklistTile,
   measurementTile,
+  photosTile,
 ] as const;
 
 type Tiles = typeof TILES;

@@ -20,7 +20,7 @@ type UploadTarget = {
  * and scales it down to the size it is displayed at. GIFs are kept as they are
  * so animations survive.
  */
-async function prepareImage(file: File, kind: ImageKind) {
+export async function prepareImage(file: File, kind: ImageKind) {
   let bitmap: ImageBitmap;
   try {
     bitmap = await createImageBitmap(file);

@@ -24,6 +24,7 @@ function measured(
     author,
     data,
     note,
+    files: [],
     createdAt: at,
     updatedAt: at,
     canEdit: own,
@@ -41,6 +42,7 @@ function renderAnswers(
     onCreate: vi.fn(saved),
     onUpdate: vi.fn(saved),
     onDelete: vi.fn(saved),
+    uploadFile: vi.fn(),
   };
   render(
     <MeasurementTileAnswers

@@ -99,6 +99,11 @@ export type JobTile = $Result.DefaultSelection<Prisma.$JobTilePayload>
  */
 export type JobTileAnswer = $Result.DefaultSelection<Prisma.$JobTileAnswerPayload>
 /**
+ * Model JobTileFile
+ * 
+ */
+export type JobTileFile = $Result.DefaultSelection<Prisma.$JobTileFilePayload>
+/**
  * Model JobTileAcknowledgment
  * 
  */
@@ -459,6 +464,16 @@ export class PrismaClient<
     * ```
     */
   get jobTileAnswer(): Prisma.JobTileAnswerDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.jobTileFile`: Exposes CRUD operations for the **JobTileFile** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more JobTileFiles
+    * const jobTileFiles = await prisma.jobTileFile.findMany()
+    * ```
+    */
+  get jobTileFile(): Prisma.JobTileFileDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.jobTileAcknowledgment`: Exposes CRUD operations for the **JobTileAcknowledgment** model.
@@ -977,6 +992,7 @@ export namespace Prisma {
     JobMember: 'JobMember',
     JobTile: 'JobTile',
     JobTileAnswer: 'JobTileAnswer',
+    JobTileFile: 'JobTileFile',
     JobTileAcknowledgment: 'JobTileAcknowledgment',
     CompanyPost: 'CompanyPost',
     CompanyPostAcknowledgment: 'CompanyPostAcknowledgment',
@@ -1001,7 +1017,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "account" | "session" | "company" | "companyMember" | "channel" | "channelMember" | "user" | "channelRead" | "imageUpload" | "companyInvitation" | "emailVerificationCode" | "message" | "messageEdit" | "job" | "jobMember" | "jobTile" | "jobTileAnswer" | "jobTileAcknowledgment" | "companyPost" | "companyPostAcknowledgment" | "verificationToken" | "twoFactor" | "twoFactorChallenge"
+      modelProps: "account" | "session" | "company" | "companyMember" | "channel" | "channelMember" | "user" | "channelRead" | "imageUpload" | "companyInvitation" | "emailVerificationCode" | "message" | "messageEdit" | "job" | "jobMember" | "jobTile" | "jobTileAnswer" | "jobTileFile" | "jobTileAcknowledgment" | "companyPost" | "companyPostAcknowledgment" | "verificationToken" | "twoFactor" | "twoFactorChallenge"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2263,6 +2279,80 @@ export namespace Prisma {
           }
         }
       }
+      JobTileFile: {
+        payload: Prisma.$JobTileFilePayload<ExtArgs>
+        fields: Prisma.JobTileFileFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.JobTileFileFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTileFilePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.JobTileFileFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTileFilePayload>
+          }
+          findFirst: {
+            args: Prisma.JobTileFileFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTileFilePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.JobTileFileFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTileFilePayload>
+          }
+          findMany: {
+            args: Prisma.JobTileFileFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTileFilePayload>[]
+          }
+          create: {
+            args: Prisma.JobTileFileCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTileFilePayload>
+          }
+          createMany: {
+            args: Prisma.JobTileFileCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.JobTileFileCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTileFilePayload>[]
+          }
+          delete: {
+            args: Prisma.JobTileFileDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTileFilePayload>
+          }
+          update: {
+            args: Prisma.JobTileFileUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTileFilePayload>
+          }
+          deleteMany: {
+            args: Prisma.JobTileFileDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.JobTileFileUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.JobTileFileUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTileFilePayload>[]
+          }
+          upsert: {
+            args: Prisma.JobTileFileUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTileFilePayload>
+          }
+          aggregate: {
+            args: Prisma.JobTileFileAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateJobTileFile>
+          }
+          groupBy: {
+            args: Prisma.JobTileFileGroupByArgs<ExtArgs>
+            result: $Utils.Optional<JobTileFileGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.JobTileFileCountArgs<ExtArgs>
+            result: $Utils.Optional<JobTileFileCountAggregateOutputType> | number
+          }
+        }
+      }
       JobTileAcknowledgment: {
         payload: Prisma.$JobTileAcknowledgmentPayload<ExtArgs>
         fields: Prisma.JobTileAcknowledgmentFieldRefs
@@ -2820,6 +2910,7 @@ export namespace Prisma {
     jobMember?: JobMemberOmit
     jobTile?: JobTileOmit
     jobTileAnswer?: JobTileAnswerOmit
+    jobTileFile?: JobTileFileOmit
     jobTileAcknowledgment?: JobTileAcknowledgmentOmit
     companyPost?: CompanyPostOmit
     companyPostAcknowledgment?: CompanyPostAcknowledgmentOmit
@@ -3313,6 +3404,37 @@ export namespace Prisma {
    */
   export type JobTileCountOutputTypeCountAnswersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: JobTileAnswerWhereInput
+  }
+
+
+  /**
+   * Count Type JobTileAnswerCountOutputType
+   */
+
+  export type JobTileAnswerCountOutputType = {
+    files: number
+  }
+
+  export type JobTileAnswerCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    files?: boolean | JobTileAnswerCountOutputTypeCountFilesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * JobTileAnswerCountOutputType without action
+   */
+  export type JobTileAnswerCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTileAnswerCountOutputType
+     */
+    select?: JobTileAnswerCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * JobTileAnswerCountOutputType without action
+   */
+  export type JobTileAnswerCountOutputTypeCountFilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JobTileFileWhereInput
   }
 
 
@@ -21927,6 +22049,8 @@ export namespace Prisma {
     updatedAt?: boolean
     tile?: boolean | JobTileDefaultArgs<ExtArgs>
     author?: boolean | JobTileAnswer$authorArgs<ExtArgs>
+    files?: boolean | JobTileAnswer$filesArgs<ExtArgs>
+    _count?: boolean | JobTileAnswerCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["jobTileAnswer"]>
 
   export type JobTileAnswerSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -21967,6 +22091,8 @@ export namespace Prisma {
   export type JobTileAnswerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     tile?: boolean | JobTileDefaultArgs<ExtArgs>
     author?: boolean | JobTileAnswer$authorArgs<ExtArgs>
+    files?: boolean | JobTileAnswer$filesArgs<ExtArgs>
+    _count?: boolean | JobTileAnswerCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type JobTileAnswerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     tile?: boolean | JobTileDefaultArgs<ExtArgs>
@@ -21982,6 +22108,7 @@ export namespace Prisma {
     objects: {
       tile: Prisma.$JobTilePayload<ExtArgs>
       author: Prisma.$UserPayload<ExtArgs> | null
+      files: Prisma.$JobTileFilePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -22387,6 +22514,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     tile<T extends JobTileDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobTileDefaultArgs<ExtArgs>>): Prisma__JobTileClient<$Result.GetResult<Prisma.$JobTilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     author<T extends JobTileAnswer$authorArgs<ExtArgs> = {}>(args?: Subset<T, JobTileAnswer$authorArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    files<T extends JobTileAnswer$filesArgs<ExtArgs> = {}>(args?: Subset<T, JobTileAnswer$filesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobTileFilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -22838,6 +22966,30 @@ export namespace Prisma {
   }
 
   /**
+   * JobTileAnswer.files
+   */
+  export type JobTileAnswer$filesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTileFile
+     */
+    select?: JobTileFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTileFile
+     */
+    omit?: JobTileFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTileFileInclude<ExtArgs> | null
+    where?: JobTileFileWhereInput
+    orderBy?: JobTileFileOrderByWithRelationInput | JobTileFileOrderByWithRelationInput[]
+    cursor?: JobTileFileWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JobTileFileScalarFieldEnum | JobTileFileScalarFieldEnum[]
+  }
+
+  /**
    * JobTileAnswer without action
    */
   export type JobTileAnswerDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -22853,6 +23005,1124 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: JobTileAnswerInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model JobTileFile
+   */
+
+  export type AggregateJobTileFile = {
+    _count: JobTileFileCountAggregateOutputType | null
+    _avg: JobTileFileAvgAggregateOutputType | null
+    _sum: JobTileFileSumAggregateOutputType | null
+    _min: JobTileFileMinAggregateOutputType | null
+    _max: JobTileFileMaxAggregateOutputType | null
+  }
+
+  export type JobTileFileAvgAggregateOutputType = {
+    size: number | null
+  }
+
+  export type JobTileFileSumAggregateOutputType = {
+    size: number | null
+  }
+
+  export type JobTileFileMinAggregateOutputType = {
+    id: string | null
+    answerId: string | null
+    key: string | null
+    name: string | null
+    contentType: string | null
+    size: number | null
+    createdAt: Date | null
+  }
+
+  export type JobTileFileMaxAggregateOutputType = {
+    id: string | null
+    answerId: string | null
+    key: string | null
+    name: string | null
+    contentType: string | null
+    size: number | null
+    createdAt: Date | null
+  }
+
+  export type JobTileFileCountAggregateOutputType = {
+    id: number
+    answerId: number
+    key: number
+    name: number
+    contentType: number
+    size: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type JobTileFileAvgAggregateInputType = {
+    size?: true
+  }
+
+  export type JobTileFileSumAggregateInputType = {
+    size?: true
+  }
+
+  export type JobTileFileMinAggregateInputType = {
+    id?: true
+    answerId?: true
+    key?: true
+    name?: true
+    contentType?: true
+    size?: true
+    createdAt?: true
+  }
+
+  export type JobTileFileMaxAggregateInputType = {
+    id?: true
+    answerId?: true
+    key?: true
+    name?: true
+    contentType?: true
+    size?: true
+    createdAt?: true
+  }
+
+  export type JobTileFileCountAggregateInputType = {
+    id?: true
+    answerId?: true
+    key?: true
+    name?: true
+    contentType?: true
+    size?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type JobTileFileAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which JobTileFile to aggregate.
+     */
+    where?: JobTileFileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JobTileFiles to fetch.
+     */
+    orderBy?: JobTileFileOrderByWithRelationInput | JobTileFileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: JobTileFileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JobTileFiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JobTileFiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned JobTileFiles
+    **/
+    _count?: true | JobTileFileCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: JobTileFileAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: JobTileFileSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: JobTileFileMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: JobTileFileMaxAggregateInputType
+  }
+
+  export type GetJobTileFileAggregateType<T extends JobTileFileAggregateArgs> = {
+        [P in keyof T & keyof AggregateJobTileFile]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateJobTileFile[P]>
+      : GetScalarType<T[P], AggregateJobTileFile[P]>
+  }
+
+
+
+
+  export type JobTileFileGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JobTileFileWhereInput
+    orderBy?: JobTileFileOrderByWithAggregationInput | JobTileFileOrderByWithAggregationInput[]
+    by: JobTileFileScalarFieldEnum[] | JobTileFileScalarFieldEnum
+    having?: JobTileFileScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: JobTileFileCountAggregateInputType | true
+    _avg?: JobTileFileAvgAggregateInputType
+    _sum?: JobTileFileSumAggregateInputType
+    _min?: JobTileFileMinAggregateInputType
+    _max?: JobTileFileMaxAggregateInputType
+  }
+
+  export type JobTileFileGroupByOutputType = {
+    id: string
+    answerId: string
+    key: string
+    name: string
+    contentType: string
+    size: number
+    createdAt: Date
+    _count: JobTileFileCountAggregateOutputType | null
+    _avg: JobTileFileAvgAggregateOutputType | null
+    _sum: JobTileFileSumAggregateOutputType | null
+    _min: JobTileFileMinAggregateOutputType | null
+    _max: JobTileFileMaxAggregateOutputType | null
+  }
+
+  type GetJobTileFileGroupByPayload<T extends JobTileFileGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<JobTileFileGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof JobTileFileGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], JobTileFileGroupByOutputType[P]>
+            : GetScalarType<T[P], JobTileFileGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type JobTileFileSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    answerId?: boolean
+    key?: boolean
+    name?: boolean
+    contentType?: boolean
+    size?: boolean
+    createdAt?: boolean
+    answer?: boolean | JobTileAnswerDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["jobTileFile"]>
+
+  export type JobTileFileSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    answerId?: boolean
+    key?: boolean
+    name?: boolean
+    contentType?: boolean
+    size?: boolean
+    createdAt?: boolean
+    answer?: boolean | JobTileAnswerDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["jobTileFile"]>
+
+  export type JobTileFileSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    answerId?: boolean
+    key?: boolean
+    name?: boolean
+    contentType?: boolean
+    size?: boolean
+    createdAt?: boolean
+    answer?: boolean | JobTileAnswerDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["jobTileFile"]>
+
+  export type JobTileFileSelectScalar = {
+    id?: boolean
+    answerId?: boolean
+    key?: boolean
+    name?: boolean
+    contentType?: boolean
+    size?: boolean
+    createdAt?: boolean
+  }
+
+  export type JobTileFileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "answerId" | "key" | "name" | "contentType" | "size" | "createdAt", ExtArgs["result"]["jobTileFile"]>
+  export type JobTileFileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    answer?: boolean | JobTileAnswerDefaultArgs<ExtArgs>
+  }
+  export type JobTileFileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    answer?: boolean | JobTileAnswerDefaultArgs<ExtArgs>
+  }
+  export type JobTileFileIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    answer?: boolean | JobTileAnswerDefaultArgs<ExtArgs>
+  }
+
+  export type $JobTileFilePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "JobTileFile"
+    objects: {
+      answer: Prisma.$JobTileAnswerPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      answerId: string
+      key: string
+      name: string
+      contentType: string
+      size: number
+      createdAt: Date
+    }, ExtArgs["result"]["jobTileFile"]>
+    composites: {}
+  }
+
+  type JobTileFileGetPayload<S extends boolean | null | undefined | JobTileFileDefaultArgs> = $Result.GetResult<Prisma.$JobTileFilePayload, S>
+
+  type JobTileFileCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<JobTileFileFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: JobTileFileCountAggregateInputType | true
+    }
+
+  export interface JobTileFileDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['JobTileFile'], meta: { name: 'JobTileFile' } }
+    /**
+     * Find zero or one JobTileFile that matches the filter.
+     * @param {JobTileFileFindUniqueArgs} args - Arguments to find a JobTileFile
+     * @example
+     * // Get one JobTileFile
+     * const jobTileFile = await prisma.jobTileFile.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends JobTileFileFindUniqueArgs>(args: SelectSubset<T, JobTileFileFindUniqueArgs<ExtArgs>>): Prisma__JobTileFileClient<$Result.GetResult<Prisma.$JobTileFilePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one JobTileFile that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {JobTileFileFindUniqueOrThrowArgs} args - Arguments to find a JobTileFile
+     * @example
+     * // Get one JobTileFile
+     * const jobTileFile = await prisma.jobTileFile.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends JobTileFileFindUniqueOrThrowArgs>(args: SelectSubset<T, JobTileFileFindUniqueOrThrowArgs<ExtArgs>>): Prisma__JobTileFileClient<$Result.GetResult<Prisma.$JobTileFilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first JobTileFile that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobTileFileFindFirstArgs} args - Arguments to find a JobTileFile
+     * @example
+     * // Get one JobTileFile
+     * const jobTileFile = await prisma.jobTileFile.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends JobTileFileFindFirstArgs>(args?: SelectSubset<T, JobTileFileFindFirstArgs<ExtArgs>>): Prisma__JobTileFileClient<$Result.GetResult<Prisma.$JobTileFilePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first JobTileFile that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobTileFileFindFirstOrThrowArgs} args - Arguments to find a JobTileFile
+     * @example
+     * // Get one JobTileFile
+     * const jobTileFile = await prisma.jobTileFile.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends JobTileFileFindFirstOrThrowArgs>(args?: SelectSubset<T, JobTileFileFindFirstOrThrowArgs<ExtArgs>>): Prisma__JobTileFileClient<$Result.GetResult<Prisma.$JobTileFilePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more JobTileFiles that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobTileFileFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all JobTileFiles
+     * const jobTileFiles = await prisma.jobTileFile.findMany()
+     * 
+     * // Get first 10 JobTileFiles
+     * const jobTileFiles = await prisma.jobTileFile.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const jobTileFileWithIdOnly = await prisma.jobTileFile.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends JobTileFileFindManyArgs>(args?: SelectSubset<T, JobTileFileFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobTileFilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a JobTileFile.
+     * @param {JobTileFileCreateArgs} args - Arguments to create a JobTileFile.
+     * @example
+     * // Create one JobTileFile
+     * const JobTileFile = await prisma.jobTileFile.create({
+     *   data: {
+     *     // ... data to create a JobTileFile
+     *   }
+     * })
+     * 
+     */
+    create<T extends JobTileFileCreateArgs>(args: SelectSubset<T, JobTileFileCreateArgs<ExtArgs>>): Prisma__JobTileFileClient<$Result.GetResult<Prisma.$JobTileFilePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many JobTileFiles.
+     * @param {JobTileFileCreateManyArgs} args - Arguments to create many JobTileFiles.
+     * @example
+     * // Create many JobTileFiles
+     * const jobTileFile = await prisma.jobTileFile.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends JobTileFileCreateManyArgs>(args?: SelectSubset<T, JobTileFileCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many JobTileFiles and returns the data saved in the database.
+     * @param {JobTileFileCreateManyAndReturnArgs} args - Arguments to create many JobTileFiles.
+     * @example
+     * // Create many JobTileFiles
+     * const jobTileFile = await prisma.jobTileFile.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many JobTileFiles and only return the `id`
+     * const jobTileFileWithIdOnly = await prisma.jobTileFile.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends JobTileFileCreateManyAndReturnArgs>(args?: SelectSubset<T, JobTileFileCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobTileFilePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a JobTileFile.
+     * @param {JobTileFileDeleteArgs} args - Arguments to delete one JobTileFile.
+     * @example
+     * // Delete one JobTileFile
+     * const JobTileFile = await prisma.jobTileFile.delete({
+     *   where: {
+     *     // ... filter to delete one JobTileFile
+     *   }
+     * })
+     * 
+     */
+    delete<T extends JobTileFileDeleteArgs>(args: SelectSubset<T, JobTileFileDeleteArgs<ExtArgs>>): Prisma__JobTileFileClient<$Result.GetResult<Prisma.$JobTileFilePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one JobTileFile.
+     * @param {JobTileFileUpdateArgs} args - Arguments to update one JobTileFile.
+     * @example
+     * // Update one JobTileFile
+     * const jobTileFile = await prisma.jobTileFile.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends JobTileFileUpdateArgs>(args: SelectSubset<T, JobTileFileUpdateArgs<ExtArgs>>): Prisma__JobTileFileClient<$Result.GetResult<Prisma.$JobTileFilePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more JobTileFiles.
+     * @param {JobTileFileDeleteManyArgs} args - Arguments to filter JobTileFiles to delete.
+     * @example
+     * // Delete a few JobTileFiles
+     * const { count } = await prisma.jobTileFile.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends JobTileFileDeleteManyArgs>(args?: SelectSubset<T, JobTileFileDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more JobTileFiles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobTileFileUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many JobTileFiles
+     * const jobTileFile = await prisma.jobTileFile.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends JobTileFileUpdateManyArgs>(args: SelectSubset<T, JobTileFileUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more JobTileFiles and returns the data updated in the database.
+     * @param {JobTileFileUpdateManyAndReturnArgs} args - Arguments to update many JobTileFiles.
+     * @example
+     * // Update many JobTileFiles
+     * const jobTileFile = await prisma.jobTileFile.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more JobTileFiles and only return the `id`
+     * const jobTileFileWithIdOnly = await prisma.jobTileFile.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends JobTileFileUpdateManyAndReturnArgs>(args: SelectSubset<T, JobTileFileUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobTileFilePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one JobTileFile.
+     * @param {JobTileFileUpsertArgs} args - Arguments to update or create a JobTileFile.
+     * @example
+     * // Update or create a JobTileFile
+     * const jobTileFile = await prisma.jobTileFile.upsert({
+     *   create: {
+     *     // ... data to create a JobTileFile
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the JobTileFile we want to update
+     *   }
+     * })
+     */
+    upsert<T extends JobTileFileUpsertArgs>(args: SelectSubset<T, JobTileFileUpsertArgs<ExtArgs>>): Prisma__JobTileFileClient<$Result.GetResult<Prisma.$JobTileFilePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of JobTileFiles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobTileFileCountArgs} args - Arguments to filter JobTileFiles to count.
+     * @example
+     * // Count the number of JobTileFiles
+     * const count = await prisma.jobTileFile.count({
+     *   where: {
+     *     // ... the filter for the JobTileFiles we want to count
+     *   }
+     * })
+    **/
+    count<T extends JobTileFileCountArgs>(
+      args?: Subset<T, JobTileFileCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], JobTileFileCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a JobTileFile.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobTileFileAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends JobTileFileAggregateArgs>(args: Subset<T, JobTileFileAggregateArgs>): Prisma.PrismaPromise<GetJobTileFileAggregateType<T>>
+
+    /**
+     * Group by JobTileFile.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobTileFileGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends JobTileFileGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: JobTileFileGroupByArgs['orderBy'] }
+        : { orderBy?: JobTileFileGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, JobTileFileGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetJobTileFileGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the JobTileFile model
+   */
+  readonly fields: JobTileFileFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for JobTileFile.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__JobTileFileClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    answer<T extends JobTileAnswerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobTileAnswerDefaultArgs<ExtArgs>>): Prisma__JobTileAnswerClient<$Result.GetResult<Prisma.$JobTileAnswerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the JobTileFile model
+   */
+  interface JobTileFileFieldRefs {
+    readonly id: FieldRef<"JobTileFile", 'String'>
+    readonly answerId: FieldRef<"JobTileFile", 'String'>
+    readonly key: FieldRef<"JobTileFile", 'String'>
+    readonly name: FieldRef<"JobTileFile", 'String'>
+    readonly contentType: FieldRef<"JobTileFile", 'String'>
+    readonly size: FieldRef<"JobTileFile", 'Int'>
+    readonly createdAt: FieldRef<"JobTileFile", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * JobTileFile findUnique
+   */
+  export type JobTileFileFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTileFile
+     */
+    select?: JobTileFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTileFile
+     */
+    omit?: JobTileFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTileFileInclude<ExtArgs> | null
+    /**
+     * Filter, which JobTileFile to fetch.
+     */
+    where: JobTileFileWhereUniqueInput
+  }
+
+  /**
+   * JobTileFile findUniqueOrThrow
+   */
+  export type JobTileFileFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTileFile
+     */
+    select?: JobTileFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTileFile
+     */
+    omit?: JobTileFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTileFileInclude<ExtArgs> | null
+    /**
+     * Filter, which JobTileFile to fetch.
+     */
+    where: JobTileFileWhereUniqueInput
+  }
+
+  /**
+   * JobTileFile findFirst
+   */
+  export type JobTileFileFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTileFile
+     */
+    select?: JobTileFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTileFile
+     */
+    omit?: JobTileFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTileFileInclude<ExtArgs> | null
+    /**
+     * Filter, which JobTileFile to fetch.
+     */
+    where?: JobTileFileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JobTileFiles to fetch.
+     */
+    orderBy?: JobTileFileOrderByWithRelationInput | JobTileFileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for JobTileFiles.
+     */
+    cursor?: JobTileFileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JobTileFiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JobTileFiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobTileFiles.
+     */
+    distinct?: JobTileFileScalarFieldEnum | JobTileFileScalarFieldEnum[]
+  }
+
+  /**
+   * JobTileFile findFirstOrThrow
+   */
+  export type JobTileFileFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTileFile
+     */
+    select?: JobTileFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTileFile
+     */
+    omit?: JobTileFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTileFileInclude<ExtArgs> | null
+    /**
+     * Filter, which JobTileFile to fetch.
+     */
+    where?: JobTileFileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JobTileFiles to fetch.
+     */
+    orderBy?: JobTileFileOrderByWithRelationInput | JobTileFileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for JobTileFiles.
+     */
+    cursor?: JobTileFileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JobTileFiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JobTileFiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobTileFiles.
+     */
+    distinct?: JobTileFileScalarFieldEnum | JobTileFileScalarFieldEnum[]
+  }
+
+  /**
+   * JobTileFile findMany
+   */
+  export type JobTileFileFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTileFile
+     */
+    select?: JobTileFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTileFile
+     */
+    omit?: JobTileFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTileFileInclude<ExtArgs> | null
+    /**
+     * Filter, which JobTileFiles to fetch.
+     */
+    where?: JobTileFileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JobTileFiles to fetch.
+     */
+    orderBy?: JobTileFileOrderByWithRelationInput | JobTileFileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing JobTileFiles.
+     */
+    cursor?: JobTileFileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JobTileFiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JobTileFiles.
+     */
+    skip?: number
+    distinct?: JobTileFileScalarFieldEnum | JobTileFileScalarFieldEnum[]
+  }
+
+  /**
+   * JobTileFile create
+   */
+  export type JobTileFileCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTileFile
+     */
+    select?: JobTileFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTileFile
+     */
+    omit?: JobTileFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTileFileInclude<ExtArgs> | null
+    /**
+     * The data needed to create a JobTileFile.
+     */
+    data: XOR<JobTileFileCreateInput, JobTileFileUncheckedCreateInput>
+  }
+
+  /**
+   * JobTileFile createMany
+   */
+  export type JobTileFileCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many JobTileFiles.
+     */
+    data: JobTileFileCreateManyInput | JobTileFileCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * JobTileFile createManyAndReturn
+   */
+  export type JobTileFileCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTileFile
+     */
+    select?: JobTileFileSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTileFile
+     */
+    omit?: JobTileFileOmit<ExtArgs> | null
+    /**
+     * The data used to create many JobTileFiles.
+     */
+    data: JobTileFileCreateManyInput | JobTileFileCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTileFileIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * JobTileFile update
+   */
+  export type JobTileFileUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTileFile
+     */
+    select?: JobTileFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTileFile
+     */
+    omit?: JobTileFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTileFileInclude<ExtArgs> | null
+    /**
+     * The data needed to update a JobTileFile.
+     */
+    data: XOR<JobTileFileUpdateInput, JobTileFileUncheckedUpdateInput>
+    /**
+     * Choose, which JobTileFile to update.
+     */
+    where: JobTileFileWhereUniqueInput
+  }
+
+  /**
+   * JobTileFile updateMany
+   */
+  export type JobTileFileUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update JobTileFiles.
+     */
+    data: XOR<JobTileFileUpdateManyMutationInput, JobTileFileUncheckedUpdateManyInput>
+    /**
+     * Filter which JobTileFiles to update
+     */
+    where?: JobTileFileWhereInput
+    /**
+     * Limit how many JobTileFiles to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * JobTileFile updateManyAndReturn
+   */
+  export type JobTileFileUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTileFile
+     */
+    select?: JobTileFileSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTileFile
+     */
+    omit?: JobTileFileOmit<ExtArgs> | null
+    /**
+     * The data used to update JobTileFiles.
+     */
+    data: XOR<JobTileFileUpdateManyMutationInput, JobTileFileUncheckedUpdateManyInput>
+    /**
+     * Filter which JobTileFiles to update
+     */
+    where?: JobTileFileWhereInput
+    /**
+     * Limit how many JobTileFiles to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTileFileIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * JobTileFile upsert
+   */
+  export type JobTileFileUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTileFile
+     */
+    select?: JobTileFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTileFile
+     */
+    omit?: JobTileFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTileFileInclude<ExtArgs> | null
+    /**
+     * The filter to search for the JobTileFile to update in case it exists.
+     */
+    where: JobTileFileWhereUniqueInput
+    /**
+     * In case the JobTileFile found by the `where` argument doesn't exist, create a new JobTileFile with this data.
+     */
+    create: XOR<JobTileFileCreateInput, JobTileFileUncheckedCreateInput>
+    /**
+     * In case the JobTileFile was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<JobTileFileUpdateInput, JobTileFileUncheckedUpdateInput>
+  }
+
+  /**
+   * JobTileFile delete
+   */
+  export type JobTileFileDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTileFile
+     */
+    select?: JobTileFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTileFile
+     */
+    omit?: JobTileFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTileFileInclude<ExtArgs> | null
+    /**
+     * Filter which JobTileFile to delete.
+     */
+    where: JobTileFileWhereUniqueInput
+  }
+
+  /**
+   * JobTileFile deleteMany
+   */
+  export type JobTileFileDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which JobTileFiles to delete
+     */
+    where?: JobTileFileWhereInput
+    /**
+     * Limit how many JobTileFiles to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * JobTileFile without action
+   */
+  export type JobTileFileDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTileFile
+     */
+    select?: JobTileFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTileFile
+     */
+    omit?: JobTileFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTileFileInclude<ExtArgs> | null
   }
 
 
@@ -29446,6 +30716,19 @@ export namespace Prisma {
   export type JobTileAnswerScalarFieldEnum = (typeof JobTileAnswerScalarFieldEnum)[keyof typeof JobTileAnswerScalarFieldEnum]
 
 
+  export const JobTileFileScalarFieldEnum: {
+    id: 'id',
+    answerId: 'answerId',
+    key: 'key',
+    name: 'name',
+    contentType: 'contentType',
+    size: 'size',
+    createdAt: 'createdAt'
+  };
+
+  export type JobTileFileScalarFieldEnum = (typeof JobTileFileScalarFieldEnum)[keyof typeof JobTileFileScalarFieldEnum]
+
+
   export const JobTileAcknowledgmentScalarFieldEnum: {
     tileId: 'tileId',
     userId: 'userId',
@@ -30872,6 +32155,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"JobTileAnswer"> | Date | string
     tile?: XOR<JobTileScalarRelationFilter, JobTileWhereInput>
     author?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    files?: JobTileFileListRelationFilter
   }
 
   export type JobTileAnswerOrderByWithRelationInput = {
@@ -30884,6 +32168,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     tile?: JobTileOrderByWithRelationInput
     author?: UserOrderByWithRelationInput
+    files?: JobTileFileOrderByRelationAggregateInput
   }
 
   export type JobTileAnswerWhereUniqueInput = Prisma.AtLeast<{
@@ -30899,6 +32184,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"JobTileAnswer"> | Date | string
     tile?: XOR<JobTileScalarRelationFilter, JobTileWhereInput>
     author?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    files?: JobTileFileListRelationFilter
   }, "id">
 
   export type JobTileAnswerOrderByWithAggregationInput = {
@@ -30925,6 +32211,73 @@ export namespace Prisma {
     note?: StringNullableWithAggregatesFilter<"JobTileAnswer"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"JobTileAnswer"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"JobTileAnswer"> | Date | string
+  }
+
+  export type JobTileFileWhereInput = {
+    AND?: JobTileFileWhereInput | JobTileFileWhereInput[]
+    OR?: JobTileFileWhereInput[]
+    NOT?: JobTileFileWhereInput | JobTileFileWhereInput[]
+    id?: StringFilter<"JobTileFile"> | string
+    answerId?: StringFilter<"JobTileFile"> | string
+    key?: StringFilter<"JobTileFile"> | string
+    name?: StringFilter<"JobTileFile"> | string
+    contentType?: StringFilter<"JobTileFile"> | string
+    size?: IntFilter<"JobTileFile"> | number
+    createdAt?: DateTimeFilter<"JobTileFile"> | Date | string
+    answer?: XOR<JobTileAnswerScalarRelationFilter, JobTileAnswerWhereInput>
+  }
+
+  export type JobTileFileOrderByWithRelationInput = {
+    id?: SortOrder
+    answerId?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    contentType?: SortOrder
+    size?: SortOrder
+    createdAt?: SortOrder
+    answer?: JobTileAnswerOrderByWithRelationInput
+  }
+
+  export type JobTileFileWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    key?: string
+    AND?: JobTileFileWhereInput | JobTileFileWhereInput[]
+    OR?: JobTileFileWhereInput[]
+    NOT?: JobTileFileWhereInput | JobTileFileWhereInput[]
+    answerId?: StringFilter<"JobTileFile"> | string
+    name?: StringFilter<"JobTileFile"> | string
+    contentType?: StringFilter<"JobTileFile"> | string
+    size?: IntFilter<"JobTileFile"> | number
+    createdAt?: DateTimeFilter<"JobTileFile"> | Date | string
+    answer?: XOR<JobTileAnswerScalarRelationFilter, JobTileAnswerWhereInput>
+  }, "id" | "key">
+
+  export type JobTileFileOrderByWithAggregationInput = {
+    id?: SortOrder
+    answerId?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    contentType?: SortOrder
+    size?: SortOrder
+    createdAt?: SortOrder
+    _count?: JobTileFileCountOrderByAggregateInput
+    _avg?: JobTileFileAvgOrderByAggregateInput
+    _max?: JobTileFileMaxOrderByAggregateInput
+    _min?: JobTileFileMinOrderByAggregateInput
+    _sum?: JobTileFileSumOrderByAggregateInput
+  }
+
+  export type JobTileFileScalarWhereWithAggregatesInput = {
+    AND?: JobTileFileScalarWhereWithAggregatesInput | JobTileFileScalarWhereWithAggregatesInput[]
+    OR?: JobTileFileScalarWhereWithAggregatesInput[]
+    NOT?: JobTileFileScalarWhereWithAggregatesInput | JobTileFileScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"JobTileFile"> | string
+    answerId?: StringWithAggregatesFilter<"JobTileFile"> | string
+    key?: StringWithAggregatesFilter<"JobTileFile"> | string
+    name?: StringWithAggregatesFilter<"JobTileFile"> | string
+    contentType?: StringWithAggregatesFilter<"JobTileFile"> | string
+    size?: IntWithAggregatesFilter<"JobTileFile"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"JobTileFile"> | Date | string
   }
 
   export type JobTileAcknowledgmentWhereInput = {
@@ -32500,6 +33853,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     tile: JobTileCreateNestedOneWithoutAnswersInput
     author?: UserCreateNestedOneWithoutJobTileAnswersInput
+    files?: JobTileFileCreateNestedManyWithoutAnswerInput
   }
 
   export type JobTileAnswerUncheckedCreateInput = {
@@ -32510,6 +33864,7 @@ export namespace Prisma {
     note?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    files?: JobTileFileUncheckedCreateNestedManyWithoutAnswerInput
   }
 
   export type JobTileAnswerUpdateInput = {
@@ -32520,6 +33875,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tile?: JobTileUpdateOneRequiredWithoutAnswersNestedInput
     author?: UserUpdateOneWithoutJobTileAnswersNestedInput
+    files?: JobTileFileUpdateManyWithoutAnswerNestedInput
   }
 
   export type JobTileAnswerUncheckedUpdateInput = {
@@ -32530,6 +33886,7 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    files?: JobTileFileUncheckedUpdateManyWithoutAnswerNestedInput
   }
 
   export type JobTileAnswerCreateManyInput = {
@@ -32558,6 +33915,75 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobTileFileCreateInput = {
+    id?: string
+    key: string
+    name: string
+    contentType: string
+    size: number
+    createdAt?: Date | string
+    answer: JobTileAnswerCreateNestedOneWithoutFilesInput
+  }
+
+  export type JobTileFileUncheckedCreateInput = {
+    id?: string
+    answerId: string
+    key: string
+    name: string
+    contentType: string
+    size: number
+    createdAt?: Date | string
+  }
+
+  export type JobTileFileUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    contentType?: StringFieldUpdateOperationsInput | string
+    size?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    answer?: JobTileAnswerUpdateOneRequiredWithoutFilesNestedInput
+  }
+
+  export type JobTileFileUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    answerId?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    contentType?: StringFieldUpdateOperationsInput | string
+    size?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobTileFileCreateManyInput = {
+    id?: string
+    answerId: string
+    key: string
+    name: string
+    contentType: string
+    size: number
+    createdAt?: Date | string
+  }
+
+  export type JobTileFileUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    contentType?: StringFieldUpdateOperationsInput | string
+    size?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobTileFileUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    answerId?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    contentType?: StringFieldUpdateOperationsInput | string
+    size?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type JobTileAcknowledgmentCreateInput = {
@@ -33982,6 +35408,16 @@ export namespace Prisma {
     isNot?: UserWhereInput | null
   }
 
+  export type JobTileFileListRelationFilter = {
+    every?: JobTileFileWhereInput
+    some?: JobTileFileWhereInput
+    none?: JobTileFileWhereInput
+  }
+
+  export type JobTileFileOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type JobTileAnswerCountOrderByAggregateInput = {
     id?: SortOrder
     tileId?: SortOrder
@@ -34008,6 +35444,49 @@ export namespace Prisma {
     note?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type JobTileAnswerScalarRelationFilter = {
+    is?: JobTileAnswerWhereInput
+    isNot?: JobTileAnswerWhereInput
+  }
+
+  export type JobTileFileCountOrderByAggregateInput = {
+    id?: SortOrder
+    answerId?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    contentType?: SortOrder
+    size?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type JobTileFileAvgOrderByAggregateInput = {
+    size?: SortOrder
+  }
+
+  export type JobTileFileMaxOrderByAggregateInput = {
+    id?: SortOrder
+    answerId?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    contentType?: SortOrder
+    size?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type JobTileFileMinOrderByAggregateInput = {
+    id?: SortOrder
+    answerId?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    contentType?: SortOrder
+    size?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type JobTileFileSumOrderByAggregateInput = {
+    size?: SortOrder
   }
 
   export type JobTileAcknowledgmentTileIdUserIdCompoundUniqueInput = {
@@ -35831,6 +37310,20 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type JobTileFileCreateNestedManyWithoutAnswerInput = {
+    create?: XOR<JobTileFileCreateWithoutAnswerInput, JobTileFileUncheckedCreateWithoutAnswerInput> | JobTileFileCreateWithoutAnswerInput[] | JobTileFileUncheckedCreateWithoutAnswerInput[]
+    connectOrCreate?: JobTileFileCreateOrConnectWithoutAnswerInput | JobTileFileCreateOrConnectWithoutAnswerInput[]
+    createMany?: JobTileFileCreateManyAnswerInputEnvelope
+    connect?: JobTileFileWhereUniqueInput | JobTileFileWhereUniqueInput[]
+  }
+
+  export type JobTileFileUncheckedCreateNestedManyWithoutAnswerInput = {
+    create?: XOR<JobTileFileCreateWithoutAnswerInput, JobTileFileUncheckedCreateWithoutAnswerInput> | JobTileFileCreateWithoutAnswerInput[] | JobTileFileUncheckedCreateWithoutAnswerInput[]
+    connectOrCreate?: JobTileFileCreateOrConnectWithoutAnswerInput | JobTileFileCreateOrConnectWithoutAnswerInput[]
+    createMany?: JobTileFileCreateManyAnswerInputEnvelope
+    connect?: JobTileFileWhereUniqueInput | JobTileFileWhereUniqueInput[]
+  }
+
   export type JobTileUpdateOneRequiredWithoutAnswersNestedInput = {
     create?: XOR<JobTileCreateWithoutAnswersInput, JobTileUncheckedCreateWithoutAnswersInput>
     connectOrCreate?: JobTileCreateOrConnectWithoutAnswersInput
@@ -35847,6 +37340,48 @@ export namespace Prisma {
     delete?: UserWhereInput | boolean
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutJobTileAnswersInput, UserUpdateWithoutJobTileAnswersInput>, UserUncheckedUpdateWithoutJobTileAnswersInput>
+  }
+
+  export type JobTileFileUpdateManyWithoutAnswerNestedInput = {
+    create?: XOR<JobTileFileCreateWithoutAnswerInput, JobTileFileUncheckedCreateWithoutAnswerInput> | JobTileFileCreateWithoutAnswerInput[] | JobTileFileUncheckedCreateWithoutAnswerInput[]
+    connectOrCreate?: JobTileFileCreateOrConnectWithoutAnswerInput | JobTileFileCreateOrConnectWithoutAnswerInput[]
+    upsert?: JobTileFileUpsertWithWhereUniqueWithoutAnswerInput | JobTileFileUpsertWithWhereUniqueWithoutAnswerInput[]
+    createMany?: JobTileFileCreateManyAnswerInputEnvelope
+    set?: JobTileFileWhereUniqueInput | JobTileFileWhereUniqueInput[]
+    disconnect?: JobTileFileWhereUniqueInput | JobTileFileWhereUniqueInput[]
+    delete?: JobTileFileWhereUniqueInput | JobTileFileWhereUniqueInput[]
+    connect?: JobTileFileWhereUniqueInput | JobTileFileWhereUniqueInput[]
+    update?: JobTileFileUpdateWithWhereUniqueWithoutAnswerInput | JobTileFileUpdateWithWhereUniqueWithoutAnswerInput[]
+    updateMany?: JobTileFileUpdateManyWithWhereWithoutAnswerInput | JobTileFileUpdateManyWithWhereWithoutAnswerInput[]
+    deleteMany?: JobTileFileScalarWhereInput | JobTileFileScalarWhereInput[]
+  }
+
+  export type JobTileFileUncheckedUpdateManyWithoutAnswerNestedInput = {
+    create?: XOR<JobTileFileCreateWithoutAnswerInput, JobTileFileUncheckedCreateWithoutAnswerInput> | JobTileFileCreateWithoutAnswerInput[] | JobTileFileUncheckedCreateWithoutAnswerInput[]
+    connectOrCreate?: JobTileFileCreateOrConnectWithoutAnswerInput | JobTileFileCreateOrConnectWithoutAnswerInput[]
+    upsert?: JobTileFileUpsertWithWhereUniqueWithoutAnswerInput | JobTileFileUpsertWithWhereUniqueWithoutAnswerInput[]
+    createMany?: JobTileFileCreateManyAnswerInputEnvelope
+    set?: JobTileFileWhereUniqueInput | JobTileFileWhereUniqueInput[]
+    disconnect?: JobTileFileWhereUniqueInput | JobTileFileWhereUniqueInput[]
+    delete?: JobTileFileWhereUniqueInput | JobTileFileWhereUniqueInput[]
+    connect?: JobTileFileWhereUniqueInput | JobTileFileWhereUniqueInput[]
+    update?: JobTileFileUpdateWithWhereUniqueWithoutAnswerInput | JobTileFileUpdateWithWhereUniqueWithoutAnswerInput[]
+    updateMany?: JobTileFileUpdateManyWithWhereWithoutAnswerInput | JobTileFileUpdateManyWithWhereWithoutAnswerInput[]
+    deleteMany?: JobTileFileScalarWhereInput | JobTileFileScalarWhereInput[]
+  }
+
+  export type JobTileAnswerCreateNestedOneWithoutFilesInput = {
+    create?: XOR<JobTileAnswerCreateWithoutFilesInput, JobTileAnswerUncheckedCreateWithoutFilesInput>
+    connectOrCreate?: JobTileAnswerCreateOrConnectWithoutFilesInput
+    connect?: JobTileAnswerWhereUniqueInput
+  }
+
+  export type JobTileAnswerUpdateOneRequiredWithoutFilesNestedInput = {
+    create?: XOR<JobTileAnswerCreateWithoutFilesInput, JobTileAnswerUncheckedCreateWithoutFilesInput>
+    connectOrCreate?: JobTileAnswerCreateOrConnectWithoutFilesInput
+    upsert?: JobTileAnswerUpsertWithoutFilesInput
+    connect?: JobTileAnswerWhereUniqueInput
+    update?: XOR<XOR<JobTileAnswerUpdateToOneWithWhereWithoutFilesInput, JobTileAnswerUpdateWithoutFilesInput>, JobTileAnswerUncheckedUpdateWithoutFilesInput>
   }
 
   export type JobTileCreateNestedOneWithoutAcknowledgmentsInput = {
@@ -37841,6 +39376,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     tile: JobTileCreateNestedOneWithoutAnswersInput
+    files?: JobTileFileCreateNestedManyWithoutAnswerInput
   }
 
   export type JobTileAnswerUncheckedCreateWithoutAuthorInput = {
@@ -37850,6 +39386,7 @@ export namespace Prisma {
     note?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    files?: JobTileFileUncheckedCreateNestedManyWithoutAnswerInput
   }
 
   export type JobTileAnswerCreateOrConnectWithoutAuthorInput = {
@@ -39975,6 +41512,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     author?: UserCreateNestedOneWithoutJobTileAnswersInput
+    files?: JobTileFileCreateNestedManyWithoutAnswerInput
   }
 
   export type JobTileAnswerUncheckedCreateWithoutTileInput = {
@@ -39984,6 +41522,7 @@ export namespace Prisma {
     note?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    files?: JobTileFileUncheckedCreateNestedManyWithoutAnswerInput
   }
 
   export type JobTileAnswerCreateOrConnectWithoutTileInput = {
@@ -40153,6 +41692,34 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutJobTileAnswersInput, UserUncheckedCreateWithoutJobTileAnswersInput>
   }
 
+  export type JobTileFileCreateWithoutAnswerInput = {
+    id?: string
+    key: string
+    name: string
+    contentType: string
+    size: number
+    createdAt?: Date | string
+  }
+
+  export type JobTileFileUncheckedCreateWithoutAnswerInput = {
+    id?: string
+    key: string
+    name: string
+    contentType: string
+    size: number
+    createdAt?: Date | string
+  }
+
+  export type JobTileFileCreateOrConnectWithoutAnswerInput = {
+    where: JobTileFileWhereUniqueInput
+    create: XOR<JobTileFileCreateWithoutAnswerInput, JobTileFileUncheckedCreateWithoutAnswerInput>
+  }
+
+  export type JobTileFileCreateManyAnswerInputEnvelope = {
+    data: JobTileFileCreateManyAnswerInput | JobTileFileCreateManyAnswerInput[]
+    skipDuplicates?: boolean
+  }
+
   export type JobTileUpsertWithoutAnswersInput = {
     update: XOR<JobTileUpdateWithoutAnswersInput, JobTileUncheckedUpdateWithoutAnswersInput>
     create: XOR<JobTileCreateWithoutAnswersInput, JobTileUncheckedCreateWithoutAnswersInput>
@@ -40253,6 +41820,91 @@ export namespace Prisma {
     imageUploads?: ImageUploadUncheckedUpdateManyWithoutUserNestedInput
     channelReads?: ChannelReadUncheckedUpdateManyWithoutUserNestedInput
     messageEdits?: MessageEditUncheckedUpdateManyWithoutEditorNestedInput
+  }
+
+  export type JobTileFileUpsertWithWhereUniqueWithoutAnswerInput = {
+    where: JobTileFileWhereUniqueInput
+    update: XOR<JobTileFileUpdateWithoutAnswerInput, JobTileFileUncheckedUpdateWithoutAnswerInput>
+    create: XOR<JobTileFileCreateWithoutAnswerInput, JobTileFileUncheckedCreateWithoutAnswerInput>
+  }
+
+  export type JobTileFileUpdateWithWhereUniqueWithoutAnswerInput = {
+    where: JobTileFileWhereUniqueInput
+    data: XOR<JobTileFileUpdateWithoutAnswerInput, JobTileFileUncheckedUpdateWithoutAnswerInput>
+  }
+
+  export type JobTileFileUpdateManyWithWhereWithoutAnswerInput = {
+    where: JobTileFileScalarWhereInput
+    data: XOR<JobTileFileUpdateManyMutationInput, JobTileFileUncheckedUpdateManyWithoutAnswerInput>
+  }
+
+  export type JobTileFileScalarWhereInput = {
+    AND?: JobTileFileScalarWhereInput | JobTileFileScalarWhereInput[]
+    OR?: JobTileFileScalarWhereInput[]
+    NOT?: JobTileFileScalarWhereInput | JobTileFileScalarWhereInput[]
+    id?: StringFilter<"JobTileFile"> | string
+    answerId?: StringFilter<"JobTileFile"> | string
+    key?: StringFilter<"JobTileFile"> | string
+    name?: StringFilter<"JobTileFile"> | string
+    contentType?: StringFilter<"JobTileFile"> | string
+    size?: IntFilter<"JobTileFile"> | number
+    createdAt?: DateTimeFilter<"JobTileFile"> | Date | string
+  }
+
+  export type JobTileAnswerCreateWithoutFilesInput = {
+    id?: string
+    data: JsonNullValueInput | InputJsonValue
+    note?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tile: JobTileCreateNestedOneWithoutAnswersInput
+    author?: UserCreateNestedOneWithoutJobTileAnswersInput
+  }
+
+  export type JobTileAnswerUncheckedCreateWithoutFilesInput = {
+    id?: string
+    tileId: string
+    authorId?: string | null
+    data: JsonNullValueInput | InputJsonValue
+    note?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type JobTileAnswerCreateOrConnectWithoutFilesInput = {
+    where: JobTileAnswerWhereUniqueInput
+    create: XOR<JobTileAnswerCreateWithoutFilesInput, JobTileAnswerUncheckedCreateWithoutFilesInput>
+  }
+
+  export type JobTileAnswerUpsertWithoutFilesInput = {
+    update: XOR<JobTileAnswerUpdateWithoutFilesInput, JobTileAnswerUncheckedUpdateWithoutFilesInput>
+    create: XOR<JobTileAnswerCreateWithoutFilesInput, JobTileAnswerUncheckedCreateWithoutFilesInput>
+    where?: JobTileAnswerWhereInput
+  }
+
+  export type JobTileAnswerUpdateToOneWithWhereWithoutFilesInput = {
+    where?: JobTileAnswerWhereInput
+    data: XOR<JobTileAnswerUpdateWithoutFilesInput, JobTileAnswerUncheckedUpdateWithoutFilesInput>
+  }
+
+  export type JobTileAnswerUpdateWithoutFilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tile?: JobTileUpdateOneRequiredWithoutAnswersNestedInput
+    author?: UserUpdateOneWithoutJobTileAnswersNestedInput
+  }
+
+  export type JobTileAnswerUncheckedUpdateWithoutFilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tileId?: StringFieldUpdateOperationsInput | string
+    authorId?: NullableStringFieldUpdateOperationsInput | string | null
+    data?: JsonNullValueInput | InputJsonValue
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type JobTileCreateWithoutAcknowledgmentsInput = {
@@ -41804,6 +43456,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tile?: JobTileUpdateOneRequiredWithoutAnswersNestedInput
+    files?: JobTileFileUpdateManyWithoutAnswerNestedInput
   }
 
   export type JobTileAnswerUncheckedUpdateWithoutAuthorInput = {
@@ -41813,6 +43466,7 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    files?: JobTileFileUncheckedUpdateManyWithoutAnswerNestedInput
   }
 
   export type JobTileAnswerUncheckedUpdateManyWithoutAuthorInput = {
@@ -42090,6 +43744,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     author?: UserUpdateOneWithoutJobTileAnswersNestedInput
+    files?: JobTileFileUpdateManyWithoutAnswerNestedInput
   }
 
   export type JobTileAnswerUncheckedUpdateWithoutTileInput = {
@@ -42099,6 +43754,7 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    files?: JobTileFileUncheckedUpdateManyWithoutAnswerNestedInput
   }
 
   export type JobTileAnswerUncheckedUpdateManyWithoutTileInput = {
@@ -42108,6 +43764,42 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobTileFileCreateManyAnswerInput = {
+    id?: string
+    key: string
+    name: string
+    contentType: string
+    size: number
+    createdAt?: Date | string
+  }
+
+  export type JobTileFileUpdateWithoutAnswerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    contentType?: StringFieldUpdateOperationsInput | string
+    size?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobTileFileUncheckedUpdateWithoutAnswerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    contentType?: StringFieldUpdateOperationsInput | string
+    size?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobTileFileUncheckedUpdateManyWithoutAnswerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    contentType?: StringFieldUpdateOperationsInput | string
+    size?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CompanyPostAcknowledgmentCreateManyPostInput = {

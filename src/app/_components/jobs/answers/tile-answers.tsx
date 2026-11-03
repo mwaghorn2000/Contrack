@@ -2,6 +2,7 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import type { ComponentType } from "react";
+import { uploadAttachment } from "~/app/_components/uploads/upload-attachment";
 import { api, type RouterOutputs } from "~/trpc/react";
 import type { AnswersProps } from "../tiles/define-tile";
 
@@ -58,6 +59,8 @@ export default function TileAnswers<Config>({
           author: { id: viewer.userId, name: "You", image: null },
           data,
           note: note?.trim() ? note.trim() : null,
+          // Shown once the reload brings the saved answer with its links.
+          files: [],
           createdAt: new Date(),
           updatedAt: new Date(),
           canEdit: false,
@@ -112,6 +115,7 @@ export default function TileAnswers<Config>({
       ),
     onSettled,
   });
+  const createUpload = api.jobTile.createFileUpload.useMutation();
   const remove = api.jobTile.deleteAnswer.useMutation({
     onMutate: async ({ answerId }) => {
       const answers = utils.jobTile.listAnswers.getData(key)?.[tileId] ?? [];
@@ -150,8 +154,13 @@ export default function TileAnswers<Config>({
         viewer={viewer}
         readOnly={readOnly}
         busy={create.isPending || update.isPending || remove.isPending}
-        onCreate={(data, note) =>
-          run(() => create.mutateAsync({ tileId, data, note }))
+        onCreate={(data, note, files) =>
+          run(() => create.mutateAsync({ tileId, data, note, files }))
+        }
+        uploadFile={(file) =>
+          uploadAttachment(file, (upload) =>
+            createUpload.mutateAsync({ tileId, ...upload }),
+          )
         }
         onUpdate={(answerId, data, note) =>
           run(() => update.mutateAsync({ answerId, data, note }))
