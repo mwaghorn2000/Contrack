@@ -253,6 +253,8 @@ it("an answer keeps its files, with their names, types and sizes", async () => {
       files: [
         {
           id: expect.any(String) as string,
+          // Only Form tiles file answers under a field.
+          fieldId: null,
           name: "IMG_0042.png",
           contentType: "image/png",
           size: 2048,

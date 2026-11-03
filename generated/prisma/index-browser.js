@@ -296,6 +296,7 @@ exports.Prisma.JobTileAnswerScalarFieldEnum = {
 exports.Prisma.JobTileFileScalarFieldEnum = {
   id: 'id',
   answerId: 'answerId',
+  fieldId: 'fieldId',
   key: 'key',
   name: 'name',
   contentType: 'contentType',

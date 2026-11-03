@@ -23031,6 +23031,7 @@ export namespace Prisma {
   export type JobTileFileMinAggregateOutputType = {
     id: string | null
     answerId: string | null
+    fieldId: string | null
     key: string | null
     name: string | null
     contentType: string | null
@@ -23041,6 +23042,7 @@ export namespace Prisma {
   export type JobTileFileMaxAggregateOutputType = {
     id: string | null
     answerId: string | null
+    fieldId: string | null
     key: string | null
     name: string | null
     contentType: string | null
@@ -23051,6 +23053,7 @@ export namespace Prisma {
   export type JobTileFileCountAggregateOutputType = {
     id: number
     answerId: number
+    fieldId: number
     key: number
     name: number
     contentType: number
@@ -23071,6 +23074,7 @@ export namespace Prisma {
   export type JobTileFileMinAggregateInputType = {
     id?: true
     answerId?: true
+    fieldId?: true
     key?: true
     name?: true
     contentType?: true
@@ -23081,6 +23085,7 @@ export namespace Prisma {
   export type JobTileFileMaxAggregateInputType = {
     id?: true
     answerId?: true
+    fieldId?: true
     key?: true
     name?: true
     contentType?: true
@@ -23091,6 +23096,7 @@ export namespace Prisma {
   export type JobTileFileCountAggregateInputType = {
     id?: true
     answerId?: true
+    fieldId?: true
     key?: true
     name?: true
     contentType?: true
@@ -23188,6 +23194,7 @@ export namespace Prisma {
   export type JobTileFileGroupByOutputType = {
     id: string
     answerId: string
+    fieldId: string | null
     key: string
     name: string
     contentType: string
@@ -23217,6 +23224,7 @@ export namespace Prisma {
   export type JobTileFileSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     answerId?: boolean
+    fieldId?: boolean
     key?: boolean
     name?: boolean
     contentType?: boolean
@@ -23228,6 +23236,7 @@ export namespace Prisma {
   export type JobTileFileSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     answerId?: boolean
+    fieldId?: boolean
     key?: boolean
     name?: boolean
     contentType?: boolean
@@ -23239,6 +23248,7 @@ export namespace Prisma {
   export type JobTileFileSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     answerId?: boolean
+    fieldId?: boolean
     key?: boolean
     name?: boolean
     contentType?: boolean
@@ -23250,6 +23260,7 @@ export namespace Prisma {
   export type JobTileFileSelectScalar = {
     id?: boolean
     answerId?: boolean
+    fieldId?: boolean
     key?: boolean
     name?: boolean
     contentType?: boolean
@@ -23257,7 +23268,7 @@ export namespace Prisma {
     createdAt?: boolean
   }
 
-  export type JobTileFileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "answerId" | "key" | "name" | "contentType" | "size" | "createdAt", ExtArgs["result"]["jobTileFile"]>
+  export type JobTileFileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "answerId" | "fieldId" | "key" | "name" | "contentType" | "size" | "createdAt", ExtArgs["result"]["jobTileFile"]>
   export type JobTileFileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     answer?: boolean | JobTileAnswerDefaultArgs<ExtArgs>
   }
@@ -23276,6 +23287,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       answerId: string
+      fieldId: string | null
       key: string
       name: string
       contentType: string
@@ -23707,6 +23719,7 @@ export namespace Prisma {
   interface JobTileFileFieldRefs {
     readonly id: FieldRef<"JobTileFile", 'String'>
     readonly answerId: FieldRef<"JobTileFile", 'String'>
+    readonly fieldId: FieldRef<"JobTileFile", 'String'>
     readonly key: FieldRef<"JobTileFile", 'String'>
     readonly name: FieldRef<"JobTileFile", 'String'>
     readonly contentType: FieldRef<"JobTileFile", 'String'>
@@ -30719,6 +30732,7 @@ export namespace Prisma {
   export const JobTileFileScalarFieldEnum: {
     id: 'id',
     answerId: 'answerId',
+    fieldId: 'fieldId',
     key: 'key',
     name: 'name',
     contentType: 'contentType',
@@ -32219,6 +32233,7 @@ export namespace Prisma {
     NOT?: JobTileFileWhereInput | JobTileFileWhereInput[]
     id?: StringFilter<"JobTileFile"> | string
     answerId?: StringFilter<"JobTileFile"> | string
+    fieldId?: StringNullableFilter<"JobTileFile"> | string | null
     key?: StringFilter<"JobTileFile"> | string
     name?: StringFilter<"JobTileFile"> | string
     contentType?: StringFilter<"JobTileFile"> | string
@@ -32230,6 +32245,7 @@ export namespace Prisma {
   export type JobTileFileOrderByWithRelationInput = {
     id?: SortOrder
     answerId?: SortOrder
+    fieldId?: SortOrderInput | SortOrder
     key?: SortOrder
     name?: SortOrder
     contentType?: SortOrder
@@ -32245,6 +32261,7 @@ export namespace Prisma {
     OR?: JobTileFileWhereInput[]
     NOT?: JobTileFileWhereInput | JobTileFileWhereInput[]
     answerId?: StringFilter<"JobTileFile"> | string
+    fieldId?: StringNullableFilter<"JobTileFile"> | string | null
     name?: StringFilter<"JobTileFile"> | string
     contentType?: StringFilter<"JobTileFile"> | string
     size?: IntFilter<"JobTileFile"> | number
@@ -32255,6 +32272,7 @@ export namespace Prisma {
   export type JobTileFileOrderByWithAggregationInput = {
     id?: SortOrder
     answerId?: SortOrder
+    fieldId?: SortOrderInput | SortOrder
     key?: SortOrder
     name?: SortOrder
     contentType?: SortOrder
@@ -32273,6 +32291,7 @@ export namespace Prisma {
     NOT?: JobTileFileScalarWhereWithAggregatesInput | JobTileFileScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"JobTileFile"> | string
     answerId?: StringWithAggregatesFilter<"JobTileFile"> | string
+    fieldId?: StringNullableWithAggregatesFilter<"JobTileFile"> | string | null
     key?: StringWithAggregatesFilter<"JobTileFile"> | string
     name?: StringWithAggregatesFilter<"JobTileFile"> | string
     contentType?: StringWithAggregatesFilter<"JobTileFile"> | string
@@ -33919,6 +33938,7 @@ export namespace Prisma {
 
   export type JobTileFileCreateInput = {
     id?: string
+    fieldId?: string | null
     key: string
     name: string
     contentType: string
@@ -33930,6 +33950,7 @@ export namespace Prisma {
   export type JobTileFileUncheckedCreateInput = {
     id?: string
     answerId: string
+    fieldId?: string | null
     key: string
     name: string
     contentType: string
@@ -33939,6 +33960,7 @@ export namespace Prisma {
 
   export type JobTileFileUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    fieldId?: NullableStringFieldUpdateOperationsInput | string | null
     key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     contentType?: StringFieldUpdateOperationsInput | string
@@ -33950,6 +33972,7 @@ export namespace Prisma {
   export type JobTileFileUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     answerId?: StringFieldUpdateOperationsInput | string
+    fieldId?: NullableStringFieldUpdateOperationsInput | string | null
     key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     contentType?: StringFieldUpdateOperationsInput | string
@@ -33960,6 +33983,7 @@ export namespace Prisma {
   export type JobTileFileCreateManyInput = {
     id?: string
     answerId: string
+    fieldId?: string | null
     key: string
     name: string
     contentType: string
@@ -33969,6 +33993,7 @@ export namespace Prisma {
 
   export type JobTileFileUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    fieldId?: NullableStringFieldUpdateOperationsInput | string | null
     key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     contentType?: StringFieldUpdateOperationsInput | string
@@ -33979,6 +34004,7 @@ export namespace Prisma {
   export type JobTileFileUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     answerId?: StringFieldUpdateOperationsInput | string
+    fieldId?: NullableStringFieldUpdateOperationsInput | string | null
     key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     contentType?: StringFieldUpdateOperationsInput | string
@@ -35454,6 +35480,7 @@ export namespace Prisma {
   export type JobTileFileCountOrderByAggregateInput = {
     id?: SortOrder
     answerId?: SortOrder
+    fieldId?: SortOrder
     key?: SortOrder
     name?: SortOrder
     contentType?: SortOrder
@@ -35468,6 +35495,7 @@ export namespace Prisma {
   export type JobTileFileMaxOrderByAggregateInput = {
     id?: SortOrder
     answerId?: SortOrder
+    fieldId?: SortOrder
     key?: SortOrder
     name?: SortOrder
     contentType?: SortOrder
@@ -35478,6 +35506,7 @@ export namespace Prisma {
   export type JobTileFileMinOrderByAggregateInput = {
     id?: SortOrder
     answerId?: SortOrder
+    fieldId?: SortOrder
     key?: SortOrder
     name?: SortOrder
     contentType?: SortOrder
@@ -41694,6 +41723,7 @@ export namespace Prisma {
 
   export type JobTileFileCreateWithoutAnswerInput = {
     id?: string
+    fieldId?: string | null
     key: string
     name: string
     contentType: string
@@ -41703,6 +41733,7 @@ export namespace Prisma {
 
   export type JobTileFileUncheckedCreateWithoutAnswerInput = {
     id?: string
+    fieldId?: string | null
     key: string
     name: string
     contentType: string
@@ -41844,6 +41875,7 @@ export namespace Prisma {
     NOT?: JobTileFileScalarWhereInput | JobTileFileScalarWhereInput[]
     id?: StringFilter<"JobTileFile"> | string
     answerId?: StringFilter<"JobTileFile"> | string
+    fieldId?: StringNullableFilter<"JobTileFile"> | string | null
     key?: StringFilter<"JobTileFile"> | string
     name?: StringFilter<"JobTileFile"> | string
     contentType?: StringFilter<"JobTileFile"> | string
@@ -43768,6 +43800,7 @@ export namespace Prisma {
 
   export type JobTileFileCreateManyAnswerInput = {
     id?: string
+    fieldId?: string | null
     key: string
     name: string
     contentType: string
@@ -43777,6 +43810,7 @@ export namespace Prisma {
 
   export type JobTileFileUpdateWithoutAnswerInput = {
     id?: StringFieldUpdateOperationsInput | string
+    fieldId?: NullableStringFieldUpdateOperationsInput | string | null
     key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     contentType?: StringFieldUpdateOperationsInput | string
@@ -43786,6 +43820,7 @@ export namespace Prisma {
 
   export type JobTileFileUncheckedUpdateWithoutAnswerInput = {
     id?: StringFieldUpdateOperationsInput | string
+    fieldId?: NullableStringFieldUpdateOperationsInput | string | null
     key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     contentType?: StringFieldUpdateOperationsInput | string
@@ -43795,6 +43830,7 @@ export namespace Prisma {
 
   export type JobTileFileUncheckedUpdateManyWithoutAnswerInput = {
     id?: StringFieldUpdateOperationsInput | string
+    fieldId?: NullableStringFieldUpdateOperationsInput | string | null
     key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     contentType?: StringFieldUpdateOperationsInput | string

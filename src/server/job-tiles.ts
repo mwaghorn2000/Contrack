@@ -87,11 +87,15 @@ export async function requireVisibleTile(
 export type AnswerRules = {
   schema: z.ZodTypeAny;
   files?: { min: number; max: number };
+  fileFields?: (
+    config: unknown,
+  ) => { id: string; label: string; min: number; max: number }[];
   notes?: boolean;
   check?: (answer: {
     config: unknown;
     data: unknown;
     userId: string;
+    editing: boolean;
     others: { authorId: string | null; data: unknown }[];
   }) => string | null;
 };
