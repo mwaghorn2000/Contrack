@@ -46,3 +46,25 @@ export function attachmentSelectionError(file: { type: string; size: number }) {
   const shrunk = file.type.startsWith("image/") && file.type !== "image/gif";
   return attachmentFileError(shrunk ? { type: file.type, size: 1 } : file);
 }
+
+/**
+ * Splits files picked in the browser into those to add, at most `room` of
+ * them, and a message naming each refused file and why (`tooMany` if some
+ * didn't fit).
+ */
+export function pickAttachments<
+  F extends { name: string; type: string; size: number },
+>(picked: F[], room: number, tooMany: string) {
+  const refused: string[] = [];
+  const fitting: F[] = [];
+  for (const file of picked) {
+    const reason = attachmentSelectionError(file);
+    if (reason) refused.push(`${file.name}: ${reason}`);
+    else fitting.push(file);
+  }
+  if (fitting.length > room) refused.push(tooMany);
+  return {
+    accepted: fitting.slice(0, Math.max(0, room)),
+    error: refused.join(" "),
+  };
+}

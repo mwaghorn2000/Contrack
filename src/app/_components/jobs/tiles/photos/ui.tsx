@@ -5,8 +5,9 @@
 import { useState } from "react";
 import type { z } from "zod";
 import type { photosAnswer, photosConfig } from ".";
-import { ATTACHMENT_TYPES, attachmentSelectionError } from "~/lib/attachments";
+import { ATTACHMENT_TYPES, pickAttachments } from "~/lib/attachments";
 import AnswerByline from "../../answers/answer-byline";
+import ConfirmDelete from "../../answers/confirm-delete";
 import type { AnswersProps, TileAnswer } from "../define-tile";
 
 type PhotosConfig = z.infer<typeof photosConfig>;
@@ -136,18 +137,13 @@ function AddFiles({
             event.target.value = "";
             // The files being uploaded can't change part way.
             if (uploading) return;
-            const refused = picked.flatMap((file) => {
-              const reason = attachmentSelectionError(file);
-              return reason ? [`${file.name}: ${reason}`] : [];
-            });
-            const accepted = picked.filter(
-              (file) => !attachmentSelectionError(file),
+            const { accepted, error } = pickAttachments(
+              picked,
+              MAX_FILES - files.length,
+              `Add at most ${MAX_FILES} files at a time.`,
             );
-            const next = [...files, ...accepted].slice(0, MAX_FILES);
-            if (files.length + accepted.length > MAX_FILES)
-              refused.push(`Add at most ${MAX_FILES} files at a time.`);
-            setFiles(next);
-            setError(refused.join(" "));
+            setFiles([...files, ...accepted]);
+            setError(error);
           }}
           className="mt-1 block text-sm"
         />
@@ -312,30 +308,13 @@ function EntryCard({
         )}
       </div>
       {mode === "delete" && (
-        <div
-          role="group"
-          aria-label="Confirm deleting these files"
-          className="flex flex-wrap items-center gap-2 rounded-md bg-red-50 px-3 py-2"
-        >
-          <span>Delete these files?</span>
-          <button
-            type="button"
-            aria-disabled={busy}
-            onClick={() => void (busy || onDelete())}
-            className="rounded-md bg-red-700 px-3 py-1 text-white aria-disabled:opacity-50"
-          >
-            Delete
-          </button>
-          <button
-            type="button"
-            // Focus starts on the safe choice.
-            autoFocus
-            onClick={() => setMode("view")}
-            className="rounded-md border border-gray-300 bg-white px-3 py-1"
-          >
-            Cancel
-          </button>
-        </div>
+        <ConfirmDelete
+          label="Confirm deleting these files"
+          question="Delete these files?"
+          busy={busy}
+          onDelete={onDelete}
+          onCancel={() => setMode("view")}
+        />
       )}
     </li>
   );
