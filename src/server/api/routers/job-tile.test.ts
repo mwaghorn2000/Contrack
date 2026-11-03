@@ -162,7 +162,13 @@ async function tick(person: Person, tileId: string, itemId = "a") {
   return id;
 }
 
-const gap = { label: "Gap", value: 12.5, unit: "mm" };
+const gap = {
+  label: "Gap",
+  values: [
+    { label: "Top", value: 12.5, unit: "mm" },
+    { label: "Bottom", value: 10, unit: "mm" },
+  ],
+};
 
 /** Adds a measurement as someone, returning the answer id. */
 async function measure(person: Person, note?: string) {
@@ -256,6 +262,8 @@ it("createAnswer rejects answers that don't fit the tile", async () => {
     { tileId: tiles.shared, data: { itemId: "missing" } },
     { tileId: tiles.shared, data: { item: "a" } },
     { tileId: tiles.measure, data: gap, note: "x".repeat(2001) },
+    // The old shape, one value per measurement.
+    { tileId: tiles.measure, data: { label: "Gap", value: 1, unit: "mm" } },
     { tileId: tiles.text, data: {} },
   ])
     await expect(worker.caller.createAnswer(input)).rejects.toMatchObject({

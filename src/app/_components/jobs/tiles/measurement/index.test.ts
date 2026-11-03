@@ -7,20 +7,46 @@ test("a Measurement tile has nothing to set besides its description", () => {
   expect(measurementConfig.parse(config)).toEqual({});
 });
 
-test("a measurement has a label, a finite number and a unit", () => {
+const width = { label: "Width", value: 1200, unit: "mm" };
+
+test("a measurement has a label and sub-measurements, each a label, finite number and unit", () => {
   expect(
-    measurementAnswer.parse({ label: " North wall ", value: 12.5, unit: "mm" }),
-  ).toEqual({ label: "North wall", value: 12.5, unit: "mm" });
-  // No unit is fine, e.g. for a count.
+    measurementAnswer.parse({
+      label: " Window A32 ",
+      values: [
+        { label: " Width ", value: 1200, unit: " mm " },
+        // No unit is fine, e.g. for a count.
+        { label: "Panes", value: 2, unit: "" },
+      ],
+    }),
+  ).toEqual({
+    label: "Window A32",
+    values: [
+      { label: "Width", value: 1200, unit: "mm" },
+      { label: "Panes", value: 2, unit: "" },
+    ],
+  });
   expect(
-    measurementAnswer.safeParse({ label: "Posts", value: 4, unit: "" }).success,
+    measurementAnswer.safeParse({
+      label: "Window",
+      values: Array.from({ length: 20 }, () => width),
+    }).success,
   ).toBe(true);
+});
+
+test("a measurement needs a label and 1 to 20 valid sub-measurements", () => {
   for (const answer of [
-    { label: "", value: 1, unit: "mm" },
-    { label: "x".repeat(101), value: 1, unit: "mm" },
-    { label: "Gap", value: Infinity, unit: "mm" },
-    { label: "Gap", value: "12", unit: "mm" },
-    { label: "Gap", value: 1, unit: "x".repeat(21) },
+    { label: "", values: [width] },
+    { label: "x".repeat(101), values: [width] },
+    { label: "Window", values: [] },
+    { label: "Window", values: Array.from({ length: 21 }, () => width) },
+    { label: "Window", values: [{ ...width, label: " " }] },
+    { label: "Window", values: [{ ...width, label: "x".repeat(101) }] },
+    { label: "Window", values: [{ ...width, value: Infinity }] },
+    { label: "Window", values: [{ ...width, value: "12" }] },
+    { label: "Window", values: [{ ...width, unit: "x".repeat(21) }] },
+    // The old shape, one value per measurement.
+    { label: "Gap", value: 1, unit: "mm" },
   ])
     expect(measurementAnswer.safeParse(answer).success).toBe(false);
 });

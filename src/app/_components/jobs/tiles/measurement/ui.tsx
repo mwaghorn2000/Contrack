@@ -10,13 +10,14 @@ import type { AnswersProps, TileAnswer } from "../define-tile";
 
 type MeasurementConfig = z.infer<typeof measurementConfig>;
 type Data = z.infer<typeof measurementAnswer>;
+type Value = Data["values"][number];
 type Measurement = TileAnswer<Data>;
 
 const inputClass =
   "mt-1 w-full rounded-md border border-gray-300 px-3 py-1.5 text-sm focus-visible:outline-2 focus-visible:outline-gray-900";
 
-/** "Gap: 4 mm", a measurement as shown and as its buttons name it. */
-function describe({ label, value, unit }: Data) {
+/** "Width: 1200 mm", one of a measurement's values as shown. */
+function describe({ label, value, unit }: Value) {
   return `${label}: ${value}${unit ? ` ${unit}` : ""}`;
 }
 
@@ -27,8 +28,8 @@ export function MeasurementTileEditor(_props: {
 }) {
   return (
     <p className="text-sm text-gray-500">
-      People on the job add measurements on the job page, each with a label, a
-      value and a unit. Use the description to say what to measure.
+      People on the job add measurements on the job page, each with a label and
+      one or more values with units. Use the description to say what to measure.
     </p>
   );
 }
@@ -39,8 +40,8 @@ export function MeasurementTileView(_props: { config: MeasurementConfig }) {
 }
 
 /**
- * Measurements on the job page: a form to add one (label, value, unit,
- * note), then the list, newest first. Authors can edit or delete their own.
+ * Measurements on the job page: a form to add one (label, values, note),
+ * then the list, newest first. Authors can edit or delete their own.
  */
 export function MeasurementTileAnswers({
   answers,
@@ -62,6 +63,7 @@ export function MeasurementTileAnswers({
           name="New measurement"
           busy={busy}
           labelRef={newLabelRef}
+          template={measurements[0]}
           submitLabel="Add measurement"
           onSubmit={(data, note) => onCreate(data, note)}
         />
@@ -110,7 +112,8 @@ function MeasurementRow({
     refocus.current = false;
     editRef.current?.focus();
   }, [mode]);
-  const name = describe(measurement.data);
+  // With its first value, to tell apart two of the same label.
+  const name = `${measurement.data.label}, ${describe(measurement.data.values[0]!)}`;
   /** Closes the edit form, putting focus back on its Edit button. */
   const closeEdit = () => {
     refocus.current = true;
@@ -161,6 +164,7 @@ function MeasurementRow({
           </button>
         )}
       </div>
+      <p>{measurement.data.values.map(describe).join(" · ")}</p>
       {measurement.note && (
         <p className="whitespace-pre-wrap text-gray-700">{measurement.note}</p>
       )}
@@ -194,15 +198,35 @@ function MeasurementRow({
   );
 }
 
+// A row of the form: one value as typed, keyed so rows can be removed.
+type Row = { key: number; label: string; value: string; unit: string };
+let nextRowKey = 0;
+
 /**
- * A label, value, unit (millimetres unless changed) and note, for a new
- * measurement or an edit. A new one's form clears once it saves, keeping the
- * unit for the next; a failed save keeps what was typed.
+ * Form rows for the given values, or one empty row in millimetres without
+ * any. Without `withValues`, rows keep only the names and units.
+ */
+function toRows(values: Value[] | undefined, withValues: boolean): Row[] {
+  if (!values) return [{ key: nextRowKey++, label: "", value: "", unit: "mm" }];
+  return values.map((value) => ({
+    key: nextRowKey++,
+    label: value.label,
+    value: withValues ? `${value.value}` : "",
+    unit: value.unit,
+  }));
+}
+
+/**
+ * A label, rows of name, value and unit, and a note, for a new measurement
+ * or an edit. A new one starts with the names and units of `template`, the
+ * newest measurement. Once a new one saves, its values clear for the next;
+ * a failed save keeps them.
  */
 function MeasurementForm({
   name,
   busy,
   initial,
+  template,
   autoFocus = false,
   labelRef,
   submitLabel,
@@ -212,6 +236,7 @@ function MeasurementForm({
   name: string;
   busy: boolean;
   initial?: Measurement;
+  template?: Measurement;
   autoFocus?: boolean;
   labelRef?: RefObject<HTMLInputElement | null>;
   submitLabel: string;
@@ -219,64 +244,145 @@ function MeasurementForm({
   onCancel?: () => void;
 }) {
   const [label, setLabel] = useState(initial?.data.label ?? "");
-  const [value, setValue] = useState(initial ? `${initial.data.value}` : "");
-  const [unit, setUnit] = useState(initial?.data.unit ?? "mm");
+  const [rows, setRows] = useState(() =>
+    initial
+      ? toRows(initial.data.values, true)
+      : toRows(template?.data.values, false),
+  );
   const [note, setNote] = useState(initial?.note ?? "");
-  const number = Number(value);
+  const formRef = useRef<HTMLFormElement>(null);
+  // The row whose name takes focus once rows are added or removed.
+  const focusNext = useRef<number | null>(null);
+  useEffect(() => {
+    const key = focusNext.current;
+    if (key === null) return;
+    focusNext.current = null;
+    formRef.current
+      ?.querySelector<HTMLInputElement>(`[data-row-name="${key}"]`)
+      ?.focus();
+  }, [rows]);
+
+  /** Changes some of one row's fields. */
+  const changeRow = (key: number, change: Partial<Row>) =>
+    setRows(rows.map((row) => (row.key === key ? { ...row, ...change } : row)));
   const valid =
-    label.trim() !== "" && value.trim() !== "" && Number.isFinite(number);
+    label.trim() !== "" &&
+    rows.every(
+      (row) =>
+        row.label.trim() !== "" &&
+        row.value.trim() !== "" &&
+        Number.isFinite(Number(row.value)),
+    );
   return (
     <form
+      ref={formRef}
       aria-label={name}
       className="space-y-2"
       onSubmit={(event) => {
         event.preventDefault();
         if (!valid || busy) return;
-        const data = { label: label.trim(), value: number, unit: unit.trim() };
+        const data = {
+          label: label.trim(),
+          values: rows.map((row) => ({
+            label: row.label.trim(),
+            value: Number(row.value),
+            unit: row.unit.trim(),
+          })),
+        };
         void onSubmit(data, note).then((saved) => {
           if (saved && !initial) {
             setLabel("");
-            setValue("");
+            setRows(rows.map((row) => ({ ...row, value: "" })));
             setNote("");
           }
         });
       }}
     >
-      <div className="grid grid-cols-1 gap-2 sm:grid-cols-[2fr_1fr_1fr]">
-        <label className="block">
-          <span className="font-medium">Label</span>
-          <input
-            ref={labelRef}
-            required
-            maxLength={100}
-            autoFocus={autoFocus}
-            value={label}
-            onChange={(event) => setLabel(event.target.value)}
-            placeholder="e.g. North wall gap"
-            className={inputClass}
-          />
-        </label>
-        <label className="block">
-          <span className="font-medium">Value</span>
-          <input
-            type="number"
-            step="any"
-            required
-            value={value}
-            onChange={(event) => setValue(event.target.value)}
-            className={inputClass}
-          />
-        </label>
-        <label className="block">
-          <span className="font-medium">Unit</span>
-          <input
-            maxLength={20}
-            value={unit}
-            onChange={(event) => setUnit(event.target.value)}
-            className={inputClass}
-          />
-        </label>
-      </div>
+      <label className="block">
+        <span className="font-medium">Label</span>
+        <input
+          ref={labelRef}
+          required
+          maxLength={100}
+          autoFocus={autoFocus}
+          value={label}
+          onChange={(event) => setLabel(event.target.value)}
+          placeholder="e.g. Window A32"
+          className={inputClass}
+        />
+      </label>
+      {rows.map((row, index) => (
+        <div
+          key={row.key}
+          role="group"
+          aria-label={`Row ${index + 1}`}
+          className="grid grid-cols-[2fr_1fr_1fr_auto] items-end gap-2"
+        >
+          <label className="block">
+            <span className="font-medium">Name</span>
+            <input
+              required
+              maxLength={100}
+              data-row-name={row.key}
+              value={row.label}
+              onChange={(event) =>
+                changeRow(row.key, { label: event.target.value })
+              }
+              placeholder="e.g. Width"
+              className={inputClass}
+            />
+          </label>
+          <label className="block">
+            <span className="font-medium">Value</span>
+            <input
+              type="number"
+              step="any"
+              required
+              value={row.value}
+              onChange={(event) =>
+                changeRow(row.key, { value: event.target.value })
+              }
+              className={inputClass}
+            />
+          </label>
+          <label className="block">
+            <span className="font-medium">Unit</span>
+            <input
+              maxLength={20}
+              value={row.unit}
+              onChange={(event) =>
+                changeRow(row.key, { unit: event.target.value })
+              }
+              className={inputClass}
+            />
+          </label>
+          <button
+            type="button"
+            aria-label={`Remove row ${index + 1}`}
+            disabled={rows.length === 1}
+            onClick={() => {
+              // Focus would leave with the removed button; keep it nearby.
+              focusNext.current = (rows[index + 1] ?? rows[index - 1])!.key;
+              setRows(rows.filter((other) => other.key !== row.key));
+            }}
+            className="rounded-md border border-gray-300 px-2 py-1.5 disabled:opacity-50"
+          >
+            ✕
+          </button>
+        </div>
+      ))}
+      <button
+        type="button"
+        disabled={rows.length >= 20}
+        onClick={() => {
+          const added = toRows(undefined, false);
+          focusNext.current = added[0]!.key;
+          setRows([...rows, ...added]);
+        }}
+        className="text-xs underline disabled:opacity-50"
+      >
+        Add row
+      </button>
       <label className="block">
         <span className="font-medium">Note</span>{" "}
         <span className="text-gray-500">(optional)</span>

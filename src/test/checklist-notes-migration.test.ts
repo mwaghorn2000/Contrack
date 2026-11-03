@@ -24,7 +24,8 @@ function migrationsSql(before: boolean) {
 }
 
 // Runs the migrations before this one, adds answers with notes on a
-// Checklist and a Measurement tile, then runs the rest.
+// Checklist and another tile, then runs the rest. The other tile is a Text
+// tile, as a later migration deletes measurements.
 beforeAll(async () => {
   container = await new PostgreSqlContainer("postgres:16-alpine")
     .withDatabase("checklist_notes_migration_test")
@@ -37,10 +38,10 @@ beforeAll(async () => {
       VALUES ('job', 'Roof', 'company', 'user', CURRENT_TIMESTAMP);
     INSERT INTO "JobTile" ("id", "jobId", "type", "position", "config", "visibility")
       VALUES ('checklist', 'job', 'checklist', 0, '{}', '{}'),
-             ('measurement', 'job', 'measurement', 1, '{}', '{}');
+             ('text', 'job', 'text', 1, '{}', '{}');
     INSERT INTO "JobTileAnswer" ("id", "tileId", "authorId", "data", "note", "updatedAt")
       VALUES ('tick', 'checklist', 'user', '{}', 'Done', CURRENT_TIMESTAMP),
-             ('gap', 'measurement', 'user', '{}', 'North wall', CURRENT_TIMESTAMP);
+             ('gap', 'text', 'user', '{}', 'North wall', CURRENT_TIMESTAMP);
   `;
   execFileSync(
     "pnpm",
