@@ -86,6 +86,7 @@ export async function requireVisibleTile(
 /** A tile type's answer rules, loosely typed for the server's generic code. */
 export type AnswerRules = {
   schema: z.ZodTypeAny;
+  notes?: boolean;
   check?: (answer: {
     config: unknown;
     data: unknown;

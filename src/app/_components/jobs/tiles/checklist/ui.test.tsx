@@ -46,10 +46,9 @@ function renderAnswers(
     readOnly?: boolean;
     busy?: boolean;
     userId?: string;
-    saves?: boolean;
   } = {},
 ) {
-  const saved = () => Promise.resolve(options.saves ?? true);
+  const saved = () => Promise.resolve(true);
   const calls = {
     onCreate: vi.fn(saved),
     onUpdate: vi.fn(saved),
@@ -129,29 +128,12 @@ test("a shared list shows who ticked each item, and only they can untick it", as
   expect(calls.onDelete).toHaveBeenCalledWith("tick-a-user-1");
 });
 
-test("people can add a note to their own tick", async () => {
-  const user = userEvent.setup();
-  const calls = renderAnswers({ mode: "shared", items }, [
-    tick("a"),
-    tick("b", jaxon, false),
-  ]);
-  // Only your own tick offers a note.
-  expect(screen.getAllByRole("button", { name: /^Add note/ })).toHaveLength(1);
+test("ticks don't offer or show notes", () => {
+  // A note saved before checklists stopped taking them.
+  renderAnswers({ mode: "shared", items }, [{ ...tick("a"), note: "Old" }]);
 
-  await user.click(
-    screen.getByRole("button", { name: "Add note to Isolate power" }),
-  );
-  await user.type(
-    screen.getByLabelText("Note on Isolate power"),
-    "Isolated at board 2",
-  );
-  await user.click(screen.getByRole("button", { name: "Save" }));
-
-  expect(calls.onUpdate).toHaveBeenCalledWith(
-    "tick-a-user-1",
-    { itemId: "a" },
-    "Isolated at board 2",
-  );
+  expect(screen.queryByRole("button", { name: /note/i })).toBeNull();
+  expect(screen.queryByText("Old")).toBeNull();
 });
 
 test("an each-person list shows your own ticks and everyone's progress", () => {
@@ -179,7 +161,6 @@ test("a read-only list can't be changed", () => {
 
   for (const box of screen.getAllByRole("checkbox"))
     expect(box).toHaveProperty("disabled", true);
-  expect(screen.queryByRole("button", { name: /^Add note/ })).toBeNull();
 });
 
 test("only the item being saved waits; it keeps keyboard focus", async () => {
@@ -200,19 +181,6 @@ test("only the item being saved waits; it keeps keyboard focus", async () => {
   expect(second.getAttribute("aria-disabled")).toBe("false");
   await user.click(second);
   expect(calls.onCreate).toHaveBeenCalledTimes(2);
-});
-
-test("a note that fails to save stays open to try again", async () => {
-  const user = userEvent.setup();
-  renderAnswers({ mode: "shared", items }, [tick("a")], { saves: false });
-
-  await user.click(
-    screen.getByRole("button", { name: "Add note to Isolate power" }),
-  );
-  await user.type(screen.getByLabelText("Note on Isolate power"), "Later");
-  await user.click(screen.getByRole("button", { name: "Save" }));
-
-  expect(screen.getByLabelText("Note on Isolate power")).toBeTruthy();
 });
 
 test("progress lists people separately even with the same name", () => {
