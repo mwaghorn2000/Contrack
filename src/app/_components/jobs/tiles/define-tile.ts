@@ -54,6 +54,8 @@ export function defineTile<
   View: ComponentType<{ config: z.infer<Config> }>;
   answers?: {
     schema: Answer;
+    // Whether answers can carry a note; they can when left out.
+    notes?: boolean;
     check?: (answer: {
       config: z.infer<Config>;
       data: z.infer<Answer>;

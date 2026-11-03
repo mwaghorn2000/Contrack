@@ -18,7 +18,7 @@ export const checklistConfig = z.object({
     ),
 });
 
-// One tick of one item; the answer's note is an optional comment on it.
+// One tick of one item.
 export const checklistAnswer = z.object({ itemId: z.string().max(64) });
 
 /** Items people tick off, once for the whole job or each for themselves. */
@@ -33,6 +33,7 @@ export const checklistTile = defineTile({
   View: ChecklistTileView,
   answers: {
     schema: checklistAnswer,
+    notes: false,
     check: ({ config, data, userId, others }) => {
       if (!config.items.some((item) => item.id === data.itemId))
         return "That item isn't on this checklist.";

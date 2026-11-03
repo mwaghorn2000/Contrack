@@ -135,9 +135,7 @@ export function ChecklistTileAnswers({
   answers,
   viewer,
   readOnly,
-  busy,
   onCreate,
-  onUpdate,
   onDelete,
 }: AnswersProps<ChecklistConfig, z.infer<typeof checklistAnswer>>) {
   // Items whose tick is saving; only they wait, the rest stay usable.
@@ -186,14 +184,14 @@ export function ChecklistTileAnswers({
                 />
                 <span>{text}</span>
               </label>
-              {tick && (
-                <TickDetails
-                  tick={tick}
-                  itemText={text}
-                  shared={config.mode === "shared"}
-                  disabled={readOnly || busy}
-                  onSave={(note) => onUpdate(tick.id, tick.data, note)}
-                />
+              {tick && config.mode === "shared" && (
+                <p className="ml-6 text-xs text-gray-500">
+                  Ticked by {tick.author?.name ?? "a former member"} ·{" "}
+                  {tick.createdAt.toLocaleString("en-AU", {
+                    dateStyle: "medium",
+                    timeStyle: "short",
+                  })}
+                </p>
               )}
             </li>
           );
@@ -201,80 +199,6 @@ export function ChecklistTileAnswers({
       </ul>
       {config.mode === "each" && (
         <Progress items={config.items} answers={answers} />
-      )}
-    </div>
-  );
-}
-
-/** Who ticked an item and when, and its note, which the ticker can edit. */
-function TickDetails({
-  tick,
-  itemText,
-  shared,
-  disabled,
-  onSave,
-}: {
-  tick: Tick;
-  itemText: string;
-  shared: boolean;
-  disabled: boolean;
-  onSave: (note: string) => Promise<boolean>;
-}) {
-  const [editing, setEditing] = useState(false);
-  const [note, setNote] = useState(tick.note ?? "");
-  return (
-    <div className="ml-6 space-y-1 text-xs text-gray-500">
-      {shared && (
-        <p>
-          Ticked by {tick.author?.name ?? "a former member"} ·{" "}
-          {tick.createdAt.toLocaleString("en-AU", {
-            dateStyle: "medium",
-            timeStyle: "short",
-          })}
-        </p>
-      )}
-      {editing ? (
-        <form
-          className="flex gap-2"
-          onSubmit={(event) => {
-            event.preventDefault();
-            // Stays open after a failure, to try again.
-            void onSave(note).then((saved) => saved && setEditing(false));
-          }}
-        >
-          <input
-            aria-label={`Note on ${itemText}`}
-            maxLength={2000}
-            value={note}
-            onChange={(event) => setNote(event.target.value)}
-            className={inputClass}
-          />
-          <button
-            type="submit"
-            disabled={disabled}
-            className="underline disabled:opacity-50"
-          >
-            Save
-          </button>
-        </form>
-      ) : (
-        <p className="flex gap-2">
-          {tick.note && (
-            <span className="whitespace-pre-wrap text-gray-700">
-              {tick.note}
-            </span>
-          )}
-          {tick.canEdit && !disabled && (
-            <button
-              type="button"
-              onClick={() => setEditing(true)}
-              aria-label={`${tick.note ? "Edit note on" : "Add note to"} ${itemText}`}
-              className="underline"
-            >
-              {tick.note ? "Edit note" : "Add note"}
-            </button>
-          )}
-        </p>
       )}
     </div>
   );

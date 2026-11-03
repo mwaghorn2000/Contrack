@@ -28,7 +28,7 @@ let worker: Person;
 let colleague: Person;
 let outsider: Person;
 let jobId: string;
-let tiles: { shared: string; each: string; text: string };
+let tiles: { shared: string; each: string; text: string; measure: string };
 
 const missingId = "cmissing00000000000000001";
 
@@ -95,7 +95,8 @@ function checklist(
 /**
  * The job: the owner isn't on it; an admin, a worker and a colleague are.
  * "shared" is ticked once for the job, "each" (only the worker can see it,
- * besides managers) per person, and "text" takes no answers.
+ * besides managers) per person, "text" takes no answers, and "measure" is
+ * a Measurement tile, whose answers take notes.
  */
 beforeEach(async () => {
   await clearTestDatabase(db);
@@ -117,7 +118,7 @@ beforeEach(async () => {
     },
   });
   jobId = job.id;
-  const [shared, each, text] = await Promise.all([
+  const [shared, each, text, measure] = await Promise.all([
     db.jobTile.create({ data: { jobId, ...checklist(0, "shared") } }),
     db.jobTile.create({
       data: {
@@ -134,33 +135,53 @@ beforeEach(async () => {
         config: { body: "Read me" },
       },
     }),
+    db.jobTile.create({
+      data: {
+        jobId,
+        type: "measurement",
+        position: 3,
+        visibility: { mode: "everyone" },
+        config: {},
+      },
+    }),
   ]);
-  tiles = { shared: shared.id, each: each.id, text: text.id };
+  tiles = {
+    shared: shared.id,
+    each: each.id,
+    text: text.id,
+    measure: measure.id,
+  };
 });
 
 /** Ticks an item on a Checklist tile as someone, returning the answer id. */
-async function tick(
-  person: Person,
-  tileId: string,
-  itemId = "a",
-  note?: string,
-) {
+async function tick(person: Person, tileId: string, itemId = "a") {
   const { id } = await person.caller.createAnswer({
     tileId,
     data: { itemId },
+  });
+  return id;
+}
+
+const gap = { label: "Gap", value: 12.5, unit: "mm" };
+
+/** Adds a measurement as someone, returning the answer id. */
+async function measure(person: Person, note?: string) {
+  const { id } = await person.caller.createAnswer({
+    tileId: tiles.measure,
+    data: gap,
     note,
   });
   return id;
 }
 
 it("an answer is saved with its author, note and dates", async () => {
-  const id = await tick(worker, tiles.shared, "a", "  Done at 9am  ");
+  const id = await measure(worker, "  Done at 9am  ");
 
   const row = await db.jobTileAnswer.findUniqueOrThrow({ where: { id } });
   expect(row).toMatchObject({
-    tileId: tiles.shared,
+    tileId: tiles.measure,
     authorId: worker.id,
-    data: { itemId: "a" },
+    data: gap,
     note: "Done at 9am",
   });
   expect(row.createdAt).toBeInstanceOf(Date);
@@ -234,7 +255,7 @@ it("createAnswer rejects answers that don't fit the tile", async () => {
   for (const input of [
     { tileId: tiles.shared, data: { itemId: "missing" } },
     { tileId: tiles.shared, data: { item: "a" } },
-    { tileId: tiles.shared, data: { itemId: "a" }, note: "x".repeat(2001) },
+    { tileId: tiles.measure, data: gap, note: "x".repeat(2001) },
     { tileId: tiles.text, data: {} },
   ])
     await expect(worker.caller.createAnswer(input)).rejects.toMatchObject({
@@ -257,19 +278,23 @@ it("createAnswer hides tiles the person can't see", async () => {
 });
 
 it("listAnswers shows everyone who can see a tile all of its answers", async () => {
-  await tick(worker, tiles.shared, "a", "Isolated at the board");
+  await tick(worker, tiles.shared, "a");
   await tick(colleague, tiles.shared, "b");
   await tick(worker, tiles.each, "a");
+  await measure(worker, "North wall");
 
   const answers = await colleague.caller.listAnswers({ jobId });
   // The colleague can't see "each", and "text" takes no answers.
-  expect(Object.keys(answers)).toEqual([tiles.shared]);
+  // Sorted, as the tiles were made at once and have no set order.
+  expect(Object.keys(answers).sort()).toEqual(
+    [tiles.shared, tiles.measure].sort(),
+  );
   expect(answers[tiles.shared]).toEqual([
     {
       id: expect.any(String) as string,
       author: { id: worker.id, name: worker.name, image: null },
       data: { itemId: "a" },
-      note: "Isolated at the board",
+      note: null,
       createdAt: expect.any(Date) as Date,
       updatedAt: expect.any(Date) as Date,
       canEdit: false,
@@ -280,6 +305,9 @@ it("listAnswers shows everyone who can see a tile all of its answers", async () 
       canEdit: true,
       canDelete: true,
     }),
+  ]);
+  expect(answers[tiles.measure]).toEqual([
+    expect.objectContaining({ data: gap, note: "North wall" }),
   ]);
   expect((await owner.caller.listAnswers({ jobId }))[tiles.each]).toHaveLength(
     1,
@@ -302,41 +330,33 @@ it("listAnswers hides the job from people who can't see it", async () => {
 });
 
 it("updateAnswer lets people change their own answer's note", async () => {
-  const id = await tick(worker, tiles.shared, "a");
+  const id = await measure(worker);
 
   await worker.caller.updateAnswer({
     answerId: id,
-    data: { itemId: "a" },
+    data: gap,
     note: "Checked twice",
   });
   expect(
     (await db.jobTileAnswer.findUniqueOrThrow({ where: { id } })).note,
   ).toBe("Checked twice");
   // An empty note clears it.
-  await worker.caller.updateAnswer({
-    answerId: id,
-    data: { itemId: "a" },
-    note: "",
-  });
+  await worker.caller.updateAnswer({ answerId: id, data: gap, note: "" });
   expect(
     (await db.jobTileAnswer.findUniqueOrThrow({ where: { id } })).note,
   ).toBeNull();
 });
 
 it("updateAnswer only lets the author change an answer", async () => {
-  const id = await tick(worker, tiles.shared, "a");
+  const id = await measure(worker);
 
   for (const person of [colleague, owner])
     await expect(
-      person.caller.updateAnswer({
-        answerId: id,
-        data: { itemId: "a" },
-        note: "Not mine",
-      }),
+      person.caller.updateAnswer({ answerId: id, data: gap, note: "Not mine" }),
     ).rejects.toMatchObject({ code: "FORBIDDEN" });
   for (const answerId of [id, missingId])
     await expect(
-      outsider.caller.updateAnswer({ answerId, data: { itemId: "a" } }),
+      outsider.caller.updateAnswer({ answerId, data: gap }),
     ).rejects.toMatchObject({
       code: "NOT_FOUND",
       message: "Answer not found.",
@@ -354,11 +374,7 @@ it("updateAnswer still applies the tile's rules", async () => {
     colleague.caller.updateAnswer({ answerId: id, data: { itemId: "a" } }),
   ).rejects.toMatchObject({ code: "BAD_REQUEST" });
   // Re-saving an answer unchanged doesn't clash with itself.
-  await colleague.caller.updateAnswer({
-    answerId: id,
-    data: { itemId: "b" },
-    note: "ok",
-  });
+  await colleague.caller.updateAnswer({ answerId: id, data: { itemId: "b" } });
 });
 
 it("deleteAnswer lets authors and managers remove answers", async () => {
@@ -409,24 +425,20 @@ it("two people ticking the same shared item at once only tick it once", async ()
 });
 
 it("updateAnswer leaves the note alone when none is sent", async () => {
-  const id = await tick(worker, tiles.shared, "a", "Keep me");
+  const id = await measure(worker, "Keep me");
 
-  await worker.caller.updateAnswer({ answerId: id, data: { itemId: "a" } });
+  await worker.caller.updateAnswer({ answerId: id, data: gap });
   expect(
     (await db.jobTileAnswer.findUniqueOrThrow({ where: { id } })).note,
   ).toBe("Keep me");
   // An empty note clears it.
-  await worker.caller.updateAnswer({
-    answerId: id,
-    data: { itemId: "a" },
-    note: "",
-  });
+  await worker.caller.updateAnswer({ answerId: id, data: gap, note: "" });
   expect(
     (await db.jobTileAnswer.findUniqueOrThrow({ where: { id } })).note,
   ).toBeNull();
 });
 
-it("a tick's note can't be edited once its item is off the list", async () => {
+it("a tick can't be re-saved once its item is off the list", async () => {
   const id = await tick(worker, tiles.shared, "b");
   await db.jobTile.update({
     where: { id: tiles.shared },
@@ -435,11 +447,7 @@ it("a tick's note can't be edited once its item is off the list", async () => {
     },
   });
   await expect(
-    worker.caller.updateAnswer({
-      answerId: id,
-      data: { itemId: "b" },
-      note: "Late",
-    }),
+    worker.caller.updateAnswer({ answerId: id, data: { itemId: "b" } }),
   ).rejects.toMatchObject({
     code: "BAD_REQUEST",
     message: "That item isn't on this checklist.",
