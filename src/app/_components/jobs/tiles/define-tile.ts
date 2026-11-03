@@ -11,6 +11,8 @@ export type TileAnswer<Data> = {
   // Photos and PDFs attached to it; `url` is null without file storage.
   files: {
     id: string;
+    // The field it's attached under, on tiles with file fields.
+    fieldId: string | null;
     name: string;
     contentType: string;
     size: number;
@@ -27,6 +29,8 @@ export type AnswersProps<Config, Data> = {
   config: Config;
   answers: TileAnswer<Data>[];
   viewer: { userId: string; isManager: boolean };
+  // The job's members, e.g. to name who still needs to submit a form.
+  people: { id: string; name: string | null }[];
   // Nothing can be changed: previewing as someone, or answers not loaded.
   readOnly: boolean;
   // A change is saving. Controls stay focusable but ignore input.
@@ -35,11 +39,20 @@ export type AnswersProps<Config, Data> = {
   onCreate: (
     data: Data,
     note?: string,
-    files?: { key: string; name: string }[],
+    files?: { key: string; name: string; fieldId?: string }[],
   ) => Promise<boolean>;
   // Uploads a photo or PDF for this tile, ready to attach to a new answer.
   uploadFile: (file: File) => Promise<{ key: string; name: string }>;
-  onUpdate: (answerId: string, data: Data, note?: string) => Promise<boolean>;
+  // Files are added (uploaded first) or removed by id along with the change.
+  onUpdate: (
+    answerId: string,
+    data: Data,
+    note?: string,
+    files?: {
+      add: { key: string; name: string; fieldId?: string }[];
+      remove: string[];
+    },
+  ) => Promise<boolean>;
   onDelete: (answerId: string) => Promise<boolean>;
 };
 
@@ -63,6 +76,8 @@ export function defineTile<
   defaultConfig: () => z.infer<Config>;
   Editor: ComponentType<{
     config: z.infer<Config>;
+    // The job's members who can see the tile, for editors that pick people.
+    people: { id: string; name: string | null }[];
     onChange: (config: z.infer<Config>) => void;
   }>;
   View: ComponentType<{ config: z.infer<Config> }>;
@@ -70,12 +85,19 @@ export function defineTile<
     schema: Answer;
     // How many photos or PDFs each answer must have; none when left out.
     files?: { min: number; max: number };
+    // Instead of `files`: the fields files are attached under, each with its
+    // own limits, for tiles like forms with several file fields.
+    fileFields?: (
+      config: z.infer<Config>,
+    ) => { id: string; label: string; min: number; max: number }[];
     // Whether answers can carry a note; they can when left out.
     notes?: boolean;
     check?: (answer: {
       config: z.infer<Config>;
       data: z.infer<Answer>;
       userId: string;
+      // Whether the person is changing their own answer, not adding one.
+      editing: boolean;
       // The tile's other answers, for rules like "tick each item once".
       others: { authorId: string | null; data: z.infer<Answer> }[];
     }) => string | null;

@@ -31,6 +31,7 @@ function entry(
 
 const photo = {
   id: "f1",
+  fieldId: null,
   name: "IMG_0042.png",
   contentType: "image/png",
   size: 2048,
@@ -38,6 +39,7 @@ const photo = {
 };
 const plan = {
   id: "f2",
+  fieldId: null,
   name: "Site plan.pdf",
   contentType: "application/pdf",
   size: 1_500_000,
@@ -62,6 +64,7 @@ function renderAnswers(
     <PhotosTileAnswers
       config={{}}
       answers={answers}
+      people={[]}
       viewer={{ userId: ada.id, isManager: false }}
       readOnly={options.readOnly ?? false}
       busy={false}

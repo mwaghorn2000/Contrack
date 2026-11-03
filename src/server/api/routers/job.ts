@@ -110,15 +110,32 @@ export const jobRouter = createTRPCRouter({
       const visible = keepJobMembers(saved, memberIds).filter((tile) =>
         canSeeTile(tile, { userId, isManager }),
       );
+      // Likewise a form's submitters, who also need to see it: as the
+      // builder offers them, by their own place on its list, not their role.
+      const withSubmitters = visible.map((tile) =>
+        tile.type === "form"
+          ? {
+              ...tile,
+              config: {
+                ...tile.config,
+                submitters: tile.config.submitters.filter(
+                  (id) =>
+                    memberIds.includes(id) &&
+                    canSeeTile(tile, { userId: id, isManager: false }),
+                ),
+              },
+            }
+          : tile,
+      );
       // Worked out before names are hidden below, which would change who's asked.
       const acknowledgments = await acknowledgmentStatus(
         ctx.db,
         access,
-        visible,
+        withSubmitters,
         { userId, isManager },
       );
       // Others' names stay hidden: members only learn a tile is shared with them.
-      const tiles = visible.map((tile) =>
+      const tiles = withSubmitters.map((tile) =>
         isManager || tile.visibility.mode === "everyone"
           ? tile
           : {

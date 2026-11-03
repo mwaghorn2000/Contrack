@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { DragSource } from "./tile-drop";
 import TileSettings, { visibilityLabel, type JobPerson } from "./tile-settings";
 import { definitionFor, type JobTile } from "./tiles/registry";
+import { canSeeTile } from "~/lib/job-tiles";
 
 const iconButtonClass =
   "rounded px-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-2 focus-visible:outline-gray-900";
@@ -128,6 +129,10 @@ export default function CanvasTile<T extends JobTile>({
         </label>
         <Editor
           config={tile.config}
+          // Only those who can see the tile, e.g. to be asked to submit it.
+          people={people.filter((person) =>
+            canSeeTile(tile, { userId: person.id, isManager: false }),
+          )}
           onChange={(config) => onChange({ ...tile, config })}
         />
       </div>

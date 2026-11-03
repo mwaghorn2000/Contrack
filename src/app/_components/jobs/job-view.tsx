@@ -201,6 +201,7 @@ export default function JobView({
                       answers={tileAnswers.data?.[tile.id] ?? []}
                       // Shows the previewed person's own answers, read-only.
                       viewer={shownTo}
+                      people={people.map(({ user }) => user)}
                       readOnly={!!previewed || !tileAnswers.data}
                       Answers={answers.Answers}
                     />

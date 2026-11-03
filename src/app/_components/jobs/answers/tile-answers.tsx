@@ -20,6 +20,7 @@ export default function TileAnswers<Config>({
   config,
   answers,
   viewer,
+  people,
   readOnly,
   Answers,
 }: {
@@ -28,6 +29,7 @@ export default function TileAnswers<Config>({
   config: Config;
   answers: Answer[];
   viewer: { userId: string; isManager: boolean };
+  people: { id: string; name: string | null }[];
   readOnly: boolean;
   Answers: ComponentType<AnswersProps<Config, unknown>>;
 }) {
@@ -87,7 +89,7 @@ export default function TileAnswers<Config>({
     onSettled,
   });
   const update = api.jobTile.updateAnswer.useMutation({
-    onMutate: async ({ answerId, data, note }) => {
+    onMutate: async ({ answerId, data, note, removeFileIds }) => {
       const before = utils.jobTile.listAnswers
         .getData(key)
         ?.[tileId]?.find((answer) => answer.id === answerId);
@@ -99,6 +101,10 @@ export default function TileAnswers<Config>({
                 data,
                 // Leaving the note out keeps it, as on the server.
                 note: note === undefined ? answer.note : note.trim() || null,
+                // Added files show once the reload brings their links.
+                files: answer.files.filter(
+                  (file) => !removeFileIds?.includes(file.id),
+                ),
                 updatedAt: new Date(),
               }
             : answer,
@@ -152,6 +158,7 @@ export default function TileAnswers<Config>({
         config={config}
         answers={answers}
         viewer={viewer}
+        people={people}
         readOnly={readOnly}
         busy={create.isPending || update.isPending || remove.isPending}
         onCreate={(data, note, files) =>
@@ -162,8 +169,16 @@ export default function TileAnswers<Config>({
             createUpload.mutateAsync({ tileId, ...upload }),
           )
         }
-        onUpdate={(answerId, data, note) =>
-          run(() => update.mutateAsync({ answerId, data, note }))
+        onUpdate={(answerId, data, note, files) =>
+          run(() =>
+            update.mutateAsync({
+              answerId,
+              data,
+              note,
+              addFiles: files?.add,
+              removeFileIds: files?.remove,
+            }),
+          )
         }
         onDelete={(answerId) => run(() => remove.mutateAsync({ answerId }))}
       />

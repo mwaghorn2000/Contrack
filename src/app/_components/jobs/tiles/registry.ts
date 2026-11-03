@@ -3,6 +3,7 @@ import { z } from "zod";
 import type { AnswersProps } from "./define-tile";
 import { checklistTile } from "./checklist";
 import { contactsTile } from "./contacts";
+import { formTile } from "./form";
 import { measurementTile } from "./measurement";
 import { photosTile } from "./photos";
 import { textTile } from "./text";
@@ -18,6 +19,7 @@ export const TILES = [
   checklistTile,
   measurementTile,
   photosTile,
+  formTile,
 ] as const;
 
 type Tiles = typeof TILES;
@@ -47,6 +49,7 @@ type DefinitionOf<T extends JobTile> = {
   icon: string;
   Editor: ComponentType<{
     config: T["config"];
+    people: { id: string; name: string | null }[];
     onChange: (config: T["config"]) => void;
   }>;
   View: ComponentType<{ config: T["config"] }>;

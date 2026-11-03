@@ -60,6 +60,7 @@ function renderAnswers(
     <ChecklistTileAnswers
       config={config}
       answers={answers}
+      people={[]}
       viewer={{ userId: options.userId ?? "user-1", isManager: false }}
       readOnly={options.readOnly ?? false}
       busy={options.busy ?? false}

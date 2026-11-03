@@ -62,6 +62,7 @@ function renderAnswers(
     <MeasurementTileAnswers
       config={{}}
       answers={list}
+      people={[]}
       viewer={{ userId: ada.id, isManager: false }}
       readOnly={options.readOnly ?? false}
       busy={options.busy ?? false}
