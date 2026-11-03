@@ -128,6 +128,14 @@ test("a shared list shows who ticked each item, and only they can untick it", as
   expect(calls.onDelete).toHaveBeenCalledWith("tick-a-user-1");
 });
 
+test("ticks don't offer or show notes", () => {
+  // A note saved before checklists stopped taking them.
+  renderAnswers({ mode: "shared", items }, [{ ...tick("a"), note: "Old" }]);
+
+  expect(screen.queryByRole("button", { name: /note/i })).toBeNull();
+  expect(screen.queryByText("Old")).toBeNull();
+});
+
 test("an each-person list shows your own ticks and everyone's progress", () => {
   renderAnswers({ mode: "each", items }, [
     tick("a", jaxon, false),

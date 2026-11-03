@@ -454,6 +454,33 @@ it("a tick can't be re-saved once its item is off the list", async () => {
   });
 });
 
+it("checklist ticks don't take notes", async () => {
+  await expect(
+    worker.caller.createAnswer({
+      tileId: tiles.shared,
+      data: { itemId: "a" },
+      note: "Done",
+    }),
+  ).rejects.toMatchObject({
+    code: "BAD_REQUEST",
+    message: "This tile doesn't take notes.",
+  });
+  const id = await tick(worker, tiles.shared, "a");
+  await expect(
+    worker.caller.updateAnswer({
+      answerId: id,
+      data: { itemId: "a" },
+      note: "Done",
+    }),
+  ).rejects.toMatchObject({
+    code: "BAD_REQUEST",
+    message: "This tile doesn't take notes.",
+  });
+  expect(
+    (await db.jobTileAnswer.findUniqueOrThrow({ where: { id } })).note,
+  ).toBeNull();
+});
+
 it("a tile sent back as a different type is a new tile, keeping the old one's answers apart", async () => {
   await tick(worker, tiles.shared, "a");
   const { tiles: saved } = await owner.jobs.getJob({ jobId });
